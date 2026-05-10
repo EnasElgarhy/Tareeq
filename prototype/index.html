@@ -1,0 +1,2041 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1B0B3A" />
+  <title>tareeq — Find your path</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
+
+  <!-- Three.js for the 3D Kai avatar -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three":          "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
+      "three/addons/":  "https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"
+    }
+  }
+  </script>
+  <style>
+    :root {
+      --bg-0: #14082b;
+      --bg-1: #2b1265;
+      --bg-2: #4b1a8a;
+      --accent-pink: #ff3d83;
+      --accent-orange: #ff8a3d;
+      --accent-gold: #ffc24d;
+      --logo-cyan: #4ee0ff;
+      --text-100: #ffffff;
+      --text-80: rgba(255,255,255,0.82);
+      --text-60: rgba(255,255,255,0.62);
+      --text-40: rgba(255,255,255,0.40);
+      --glass: rgba(255,255,255,0.06);
+      --glass-strong: rgba(255,255,255,0.10);
+      --glass-border: rgba(255,255,255,0.14);
+      --grad-warm: linear-gradient(95deg, #ff3d83 0%, #ff6b3d 55%, #ffa53d 100%);
+      --grad-warm-soft: linear-gradient(95deg, rgba(255,61,131,0.18), rgba(255,138,61,0.18));
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { margin: 0; padding: 0; height: 100%; overflow-x: hidden; }
+    body {
+      font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+      font-weight: 400;
+      color: var(--text-100);
+      background: var(--bg-0);
+      min-height: 100vh;
+      min-height: 100dvh;
+      letter-spacing: -0.005em;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Ambient background — layered gradients + grain */
+    .bg-layer {
+      position: fixed; inset: 0; z-index: -2;
+      background:
+        radial-gradient(60% 50% at 20% 10%, rgba(255,61,131,0.35), transparent 60%),
+        radial-gradient(70% 60% at 85% 20%, rgba(120,60,255,0.55), transparent 65%),
+        radial-gradient(80% 70% at 50% 100%, rgba(75,26,138,0.95), transparent 70%),
+        linear-gradient(180deg, #190a36 0%, #1B0B3A 50%, #110626 100%);
+    }
+    .bg-grain {
+      position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      opacity: 0.07; mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    }
+
+    /* Layout */
+    .app {
+      position: relative;
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      min-height: 100dvh;
+      padding: 24px 22px 32px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Logo (inline SVG so it always works) */
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      height: 28px;
+      position: relative;
+    }
+    .logo svg, .logo img { height: 100%; width: auto; display: block; }
+    .logo img.raster {
+      max-height: 100%;
+      object-fit: contain;
+    }
+    .logo .has-raster + svg { display: none; } /* hide SVG when raster loaded */
+
+    /* Header */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: env(safe-area-inset-top);
+      margin-bottom: 4px;
+      min-height: 32px;
+    }
+    .iconbtn {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      color: var(--text-100);
+      width: 38px; height: 38px;
+      border-radius: 12px;
+      display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: transform .15s ease, background .15s ease;
+    }
+    .iconbtn:hover { background: var(--glass-strong); }
+    .iconbtn:active { transform: scale(0.96); }
+
+    .topbar-title {
+      font-weight: 600; font-size: 16px; letter-spacing: -0.01em;
+      color: var(--text-100);
+    }
+
+    /* Progress */
+    .progress-wrap {
+      display: flex; align-items: center; gap: 14px;
+      margin: 22px 0 26px;
+    }
+    .progress-track {
+      flex: 1;
+      height: 6px; border-radius: 999px;
+      background: rgba(255,255,255,0.10);
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-fill {
+      position: absolute; inset: 0;
+      width: 0%;
+      background: var(--grad-warm);
+      border-radius: 999px;
+      box-shadow: 0 0 18px rgba(255,107,61,0.55), 0 0 36px rgba(255,61,131,0.35);
+      transition: width .45s cubic-bezier(.22,.61,.36,1);
+    }
+    .progress-count {
+      font-variant-numeric: tabular-nums;
+      font-size: 14px; font-weight: 600;
+      color: var(--text-60);
+      letter-spacing: 0.02em;
+    }
+    .progress-count b { color: var(--accent-orange); font-weight: 700; }
+
+    /* Screens */
+    .screen { display: none; flex: 1; flex-direction: column; animation: fadeUp .4s ease both; }
+    .screen.active { display: flex; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Landing */
+    .hero {
+      flex: 1;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 8px 4px 0;
+    }
+    .hero-logo {
+      height: 56px;
+      margin-bottom: 28px;
+      animation: floatLogo 6s ease-in-out infinite;
+    }
+    @keyframes floatLogo {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-4px); }
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 12px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 999px;
+      font-size: 12px; font-weight: 500;
+      color: var(--text-80);
+      text-transform: uppercase; letter-spacing: 0.12em;
+      width: max-content;
+      margin-bottom: 18px;
+    }
+    .hero-eyebrow .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent-orange);
+      box-shadow: 0 0 10px var(--accent-orange);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%     { opacity: .5; transform: scale(0.85); }
+    }
+    h1.hero-title {
+      font-family: 'Fraunces', 'Outfit', serif;
+      font-weight: 500;
+      font-size: clamp(36px, 9.5vw, 44px);
+      line-height: 1.05;
+      letter-spacing: -0.025em;
+      margin: 0 0 18px;
+      color: var(--text-100);
+    }
+    h1.hero-title em {
+      font-style: italic;
+      font-weight: 400;
+      background: var(--grad-warm);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-sub {
+      font-size: 17px; line-height: 1.55;
+      color: var(--text-80);
+      margin: 0 0 32px;
+      max-width: 32ch;
+    }
+    .hero-meta {
+      display: flex; gap: 16px;
+      margin-bottom: 36px;
+    }
+    .meta-pill {
+      display: flex; flex-direction: column; gap: 2px;
+      padding: 12px 16px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      flex: 1;
+    }
+    .meta-pill .num {
+      font-family: 'Fraunces', serif;
+      font-size: 22px; font-weight: 600;
+      color: var(--accent-orange);
+      line-height: 1;
+    }
+    .meta-pill .lbl {
+      font-size: 11px; color: var(--text-60);
+      text-transform: uppercase; letter-spacing: 0.1em;
+    }
+    .kai-card {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 14px 16px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      margin-bottom: 24px;
+    }
+    .kai-avatar {
+      flex: none;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--grad-warm);
+      display: grid; place-items: center;
+      font-family: 'Fraunces', serif;
+      font-weight: 700; font-size: 18px;
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(255,61,131,0.4);
+    }
+    .kai-card .text {
+      font-size: 14px; line-height: 1.5; color: var(--text-80);
+    }
+    .kai-card .text b { color: var(--text-100); font-weight: 600; }
+
+    /* CTA */
+    .cta {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%;
+      padding: 18px 22px;
+      background: var(--grad-warm);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow:
+        0 14px 40px rgba(255,61,131,0.45),
+        0 6px 20px rgba(255,138,61,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.3);
+      transition: transform .15s ease, box-shadow .25s ease;
+    }
+    .cta:hover { transform: translateY(-1px); }
+    .cta:active { transform: translateY(1px); }
+    .cta:disabled {
+      opacity: 0.4; cursor: not-allowed;
+      box-shadow: none;
+    }
+    .cta .arrow {
+      width: 18px; height: 18px;
+      transition: transform .2s ease;
+    }
+    .cta:hover .arrow { transform: translateX(3px); }
+
+    .cta-ghost {
+      background: transparent;
+      color: var(--text-80);
+      box-shadow: none;
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 500;
+    }
+    .cta-ghost:hover { color: #fff; }
+
+    .footnote {
+      font-size: 12px;
+      color: var(--text-40);
+      text-align: center;
+      margin-top: 14px;
+    }
+
+    /* Question card */
+    .q-card {
+      background: var(--glass-strong);
+      border: 1px solid var(--glass-border);
+      border-radius: 22px;
+      padding: 22px 20px 26px;
+      backdrop-filter: blur(10px);
+      flex: 1;
+      display: flex; flex-direction: column;
+    }
+    .q-head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .q-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 600;
+      color: var(--text-60);
+      text-transform: uppercase; letter-spacing: 0.14em;
+    }
+    .q-tag .pillar-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent-orange);
+      box-shadow: 0 0 10px var(--accent-orange);
+    }
+    .q-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 500;
+      font-size: 22px;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      margin: 0 0 22px;
+      color: var(--text-100);
+    }
+
+    /* Audio replay button (inside the question card) */
+    .audio-btn {
+      flex: none;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: inline-grid; place-items: center;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      color: var(--text-80);
+      cursor: pointer;
+      transition: transform .15s ease, background .15s ease, color .15s ease, opacity .15s ease;
+    }
+    .audio-btn:hover { background: var(--glass-strong); color: #fff; }
+    .audio-btn:active { transform: scale(0.94); }
+    .audio-btn[data-state="playing"] {
+      background: var(--grad-warm);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 4px 18px rgba(255,107,61,0.45);
+    }
+    .audio-btn[data-state="playing"] .ring {
+      animation: ringPulse 1.4s ease-in-out infinite;
+      transform-origin: center;
+    }
+    @keyframes ringPulse {
+      0%,100% { opacity: .35; transform: scale(0.96); }
+      50%     { opacity: 1;   transform: scale(1.05); }
+    }
+    .audio-btn[data-state="muted"] { opacity: 0.55; }
+    .audio-btn[data-state="unavailable"] { opacity: 0.35; pointer-events: none; }
+
+    /* Sound toggle in topbar (same visual size as iconbtn) */
+    .iconbtn[data-sound="on"] { color: #fff; }
+    .iconbtn[data-sound="off"] { color: var(--text-40); }
+
+    /* Options */
+    .opts { display: flex; flex-direction: column; gap: 10px; }
+    .opt {
+      display: flex; align-items: stretch; gap: 12px;
+      padding: 14px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all .18s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .opt:hover {
+      background: var(--glass-strong);
+      border-color: rgba(255,255,255,0.22);
+    }
+    .opt .letter {
+      flex: none;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      display: grid; place-items: center;
+      background: rgba(255,255,255,0.10);
+      border: 1px solid var(--glass-border);
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-80);
+      transition: all .2s ease;
+    }
+    .opt .body {
+      flex: 1;
+      align-self: center;
+      font-size: 15px;
+      line-height: 1.4;
+      color: var(--text-80);
+    }
+    .opt.selected {
+      background: var(--grad-warm);
+      border-color: transparent;
+      box-shadow:
+        0 10px 30px rgba(255,61,131,0.4),
+        0 2px 14px rgba(255,138,61,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.25);
+    }
+    .opt.selected .body { color: #fff; font-weight: 500; }
+    .opt.selected .letter {
+      background: rgba(255,255,255,0.22);
+      color: #fff;
+      border-color: rgba(255,255,255,0.4);
+    }
+
+    /* Binary-style options (Pillars 2 & 4) — slightly different */
+    .opt.binary {
+      padding: 18px 16px;
+    }
+    .opt.binary .letter { display: none; }
+    .opt.binary .body { font-size: 15.5px; }
+
+    /* Footer buttons row */
+    .footer {
+      display: flex; gap: 12px;
+      margin-top: 22px;
+      align-items: center;
+    }
+    .footer .cta { flex: 1; }
+    .footer .iconbtn { width: 50px; height: 50px; }
+
+    /* Select (for country) */
+    .field {
+      display: flex; flex-direction: column; gap: 8px;
+      margin-bottom: 14px;
+    }
+    .field label {
+      font-size: 12px; font-weight: 600;
+      color: var(--text-60);
+      text-transform: uppercase; letter-spacing: 0.1em;
+    }
+    select.input {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      color: var(--text-100);
+      font-family: inherit;
+      font-size: 15px;
+      appearance: none;
+      background-image:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='white' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+    }
+    select.input:focus { outline: none; border-color: var(--accent-orange); }
+    select.input option { background: #2a1456; color: #fff; }
+
+    /* Results */
+    .result-hero {
+      padding: 12px 0 4px;
+    }
+    .result-greet {
+      font-size: 13px;
+      color: var(--text-60);
+      text-transform: uppercase; letter-spacing: 0.14em;
+      margin-bottom: 8px;
+    }
+    .result-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 500;
+      font-size: 36px;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin: 0 0 6px;
+    }
+    .result-title em {
+      font-style: italic;
+      background: var(--grad-warm);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .result-sub {
+      font-size: 15px; color: var(--text-80);
+      line-height: 1.55;
+      margin: 0 0 20px;
+    }
+
+    .card {
+      background: var(--glass-strong);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 14px;
+      backdrop-filter: blur(10px);
+    }
+    .card-head {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 14px;
+    }
+    .card-eyebrow {
+      font-size: 11px; font-weight: 600;
+      color: var(--text-60);
+      text-transform: uppercase; letter-spacing: 0.14em;
+    }
+    .card-rank {
+      font-family: 'Fraunces', serif;
+      font-size: 24px; font-weight: 500;
+      color: var(--accent-orange);
+      line-height: 1;
+    }
+    .card h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 26px;
+      font-weight: 500;
+      margin: 0 0 6px;
+      letter-spacing: -0.01em;
+    }
+    .card p { margin: 0; color: var(--text-80); font-size: 14px; line-height: 1.5; }
+
+    .bars { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+    .bar {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px;
+    }
+    .bar .name { flex: none; width: 92px; color: var(--text-80); }
+    .bar .meter {
+      flex: 1; height: 8px; border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+      position: relative;
+    }
+    .bar .meter .fill {
+      position: absolute; inset: 0; width: 0%;
+      background: var(--grad-warm);
+      border-radius: 999px;
+      transition: width .8s cubic-bezier(.22,.61,.36,1);
+    }
+    .bar .meter.muted .fill { background: rgba(255,255,255,0.25); }
+    .bar .pct { flex: none; width: 36px; text-align: right; color: var(--text-60); font-variant-numeric: tabular-nums; }
+
+    .axes { display: flex; flex-direction: column; gap: 14px; margin-top: 12px; }
+    .axis {
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .axis-labels {
+      display: flex; justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-60);
+      text-transform: uppercase; letter-spacing: 0.1em;
+    }
+    .axis-track {
+      position: relative;
+      height: 10px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 999px;
+    }
+    .axis-dot {
+      position: absolute;
+      top: 50%;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--grad-warm);
+      transform: translate(-50%, -50%);
+      box-shadow: 0 4px 16px rgba(255,107,61,0.5);
+      transition: left .8s cubic-bezier(.22,.61,.36,1);
+    }
+
+    .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .pill {
+      padding: 7px 12px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--text-80);
+    }
+    .pill.hot {
+      background: var(--grad-warm-soft);
+      border-color: rgba(255,107,61,0.35);
+      color: #fff;
+    }
+
+    /* Misc */
+    .text-center { text-align: center; }
+    .spacer { flex: 1; }
+
+    /* ------------------------------------------------------------------
+       Kai 3D stage — full hero on landing, small floating avatar on
+       question screens, hidden on results.
+       ------------------------------------------------------------------ */
+    .kai-stage {
+      position: relative;
+      width: 100%;
+      pointer-events: none;            /* clicks pass through to content */
+      transition: all 0.55s cubic-bezier(.22,.61,.36,1);
+    }
+    .kai-stage canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      pointer-events: auto;
+    }
+
+    /* Landing mode — large, centered above the hero copy */
+    .kai-stage[data-mode="landing"] {
+      height: clamp(220px, 42vh, 320px);
+      margin: 4px 0 14px;
+      filter: drop-shadow(0 30px 50px rgba(255,61,131,0.30))
+              drop-shadow(0 10px 25px rgba(120,60,255,0.28));
+    }
+
+    /* Corner mode — tiny floating avatar pinned to top-right of viewport */
+    .kai-stage[data-mode="corner"] {
+      position: fixed;
+      top: calc(env(safe-area-inset-top) + 14px);
+      right: 14px;
+      width: 64px;
+      height: 64px;
+      margin: 0;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 1px solid var(--glass-border);
+      background:
+        radial-gradient(60% 80% at 50% 30%, rgba(255,107,61,0.20), rgba(0,0,0,0)),
+        rgba(20,8,40,0.55);
+      backdrop-filter: blur(12px);
+      box-shadow:
+        0 8px 24px rgba(0,0,0,0.35),
+        0 0 0 1px rgba(255,255,255,0.04);
+      z-index: 50;
+    }
+    .kai-stage[data-mode="corner"]::after {
+      /* subtle pulsing ring while speaking */
+      content: "";
+      position: absolute;
+      inset: -2px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      pointer-events: none;
+    }
+    .kai-stage[data-mode="corner"][data-speaking="true"]::after {
+      border-color: rgba(255,107,61,0.85);
+      animation: kaiPulse 1.4s ease-in-out infinite;
+    }
+    @keyframes kaiPulse {
+      0%, 100% { transform: scale(1);    opacity: 0.6; }
+      50%      { transform: scale(1.08); opacity: 1;   }
+    }
+
+    /* Hidden mode — completely out of layout */
+    .kai-stage[data-mode="hidden"] {
+      display: none;
+    }
+
+    /* Loading + error veil over the canvas */
+    .kai-status {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 8px;
+      font-size: 12px; color: var(--text-60);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      background: radial-gradient(60% 60% at 50% 50%, rgba(255,255,255,0.04), transparent);
+      pointer-events: none;
+      transition: opacity .35s ease;
+    }
+    .kai-status[data-state="ready"] { opacity: 0; }
+    .kai-status .ring-spinner {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.18);
+      border-top-color: var(--accent-orange);
+      animation: kaiSpin 0.9s linear infinite;
+    }
+    @keyframes kaiSpin { to { transform: rotate(360deg); } }
+    .kai-stage[data-mode="corner"] .kai-status { font-size: 0; }
+    .kai-stage[data-mode="corner"] .kai-status .ring-spinner {
+      width: 14px; height: 14px;
+    }
+
+    /* Larger screens: keep mobile feel but elevate */
+    @media (min-width: 600px) {
+      .app {
+        margin: 28px auto;
+        border-radius: 32px;
+        border: 1px solid rgba(255,255,255,0.08);
+        box-shadow:
+          0 30px 80px rgba(0,0,0,0.6),
+          0 0 0 1px rgba(255,255,255,0.04);
+        min-height: calc(100dvh - 56px);
+        background:
+          radial-gradient(80% 60% at 50% 0%, rgba(255,61,131,0.18), transparent 60%),
+          linear-gradient(180deg, rgba(40,16,90,0.6), rgba(20,8,40,0.7));
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-layer" aria-hidden="true"></div>
+  <div class="bg-grain" aria-hidden="true"></div>
+
+  <div class="app">
+    <!-- Topbar -->
+    <div class="topbar" id="topbar">
+      <button class="iconbtn" id="backBtn" aria-label="Back" style="visibility:hidden;">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="topbar-title" id="topbarTitle"></div>
+      <button class="iconbtn" id="soundToggle" data-sound="on" aria-label="Toggle voice">
+        <!-- Speaker on -->
+        <svg id="soundOnIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M11 5L6 9H3v6h3l5 4V5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M15.5 8.5a4.5 4.5 0 010 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M18.5 5.5a8.5 8.5 0 010 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <!-- Speaker off -->
+        <svg id="soundOffIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="display:none;">
+          <path d="M11 5L6 9H3v6h3l5 4V5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-wrap" id="progressWrap" style="display:none;">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-count"><b id="progressNum">1</b> / <span id="progressTotal">44</span></div>
+    </div>
+
+    <!-- 3D Kai stage. Lives outside the screens so the same canvas can
+         move between landing (large) and corner (small) without re-init. -->
+    <div id="kaiStage" class="kai-stage" data-mode="hidden" data-speaking="false">
+      <canvas id="kaiCanvas" aria-label="Kai, your guide"></canvas>
+      <div id="kaiStatus" class="kai-status" data-state="loading">
+        <div class="ring-spinner"></div>
+        <div id="kaiStatusText">Waking up Kai…</div>
+      </div>
+    </div>
+
+    <!-- =========== LANDING =========== -->
+    <section class="screen active" id="screen-landing">
+      <div class="hero">
+        <!-- Logo: progressive enhancement — if logo.png/svg exists in folder, it replaces the SVG below -->
+        <div class="logo hero-logo" id="brandLogo" aria-label="tareeq">
+          <svg viewBox="0 0 520 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="qCyan" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%"  stop-color="#a6f3ff"/>
+                <stop offset="50%" stop-color="#5fe5ff"/>
+                <stop offset="100%" stop-color="#3dd2ff"/>
+              </linearGradient>
+              <linearGradient id="tailFade" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%"   stop-color="#5fe5ff" stop-opacity="0.95"/>
+                <stop offset="65%"  stop-color="#7df3ff" stop-opacity="0.85"/>
+                <stop offset="100%" stop-color="#a6f3ff" stop-opacity="0"/>
+              </linearGradient>
+              <filter id="cyanGlow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="2.5" result="blur"/>
+                <feMerge>
+                  <feMergeNode in="blur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+
+            <!-- Wordmark -->
+            <text x="0" y="100"
+                  font-family="Outfit, system-ui, sans-serif"
+                  font-weight="400"
+                  font-size="118"
+                  letter-spacing="-2"
+                  fill="#ffffff">tareeq</text>
+
+            <!-- Magnifying-glass "q" overlay -->
+            <g filter="url(#cyanGlow)">
+              <!-- glass ring (sits on the bowl of the q) -->
+              <circle cx="448" cy="68" r="34"
+                      fill="none" stroke="url(#qCyan)" stroke-width="3.2"/>
+              <!-- diagonal arrow shaft inside -->
+              <line x1="436" y1="80" x2="461" y2="55"
+                    stroke="url(#qCyan)" stroke-width="3.6" stroke-linecap="round"/>
+              <!-- arrow head -->
+              <polyline points="453,55 461,55 461,63"
+                        fill="none" stroke="url(#qCyan)" stroke-width="3.6"
+                        stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- swooshing tail trailing off to the right -->
+              <path d="M462 102 Q488 120 518 124"
+                    fill="none" stroke="url(#tailFade)" stroke-width="6"
+                    stroke-linecap="round"/>
+              <path d="M462 102 Q488 120 518 124"
+                    fill="none" stroke="url(#qCyan)" stroke-width="2.4"
+                    stroke-linecap="round" opacity="0.9"/>
+            </g>
+          </svg>
+        </div>
+
+        <span class="hero-eyebrow"><span class="dot"></span> CORE Assessment · v4</span>
+        <h1 class="hero-title">Find the work that <em>actually lights you up.</em></h1>
+        <p class="hero-sub">A compass, not a GPS. 40 honest questions reveal where your curiosity, energy, and rewards line up.</p>
+
+        <div class="hero-meta">
+          <div class="meta-pill">
+            <span class="num">40</span>
+            <span class="lbl">Questions</span>
+          </div>
+          <div class="meta-pill">
+            <span class="num">~7</span>
+            <span class="lbl">Minutes</span>
+          </div>
+          <div class="meta-pill">
+            <span class="num">8</span>
+            <span class="lbl">Clusters</span>
+          </div>
+        </div>
+
+        <div class="kai-card">
+          <div class="kai-avatar">K</div>
+          <div class="text">
+            <b>Hey, I'm Kai.</b> Think of me as a filter for all the noise. No wrong answers — just pick what you'd actually do.
+          </div>
+        </div>
+
+        <button class="cta" id="startBtn">
+          Start the Assessment
+          <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <p class="footnote">No sign-up. Your answers stay on this device.</p>
+      </div>
+    </section>
+
+    <!-- =========== QUESTION SCREEN (single re-used) =========== -->
+    <section class="screen" id="screen-question">
+      <div class="q-card">
+        <div class="q-head">
+          <div class="q-tag"><span class="pillar-dot"></span><span id="qPillar">Pillar 1 · Curiosities</span></div>
+          <button class="audio-btn" id="audioBtn" data-state="idle" aria-label="Play question">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path class="ring" d="M11 5L6 9H3v6h3l5 4V5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M15.5 8.5a4.5 4.5 0 010 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <h2 class="q-title" id="qTitle"></h2>
+        <div class="opts" id="qOpts"></div>
+      </div>
+      <audio id="ttsAudio" preload="auto" playsinline></audio>
+      <div class="footer">
+        <button class="iconbtn" id="prevBtn" aria-label="Previous">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="cta" id="nextBtn" disabled>
+          Next
+          <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- =========== RESULTS =========== -->
+    <section class="screen" id="screen-results">
+      <div class="result-hero">
+        <div class="result-greet">Your Career Compass</div>
+        <h1 class="result-title">You're a <em><span id="rArchetype">Catalyst</span></em>.</h1>
+        <p class="result-sub" id="rSub">Built for the <span id="rClusterName">Technology</span> world — driven by <span id="rDriver1">Mastery</span> &amp; <span id="rDriver2">Autonomy</span>.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="card-eyebrow">Top Career Cluster</span>
+          <span class="card-rank">#1</span>
+        </div>
+        <h3 id="rTopCluster">Technology</h3>
+        <p id="rTopClusterDesc">You're drawn to systems, code, and AI — building tools that solve real problems at scale.</p>
+        <div class="bars" id="rClusterBars"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="card-eyebrow">Operational Archetype</span>
+        </div>
+        <h3 id="rArchetypeName">Catalyst</h3>
+        <p id="rArchetypeDesc">Flexible &amp; broad — you connect dots fast across many domains and create momentum.</p>
+        <div class="axes" style="margin-top:18px;">
+          <div class="axis">
+            <div class="axis-labels"><span>Structured</span><span>Flexible</span></div>
+            <div class="axis-track"><div class="axis-dot" id="axProcDot" style="left:75%"></div></div>
+          </div>
+          <div class="axis">
+            <div class="axis-labels"><span>Deep</span><span>Broad</span></div>
+            <div class="axis-track"><div class="axis-dot" id="axScopeDot" style="left:75%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="card-eyebrow">Reward Drivers</span>
+        </div>
+        <div class="pills" id="rDriverPills"></div>
+        <div class="bars" id="rDriverBars" style="margin-top:18px;"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="card-eyebrow">Where You Thrive</span>
+        </div>
+        <div class="axes">
+          <div class="axis">
+            <div class="axis-labels"><span>Collaborative</span><span>Independent</span></div>
+            <div class="axis-track"><div class="axis-dot" id="axSocialDot"></div></div>
+          </div>
+          <div class="axis">
+            <div class="axis-labels"><span>Dynamic</span><span>Predictable</span></div>
+            <div class="axis-track"><div class="axis-dot" id="axEnvDot"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:6px;">
+        <button class="cta" id="restartBtn">
+          Retake
+          <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M3 12a9 9 0 1015-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 4v6h6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <p class="footnote">A compass, not a GPS. You still choose the destination.</p>
+    </section>
+  </div>
+
+  <script>
+  /* ========================================================================
+     TAREEQ — CORE Assessment v4
+     Single-file mobile-first web app.
+     ======================================================================== */
+
+  // ---------- Data ----------
+  const COUNTRIES_ME = [
+    "United Arab Emirates","Saudi Arabia","Egypt","Jordan","Lebanon","Qatar","Kuwait","Bahrain","Oman","Morocco","Tunisia","Algeria","Iraq","Palestine","Syria","Yemen","Libya","Sudan"
+  ];
+  const COUNTRIES_REST = [
+    "United States","United Kingdom","Canada","Australia","France","Germany","Spain","Italy","Netherlands","Sweden","Norway","Denmark","Turkey","India","Pakistan","Bangladesh","Indonesia","Malaysia","Singapore","Japan","South Korea","China","South Africa","Nigeria","Kenya","Brazil","Mexico","Argentina","Other"
+  ];
+
+  // Demographics
+  const demographics = [
+    { id: "QD1", title: "How old are you?", options: [
+      {l:"A", t:"Under 16"},{l:"B", t:"16 or 17"},{l:"C", t:"18 or 19"},{l:"D", t:"20 or 21"},{l:"E", t:"22 or older"}
+    ]},
+    { id: "QD2", title: "Which country do you currently live in?", kind: "select" },
+    { id: "QD3", title: "What is your current academic stage?", options: [
+      {l:"A", t:"Final 2 years of high school"},
+      {l:"B", t:"Gap year or transition"},
+      {l:"C", t:"Year 1 or 2 of university"},
+      {l:"D", t:"Year 3+ of university"},
+      {l:"E", t:"Not currently in formal education"},
+    ]},
+    { id: "QD4", title: "How do you identify?", options: [
+      {l:"A", t:"Female"},{l:"B", t:"Male"},{l:"C", t:"Prefer not to say"}
+    ]},
+  ];
+
+  // Career clusters
+  const CLUSTERS = {
+    TECH: { name:"Technology", desc:"You're drawn to systems, code, and AI — building tools that scale and rethinking how things work." },
+    ENG:  { name:"Engineering", desc:"You love how physical things work — machines, hardware, systems you can see and touch." },
+    SCI:  { name:"Science & Data", desc:"You're a pattern-hunter — math, biology, chemistry, the hidden structure behind everything." },
+    ART:  { name:"Arts & Media", desc:"You think in stories, visuals, and atmosphere — design, film, performance, sound." },
+    BUS:  { name:"Business", desc:"You see opportunity, strategy, and value — building ventures, deals, and growth engines." },
+    LAW:  { name:"Law & Diplomacy", desc:"You think in rules, fairness, and frameworks — debate, policy, negotiation, justice." },
+    PPL:  { name:"People & Psychology", desc:"You read humans well — motivation, behavior, emotions, the soft systems that move groups." },
+    ENV:  { name:"Environment", desc:"You're tuned to ecosystems and the natural world — conservation, life sciences, the planet." },
+  };
+
+  // Pillar 1 — Curiosities (16 Qs, each option maps to a cluster)
+  const pillar1 = [
+    {
+      id:"Q1", title:"You're refreshing your feed. Which video is an immediate click?",
+      options:[
+        {l:"A", t:"\"How a student turned a school project into a real product that got acquired.\"", c:"BUS"},
+        {l:"B", t:"\"Building a real-life flying suit — how the mechanics actually work.\"", c:"ENG"},
+        {l:"C", t:"\"Why do we feel 'cringe' around certain people? The brain science explained.\"", c:"PPL"},
+        {l:"D", t:"\"I let an AI agent organise my entire life for a week — here's what happened.\"", c:"TECH"},
+      ]
+    },
+    {
+      id:"Q2", title:"You're watching an investigation show. Which character's work is most interesting to you?",
+      options:[
+        {l:"A", t:"The lawyer finding a legal angle no one else spotted to win the case.", c:"LAW"},
+        {l:"B", t:"The designer creating the sets, outfits, and overall look of the show.", c:"ART"},
+        {l:"C", t:"The forensic scientist using chemistry to find hidden clues.", c:"SCI"},
+        {l:"D", t:"The detective working the streets, reading people, and connecting the dots.", c:"PPL"},
+      ]
+    },
+    {
+      id:"Q3", title:"Your school adds a new \"Future Skills\" elective. Which one do you sign up for immediately?",
+      options:[
+        {l:"A", t:"Entrepreneurship: Building a business from scratch.", c:"BUS"},
+        {l:"B", t:"Marine Biology Lab: Understanding ocean ecosystems.", c:"ENV"},
+        {l:"C", t:"Robotics Workshop: Designing and building a working machine.", c:"ENG"},
+        {l:"D", t:"Civic Leadership: Debating policy and international affairs.", c:"LAW"},
+      ]
+    },
+    {
+      id:"Q4", title:"Your friends are having a long debate at lunch. Which topic would pull YOU into the conversation the most?",
+      options:[
+        {l:"A", t:"Whether a new social media app is good or bad for young people.", c:"PPL"},
+        {l:"B", t:"Whether a wealthy person should be allowed to build something huge on protected land.", c:"ENV"},
+        {l:"C", t:"Whether a new government rule makes sense or not.", c:"LAW"},
+        {l:"D", t:"Whether a new AI tool will take over a certain job category.", c:"TECH"},
+      ]
+    },
+    {
+      id:"Q5", title:"To make a school project actually interesting, what would YOU add?",
+      options:[
+        {l:"A", t:"A way to use the info to help a real community you care about.", c:"PPL"},
+        {l:"B", t:"A mathematical model or simulation that predicts what happens next.", c:"SCI"},
+        {l:"C", t:"Professional visuals, graphics, or a cinematic video.", c:"ART"},
+        {l:"D", t:"A way to automate the boring parts so a program does the heavy lifting.", c:"TECH"},
+      ]
+    },
+    {
+      id:"Q6", title:"You're helping out at a local festival or school exhibition. Which tent do you run?",
+      options:[
+        {l:"A", t:"The Green Zone — teaching people about protecting the environment.", c:"ENV"},
+        {l:"B", t:"The Fix-It Shop — repairing broken tech or gadgets.", c:"ENG"},
+        {l:"C", t:"The Story Stage — hosting the event and introducing performers.", c:"ART"},
+        {l:"D", t:"The Debate Hub — discussing ideas for the city's future.", c:"LAW"},
+      ]
+    },
+    {
+      id:"Q7", title:"Which news headline makes you most curious to click?",
+      options:[
+        {l:"A", t:"\"New law passed that changes how teenagers can use social media.\"", c:"LAW"},
+        {l:"B", t:"\"Researchers identify the gene behind a major human disease.\"", c:"SCI"},
+        {l:"C", t:"\"The mathematics behind why certain songs always go viral.\"", c:"SCI"},
+        {l:"D", t:"\"New app lets anyone design their own virtual world without coding.\"", c:"TECH"},
+      ]
+    },
+    {
+      id:"Q8", title:"You've been given a major grant to create something with positive impact on your school. What do you build?",
+      options:[
+        {l:"A", t:"A student-run business or café that generates income for school activities.", c:"BUS"},
+        {l:"B", t:"A high-tech robotics lab for building new hardware.", c:"ENG"},
+        {l:"C", t:"An outdoor garden and eco-space for students to decompress.", c:"ENV"},
+        {l:"D", t:"A mental wellness centre with trained peer counsellors.", c:"PPL"},
+      ]
+    },
+    {
+      id:"Q9", title:"A new community rule is announced that everyone hates. What's your instinct?",
+      options:[
+        {l:"A", t:"Organise a meeting to negotiate a change with community leaders.", c:"LAW"},
+        {l:"B", t:"Look for a smart technical workaround that makes the rule irrelevant.", c:"TECH"},
+        {l:"C", t:"Check in on friends who seem most affected by the rule.", c:"PPL"},
+        {l:"D", t:"Calculate and map out exactly how much time or money this rule costs everyone, so the argument has data.", c:"SCI"},
+      ]
+    },
+    {
+      id:"Q10", title:"A public controversy is trending online. Which angle of the story do YOU find most interesting?",
+      options:[
+        {l:"A", t:"The debate about whether the current laws are fair or need changing.", c:"LAW"},
+        {l:"B", t:"The data analysis showing hidden patterns nobody noticed.", c:"SCI"},
+        {l:"C", t:"The stories and visuals emerging from the people most affected.", c:"ART"},
+        {l:"D", t:"The business side — who is making or losing money from this.", c:"BUS"},
+      ]
+    },
+    {
+      id:"Q11", title:"Which of these tasks would you find MOST enjoyable to help someone with, even if you'd have to learn how?",
+      options:[
+        {l:"A", t:"Making sense of a complicated contract or set of rules.", c:"LAW"},
+        {l:"B", t:"Figuring out why their phone, bike, or something mechanical isn't working.", c:"ENG"},
+        {l:"C", t:"Identifying a plant, bird, or animal they found.", c:"ENV"},
+        {l:"D", t:"Coming up with the best strategy to win a competition or game.", c:"BUS"},
+      ]
+    },
+    {
+      id:"Q12", title:"You open a news app and only have time to read 3 articles today. Which topics pull you?",
+      options:[
+        {l:"A", t:"A diplomatic standoff between two countries.", c:"LAW"},
+        {l:"B", t:"A medical breakthrough that could save millions.", c:"SCI"},
+        {l:"C", t:"A young filmmaker whose short film just went viral.", c:"ART"},
+        {l:"D", t:"An entrepreneur who built a regional business empire from nothing.", c:"BUS"},
+      ]
+    },
+    {
+      id:"Q13", title:"You win a major international youth award. Which category is it in?",
+      options:[
+        {l:"A", t:"The Visionary — for the most original and beautiful design.", c:"ART"},
+        {l:"B", t:"The Strategist — for the most profitable innovation.", c:"BUS"},
+        {l:"C", t:"The Guardian — for the most impactful environmental project.", c:"ENV"},
+        {l:"D", t:"The Architect — for designing the most stable and resilient structure.", c:"ENG"},
+      ]
+    },
+    {
+      id:"Q14", title:"You have an empty studio for a month. What do you turn it into?",
+      options:[
+        {l:"A", t:"A podcast or film studio to share stories and ideas.", c:"ART"},
+        {l:"B", t:"A Maker Space with creative tools to build physical things.", c:"ENG"},
+        {l:"C", t:"A data lab to investigate a real-world mystery.", c:"SCI"},
+        {l:"D", t:"A community wellness lounge for peer support and mental health.", c:"PPL"},
+      ]
+    },
+    {
+      id:"Q15", title:"Which skill would you download into your brain instantly if you could?",
+      options:[
+        {l:"A", t:"Coding any app or AI agent from scratch.", c:"TECH"},
+        {l:"B", t:"Speaking any language fluently, with deep cultural understanding.", c:"PPL"},
+        {l:"C", t:"Understanding exactly how any natural ecosystem works and why.", c:"ENV"},
+        {l:"D", t:"Seeing meaningful patterns in massive amounts of data instantly.", c:"SCI"},
+      ]
+    },
+    {
+      id:"Q16", title:"You have a free week to join one exclusive masterclass. Which one do you pick?",
+      options:[
+        {l:"A", t:"The Diplomat — learning to negotiate international agreements.", c:"LAW"},
+        {l:"B", t:"The Founder — building a startup from idea to first investor round.", c:"BUS"},
+        {l:"C", t:"The Guardian — deep-diving into protecting endangered ecosystems.", c:"ENV"},
+        {l:"D", t:"The Producer — mastering storytelling and going viral with a message.", c:"ART"},
+      ]
+    },
+  ];
+
+  // Pillar 2 — Operations (8 Qs, binary)
+  // Q17-Q20 → Processing: A=Structured, B=Flexible
+  // Q21-Q24 → Scope:     A=Deep,       B=Broad
+  const pillar2 = [
+    { id:"Q17", title:"You're learning something completely new — like a musical instrument, a sport, or a craft. Your instinct is:",
+      axis:"PROC", options:[{l:"A", t:"Find a structured course or tutorial and follow it step by step.", v:"STRUCT"},{l:"B", t:"Jump in and start doing it, picking up the techniques as you go.", v:"FLEX"}]},
+    { id:"Q18", title:"You have a huge project due in two weeks. Your brain:",
+      axis:"PROC", options:[{l:"A", t:"Breaks it into small daily tasks and plans steady progress from day one.", v:"STRUCT"},{l:"B", t:"Works best under deadline pressure — that's when your sharpest ideas come.", v:"FLEX"}]},
+    { id:"Q19", title:"You're managing a group for a school project. How do you make sure things get done?",
+      axis:"PROC", options:[{l:"A", t:"You set deadlines and assign clear tasks to each person.", v:"STRUCT"},{l:"B", t:"You keep the goal open and let people figure out how they want to contribute.", v:"FLEX"}]},
+    { id:"Q20", title:"You're using a new creative app for the first time. What do you do?",
+      axis:"PROC", options:[{l:"A", t:"Look for the official guide so you don't waste time or make mistakes.", v:"STRUCT"},{l:"B", t:"Ignore the guide and just start clicking around to see what happens.", v:"FLEX"}]},
+    { id:"Q21", title:"When you get really into a topic, you tend to:",
+      axis:"SCOPE", options:[{l:"A", t:"Go very deep into one narrow aspect until you understand it completely.", v:"DEEP"},{l:"B", t:"Read widely across everything connected to it — the bigger the picture, the better.", v:"BROAD"}]},
+    { id:"Q22", title:"You see an interesting invention online. What catches your attention first?",
+      axis:"SCOPE", options:[{l:"A", t:"The one clever detail that makes it work — you want to understand that one thing.", v:"DEEP"},{l:"B", t:"How the whole design fits together and what it could connect to next.", v:"BROAD"}]},
+    { id:"Q23", title:"You have a free month to learn something new. You'd rather:",
+      axis:"SCOPE", options:[{l:"A", t:"Become genuinely good at one skill, even if you can only do that one thing.", v:"DEEP"},{l:"B", t:"Get a foundational taste of five different skills and see which one you like.", v:"BROAD"}]},
+    { id:"Q24", title:"Watching a movie with a massive plot twist, you usually:",
+      axis:"SCOPE", options:[{l:"A", t:"Focus on one specific clue and trace how it was hidden through the whole film.", v:"DEEP"},{l:"B", t:"Look at the big picture — how all the characters and events connect to the reveal.", v:"BROAD"}]},
+  ];
+
+  // Pillar 3 — Rewards (10 Qs, binary)
+  const pillar3 = [
+    { id:"Q25", title:"Which comment would make your work feel worth it?",
+      options:[{l:"A", t:"\"Everyone's talking about this — you're the name people know now.\"", v:"REC"},{l:"B", t:"\"This helped me genuinely — you made a real difference.\"", v:"IMP"}]},
+    { id:"Q26", title:"You're offered a Golden Ticket reward. Which do you grab?",
+      options:[{l:"A", t:"An invitation to an exclusive event to meet highly influential people.", v:"REC"},{l:"B", t:"Seed funding to turn your own idea into a real business.", v:"AUT"}]},
+    { id:"Q27", title:"You're entering a contest. What's the win that matters most?",
+      options:[{l:"A", t:"Being the person who clearly knows the craft better than anyone.", v:"MAS"},{l:"B", t:"Seeing your work actually used by a community to make a difference.", v:"IMP"}]},
+    { id:"Q28", title:"What do you most want to be able to say about your life in 10 years?",
+      options:[{l:"A", t:"\"My family has everything they need. Nothing is uncertain. I built something solid.\"", v:"STA"},{l:"B", t:"\"I shook things up. I made changes that people will remember.\"", v:"REC"}]},
+    { id:"Q29", title:"What would make you feel most successful at the end of a major project?",
+      options:[{l:"A", t:"Knowing you've developed a rare skill very few people in the world possess.", v:"MAS"},{l:"B", t:"Seeing your project become famous and respected across your city.", v:"REC"}]},
+    { id:"Q30", title:"You're faced with a task everyone else has given up on. You keep going because:",
+      options:[{l:"A", t:"You love the feeling of cracking a code or solving what others couldn't.", v:"MAS"},{l:"B", t:"You know finishing this will genuinely help someone who is struggling.", v:"IMP"}]},
+    { id:"Q31", title:"If you started something online, which stat would you care about most?",
+      options:[{l:"A", t:"The number of people recognising your name and sharing your work.", v:"REC"},{l:"B", t:"The freedom and profit it gives you to keep building independently.", v:"AUT"}]},
+    { id:"Q32", title:"When thinking about a career path, what is your must-have?",
+      options:[{l:"A", t:"A clear, stable path where you know exactly what the next step looks like.", v:"STA"},{l:"B", t:"An open path that's unclear but could let you make a big difference.", v:"IMP"}]},
+    { id:"Q33", title:"You receive two job offers after graduating. Which one is more appealing?",
+      options:[{l:"A", t:"A well-known company with a clear promotion ladder, benefits, and a guaranteed salary.", v:"STA"},{l:"B", t:"An early-stage startup with big upside potential but no salary guarantee.", v:"AUT"}]},
+    { id:"Q34", title:"If you could design your ideal working life, what's your goal?",
+      options:[{l:"A", t:"Total freedom — work whenever and wherever, answering to no one.", v:"AUT"},{l:"B", t:"Being the world's top expert in one specific field that matters.", v:"MAS"}]},
+  ];
+
+  // Pillar 4 — Ecosystems (6 Qs, binary)
+  // Q35-Q37 → Social: A=Collab, B=Indep
+  // Q38-Q40 → Env: A=Dynamic, B=Predictable
+  const pillar4 = [
+    { id:"Q35", title:"You have to focus on something difficult for an hour. What's your ideal setup?",
+      axis:"SOC", options:[{l:"A", t:"A busy café or shared space with some background energy around you.", v:"COL"},{l:"B", t:"A quiet corner with headphones where no one will walk in.", v:"IND"}]},
+    { id:"Q36", title:"You need an answer from a teammate on a project. You:",
+      axis:"SOC", options:[{l:"A", t:"Jump on a call or meet in person — it's easier to think together.", v:"COL"},{l:"B", t:"Send a message so you can stay focused on your own work.", v:"IND"}]},
+    { id:"Q37", title:"You're in a group making a big decision. Your comfort zone is:",
+      axis:"SOC", options:[{l:"A", t:"Being in the middle of the discussion, hearing everyone's thoughts in real time.", v:"COL"},{l:"B", t:"Stepping back to think it through on your own before committing.", v:"IND"}]},
+    { id:"Q38", title:"You're in a team for a pop-up event. Which phase do you enjoy more?",
+      axis:"ENV", options:[{l:"A", t:"Launch Day — fast-moving, unpredictable, all hands on deck.", v:"DYN"},{l:"B", t:"Build-up weeks — steady pace, clear schedule, everything planned.", v:"PRE"}]},
+    { id:"Q39", title:"When you picture your future workspace, what does it look like?",
+      axis:"ENV", options:[{l:"A", t:"High-energy and always-on, with goals that shift as opportunities appear.", v:"DYN"},{l:"B", t:"Calm and focused, with clear goals that stay stable over time.", v:"PRE"}]},
+    { id:"Q40", title:"You're organising a weekend hangout with friends. Your approach is:",
+      axis:"ENV", options:[{l:"A", t:"Go-with-the-flow — tell everyone to show up and figure it out together.", v:"DYN"},{l:"B", t:"Plan the venue, the food, and main activities in advance so it runs smoothly.", v:"PRE"}]},
+  ];
+
+  // ---------- Build full question list ----------
+  // demographics(4) + pillar1(16) + pillar2(8) + pillar3(10) + pillar4(6) = 44
+  const ALL_QUESTIONS = [];
+  demographics.forEach(q => ALL_QUESTIONS.push({ ...q, group:"Profile · About You", kind: q.kind || "single" }));
+  pillar1.forEach(q => ALL_QUESTIONS.push({ ...q, group:"Pillar 1 · Curiosities", kind:"single" }));
+  pillar2.forEach(q => ALL_QUESTIONS.push({ ...q, group:"Pillar 2 · Operations", kind:"binary" }));
+  pillar3.forEach(q => ALL_QUESTIONS.push({ ...q, group:"Pillar 3 · Rewards", kind:"binary" }));
+  pillar4.forEach(q => ALL_QUESTIONS.push({ ...q, group:"Pillar 4 · Ecosystems", kind:"binary" }));
+
+  const TOTAL = ALL_QUESTIONS.length;
+
+  // ---------- Brand logo: prefer logo.svg/logo.png if present ----------
+  (function tryRasterLogo() {
+    const host = document.getElementById("brandLogo");
+    if (!host) return;
+    const candidates = ["logo.svg", "logo.png", "logo.webp", "logo.jpg"];
+    let i = 0;
+    const tryNext = () => {
+      if (i >= candidates.length) return;
+      const probe = new Image();
+      probe.onload = () => {
+        const img = document.createElement("img");
+        img.src = candidates[i];
+        img.alt = "tareeq";
+        img.className = "raster has-raster";
+        host.insertBefore(img, host.firstChild);
+      };
+      probe.onerror = () => { i += 1; tryNext(); };
+      probe.src = candidates[i];
+    };
+    tryNext();
+  })();
+
+  // ---------- State ----------
+  const state = {
+    idx: 0,
+    answers: {},     // q.id => selected option index
+    soundOn: (function () {
+      try { return localStorage.getItem("tareeq:sound") !== "off"; }
+      catch (e) { return true; }
+    })(),
+    audioAvailable: {}, // q.id => bool (cache HEAD probe results)
+    userGestured: false, // becomes true after first user interaction
+  };
+
+  /* ---------- Audio (TTS playback) ---------- */
+  const AUDIO_DIR = "audio/";
+  let audioEl = null;
+  function getAudioEl() {
+    if (!audioEl) audioEl = document.getElementById("ttsAudio");
+    return audioEl;
+  }
+  function persistSoundPref() {
+    try { localStorage.setItem("tareeq:sound", state.soundOn ? "on" : "off"); }
+    catch (e) {}
+  }
+  function setAudioBtnState(s) {
+    const btn = document.getElementById("audioBtn");
+    if (btn) btn.setAttribute("data-state", s);
+  }
+  function stopAudio() {
+    const a = getAudioEl();
+    if (!a) return;
+    try { a.pause(); a.currentTime = 0; } catch (e) {}
+    setAudioBtnState(state.soundOn ? "idle" : "muted");
+  }
+  function audioSrcFor(qid) { return AUDIO_DIR + qid + ".mp3"; }
+  async function playQuestionAudio(qid, { fromUserClick = false } = {}) {
+    const a = getAudioEl();
+    if (!a) return;
+
+    // If sound is off and this wasn't a manual tap on the replay button, do nothing.
+    if (!state.soundOn && !fromUserClick) {
+      setAudioBtnState("muted");
+      return;
+    }
+    // Without a prior user gesture, autoplay will be blocked. Skip silently.
+    if (!state.userGestured && !fromUserClick) return;
+
+    stopAudio();
+    a.src = audioSrcFor(qid);
+    setAudioBtnState("playing");
+    try {
+      await a.play();
+    } catch (err) {
+      // File missing, network error, or autoplay blocked.
+      setAudioBtnState("unavailable");
+      // Don't spam the console with expected 404s while baking — only log
+      // when it's clearly something else.
+      if (!String(err && err.name).match(/NotAllowedError|NotSupportedError/)) {
+        // console.debug("audio:", err);
+      }
+    }
+  }
+
+  // Plays Kai's narration tracks (kai_intro.mp3, kai_results.mp3) — does NOT
+  // require the assessment screen to be active. Used on landing + results.
+  async function playKaiTrack(name) {
+    const a = getAudioEl();
+    if (!a || !state.soundOn || !state.userGestured) return;
+    stopAudio();
+    a.src = AUDIO_DIR + name + ".mp3";
+    try { await a.play(); } catch (e) { /* missing file is fine */ }
+  }
+
+  // ---------- DOM refs ----------
+  const $ = id => document.getElementById(id);
+  const screens = {
+    landing:  $("screen-landing"),
+    question: $("screen-question"),
+    results:  $("screen-results"),
+  };
+  function showScreen(name) {
+    Object.values(screens).forEach(s => s.classList.remove("active"));
+    screens[name].classList.add("active");
+    window.scrollTo({ top:0, behavior: "instant" in window ? "instant" : "auto" });
+  }
+
+  // ---------- Render Question ----------
+  function renderQuestion() {
+    const q = ALL_QUESTIONS[state.idx];
+    $("qPillar").textContent = q.group;
+    $("qTitle").textContent = q.title;
+    $("topbarTitle").textContent = q.group.split(" · ")[1] ? "Take the Assessment" : "About You";
+    $("backBtn").style.visibility = state.idx === 0 ? "visible" : "hidden"; // landing back
+
+    const opts = $("qOpts");
+    opts.innerHTML = "";
+
+    if (q.kind === "select") {
+      // country dropdown
+      const sel = document.createElement("select");
+      sel.className = "input";
+      sel.innerHTML = `<option value="" disabled ${state.answers[q.id] ? "" : "selected"}>Select your country…</option>` +
+        '<optgroup label="Middle East &amp; North Africa">' +
+        COUNTRIES_ME.map(c => `<option value="${c}" ${state.answers[q.id]===c?"selected":""}>${c}</option>`).join("") +
+        '</optgroup>' +
+        '<optgroup label="Other">' +
+        COUNTRIES_REST.map(c => `<option value="${c}" ${state.answers[q.id]===c?"selected":""}>${c}</option>`).join("") +
+        '</optgroup>';
+      sel.addEventListener("change", e => {
+        state.answers[q.id] = e.target.value;
+        updateNextBtn();
+      });
+      opts.appendChild(sel);
+    } else {
+      q.options.forEach((opt, i) => {
+        const el = document.createElement("button");
+        el.type = "button";
+        el.className = "opt" + (q.kind === "binary" ? " binary" : "");
+        if (state.answers[q.id] === i) el.classList.add("selected");
+        el.innerHTML = (q.kind === "binary"
+          ? `<div class="body">${opt.t}</div>`
+          : `<div class="letter">${opt.l}</div><div class="body">${opt.t}</div>`
+        );
+        el.addEventListener("click", () => {
+          state.answers[q.id] = i;
+          renderQuestion();
+        });
+        opts.appendChild(el);
+      });
+    }
+
+    // progress
+    const filled = ((state.idx) / TOTAL) * 100;
+    $("progressFill").style.width = filled + "%";
+    $("progressNum").textContent = state.idx + 1;
+    $("progressTotal").textContent = TOTAL;
+    $("progressWrap").style.display = "flex";
+
+    updateNextBtn();
+
+    // Audio: try to play this question's narration.
+    setAudioBtnState(state.soundOn ? "idle" : "muted");
+    playQuestionAudio(q.id);
+
+    $("nextBtn").textContent = (state.idx === TOTAL - 1) ? "See My Compass" : "Next";
+    // Re-attach arrow
+    if (state.idx !== TOTAL - 1) {
+      $("nextBtn").innerHTML = `Next <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    } else {
+      $("nextBtn").innerHTML = `See My Compass <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    }
+  }
+
+  function updateNextBtn() {
+    const q = ALL_QUESTIONS[state.idx];
+    const answered = state.answers[q.id] !== undefined && state.answers[q.id] !== "";
+    $("nextBtn").disabled = !answered;
+  }
+
+  // ---------- Navigation ----------
+  function next() {
+    if (state.idx < TOTAL - 1) {
+      state.idx += 1;
+      renderQuestion();
+    } else {
+      computeAndShowResults();
+    }
+  }
+  function prev() {
+    if (state.idx > 0) {
+      state.idx -= 1;
+      renderQuestion();
+    } else {
+      // back to landing
+      showScreen("landing");
+      $("progressWrap").style.display = "none";
+      $("topbarTitle").textContent = "";
+    }
+  }
+
+  // ---------- Scoring ----------
+  function score() {
+    // Clusters
+    const cluster = { TECH:0, ENG:0, SCI:0, ART:0, BUS:0, LAW:0, PPL:0, ENV:0 };
+    pillar1.forEach(q => {
+      const i = state.answers[q.id];
+      if (i !== undefined) cluster[q.options[i].c] += 1;
+    });
+    const clusterRanked = Object.entries(cluster).sort((a,b) => b[1] - a[1]);
+
+    // Operations
+    let struct = 0, flex = 0, deep = 0, broad = 0;
+    pillar2.forEach(q => {
+      const i = state.answers[q.id];
+      if (i === undefined) return;
+      const v = q.options[i].v;
+      if (v === "STRUCT") struct++;
+      if (v === "FLEX") flex++;
+      if (v === "DEEP") deep++;
+      if (v === "BROAD") broad++;
+    });
+    const proc = struct >= flex ? "STRUCT" : "FLEX";
+    const scope = deep >= broad ? "DEEP" : "BROAD";
+    const archetype =
+      (proc === "STRUCT" && scope === "DEEP")  ? "Precisionist" :
+      (proc === "STRUCT" && scope === "BROAD") ? "Coordinator"  :
+      (proc === "FLEX"   && scope === "DEEP")  ? "Explorer"     :
+                                                  "Catalyst";
+    const archetypeDescs = {
+      "Precisionist":"Structured &amp; deep — you go all-in on a craft and master it with discipline.",
+      "Coordinator":"Structured &amp; broad — you orchestrate multiple workstreams and keep complexity calm.",
+      "Explorer":"Flexible &amp; deep — you wander into one domain at a time and obsess until you crack it.",
+      "Catalyst":"Flexible &amp; broad — you connect dots fast across many domains and create momentum.",
+    };
+
+    // Rewards
+    const driver = { REC:0, IMP:0, AUT:0, MAS:0, STA:0 };
+    pillar3.forEach(q => {
+      const i = state.answers[q.id];
+      if (i !== undefined) driver[q.options[i].v] += 1;
+    });
+    const driverRanked = Object.entries(driver).sort((a,b) => b[1] - a[1]);
+    const driverNames = { REC:"Recognition", IMP:"Impact", AUT:"Autonomy", MAS:"Mastery", STA:"Stability" };
+
+    // Ecosystems
+    let col = 0, ind = 0, dyn = 0, pre = 0;
+    pillar4.forEach(q => {
+      const i = state.answers[q.id];
+      if (i === undefined) return;
+      const v = q.options[i].v;
+      if (v === "COL") col++;
+      if (v === "IND") ind++;
+      if (v === "DYN") dyn++;
+      if (v === "PRE") pre++;
+    });
+    // axis position: 0% = left label, 100% = right label
+    const socialPos = 50 + ((ind - col) / 3) * 35; // -3..3 → 15..85
+    const envPos    = 50 + ((pre - dyn) / 3) * 35;
+
+    // Processing/Scope positions (Pillar 2 axes) — both have 4 Qs
+    const procPos  = 50 + ((flex - struct) / 4) * 30; // 20..80
+    const scopePos = 50 + ((broad - deep) / 4) * 30;
+
+    return {
+      cluster, clusterRanked,
+      archetype, archetypeDesc: archetypeDescs[archetype],
+      driver, driverRanked, driverNames,
+      socialPos, envPos, procPos, scopePos,
+    };
+  }
+
+  function computeAndShowResults() {
+    const r = score();
+    // Header
+    const topCluster = r.clusterRanked[0][0];
+    $("rArchetype").textContent = r.archetype;
+    $("rClusterName").textContent = CLUSTERS[topCluster].name;
+    $("rDriver1").textContent = r.driverNames[r.driverRanked[0][0]];
+    $("rDriver2").textContent = r.driverNames[r.driverRanked[1][0]];
+
+    // Top cluster card
+    $("rTopCluster").textContent = CLUSTERS[topCluster].name;
+    $("rTopClusterDesc").textContent = CLUSTERS[topCluster].desc;
+
+    // Cluster bars (top 4)
+    const maxCluster = Math.max(...Object.values(r.cluster), 1);
+    const bars = $("rClusterBars");
+    bars.innerHTML = "";
+    r.clusterRanked.slice(0, 5).forEach(([key, val], i) => {
+      const pct = Math.round((val / 16) * 100);
+      const row = document.createElement("div");
+      row.className = "bar";
+      row.innerHTML = `
+        <div class="name">${CLUSTERS[key].name}</div>
+        <div class="meter ${i === 0 ? "" : "muted"}"><div class="fill" style="width:0%"></div></div>
+        <div class="pct">${pct}%</div>
+      `;
+      bars.appendChild(row);
+      requestAnimationFrame(() => {
+        row.querySelector(".fill").style.width = pct + "%";
+      });
+    });
+
+    // Archetype
+    $("rArchetypeName").textContent = r.archetype;
+    $("rArchetypeDesc").innerHTML = r.archetypeDesc;
+    $("axProcDot").style.left = r.procPos + "%";
+    $("axScopeDot").style.left = r.scopePos + "%";
+
+    // Reward pills + bars
+    const pills = $("rDriverPills");
+    pills.innerHTML = "";
+    r.driverRanked.forEach(([k], i) => {
+      const el = document.createElement("span");
+      el.className = "pill" + (i < 2 ? " hot" : "");
+      el.textContent = (i === 0 ? "Primary · " : i === 1 ? "Secondary · " : "") + r.driverNames[k];
+      pills.appendChild(el);
+    });
+
+    const dBars = $("rDriverBars");
+    dBars.innerHTML = "";
+    r.driverRanked.forEach(([k, v], i) => {
+      const pct = Math.round((v / 4) * 100); // max 4 occurrences per driver (rough cap)
+      const capped = Math.min(pct, 100);
+      const row = document.createElement("div");
+      row.className = "bar";
+      row.innerHTML = `
+        <div class="name">${r.driverNames[k]}</div>
+        <div class="meter ${i < 2 ? "" : "muted"}"><div class="fill" style="width:0%"></div></div>
+        <div class="pct">${v}</div>
+      `;
+      dBars.appendChild(row);
+      requestAnimationFrame(() => {
+        row.querySelector(".fill").style.width = capped + "%";
+      });
+    });
+
+    // Ecosystem axes
+    $("axSocialDot").style.left = r.socialPos + "%";
+    $("axEnvDot").style.left = r.envPos + "%";
+
+    stopAudio();
+    kaiSet("hidden");
+    showScreen("results");
+    $("progressWrap").style.display = "none";
+    $("topbarTitle").textContent = "Your Compass";
+    // Optional Kai outro — graceful no-op if kai_results.mp3 doesn't exist.
+    setTimeout(() => playKaiTrack("kai_results"), 300);
+  }
+
+  // ---------- Kai stage helpers (no-op if Three.js failed to load) ----------
+  function kaiSet(mode) {
+    if (window.kai && typeof window.kai.setMode === "function") {
+      try { window.kai.setMode(mode); } catch (e) {}
+    }
+  }
+
+  // ---------- Events ----------
+  $("startBtn").addEventListener("click", () => {
+    state.userGestured = true;
+    kaiSet("corner");
+    showScreen("question");
+    state.idx = 0;
+    renderQuestion();
+  });
+  $("nextBtn").addEventListener("click", () => { state.userGestured = true; next(); });
+  $("prevBtn").addEventListener("click", () => { state.userGestured = true; prev(); });
+  $("backBtn").addEventListener("click", () => { state.userGestured = true; prev(); });
+  $("restartBtn").addEventListener("click", () => {
+    state.idx = 0;
+    state.answers = {};
+    stopAudio();
+    $("topbarTitle").textContent = "";
+    kaiSet("landing");
+    showScreen("landing");
+  });
+
+  /* Sound toggle in topbar */
+  function syncSoundIcons() {
+    const t = $("soundToggle");
+    t.setAttribute("data-sound", state.soundOn ? "on" : "off");
+    $("soundOnIcon").style.display  = state.soundOn ? "block" : "none";
+    $("soundOffIcon").style.display = state.soundOn ? "none"  : "block";
+  }
+  $("soundToggle").addEventListener("click", () => {
+    state.userGestured = true;
+    state.soundOn = !state.soundOn;
+    persistSoundPref();
+    syncSoundIcons();
+    if (state.soundOn) {
+      // Re-play current question if we're on the assessment screen.
+      if (screens.question.classList.contains("active")) {
+        const q = ALL_QUESTIONS[state.idx];
+        if (q) playQuestionAudio(q.id, { fromUserClick: true });
+      }
+    } else {
+      stopAudio();
+    }
+  });
+  syncSoundIcons();
+
+  /* Replay button on the question card */
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest && e.target.closest("#audioBtn");
+    if (!btn) return;
+    state.userGestured = true;
+    // Tapping the replay button while muted should momentarily play this one.
+    const q = ALL_QUESTIONS[state.idx];
+    if (q) playQuestionAudio(q.id, { fromUserClick: true });
+  });
+
+  /* Kai intro — auto-play once on first user gesture while on landing.
+     Tapping anywhere on the landing screen counts as a gesture. The Start
+     button still works the same; the intro just plays in parallel. */
+  (function wireKaiIntro() {
+    let played = false;
+    const tryPlay = () => {
+      if (played) return;
+      if (!screens.landing.classList.contains("active")) return;
+      played = true;
+      state.userGestured = true;
+      // Tiny delay so the audio context has a chance to resume.
+      setTimeout(() => playKaiTrack("kai_intro"), 50);
+    };
+    // First touch/click anywhere on the landing screen triggers the intro.
+    screens.landing.addEventListener("pointerdown", tryPlay, { once: false });
+    // Also let the user tap the stage to replay.
+    const stage = document.getElementById("kaiStage");
+    if (stage) stage.addEventListener("click", () => {
+      played = false; // allow replays
+      tryPlay();
+    });
+  })();
+
+  /* Audio element status events — flip the replay button back to idle when done */
+  (function bindAudioEvents() {
+    const a = getAudioEl();
+    if (!a) return;
+    a.addEventListener("ended", () => setAudioBtnState(state.soundOn ? "idle" : "muted"));
+    a.addEventListener("error", () => setAudioBtnState("unavailable"));
+    a.addEventListener("pause", () => {
+      // Only switch out of "playing" if the playback actually stopped, not on a transient pause.
+      if (a.ended || a.currentTime === 0) setAudioBtnState(state.soundOn ? "idle" : "muted");
+    });
+  })();
+
+  // keyboard a11y
+  document.addEventListener("keydown", (e) => {
+    if (screens.question.classList.contains("active")) {
+      const q = ALL_QUESTIONS[state.idx];
+      if (q.kind !== "select" && /^[1-9]$/.test(e.key)) {
+        const i = parseInt(e.key, 10) - 1;
+        if (i < (q.options?.length || 0)) {
+          state.answers[q.id] = i;
+          renderQuestion();
+        }
+      }
+      if (e.key === "Enter") {
+        if (!$("nextBtn").disabled) next();
+      }
+      if (e.key === "ArrowLeft") prev();
+    }
+  });
+  </script>
+
+  <!-- ============================================================
+       Kai — 3D animated character with TTS-driven lip sync.
+       Architecture:
+         - One Three.js scene, one renderer, one canvas.
+         - Loads a Ready Player Me GLB. If load fails, shows a
+           procedural on-brand placeholder so the rest of the app
+           still has a "Kai".
+         - Audio amplitude (Web Audio AnalyserNode on the existing
+           #ttsAudio element) drives the mouth-open morph target.
+         - Stage modes (landing/corner/hidden) are CSS-driven; this
+           module only resizes the renderer to match.
+       Configure your avatar:
+         - Set window.TAREEQ_AVATAR_URL before this script runs, OR
+         - Append ?avatar=<glb-url> to the page URL.
+       ============================================================ -->
+  <script type="module">
+  import * as THREE from "three";
+  import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+  /* ---------- Config ---------- */
+  // Default: a Ready Player Me sample avatar. Swap by setting
+  // window.TAREEQ_AVATAR_URL above this script, or via ?avatar= query.
+  const DEFAULT_AVATAR = "https://models.readyplayer.me/64bfa15f0e72c63d7c3934a6.glb";
+  const params = new URLSearchParams(location.search);
+  const AVATAR_URL = params.get("avatar")
+                  || window.TAREEQ_AVATAR_URL
+                  || DEFAULT_AVATAR;
+
+  /* ---------- DOM refs ---------- */
+  const stage     = document.getElementById("kaiStage");
+  const canvas    = document.getElementById("kaiCanvas");
+  const status    = document.getElementById("kaiStatus");
+  const statusTxt = document.getElementById("kaiStatusText");
+  const audioEl   = document.getElementById("ttsAudio");
+
+  if (!stage || !canvas || !audioEl) {
+    console.warn("Kai: required DOM nodes missing — skipping init.");
+  } else {
+    initKai().catch(err => {
+      console.warn("Kai init failed:", err);
+      setStatus("Voice-only mode", "error");
+    });
+  }
+
+  /* ---------- Helpers ---------- */
+  function setStatus(text, state) {
+    if (statusTxt) statusTxt.textContent = text;
+    if (status)    status.setAttribute("data-state", state || "loading");
+  }
+  function setMode(mode) {
+    stage.setAttribute("data-mode", mode);
+    // Resize after CSS settles.
+    requestAnimationFrame(resizeRendererToStage);
+  }
+
+  /* ---------- Scene state ---------- */
+  let renderer, scene, camera, clock;
+  let avatar = null;          // root group for whatever character we end up with
+  let isProcedural = false;   // true if we fell back to the placeholder
+  let mouthMorphs = [];       // array of {mesh, index} pairs to drive
+  let blinkMorphs = [];       // same shape, for blinks
+  let currentMouth = 0;       // smoothed amplitude, 0..1
+  let nextBlinkAt  = 0;
+  let blinkProgress = -1;     // -1 = not blinking, 0..1 = blinking
+
+  /* ---------- Web Audio analyser (one-time setup, after gesture) ---------- */
+  let audioCtx, analyser, audioSource, ampBuf;
+  function ensureAudioGraph() {
+    if (audioCtx) return;
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return;
+    audioCtx = new Ctx();
+    audioSource = audioCtx.createMediaElementSource(audioEl);
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 128;
+    analyser.smoothingTimeConstant = 0.6;
+    audioSource.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    ampBuf = new Uint8Array(analyser.frequencyBinCount);
+  }
+  function readAmplitude() {
+    if (!analyser) return 0;
+    analyser.getByteFrequencyData(ampBuf);
+    let sum = 0;
+    for (let i = 0; i < ampBuf.length; i++) sum += ampBuf[i];
+    return Math.min(1, (sum / ampBuf.length / 255) * 1.7); // gain
+  }
+  // First user gesture in the page resumes the audio context.
+  function primeAudioOnGesture() {
+    ensureAudioGraph();
+    if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
+  }
+  document.addEventListener("click", primeAudioOnGesture, { once: false });
+  document.addEventListener("touchstart", primeAudioOnGesture, { once: false });
+
+  // Speaking flag (used to drive the corner pulse ring + lip open clamp).
+  audioEl.addEventListener("play",  () => stage.setAttribute("data-speaking", "true"));
+  audioEl.addEventListener("pause", () => stage.setAttribute("data-speaking", "false"));
+  audioEl.addEventListener("ended", () => stage.setAttribute("data-speaking", "false"));
+
+  /* ---------- Three.js init ---------- */
+  async function initKai() {
+    setStatus("Waking up Kai…", "loading");
+    setMode("landing"); // start visible on the landing screen
+
+    renderer = new THREE.WebGLRenderer({
+      canvas, alpha: true, antialias: true,
+      powerPreference: "high-performance",
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(28, 1, 0.1, 50);
+    camera.position.set(0, 1.55, 1.2);
+    camera.lookAt(0, 1.55, 0);
+    clock = new THREE.Clock();
+
+    // Lighting tuned for a portrait headshot framing.
+    const ambient = new THREE.AmbientLight(0xa7b2ff, 0.55);
+    scene.add(ambient);
+    const key = new THREE.DirectionalLight(0xffd5a8, 1.4);
+    key.position.set(1.5, 2.5, 2.0);
+    scene.add(key);
+    const rim = new THREE.DirectionalLight(0xff60c8, 1.1);
+    rim.position.set(-2.0, 1.5, -1.5);
+    scene.add(rim);
+    const fill = new THREE.PointLight(0x6a4dff, 0.6, 8);
+    fill.position.set(-1, 1.3, 1.5);
+    scene.add(fill);
+
+    // Try to load Ready Player Me avatar; on failure, build a procedural placeholder.
+    try {
+      await loadAvatar(AVATAR_URL);
+    } catch (err) {
+      console.warn("RPM avatar failed to load — using procedural placeholder:", err);
+      buildProceduralAvatar();
+    }
+
+    nextBlinkAt = performance.now() + 1500 + Math.random() * 1500;
+    setStatus("ready", "ready");
+
+    // Notify the rest of the app that Kai is ready.
+    window.dispatchEvent(new CustomEvent("kai:ready", {
+      detail: { procedural: isProcedural }
+    }));
+
+    resizeRendererToStage();
+    window.addEventListener("resize", resizeRendererToStage);
+    new ResizeObserver(resizeRendererToStage).observe(stage);
+    // Pause render when tab is hidden — saves battery on mobile.
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) renderer.setAnimationLoop(animate);
+      else renderer.setAnimationLoop(null);
+    });
+
+    renderer.setAnimationLoop(animate);
+  }
+
+  /* ---------- Avatar loading ---------- */
+  function loadAvatar(url) {
+    return new Promise((resolve, reject) => {
+      const loader = new GLTFLoader();
+      loader.setCrossOrigin("anonymous");
+      loader.load(
+        url,
+        (gltf) => {
+          avatar = gltf.scene;
+          // RPM avatars: head sits ~1.6 units up. We frame on the head.
+          avatar.position.set(0, 0, 0);
+          avatar.traverse((o) => {
+            if (o.isMesh) {
+              o.frustumCulled = false; // avoid pop-out at corner sizes
+              o.castShadow = false;
+              o.receiveShadow = false;
+              if (o.morphTargetDictionary) collectMorphTargets(o);
+            }
+          });
+          // Camera frames upper-chest + head.
+          camera.position.set(0, 1.58, 0.95);
+          camera.lookAt(0, 1.58, 0);
+          scene.add(avatar);
+          resolve();
+        },
+        undefined,
+        (err) => reject(err)
+      );
+      // Hard timeout — corporate networks sometimes hang.
+      setTimeout(() => reject(new Error("avatar load timeout")), 12000);
+    });
+  }
+
+  function collectMorphTargets(mesh) {
+    const dict = mesh.morphTargetDictionary;
+    const inf  = mesh.morphTargetInfluences;
+    if (!dict || !inf) return;
+    // Mouth-open candidates (RPM uses Oculus/Apple ARKit naming).
+    const mouthKeys = ["mouthOpen", "jawOpen", "viseme_aa", "viseme_O", "viseme_E"];
+    for (const k of mouthKeys) {
+      if (k in dict) mouthMorphs.push({ mesh, index: dict[k] });
+    }
+    // Eye-blink keys (left + right).
+    const blinkKeys = ["eyeBlinkLeft", "eyeBlinkRight", "blink_l", "blink_r", "eyesClosed"];
+    for (const k of blinkKeys) {
+      if (k in dict) blinkMorphs.push({ mesh, index: dict[k] });
+    }
+  }
+
+  /* ---------- Procedural placeholder (used if RPM fails) ---------- */
+  function buildProceduralAvatar() {
+    isProcedural = true;
+    avatar = new THREE.Group();
+
+    // Head: glowing rounded sphere with brand colors.
+    const head = new THREE.Mesh(
+      new THREE.SphereGeometry(0.30, 64, 64),
+      new THREE.MeshStandardMaterial({
+        color: 0xff6b3d, roughness: 0.35, metalness: 0.15,
+        emissive: 0xff3d83, emissiveIntensity: 0.22,
+      })
+    );
+    head.position.set(0, 1.62, 0);
+    avatar.add(head);
+
+    // Two eyes
+    const eyeMat = new THREE.MeshStandardMaterial({
+      color: 0x140828, roughness: 0.2, metalness: 0.6,
+      emissive: 0x4ee0ff, emissiveIntensity: 0.6,
+    });
+    const eyeGeo = new THREE.SphereGeometry(0.035, 24, 24);
+    const eyeL = new THREE.Mesh(eyeGeo, eyeMat); eyeL.position.set(-0.10, 1.66, 0.27);
+    const eyeR = new THREE.Mesh(eyeGeo, eyeMat); eyeR.position.set( 0.10, 1.66, 0.27);
+    avatar.add(eyeL, eyeR);
+
+    // Mouth — a thin emissive ribbon we'll scale on Y to "talk".
+    const mouth = new THREE.Mesh(
+      new THREE.BoxGeometry(0.16, 0.022, 0.04),
+      new THREE.MeshStandardMaterial({
+        color: 0xffffff, emissive: 0xffc24d, emissiveIntensity: 0.7,
+      })
+    );
+    mouth.position.set(0, 1.55, 0.27);
+    mouth.name = "proceduralMouth";
+    avatar.add(mouth);
+
+    // Body — soft glowing shoulders.
+    const body = new THREE.Mesh(
+      new THREE.SphereGeometry(0.45, 48, 48, 0, Math.PI * 2, Math.PI * 0.45, Math.PI * 0.5),
+      new THREE.MeshStandardMaterial({
+        color: 0x2a1456, roughness: 0.4, metalness: 0.2,
+        emissive: 0x4b1a8a, emissiveIntensity: 0.45,
+      })
+    );
+    body.position.set(0, 1.18, 0);
+    avatar.add(body);
+
+    // Halo glow behind the head.
+    const halo = new THREE.Mesh(
+      new THREE.RingGeometry(0.35, 0.5, 64),
+      new THREE.MeshBasicMaterial({
+        color: 0xff8a3d, transparent: true, opacity: 0.18, side: THREE.DoubleSide,
+      })
+    );
+    halo.position.set(0, 1.62, -0.4);
+    avatar.add(halo);
+
+    scene.add(avatar);
+
+    // Frame the procedural head.
+    camera.position.set(0, 1.62, 1.05);
+    camera.lookAt(0, 1.6, 0);
+  }
+
+  /* ---------- Animation loop ---------- */
+  function animate() {
+    if (!avatar) return;
+    const t = clock.getElapsedTime();
+
+    // Gentle breathing/floating
+    avatar.position.y = Math.sin(t * 1.4) * 0.012;
+    avatar.rotation.y = Math.sin(t * 0.45) * 0.07;
+    avatar.rotation.x = Math.sin(t * 0.35) * 0.02;
+
+    // Lip sync — read amplitude, smooth, drive morphs (or procedural mouth).
+    const amp = readAmplitude();
+    currentMouth += (amp - currentMouth) * 0.45;
+    const mouthVal = Math.min(1, currentMouth * 1.2);
+
+    if (isProcedural) {
+      const mouth = avatar.getObjectByName("proceduralMouth");
+      if (mouth) {
+        mouth.scale.y = 1 + mouthVal * 6;
+        mouth.scale.x = 1 - mouthVal * 0.15;
+        mouth.material.emissiveIntensity = 0.7 + mouthVal * 1.5;
+      }
+    } else {
+      for (const { mesh, index } of mouthMorphs) {
+        mesh.morphTargetInfluences[index] = mouthVal;
+      }
+    }
+
+    // Blinks — periodic, fast.
+    const now = performance.now();
+    if (blinkProgress < 0 && now >= nextBlinkAt) {
+      blinkProgress = 0;
+    }
+    if (blinkProgress >= 0) {
+      blinkProgress += clock.getDelta() * 9; // ~110ms full blink
+      const w = blinkProgress < 0.5
+        ? blinkProgress * 2
+        : Math.max(0, 1 - (blinkProgress - 0.5) * 2);
+      for (const { mesh, index } of blinkMorphs) {
+        mesh.morphTargetInfluences[index] = w;
+      }
+      if (blinkProgress >= 1) {
+        blinkProgress = -1;
+        nextBlinkAt = now + 2200 + Math.random() * 2400;
+      }
+    } else {
+      // ensure delta keeps advancing for accurate amp smoothing
+      clock.getDelta();
+    }
+
+    renderer.render(scene, camera);
+  }
+
+  /* ---------- Resizing ---------- */
+  function resizeRendererToStage() {
+    if (!renderer) return;
+    const r = stage.getBoundingClientRect();
+    const w = Math.max(64, Math.round(r.width));
+    const h = Math.max(64, Math.round(r.height));
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    // Tighter framing in corner mode — pull the camera in.
+    const mode = stage.getAttribute("data-mode");
+    if (mode === "corner") {
+      camera.fov = 22;
+      camera.position.z = isProcedural ? 0.85 : 0.78;
+    } else {
+      camera.fov = 28;
+      camera.position.z = isProcedural ? 1.05 : 0.95;
+    }
+    camera.updateProjectionMatrix();
+  }
+
+  /* ---------- Public API for the rest of the app ---------- */
+  window.kai = {
+    setMode,
+    show: setMode,                 // alias
+    isReady: () => !!avatar,
+    isProcedural: () => isProcedural,
+  };
+  </script>
+</body>
+</html>
