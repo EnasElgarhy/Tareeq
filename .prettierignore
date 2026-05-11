@@ -1,0 +1,13 @@
+.next
+.env.example
+.gitignore
+.prettierignore
+*.sql
+coverage
+node_modules
+AGENTS.md
+ARCHITECTURE.md
+pnpm-lock.yaml
+pnpm-workspace.yaml
+prototype
+public/audio

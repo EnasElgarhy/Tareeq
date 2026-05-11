@@ -8,16 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
-
-  <!-- Three.js for the 3D Kai avatar -->
-  <script type="importmap">
-  {
-    "imports": {
-      "three":          "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
-      "three/addons/":  "https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"
-    }
-  }
-  </script>
   <style>
     :root {
       --bg-0: #14082b;
@@ -117,9 +107,50 @@
     .iconbtn:active { transform: scale(0.96); }
 
     .topbar-title {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       font-weight: 600; font-size: 16px; letter-spacing: -0.01em;
       color: var(--text-100);
     }
+    .topbar-wordmark {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 1px;
+      font-size: 22px;
+      line-height: 1;
+      font-weight: 500;
+      letter-spacing: 0;
+    }
+    .topbar-wordmark .q {
+      position: relative;
+      color: var(--logo-cyan);
+      text-shadow: 0 0 12px rgba(78,224,255,0.25);
+    }
+    .topbar-wordmark .q::after {
+      content: "";
+      position: absolute;
+      right: -6px;
+      top: -3px;
+      width: 6px;
+      height: 6px;
+      border: 1.4px solid var(--logo-cyan);
+      border-radius: 50%;
+    }
+    .mode-toggle {
+      min-width: 54px;
+      width: auto;
+      padding: 0 9px;
+      gap: 5px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .mode-toggle .mode-read { display: none; }
+    .mode-toggle[data-mode="read"] .mode-listen { display: none; }
+    .mode-toggle[data-mode="read"] .mode-read { display: inline; }
+    .mode-toggle[data-mode="read"] { color: var(--text-80); }
 
     /* Progress */
     .progress-wrap {
@@ -148,6 +179,24 @@
       letter-spacing: 0.02em;
     }
     .progress-count b { color: var(--accent-orange); font-weight: 700; }
+    .progress-wrap[data-lesson="true"] {
+      margin: 16px 0 8px;
+    }
+    .progress-wrap[data-lesson="true"] .progress-count {
+      display: none;
+    }
+    .progress-eyebrow {
+      display: none;
+      margin-bottom: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-40);
+    }
+    .progress-eyebrow.active {
+      display: block;
+    }
 
     /* Screens */
     .screen { display: none; flex: 1; flex-direction: column; animation: fadeUp .4s ease both; }
@@ -312,102 +361,165 @@
       margin-top: 14px;
     }
 
-    /* Question card */
+    /* Lesson question flow */
+    #screen-question,
+    #screen-tip {
+      flex: 0 0 auto;
+      gap: 14px;
+      padding-bottom: 2px;
+    }
     .q-card {
-      background: var(--glass-strong);
-      border: 1px solid var(--glass-border);
-      border-radius: 22px;
-      padding: 22px 20px 26px;
-      backdrop-filter: blur(10px);
-      flex: 1;
-      display: flex; flex-direction: column;
-    }
-    .q-head {
-      display: flex; align-items: center; justify-content: space-between;
+      position: relative;
+      background: transparent;
+      border: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
       gap: 12px;
-      margin-bottom: 14px;
     }
-    .q-tag {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-size: 11px; font-weight: 600;
-      color: var(--text-60);
-      text-transform: uppercase; letter-spacing: 0.14em;
+    .speech-bubble {
+      position: relative;
+      margin-top: -8px;
+      padding: 18px 18px 17px;
+      border-radius: 24px 24px 24px 10px;
+      background: rgba(255,255,255,0.94);
+      color: #24113d;
+      box-shadow:
+        0 16px 42px rgba(0,0,0,0.23),
+        inset 0 1px 0 rgba(255,255,255,0.78);
+      transform-origin: 30% 0%;
     }
-    .q-tag .pillar-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: var(--accent-orange);
-      box-shadow: 0 0 10px var(--accent-orange);
+    .speech-bubble::before {
+      content: "";
+      position: absolute;
+      left: 30px;
+      top: -14px;
+      width: 30px;
+      height: 30px;
+      background: rgba(255,255,255,0.94);
+      clip-path: polygon(0 100%, 100% 100%, 22% 0);
+      filter: drop-shadow(0 -4px 5px rgba(0,0,0,0.06));
     }
     .q-title {
       font-family: 'Fraunces', serif;
+      font-style: italic;
       font-weight: 500;
-      font-size: 22px;
-      line-height: 1.25;
-      letter-spacing: -0.01em;
-      margin: 0 0 22px;
-      color: var(--text-100);
+      font-size: clamp(22px, 6.2vw, 26px);
+      line-height: 1.14;
+      letter-spacing: 0;
+      margin: 0;
+      color: #24113d;
     }
-
-    /* Audio replay button (inside the question card) */
+    .audio-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 54px;
+      margin-top: -2px;
+    }
     .audio-btn {
+      position: relative;
       flex: none;
-      width: 36px; height: 36px;
+      width: 54px;
+      height: 54px;
       border-radius: 50%;
-      display: inline-grid; place-items: center;
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      color: var(--text-80);
-      cursor: pointer;
-      transition: transform .15s ease, background .15s ease, color .15s ease, opacity .15s ease;
-    }
-    .audio-btn:hover { background: var(--glass-strong); color: #fff; }
-    .audio-btn:active { transform: scale(0.94); }
-    .audio-btn[data-state="playing"] {
+      display: inline-grid;
+      place-items: center;
       background: var(--grad-warm);
+      border: 0;
       color: #fff;
-      border-color: transparent;
-      box-shadow: 0 4px 18px rgba(255,107,61,0.45);
+      cursor: pointer;
+      box-shadow:
+        0 12px 28px rgba(255,61,131,0.36),
+        inset 0 1px 0 rgba(255,255,255,0.28);
+      transition: transform .15s ease, opacity .15s ease, filter .15s ease;
     }
-    .audio-btn[data-state="playing"] .ring {
-      animation: ringPulse 1.4s ease-in-out infinite;
-      transform-origin: center;
+    .audio-btn:hover { filter: brightness(1.05); }
+    .audio-btn:active { transform: scale(0.94); }
+    .audio-btn[data-state="muted"] { opacity: 0.72; }
+    .audio-btn[data-state="unavailable"] {
+      opacity: 0.42;
+      filter: grayscale(0.25);
     }
-    @keyframes ringPulse {
-      0%,100% { opacity: .35; transform: scale(0.96); }
-      50%     { opacity: 1;   transform: scale(1.05); }
+    .audio-btn .wave-symbol { display: none; }
+    .audio-btn[data-state="playing"] .play-symbol { display: none; }
+    .audio-btn[data-state="playing"] .wave-symbol {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
     }
-    .audio-btn[data-state="muted"] { opacity: 0.55; }
-    .audio-btn[data-state="unavailable"] { opacity: 0.35; pointer-events: none; }
-
-    /* Sound toggle in topbar (same visual size as iconbtn) */
-    .iconbtn[data-sound="on"] { color: #fff; }
-    .iconbtn[data-sound="off"] { color: var(--text-40); }
+    .audio-btn[data-state="playing"] .wave-symbol span {
+      width: 4px;
+      height: 16px;
+      border-radius: 999px;
+      background: currentColor;
+      animation: audioPulse 0.7s ease-in-out infinite;
+    }
+    .audio-btn[data-state="playing"] .wave-symbol span:nth-child(2) {
+      animation-delay: .12s;
+    }
+    .audio-btn[data-state="playing"] .wave-symbol span:nth-child(3) {
+      animation-delay: .24s;
+    }
+    @keyframes audioPulse {
+      0%,100% { transform: scaleY(0.55); opacity: 0.65; }
+      50%     { transform: scaleY(1.15); opacity: 1; }
+    }
+    .slow-btn {
+      min-width: 58px;
+      height: 36px;
+      border-radius: 999px;
+      border: 1px solid var(--glass-border);
+      background: var(--glass);
+      color: var(--text-80);
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: transform .15s ease, background .15s ease, opacity .15s ease;
+    }
+    .slow-btn:hover { background: var(--glass-strong); color: #fff; }
+    .slow-btn:active { transform: scale(0.96); }
+    .slow-btn[hidden] { display: none; }
+    .audio-note {
+      min-height: 18px;
+      margin: -3px 0 0;
+      text-align: center;
+      color: var(--text-40);
+      font-size: 12px;
+      line-height: 1.4;
+    }
 
     /* Options */
-    .opts { display: flex; flex-direction: column; gap: 10px; }
+    .opts { display: flex; flex-direction: column; gap: 9px; }
     .opt {
-      display: flex; align-items: stretch; gap: 12px;
-      padding: 14px;
+      min-height: 60px;
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 13px;
       background: var(--glass);
       border: 1px solid var(--glass-border);
-      border-radius: 16px;
+      border-radius: 999px;
       cursor: pointer;
-      transition: all .18s ease;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
       position: relative;
       overflow: hidden;
+      text-align: left;
     }
     .opt:hover {
       background: var(--glass-strong);
-      border-color: rgba(255,255,255,0.22);
+      border-color: rgba(255,255,255,0.24);
+      transform: translateY(-1px);
     }
     .opt .letter {
       flex: none;
-      width: 34px; height: 34px;
+      width: 38px; height: 38px;
       border-radius: 50%;
       display: grid; place-items: center;
       background: rgba(255,255,255,0.10);
       border: 1px solid var(--glass-border);
-      font-weight: 600;
+      font-weight: 800;
       font-size: 14px;
       color: var(--text-80);
       transition: all .2s ease;
@@ -416,67 +528,117 @@
       flex: 1;
       align-self: center;
       font-size: 15px;
-      line-height: 1.4;
+      line-height: 1.32;
       color: var(--text-80);
     }
     .opt.selected {
       background: var(--grad-warm);
       border-color: transparent;
       box-shadow:
-        0 10px 30px rgba(255,61,131,0.4),
-        0 2px 14px rgba(255,138,61,0.35),
+        0 10px 28px rgba(255,61,131,0.36),
+        0 2px 14px rgba(255,138,61,0.28),
         inset 0 1px 0 rgba(255,255,255,0.25);
     }
-    .opt.selected .body { color: #fff; font-weight: 500; }
+    .opt.selected .body { color: #fff; font-weight: 600; }
     .opt.selected .letter {
       background: rgba(255,255,255,0.22);
       color: #fff;
       border-color: rgba(255,255,255,0.4);
     }
-
-    /* Binary-style options (Pillars 2 & 4) — slightly different */
-    .opt.binary {
-      padding: 18px 16px;
-    }
-    .opt.binary .letter { display: none; }
-    .opt.binary .body { font-size: 15.5px; }
+    .opt.binary .letter { display: grid; }
 
     /* Footer buttons row */
     .footer {
+      position: sticky;
+      bottom: calc(env(safe-area-inset-bottom) + 0px);
       display: flex; gap: 12px;
-      margin-top: 22px;
+      margin-top: 2px;
       align-items: center;
+      opacity: 0;
+      transform: translateY(18px);
+      pointer-events: none;
+      transition: opacity .25s ease, transform .25s cubic-bezier(.22,.61,.36,1);
+    }
+    .footer.ready {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
     }
     .footer .cta { flex: 1; }
-    .footer .iconbtn { width: 50px; height: 50px; }
+    .footer .iconbtn { width: 50px; height: 50px; border-radius: 50%; }
 
     /* Select (for country) */
-    .field {
-      display: flex; flex-direction: column; gap: 8px;
-      margin-bottom: 14px;
-    }
-    .field label {
-      font-size: 12px; font-weight: 600;
-      color: var(--text-60);
-      text-transform: uppercase; letter-spacing: 0.1em;
-    }
     select.input {
       width: 100%;
-      padding: 14px 16px;
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 14px;
-      color: var(--text-100);
+      min-height: 60px;
+      padding: 14px 18px;
+      background-color: rgba(255,255,255,0.94);
+      border: 1px solid rgba(255,255,255,0.45);
+      border-radius: 999px;
+      color: #24113d;
       font-family: inherit;
-      font-size: 15px;
+      font-size: 16px;
+      font-weight: 700;
       appearance: none;
       background-image:
-        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='white' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='%2324113d' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
       background-repeat: no-repeat;
-      background-position: right 16px center;
+      background-position: right 18px center;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.16);
     }
     select.input:focus { outline: none; border-color: var(--accent-orange); }
-    select.input option { background: #2a1456; color: #fff; }
+    select.input option { background: #fff; color: #24113d; }
+
+    /* Tip interstitials */
+    .tip-card {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      padding: 22px 20px 24px;
+      border-radius: 26px;
+      border: 1px solid var(--glass-border);
+      background: var(--glass-strong);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 20px 55px rgba(0,0,0,0.22);
+    }
+    .tip-visual {
+      min-height: 168px;
+      border-radius: 22px;
+      border: 1px solid var(--glass-border);
+      background:
+        radial-gradient(50% 70% at 50% 35%, rgba(255,138,61,0.22), transparent 68%),
+        radial-gradient(60% 55% at 50% 100%, rgba(255,61,131,0.18), transparent 70%),
+        rgba(255,255,255,0.04);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+    .tip-visual svg {
+      width: min(78%, 240px);
+      height: auto;
+      filter: drop-shadow(0 18px 28px rgba(0,0,0,0.26));
+    }
+    .tip-eyebrow {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-40);
+    }
+    .tip-title {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-weight: 500;
+      font-size: 29px;
+      line-height: 1.08;
+      margin: 0;
+    }
+    .tip-copy {
+      margin: -8px 0 0;
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--text-80);
+    }
 
     /* Results */
     .result-hero {
@@ -608,8 +770,8 @@
     .spacer { flex: 1; }
 
     /* ------------------------------------------------------------------
-       Kai 3D stage — full hero on landing, small floating avatar on
-       question screens, hidden on results.
+       Nour character stage — hero on landing, smaller lesson host on
+       question screens, compact corner mode, hidden on results.
        ------------------------------------------------------------------ */
     .kai-stage {
       position: relative;
@@ -617,22 +779,73 @@
       pointer-events: none;            /* clicks pass through to content */
       transition: all 0.55s cubic-bezier(.22,.61,.36,1);
     }
-    .kai-stage canvas {
+    .kai-stage #nour {
       display: block;
       width: 100%;
       height: 100%;
       pointer-events: auto;
+      transform-origin: 50% 72%;
+      overflow: visible;
+    }
+    .kai-stage #nour [stroke] {
+      vector-effect: non-scaling-stroke;
     }
 
     /* Landing mode — large, centered above the hero copy */
     .kai-stage[data-mode="landing"] {
-      height: clamp(220px, 42vh, 320px);
+      height: clamp(190px, 32dvh, 260px);
       margin: 4px 0 14px;
       filter: drop-shadow(0 30px 50px rgba(255,61,131,0.30))
               drop-shadow(0 10px 25px rgba(120,60,255,0.28));
     }
 
-    /* Corner mode — tiny floating avatar pinned to top-right of viewport */
+    /* Lesson mode — present, but no longer crowding the mobile question. */
+    .kai-stage[data-mode="lesson"] {
+      height: clamp(145px, 24dvh, 210px);
+      margin: 0 0 4px;
+      border-radius: 24px;
+      overflow: hidden;
+      background:
+        radial-gradient(42% 50% at 50% 42%, rgba(255,138,61,0.22), transparent 70%),
+        radial-gradient(56% 62% at 50% 72%, rgba(255,61,131,0.18), transparent 72%),
+        radial-gradient(80% 80% at 50% 100%, rgba(75,26,138,0.20), transparent 74%);
+      filter: drop-shadow(0 18px 28px rgba(255,61,131,0.18));
+    }
+    .kai-stage[data-mode="lesson"]::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 8px;
+      width: min(58%, 190px);
+      height: 28px;
+      border-radius: 50%;
+      transform: translateX(-50%);
+      background: radial-gradient(closest-side, rgba(0,0,0,0.34), transparent);
+      opacity: 0.34;
+      pointer-events: none;
+    }
+    .kai-stage[data-mode="lesson"][data-speaking="true"] {
+      filter:
+        drop-shadow(0 18px 30px rgba(255,61,131,0.24))
+        drop-shadow(0 0 30px rgba(255,138,61,0.18));
+    }
+    .kai-stage[data-pose="nod"] #nour {
+      animation: nourNod 0.34s ease-out both;
+    }
+    .kai-stage[data-pose="tilt"] #nour {
+      animation: nourTilt 0.5s ease-out both;
+    }
+    @keyframes nourNod {
+      0%   { transform: translateY(0); }
+      45%  { transform: translateY(5px) scale(1.01); }
+      100% { transform: translateY(0); }
+    }
+    @keyframes nourTilt {
+      0%,100% { transform: rotateZ(0); }
+      45%     { transform: rotateZ(-2.8deg); }
+    }
+
+    /* Corner mode remains for landing/legacy consistency. */
     .kai-stage[data-mode="corner"] {
       position: fixed;
       top: calc(env(safe-area-inset-top) + 14px);
@@ -675,31 +888,6 @@
       display: none;
     }
 
-    /* Loading + error veil over the canvas */
-    .kai-status {
-      position: absolute; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      flex-direction: column; gap: 8px;
-      font-size: 12px; color: var(--text-60);
-      letter-spacing: 0.08em; text-transform: uppercase;
-      background: radial-gradient(60% 60% at 50% 50%, rgba(255,255,255,0.04), transparent);
-      pointer-events: none;
-      transition: opacity .35s ease;
-    }
-    .kai-status[data-state="ready"] { opacity: 0; }
-    .kai-status .ring-spinner {
-      width: 22px; height: 22px;
-      border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.18);
-      border-top-color: var(--accent-orange);
-      animation: kaiSpin 0.9s linear infinite;
-    }
-    @keyframes kaiSpin { to { transform: rotate(360deg); } }
-    .kai-stage[data-mode="corner"] .kai-status { font-size: 0; }
-    .kai-stage[data-mode="corner"] .kai-status .ring-spinner {
-      width: 14px; height: 14px;
-    }
-
     /* Larger screens: keep mobile feel but elevate */
     @media (min-width: 600px) {
       .app {
@@ -727,19 +915,12 @@
       <button class="iconbtn" id="backBtn" aria-label="Back" style="visibility:hidden;">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <div class="topbar-title" id="topbarTitle"></div>
-      <button class="iconbtn" id="soundToggle" data-sound="on" aria-label="Toggle voice">
-        <!-- Speaker on -->
-        <svg id="soundOnIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M11 5L6 9H3v6h3l5 4V5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-          <path d="M15.5 8.5a4.5 4.5 0 010 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          <path d="M18.5 5.5a8.5 8.5 0 010 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-        </svg>
-        <!-- Speaker off -->
-        <svg id="soundOffIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="display:none;">
-          <path d="M11 5L6 9H3v6h3l5 4V5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-          <path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-        </svg>
+      <div class="topbar-title" id="topbarTitle" aria-label="tareeq">
+        <span class="topbar-wordmark">taree<span class="q">q</span></span>
+      </div>
+      <button class="iconbtn mode-toggle" id="readModeToggle" data-mode="listen" aria-label="Switch to read mode">
+        <span class="mode-listen">Speak</span>
+        <span class="mode-read">Aa</span>
       </button>
     </div>
 
@@ -748,15 +929,74 @@
       <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
       <div class="progress-count"><b id="progressNum">1</b> / <span id="progressTotal">44</span></div>
     </div>
+    <div class="progress-eyebrow" id="progressEyebrow"></div>
 
-    <!-- 3D Kai stage. Lives outside the screens so the same canvas can
-         move between landing (large) and corner (small) without re-init. -->
+    <!-- Nour stage. Lives outside the screens so one animated SVG can move
+         between landing, lesson, corner, and hidden modes without re-init. -->
     <div id="kaiStage" class="kai-stage" data-mode="hidden" data-speaking="false">
-      <canvas id="kaiCanvas" aria-label="Kai, your guide"></canvas>
-      <div id="kaiStatus" class="kai-status" data-state="loading">
-        <div class="ring-spinner"></div>
-        <div id="kaiStatusText">Waking up Kai…</div>
-      </div>
+      <svg id="nour" viewBox="0 0 240 280" preserveAspectRatio="xMidYMid meet"
+           xmlns="http://www.w3.org/2000/svg" aria-label="Nour, your guide">
+        <defs>
+          <linearGradient id="nourWarm" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#ff3d83"/>
+            <stop offset="100%" stop-color="#ff8a3d"/>
+          </linearGradient>
+          <clipPath id="nourPanel"><rect x="0" y="0" width="240" height="280" rx="32"/></clipPath>
+        </defs>
+        <g clip-path="url(#nourPanel)">
+          <rect x="0" y="0" width="240" height="280" fill="#f4715a"/>
+          <g id="nour-body">
+            <path d="M 64 230 Q 60 250 64 280 L 176 280 Q 180 250 176 230 Q 165 215 145 218 L 125 224 L 120 236 L 115 224 L 95 218 Q 75 215 64 230 Z" fill="#1a2a45"/>
+            <rect x="111" y="170" width="18" height="14" rx="3" fill="#e8a87c"/>
+          </g>
+          <g id="nour-head" style="transform-origin: 120px 168px;">
+            <g id="nour-hair-back">
+              <path d="M 148 110 Q 158 126 156 154 Q 152 178 142 182 L 138 154 Q 142 132 142 114 Z" fill="#1a2a45"/>
+              <ellipse cx="142" cy="84" rx="14" ry="10" transform="rotate(-18 142 84)" fill="#1a2a45"/>
+              <path d="M 90 114 Q 86 86 120 80 Q 154 80 156 104 Q 156 118 148 116 L 142 104 Q 120 100 98 104 L 92 116 Q 88 118 90 114 Z" fill="#1a2a45"/>
+            </g>
+            <ellipse id="nour-face" cx="120" cy="132" rx="30" ry="38" fill="#e8a87c"/>
+            <path d="M 92 114 Q 112 100 138 110 Q 142 122 138 128 L 132 112 Q 114 108 98 116 Q 92 118 92 114 Z" fill="#1a2a45"/>
+            <g id="nour-ears">
+              <ellipse cx="92" cy="131" rx="3" ry="6" fill="#e8a87c"/>
+              <ellipse cx="91" cy="133" rx="1.5" ry="3" fill="#c4845a"/>
+              <circle cx="92" cy="138" r="2.4" fill="#4ee0ff"/>
+            </g>
+            <g id="nour-brows">
+              <path id="nour-brow-l" d="M 96 116 Q 104 113 112 116" stroke="#1a2a45" stroke-width="3" stroke-linecap="round" fill="none"/>
+              <path id="nour-brow-r" d="M 128 116 Q 136 113 144 116" stroke="#1a2a45" stroke-width="3" stroke-linecap="round" fill="none"/>
+            </g>
+            <g id="nour-eyes">
+              <g id="nour-eye-l">
+                <ellipse class="eye-white" cx="104" cy="127" rx="6" ry="5" fill="#fbf2e8"/>
+                <circle class="pupil" cx="104" cy="128" r="3.5" fill="#1a2a45"/>
+                <circle class="shine" cx="106" cy="125" r="1.2" fill="#ffffff"/>
+              </g>
+              <g id="nour-eye-r">
+                <ellipse class="eye-white" cx="136" cy="127" rx="6" ry="5" fill="#fbf2e8"/>
+                <circle class="pupil" cx="136" cy="128" r="3.5" fill="#1a2a45"/>
+                <circle class="shine" cx="138" cy="125" r="1.2" fill="#ffffff"/>
+              </g>
+            </g>
+            <g id="nour-lids" style="transform-origin: 120px 127px; transform: scaleY(0);">
+              <ellipse cx="104" cy="127" rx="6.5" ry="5.5" fill="#e8a87c"/>
+              <ellipse cx="136" cy="127" rx="6.5" ry="5.5" fill="#e8a87c"/>
+            </g>
+            <path id="nour-nose" d="M 118 136 Q 116 142 120 144 Q 124 142 122 136" stroke="#c4845a" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+            <g id="nour-cheeks">
+              <circle cx="98" cy="148" r="4" fill="#c4604a" opacity="0.72"/>
+              <circle cx="142" cy="148" r="4" fill="#c4604a" opacity="0.72"/>
+            </g>
+            <path id="nour-mouth" d="M 115 156 Q 120 158 125 156" stroke="#7a2828" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          </g>
+          <g id="nour-sparkles" opacity="0">
+            <circle cx="60" cy="90" r="4" fill="url(#nourWarm)"/>
+            <circle cx="190" cy="80" r="5" fill="url(#nourWarm)"/>
+            <circle cx="210" cy="150" r="3" fill="url(#nourWarm)"/>
+            <circle cx="40" cy="170" r="3" fill="url(#nourWarm)"/>
+          </g>
+        </g>
+      </svg>
     </div>
 
     <!-- =========== LANDING =========== -->
@@ -853,16 +1093,19 @@
     <!-- =========== QUESTION SCREEN (single re-used) =========== -->
     <section class="screen" id="screen-question">
       <div class="q-card">
-        <div class="q-head">
-          <div class="q-tag"><span class="pillar-dot"></span><span id="qPillar">Pillar 1 · Curiosities</span></div>
-          <button class="audio-btn" id="audioBtn" data-state="idle" aria-label="Play question">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path class="ring" d="M11 5L6 9H3v6h3l5 4V5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-              <path d="M15.5 8.5a4.5 4.5 0 010 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-            </svg>
-          </button>
+        <div class="speech-bubble">
+          <h2 class="q-title" id="qTitle"></h2>
         </div>
-        <h2 class="q-title" id="qTitle"></h2>
+        <div class="audio-row">
+          <button class="audio-btn" id="audioBtn" data-state="idle" aria-label="Replay question">
+            <svg class="play-symbol" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M9 6.5v11l9-5.5-9-5.5z" fill="currentColor"/>
+            </svg>
+            <span class="wave-symbol" aria-hidden="true"><span></span><span></span><span></span></span>
+          </button>
+          <button class="slow-btn" id="slowBtn" type="button" hidden>0.75×</button>
+        </div>
+        <p class="audio-note" id="audioNote"></p>
         <div class="opts" id="qOpts"></div>
       </div>
       <audio id="ttsAudio" preload="auto" playsinline></audio>
@@ -872,6 +1115,22 @@
         </button>
         <button class="cta" id="nextBtn" disabled>
           Next
+          <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- =========== TIP SCREEN (between pillars) =========== -->
+    <section class="screen" id="screen-tip">
+      <div class="tip-card">
+        <div class="tip-visual" id="tipVisual" aria-hidden="true"></div>
+        <div>
+          <div class="tip-eyebrow" id="tipEyebrow">Nour Tip</div>
+          <h2 class="tip-title" id="tipTitle"></h2>
+          <p class="tip-copy" id="tipCopy"></p>
+        </div>
+        <button class="cta" id="tipContinueBtn">
+          Continue
           <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
@@ -1206,13 +1465,40 @@
   // ---------- Build full question list ----------
   // demographics(4) + pillar1(16) + pillar2(8) + pillar3(10) + pillar4(6) = 44
   const ALL_QUESTIONS = [];
-  demographics.forEach(q => ALL_QUESTIONS.push({ ...q, group:"Profile · About You", kind: q.kind || "single" }));
+  demographics.forEach(q => ALL_QUESTIONS.push({ ...q, group:"Pillar · About You", kind: q.kind || "single" }));
   pillar1.forEach(q => ALL_QUESTIONS.push({ ...q, group:"Pillar 1 · Curiosities", kind:"single" }));
   pillar2.forEach(q => ALL_QUESTIONS.push({ ...q, group:"Pillar 2 · Operations", kind:"binary" }));
   pillar3.forEach(q => ALL_QUESTIONS.push({ ...q, group:"Pillar 3 · Rewards", kind:"binary" }));
   pillar4.forEach(q => ALL_QUESTIONS.push({ ...q, group:"Pillar 4 · Ecosystems", kind:"binary" }));
 
   const TOTAL = ALL_QUESTIONS.length;
+
+  const TIP_SCREENS = {
+    4: {
+      eyebrow: "Next · Curiosities",
+      title: "Curiosity is data.",
+      copy: "The things you naturally click, debate, and investigate are signals. Do not pick impressive. Pick magnetic.",
+      visual: "curiosity",
+    },
+    20: {
+      eyebrow: "Next · Operations",
+      title: "How you move matters.",
+      copy: "This section notices whether you prefer structure, exploration, deep focus, or a wide map before you act.",
+      visual: "operations",
+    },
+    28: {
+      eyebrow: "Next · Rewards",
+      title: "Motivation has a shape.",
+      copy: "Recognition, impact, autonomy, mastery, and stability pull people differently. Choose the reward that would actually keep you going.",
+      visual: "rewards",
+    },
+    38: {
+      eyebrow: "Next · Ecosystems",
+      title: "Context changes energy.",
+      copy: "The same talent feels different in a busy room, a quiet corner, a fast sprint, or a predictable rhythm.",
+      visual: "ecosystems",
+    },
+  };
 
   // ---------- Brand logo: prefer logo.svg/logo.png if present ----------
   (function tryRasterLogo() {
@@ -1246,10 +1532,13 @@
     })(),
     audioAvailable: {}, // q.id => bool (cache HEAD probe results)
     userGestured: false, // becomes true after first user interaction
+    tipTargetIdx: null,
+    lastQuestionThinking: false,
   };
 
   /* ---------- Audio (TTS playback) ---------- */
   const AUDIO_DIR = "audio/";
+  const AUDIO_EXTS = ["mp3", "m4a", "wav"];
   let audioEl = null;
   function getAudioEl() {
     if (!audioEl) audioEl = document.getElementById("ttsAudio");
@@ -1259,9 +1548,24 @@
     try { localStorage.setItem("tareeq:sound", state.soundOn ? "on" : "off"); }
     catch (e) {}
   }
+  function isReadMode() {
+    return !state.soundOn;
+  }
   function setAudioBtnState(s) {
     const btn = document.getElementById("audioBtn");
     if (btn) btn.setAttribute("data-state", s);
+  }
+  function setAudioNote(text) {
+    const note = document.getElementById("audioNote");
+    if (note) note.textContent = text || "";
+  }
+  function syncReadModeToggle() {
+    const toggle = $("readModeToggle");
+    if (!toggle) return;
+    const read = isReadMode();
+    toggle.setAttribute("data-mode", read ? "read" : "listen");
+    toggle.setAttribute("aria-label", read ? "Switch to listen mode" : "Switch to read mode");
+    toggle.title = read ? "Read mode: tap to listen automatically" : "Listen mode: tap for read mode";
   }
   function stopAudio() {
     const a = getAudioEl();
@@ -1269,8 +1573,34 @@
     try { a.pause(); a.currentTime = 0; } catch (e) {}
     setAudioBtnState(state.soundOn ? "idle" : "muted");
   }
-  function audioSrcFor(qid) { return AUDIO_DIR + qid + ".mp3"; }
-  async function playQuestionAudio(qid, { fromUserClick = false } = {}) {
+  function audioSrcFor(qid, ext = "mp3") { return AUDIO_DIR + qid + "." + ext; }
+  async function resolveAudioSrc(qid) {
+    if (qid in state.audioAvailable) return state.audioAvailable[qid];
+    for (const ext of AUDIO_EXTS) {
+      const src = audioSrcFor(qid, ext);
+      try {
+        const res = await fetch(src, { method: "HEAD" });
+        if (res.ok) {
+          state.audioAvailable[qid] = src;
+          return src;
+        }
+      } catch (e) {}
+    }
+    state.audioAvailable[qid] = false;
+    return state.audioAvailable[qid];
+  }
+  async function probeAudio(qid) {
+    return Boolean(await resolveAudioSrc(qid));
+  }
+  function syncSlowButton(qid) {
+    const btn = $("slowBtn");
+    if (!btn) return;
+    btn.hidden = true;
+    probeAudio(qid).then(ok => {
+      if (ALL_QUESTIONS[state.idx]?.id === qid) btn.hidden = !ok;
+    });
+  }
+  async function playQuestionAudio(qid, { fromUserClick = false, rate = 1 } = {}) {
     const a = getAudioEl();
     if (!a) return;
 
@@ -1282,29 +1612,45 @@
     // Without a prior user gesture, autoplay will be blocked. Skip silently.
     if (!state.userGestured && !fromUserClick) return;
 
+    const src = await resolveAudioSrc(qid);
+    if (!src) {
+      setAudioBtnState("unavailable");
+      setAudioNote("Narration not baked yet.");
+      return;
+    }
+
     stopAudio();
-    a.src = audioSrcFor(qid);
+    a.src = src;
+    a.playbackRate = rate;
     setAudioBtnState("playing");
+    setAudioNote(rate < 1 ? "Slow replay" : "");
     try {
       await a.play();
     } catch (err) {
       // File missing, network error, or autoplay blocked.
       setAudioBtnState("unavailable");
+      setAudioNote("Narration not baked yet.");
       // Don't spam the console with expected 404s while baking — only log
       // when it's clearly something else.
       if (!String(err && err.name).match(/NotAllowedError|NotSupportedError/)) {
         // console.debug("audio:", err);
       }
+    } finally {
+      if (!state.soundOn && fromUserClick) {
+        a.addEventListener("ended", () => setAudioBtnState("muted"), { once: true });
+      }
     }
   }
 
-  // Plays Kai's narration tracks (kai_intro.mp3, kai_results.mp3) — does NOT
+  // Plays Kai's narration tracks (kai_intro.*, kai_results.*) — does NOT
   // require the assessment screen to be active. Used on landing + results.
   async function playKaiTrack(name) {
     const a = getAudioEl();
     if (!a || !state.soundOn || !state.userGestured) return;
+    const src = await resolveAudioSrc(name);
+    if (!src) return;
     stopAudio();
-    a.src = AUDIO_DIR + name + ".mp3";
+    a.src = src;
     try { await a.play(); } catch (e) { /* missing file is fine */ }
   }
 
@@ -1313,6 +1659,7 @@
   const screens = {
     landing:  $("screen-landing"),
     question: $("screen-question"),
+    tip:      $("screen-tip"),
     results:  $("screen-results"),
   };
   function showScreen(name) {
@@ -1321,13 +1668,79 @@
     window.scrollTo({ top:0, behavior: "instant" in window ? "instant" : "auto" });
   }
 
+  function updateProgress(label, idx = state.idx) {
+    const filled = (idx / TOTAL) * 100;
+    $("progressFill").style.width = filled + "%";
+    $("progressNum").textContent = Math.min(idx + 1, TOTAL);
+    $("progressTotal").textContent = TOTAL;
+    $("progressWrap").style.display = "flex";
+    $("progressWrap").setAttribute("data-lesson", "true");
+    $("progressEyebrow").textContent = label || "";
+    $("progressEyebrow").classList.toggle("active", Boolean(label));
+  }
+
+  function triggerNourPose(pose, duration = 520) {
+    const stage = $("kaiStage");
+    if (!stage) return;
+    if (pose === "thinking") {
+      if (window.nour && typeof window.nour.setState === "function") {
+        try { window.nour.setState("thinking"); } catch (e) {}
+      }
+      clearTimeout(triggerNourPose.timer);
+      triggerNourPose.timer = setTimeout(() => {
+        if (window.nour && typeof window.nour.setState === "function") {
+          try { window.nour.setState("idle"); } catch (e) {}
+        }
+      }, duration);
+      return;
+    }
+    stage.setAttribute("data-pose", pose);
+    clearTimeout(triggerNourPose.timer);
+    triggerNourPose.timer = setTimeout(() => {
+      if (stage.getAttribute("data-pose") === pose) {
+        stage.removeAttribute("data-pose");
+      }
+    }, duration);
+  }
+
+  function tipIllustration(kind) {
+    const common = `fill="none" stroke-linecap="round" stroke-linejoin="round"`;
+    const glow = `<defs><linearGradient id="tipGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff3d83"/><stop offset="100%" stop-color="#ff8a3d"/></linearGradient></defs>`;
+    if (kind === "operations") {
+      return `<svg viewBox="0 0 220 160" role="img">${glow}<path d="M52 114h116" stroke="rgba(255,255,255,.22)" stroke-width="10" ${common}/><path d="M68 114V58h36v56M116 114V40h36v74" stroke="url(#tipGrad)" stroke-width="10" ${common}/><circle cx="68" cy="58" r="11" fill="#ff8a3d"/><circle cx="152" cy="40" r="11" fill="#ff3d83"/></svg>`;
+    }
+    if (kind === "rewards") {
+      return `<svg viewBox="0 0 220 160" role="img">${glow}<path d="M110 38l17 34 38 6-27 27 6 38-34-18-34 18 6-38-27-27 38-6 17-34z" fill="url(#tipGrad)" opacity=".92"/><path d="M64 44l-12-12M164 46l13-13M110 28V12" stroke="rgba(255,255,255,.62)" stroke-width="8" ${common}/></svg>`;
+    }
+    if (kind === "ecosystems") {
+      return `<svg viewBox="0 0 220 160" role="img">${glow}<path d="M60 112c22-54 78-70 104-50-10 52-58 76-104 50z" fill="url(#tipGrad)" opacity=".9"/><path d="M72 104c22-13 46-22 82-36M96 94c-3-17 1-31 13-42M122 84c12 9 21 21 27 36" stroke="rgba(255,255,255,.72)" stroke-width="7" ${common}/></svg>`;
+    }
+    return `<svg viewBox="0 0 220 160" role="img">${glow}<circle cx="104" cy="74" r="39" fill="url(#tipGrad)" opacity=".9"/><path d="M132 102l30 30M87 74h34M104 57v34" stroke="rgba(255,255,255,.78)" stroke-width="9" ${common}/><path d="M48 122c12-16 31-24 55-24" stroke="rgba(255,255,255,.32)" stroke-width="8" ${common}/></svg>`;
+  }
+
+  function showTip(targetIdx) {
+    const tip = TIP_SCREENS[targetIdx];
+    if (!tip) return false;
+    state.tipTargetIdx = targetIdx;
+    stopAudio();
+    nourSet("lesson", "idle");
+    triggerNourPose("nod", 360);
+    updateProgress(tip.eyebrow, Math.max(0, targetIdx - 1));
+    $("tipEyebrow").textContent = tip.eyebrow;
+    $("tipTitle").textContent = tip.title;
+    $("tipCopy").textContent = tip.copy;
+    $("tipVisual").innerHTML = tipIllustration(tip.visual);
+    $("backBtn").style.visibility = "visible";
+    showScreen("tip");
+    return true;
+  }
+
   // ---------- Render Question ----------
-  function renderQuestion() {
+  function renderQuestion({ autoPlay = true } = {}) {
     const q = ALL_QUESTIONS[state.idx];
-    $("qPillar").textContent = q.group;
     $("qTitle").textContent = q.title;
-    $("topbarTitle").textContent = q.group.split(" · ")[1] ? "Take the Assessment" : "About You";
-    $("backBtn").style.visibility = state.idx === 0 ? "visible" : "hidden"; // landing back
+    $("backBtn").style.visibility = state.idx === 0 ? "visible" : "hidden";
+    state.lastQuestionThinking = false;
 
     const opts = $("qOpts");
     opts.innerHTML = "";
@@ -1345,6 +1758,7 @@
         '</optgroup>';
       sel.addEventListener("change", e => {
         state.answers[q.id] = e.target.value;
+        triggerNourPose("tilt");
         updateNextBtn();
       });
       opts.appendChild(sel);
@@ -1354,30 +1768,31 @@
         el.type = "button";
         el.className = "opt" + (q.kind === "binary" ? " binary" : "");
         if (state.answers[q.id] === i) el.classList.add("selected");
-        el.innerHTML = (q.kind === "binary"
-          ? `<div class="body">${opt.t}</div>`
-          : `<div class="letter">${opt.l}</div><div class="body">${opt.t}</div>`
-        );
+        el.innerHTML = `<div class="letter">${opt.l}</div><div class="body">${opt.t}</div>`;
         el.addEventListener("click", () => {
           state.answers[q.id] = i;
-          renderQuestion();
+          triggerNourPose("tilt");
+          playKaiTrack("got_it");
+          renderQuestion({ autoPlay: false });
         });
         opts.appendChild(el);
       });
     }
 
-    // progress
-    const filled = ((state.idx) / TOTAL) * 100;
-    $("progressFill").style.width = filled + "%";
-    $("progressNum").textContent = state.idx + 1;
-    $("progressTotal").textContent = TOTAL;
-    $("progressWrap").style.display = "flex";
+    updateProgress(q.group, state.idx);
+    nourSet("lesson", "idle");
+    triggerNourPose("nod", 360);
+    syncReadModeToggle();
+    syncSlowButton(q.id);
+    setAudioNote(isReadMode() ? "Read mode: tap play whenever you want Nour's voice." : "");
 
     updateNextBtn();
 
     // Audio: try to play this question's narration.
     setAudioBtnState(state.soundOn ? "idle" : "muted");
-    playQuestionAudio(q.id);
+    if (autoPlay && !isReadMode()) {
+      setTimeout(() => playQuestionAudio(q.id), 260);
+    }
 
     $("nextBtn").textContent = (state.idx === TOTAL - 1) ? "See My Compass" : "Next";
     // Re-attach arrow
@@ -1391,28 +1806,63 @@
   function updateNextBtn() {
     const q = ALL_QUESTIONS[state.idx];
     const answered = state.answers[q.id] !== undefined && state.answers[q.id] !== "";
-    $("nextBtn").disabled = !answered;
+    const btn = $("nextBtn");
+    const footer = btn.closest(".footer");
+
+    if (answered && state.idx === TOTAL - 1 && !state.lastQuestionThinking) {
+      state.lastQuestionThinking = true;
+      triggerNourPose("thinking", 1000);
+      btn.disabled = true;
+      footer.classList.remove("ready");
+      setTimeout(() => {
+        btn.disabled = false;
+        footer.classList.add("ready");
+      }, 1000);
+      return;
+    }
+
+    btn.disabled = !answered;
+    footer.classList.toggle("ready", answered && !btn.disabled);
   }
 
   // ---------- Navigation ----------
   function next() {
     if (state.idx < TOTAL - 1) {
-      state.idx += 1;
+      const targetIdx = state.idx + 1;
+      if (showTip(targetIdx)) return;
+      state.idx = targetIdx;
       renderQuestion();
     } else {
       computeAndShowResults();
     }
   }
   function prev() {
+    if (screens.tip.classList.contains("active")) {
+      state.idx = Math.max(0, (state.tipTargetIdx || 1) - 1);
+      renderQuestion({ autoPlay: false });
+      showScreen("question");
+      return;
+    }
     if (state.idx > 0) {
       state.idx -= 1;
-      renderQuestion();
+      renderQuestion({ autoPlay: false });
     } else {
       // back to landing
+      stopAudio();
+      nourSet("landing", "idle");
       showScreen("landing");
       $("progressWrap").style.display = "none";
-      $("topbarTitle").textContent = "";
+      $("progressEyebrow").classList.remove("active");
     }
+  }
+
+  function continueFromTip() {
+    const targetIdx = state.tipTargetIdx;
+    if (typeof targetIdx !== "number") return;
+    state.idx = targetIdx;
+    state.tipTargetIdx = null;
+    showScreen("question");
+    renderQuestion();
   }
 
   // ---------- Scoring ----------
@@ -1557,25 +2007,31 @@
     $("axEnvDot").style.left = r.envPos + "%";
 
     stopAudio();
-    kaiSet("hidden");
+    nourSet("corner", "celebrating");
+    setTimeout(() => nourSet("hidden"), 2000);
     showScreen("results");
     $("progressWrap").style.display = "none";
-    $("topbarTitle").textContent = "Your Compass";
-    // Optional Kai outro — graceful no-op if kai_results.mp3 doesn't exist.
+    $("progressEyebrow").classList.remove("active");
+    // Optional results outro — graceful no-op if kai_results audio doesn't exist.
     setTimeout(() => playKaiTrack("kai_results"), 300);
   }
 
-  // ---------- Kai stage helpers (no-op if Three.js failed to load) ----------
-  function kaiSet(mode) {
-    if (window.kai && typeof window.kai.setMode === "function") {
-      try { window.kai.setMode(mode); } catch (e) {}
+  // ---------- Nour stage helpers ----------
+  function nourSet(mode, stateName) {
+    const stage = $("kaiStage");
+    if (stage) stage.setAttribute("data-mode", mode);
+    if (window.nour && typeof window.nour.setMode === "function") {
+      try { window.nour.setMode(mode); } catch (e) {}
+    }
+    if (stateName && window.nour && typeof window.nour.setState === "function") {
+      try { window.nour.setState(stateName); } catch (e) {}
     }
   }
 
   // ---------- Events ----------
   $("startBtn").addEventListener("click", () => {
     state.userGestured = true;
-    kaiSet("corner");
+    nourSet("lesson", "idle");
     showScreen("question");
     state.idx = 0;
     renderQuestion();
@@ -1583,27 +2039,24 @@
   $("nextBtn").addEventListener("click", () => { state.userGestured = true; next(); });
   $("prevBtn").addEventListener("click", () => { state.userGestured = true; prev(); });
   $("backBtn").addEventListener("click", () => { state.userGestured = true; prev(); });
+  $("tipContinueBtn").addEventListener("click", () => { state.userGestured = true; continueFromTip(); });
   $("restartBtn").addEventListener("click", () => {
     state.idx = 0;
     state.answers = {};
+    state.tipTargetIdx = null;
     stopAudio();
-    $("topbarTitle").textContent = "";
-    kaiSet("landing");
+    nourSet("landing", "idle");
     showScreen("landing");
+    $("progressWrap").style.display = "none";
+    $("progressEyebrow").classList.remove("active");
   });
 
-  /* Sound toggle in topbar */
-  function syncSoundIcons() {
-    const t = $("soundToggle");
-    t.setAttribute("data-sound", state.soundOn ? "on" : "off");
-    $("soundOnIcon").style.display  = state.soundOn ? "block" : "none";
-    $("soundOffIcon").style.display = state.soundOn ? "none"  : "block";
-  }
-  $("soundToggle").addEventListener("click", () => {
+  /* Read/listen mode toggle in topbar */
+  $("readModeToggle").addEventListener("click", () => {
     state.userGestured = true;
     state.soundOn = !state.soundOn;
     persistSoundPref();
-    syncSoundIcons();
+    syncReadModeToggle();
     if (state.soundOn) {
       // Re-play current question if we're on the assessment screen.
       if (screens.question.classList.contains("active")) {
@@ -1612,9 +2065,10 @@
       }
     } else {
       stopAudio();
+      setAudioNote("Read mode: tap play whenever you want Nour's voice.");
     }
   });
-  syncSoundIcons();
+  syncReadModeToggle();
 
   /* Replay button on the question card */
   document.addEventListener("click", (e) => {
@@ -1626,7 +2080,13 @@
     if (q) playQuestionAudio(q.id, { fromUserClick: true });
   });
 
-  /* Kai intro — auto-play once on first user gesture while on landing.
+  $("slowBtn").addEventListener("click", () => {
+    state.userGestured = true;
+    const q = ALL_QUESTIONS[state.idx];
+    if (q) playQuestionAudio(q.id, { fromUserClick: true, rate: 0.75 });
+  });
+
+  /* Nour intro — auto-play once on first user gesture while on landing.
      Tapping anywhere on the landing screen counts as a gesture. The Start
      button still works the same; the intro just plays in parallel. */
   (function wireKaiIntro() {
@@ -1653,8 +2113,15 @@
   (function bindAudioEvents() {
     const a = getAudioEl();
     if (!a) return;
-    a.addEventListener("ended", () => setAudioBtnState(state.soundOn ? "idle" : "muted"));
-    a.addEventListener("error", () => setAudioBtnState("unavailable"));
+    a.addEventListener("ended", () => {
+      setAudioBtnState(state.soundOn ? "idle" : "muted");
+      setAudioNote(isReadMode() ? "Read mode: tap play whenever you want Nour's voice." : "");
+      a.playbackRate = 1;
+    });
+    a.addEventListener("error", () => {
+      setAudioBtnState("unavailable");
+      setAudioNote("Narration not baked yet.");
+    });
     a.addEventListener("pause", () => {
       // Only switch out of "playing" if the playback actually stopped, not on a transient pause.
       if (a.ended || a.currentTime === 0) setAudioBtnState(state.soundOn ? "idle" : "muted");
@@ -1669,7 +2136,8 @@
         const i = parseInt(e.key, 10) - 1;
         if (i < (q.options?.length || 0)) {
           state.answers[q.id] = i;
-          renderQuestion();
+          triggerNourPose("tilt");
+          renderQuestion({ autoPlay: false });
         }
       }
       if (e.key === "Enter") {
@@ -1681,361 +2149,304 @@
   </script>
 
   <!-- ============================================================
-       Kai — 3D animated character with TTS-driven lip sync.
-       Architecture:
-         - One Three.js scene, one renderer, one canvas.
-         - Loads a Ready Player Me GLB. If load fails, shows a
-           procedural on-brand placeholder so the rest of the app
-           still has a "Kai".
-         - Audio amplitude (Web Audio AnalyserNode on the existing
-           #ttsAudio element) drives the mouth-open morph target.
-         - Stage modes (landing/corner/hidden) are CSS-driven; this
-           module only resizes the renderer to match.
-       Configure your avatar:
-         - Set window.TAREEQ_AVATAR_URL before this script runs, OR
-         - Append ?avatar=<glb-url> to the page URL.
+       Nour — animated 2D SVG mentor with audio-driven lip sync.
+       No external dependencies; exposes window.nour for the app shell.
        ============================================================ -->
-  <script type="module">
-  import * as THREE from "three";
-  import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-
-  /* ---------- Config ---------- */
-  // Default: a Ready Player Me sample avatar. Swap by setting
-  // window.TAREEQ_AVATAR_URL above this script, or via ?avatar= query.
-  const DEFAULT_AVATAR = "https://models.readyplayer.me/64bfa15f0e72c63d7c3934a6.glb";
-  const params = new URLSearchParams(location.search);
-  const AVATAR_URL = params.get("avatar")
-                  || window.TAREEQ_AVATAR_URL
-                  || DEFAULT_AVATAR;
-
-  /* ---------- DOM refs ---------- */
-  const stage     = document.getElementById("kaiStage");
-  const canvas    = document.getElementById("kaiCanvas");
-  const status    = document.getElementById("kaiStatus");
-  const statusTxt = document.getElementById("kaiStatusText");
-  const audioEl   = document.getElementById("ttsAudio");
-
-  if (!stage || !canvas || !audioEl) {
-    console.warn("Kai: required DOM nodes missing — skipping init.");
-  } else {
-    initKai().catch(err => {
-      console.warn("Kai init failed:", err);
-      setStatus("Voice-only mode", "error");
-    });
-  }
-
-  /* ---------- Helpers ---------- */
-  function setStatus(text, state) {
-    if (statusTxt) statusTxt.textContent = text;
-    if (status)    status.setAttribute("data-state", state || "loading");
-  }
-  function setMode(mode) {
-    stage.setAttribute("data-mode", mode);
-    // Resize after CSS settles.
-    requestAnimationFrame(resizeRendererToStage);
-  }
-
-  /* ---------- Scene state ---------- */
-  let renderer, scene, camera, clock;
-  let avatar = null;          // root group for whatever character we end up with
-  let isProcedural = false;   // true if we fell back to the placeholder
-  let mouthMorphs = [];       // array of {mesh, index} pairs to drive
-  let blinkMorphs = [];       // same shape, for blinks
-  let currentMouth = 0;       // smoothed amplitude, 0..1
-  let nextBlinkAt  = 0;
-  let blinkProgress = -1;     // -1 = not blinking, 0..1 = blinking
-
-  /* ---------- Web Audio analyser (one-time setup, after gesture) ---------- */
-  let audioCtx, analyser, audioSource, ampBuf;
-  function ensureAudioGraph() {
-    if (audioCtx) return;
-    const Ctx = window.AudioContext || window.webkitAudioContext;
-    if (!Ctx) return;
-    audioCtx = new Ctx();
-    audioSource = audioCtx.createMediaElementSource(audioEl);
-    analyser = audioCtx.createAnalyser();
-    analyser.fftSize = 128;
-    analyser.smoothingTimeConstant = 0.6;
-    audioSource.connect(analyser);
-    analyser.connect(audioCtx.destination);
-    ampBuf = new Uint8Array(analyser.frequencyBinCount);
-  }
-  function readAmplitude() {
-    if (!analyser) return 0;
-    analyser.getByteFrequencyData(ampBuf);
-    let sum = 0;
-    for (let i = 0; i < ampBuf.length; i++) sum += ampBuf[i];
-    return Math.min(1, (sum / ampBuf.length / 255) * 1.7); // gain
-  }
-  // First user gesture in the page resumes the audio context.
-  function primeAudioOnGesture() {
-    ensureAudioGraph();
-    if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
-  }
-  document.addEventListener("click", primeAudioOnGesture, { once: false });
-  document.addEventListener("touchstart", primeAudioOnGesture, { once: false });
-
-  // Speaking flag (used to drive the corner pulse ring + lip open clamp).
-  audioEl.addEventListener("play",  () => stage.setAttribute("data-speaking", "true"));
-  audioEl.addEventListener("pause", () => stage.setAttribute("data-speaking", "false"));
-  audioEl.addEventListener("ended", () => stage.setAttribute("data-speaking", "false"));
-
-  /* ---------- Three.js init ---------- */
-  async function initKai() {
-    setStatus("Waking up Kai…", "loading");
-    setMode("landing"); // start visible on the landing screen
-
-    renderer = new THREE.WebGLRenderer({
-      canvas, alpha: true, antialias: true,
-      powerPreference: "high-performance",
-    });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.05;
-
-    scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(28, 1, 0.1, 50);
-    camera.position.set(0, 1.55, 1.2);
-    camera.lookAt(0, 1.55, 0);
-    clock = new THREE.Clock();
-
-    // Lighting tuned for a portrait headshot framing.
-    const ambient = new THREE.AmbientLight(0xa7b2ff, 0.55);
-    scene.add(ambient);
-    const key = new THREE.DirectionalLight(0xffd5a8, 1.4);
-    key.position.set(1.5, 2.5, 2.0);
-    scene.add(key);
-    const rim = new THREE.DirectionalLight(0xff60c8, 1.1);
-    rim.position.set(-2.0, 1.5, -1.5);
-    scene.add(rim);
-    const fill = new THREE.PointLight(0x6a4dff, 0.6, 8);
-    fill.position.set(-1, 1.3, 1.5);
-    scene.add(fill);
-
-    // Try to load Ready Player Me avatar; on failure, build a procedural placeholder.
-    try {
-      await loadAvatar(AVATAR_URL);
-    } catch (err) {
-      console.warn("RPM avatar failed to load — using procedural placeholder:", err);
-      buildProceduralAvatar();
+  <script>
+  (function initNour() {
+    const stage = document.getElementById("kaiStage");
+    const nour = document.getElementById("nour");
+    const audioEl = document.getElementById("ttsAudio");
+    if (!stage || !nour || !audioEl) {
+      console.warn("Nour: required DOM nodes missing — skipping init.");
+      return;
     }
 
-    nextBlinkAt = performance.now() + 1500 + Math.random() * 1500;
-    setStatus("ready", "ready");
+    const head = document.getElementById("nour-head");
+    const lids = document.getElementById("nour-lids");
+    const mouth = document.getElementById("nour-mouth");
+    const browL = document.getElementById("nour-brow-l");
+    const browR = document.getElementById("nour-brow-r");
+    const eyeL = document.getElementById("nour-eye-l");
+    const eyeR = document.getElementById("nour-eye-r");
+    const sparkles = document.getElementById("nour-sparkles");
+    const sparkleDots = sparkles ? Array.from(sparkles.querySelectorAll("circle")) : [];
+    const originalEyeL = eyeL ? eyeL.innerHTML : "";
+    const originalEyeR = eyeR ? eyeR.innerHTML : "";
+    const SVG_NS = "http://www.w3.org/2000/svg";
 
-    // Notify the rest of the app that Kai is ready.
-    window.dispatchEvent(new CustomEvent("kai:ready", {
-      detail: { procedural: isProcedural }
-    }));
+    const smilePath = "M 115 156 Q 120 158 125 156";
+    const flatPath = "M 116 156 L 124 156";
+    const openShapeA = [113, 153, 120, 165, 127, 153, 120, 161, 113, 153];
+    const openShapeB = [113, 156, 120, 158, 127, 156, 120, 158, 113, 156];
+    const celebrateMouth = "M 110 153 Q 120 168 130 153 Q 120 163 110 153 Z";
+    const browNeutralL = "M 96 116 Q 104 113 112 116";
+    const browNeutralR = "M 128 116 Q 136 113 144 116";
+    const browRaisedL = "M 96 112 Q 104 108 112 112";
 
-    resizeRendererToStage();
-    window.addEventListener("resize", resizeRendererToStage);
-    new ResizeObserver(resizeRendererToStage).observe(stage);
-    // Pause render when tab is hidden — saves battery on mobile.
-    document.addEventListener("visibilitychange", () => {
-      if (!document.hidden) renderer.setAnimationLoop(animate);
-      else renderer.setAnimationLoop(null);
-    });
+    const lipFill = document.createElementNS(SVG_NS, "path");
+    lipFill.setAttribute("id", "nour-mouth-inner");
+    lipFill.setAttribute("d", "M 112 154 Q 120 159 128 154 Q 120 162 112 154 Z");
+    lipFill.setAttribute("fill", "#c4604a");
+    lipFill.setAttribute("opacity", "0");
+    if (mouth && mouth.parentNode) mouth.parentNode.insertBefore(lipFill, mouth.nextSibling);
 
-    renderer.setAnimationLoop(animate);
-  }
+    let currentState = "idle";
+    let ready = false;
+    let raf = 0;
+    let audioCtx = null;
+    let analyser = null;
+    let audioSource = null;
+    let ampBuf = null;
+    let smoothAmp = 0;
+    let nextBlinkAt = performance.now() + randomBlinkDelay();
+    let blinkTimer = null;
+    let eyesAreCelebrating = false;
 
-  /* ---------- Avatar loading ---------- */
-  function loadAvatar(url) {
-    return new Promise((resolve, reject) => {
-      const loader = new GLTFLoader();
-      loader.setCrossOrigin("anonymous");
-      loader.load(
-        url,
-        (gltf) => {
-          avatar = gltf.scene;
-          // RPM avatars: head sits ~1.6 units up. We frame on the head.
-          avatar.position.set(0, 0, 0);
-          avatar.traverse((o) => {
-            if (o.isMesh) {
-              o.frustumCulled = false; // avoid pop-out at corner sizes
-              o.castShadow = false;
-              o.receiveShadow = false;
-              if (o.morphTargetDictionary) collectMorphTargets(o);
-            }
-          });
-          // Camera frames upper-chest + head.
-          camera.position.set(0, 1.58, 0.95);
-          camera.lookAt(0, 1.58, 0);
-          scene.add(avatar);
-          resolve();
-        },
-        undefined,
-        (err) => reject(err)
-      );
-      // Hard timeout — corporate networks sometimes hang.
-      setTimeout(() => reject(new Error("avatar load timeout")), 12000);
-    });
-  }
-
-  function collectMorphTargets(mesh) {
-    const dict = mesh.morphTargetDictionary;
-    const inf  = mesh.morphTargetInfluences;
-    if (!dict || !inf) return;
-    // Mouth-open candidates (RPM uses Oculus/Apple ARKit naming).
-    const mouthKeys = ["mouthOpen", "jawOpen", "viseme_aa", "viseme_O", "viseme_E"];
-    for (const k of mouthKeys) {
-      if (k in dict) mouthMorphs.push({ mesh, index: dict[k] });
+    function setMode(mode) {
+      stage.setAttribute("data-mode", mode);
+      if (mode === "corner") {
+        nour.setAttribute("viewBox", "60 54 120 142");
+      } else {
+        nour.setAttribute("viewBox", "0 0 240 280");
+      }
     }
-    // Eye-blink keys (left + right).
-    const blinkKeys = ["eyeBlinkLeft", "eyeBlinkRight", "blink_l", "blink_r", "eyesClosed"];
-    for (const k of blinkKeys) {
-      if (k in dict) blinkMorphs.push({ mesh, index: dict[k] });
+
+    function setState(nextState) {
+      if (!nextState) nextState = "idle";
+      currentState = nextState;
+      stage.setAttribute("data-state", currentState);
+      if (currentState !== "celebrating") restoreEyes();
+      if (currentState !== "speaking") smoothAmp = 0;
+      if (currentState === "thinking") applyThinkingFace();
+      else if (currentState === "celebrating") applyCelebratingFace();
+      else applyNeutralFace();
     }
-  }
 
-  /* ---------- Procedural placeholder (used if RPM fails) ---------- */
-  function buildProceduralAvatar() {
-    isProcedural = true;
-    avatar = new THREE.Group();
+    function isReady() {
+      return ready;
+    }
 
-    // Head: glowing rounded sphere with brand colors.
-    const head = new THREE.Mesh(
-      new THREE.SphereGeometry(0.30, 64, 64),
-      new THREE.MeshStandardMaterial({
-        color: 0xff6b3d, roughness: 0.35, metalness: 0.15,
-        emissive: 0xff3d83, emissiveIntensity: 0.22,
-      })
-    );
-    head.position.set(0, 1.62, 0);
-    avatar.add(head);
+    function applyNeutralFace() {
+      if (browL) browL.setAttribute("d", browNeutralL);
+      if (browR) browR.setAttribute("d", browNeutralR);
+      shiftPupils(0, 0);
+      setSmileMouth();
+      if (sparkles) {
+        sparkles.setAttribute("opacity", "0");
+        sparkles.removeAttribute("transform");
+      }
+      for (const dot of sparkleDots) dot.removeAttribute("transform");
+    }
 
-    // Two eyes
-    const eyeMat = new THREE.MeshStandardMaterial({
-      color: 0x140828, roughness: 0.2, metalness: 0.6,
-      emissive: 0x4ee0ff, emissiveIntensity: 0.6,
-    });
-    const eyeGeo = new THREE.SphereGeometry(0.035, 24, 24);
-    const eyeL = new THREE.Mesh(eyeGeo, eyeMat); eyeL.position.set(-0.10, 1.66, 0.27);
-    const eyeR = new THREE.Mesh(eyeGeo, eyeMat); eyeR.position.set( 0.10, 1.66, 0.27);
-    avatar.add(eyeL, eyeR);
-
-    // Mouth — a thin emissive ribbon we'll scale on Y to "talk".
-    const mouth = new THREE.Mesh(
-      new THREE.BoxGeometry(0.16, 0.022, 0.04),
-      new THREE.MeshStandardMaterial({
-        color: 0xffffff, emissive: 0xffc24d, emissiveIntensity: 0.7,
-      })
-    );
-    mouth.position.set(0, 1.55, 0.27);
-    mouth.name = "proceduralMouth";
-    avatar.add(mouth);
-
-    // Body — soft glowing shoulders.
-    const body = new THREE.Mesh(
-      new THREE.SphereGeometry(0.45, 48, 48, 0, Math.PI * 2, Math.PI * 0.45, Math.PI * 0.5),
-      new THREE.MeshStandardMaterial({
-        color: 0x2a1456, roughness: 0.4, metalness: 0.2,
-        emissive: 0x4b1a8a, emissiveIntensity: 0.45,
-      })
-    );
-    body.position.set(0, 1.18, 0);
-    avatar.add(body);
-
-    // Halo glow behind the head.
-    const halo = new THREE.Mesh(
-      new THREE.RingGeometry(0.35, 0.5, 64),
-      new THREE.MeshBasicMaterial({
-        color: 0xff8a3d, transparent: true, opacity: 0.18, side: THREE.DoubleSide,
-      })
-    );
-    halo.position.set(0, 1.62, -0.4);
-    avatar.add(halo);
-
-    scene.add(avatar);
-
-    // Frame the procedural head.
-    camera.position.set(0, 1.62, 1.05);
-    camera.lookAt(0, 1.6, 0);
-  }
-
-  /* ---------- Animation loop ---------- */
-  function animate() {
-    if (!avatar) return;
-    const t = clock.getElapsedTime();
-
-    // Gentle breathing/floating
-    avatar.position.y = Math.sin(t * 1.4) * 0.012;
-    avatar.rotation.y = Math.sin(t * 0.45) * 0.07;
-    avatar.rotation.x = Math.sin(t * 0.35) * 0.02;
-
-    // Lip sync — read amplitude, smooth, drive morphs (or procedural mouth).
-    const amp = readAmplitude();
-    currentMouth += (amp - currentMouth) * 0.45;
-    const mouthVal = Math.min(1, currentMouth * 1.2);
-
-    if (isProcedural) {
-      const mouth = avatar.getObjectByName("proceduralMouth");
+    function applyThinkingFace() {
+      if (browL) browL.setAttribute("d", browRaisedL);
+      if (browR) browR.setAttribute("d", browNeutralR);
+      shiftPupils(1, -1);
       if (mouth) {
-        mouth.scale.y = 1 + mouthVal * 6;
-        mouth.scale.x = 1 - mouthVal * 0.15;
-        mouth.material.emissiveIntensity = 0.7 + mouthVal * 1.5;
+        mouth.setAttribute("d", flatPath);
+        mouth.setAttribute("stroke", "#7a2828");
+        mouth.setAttribute("stroke-width", "2.2");
+        mouth.setAttribute("stroke-linecap", "round");
+        mouth.setAttribute("fill", "none");
       }
-    } else {
-      for (const { mesh, index } of mouthMorphs) {
-        mesh.morphTargetInfluences[index] = mouthVal;
+      lipFill.setAttribute("opacity", "0");
+    }
+
+    function applyCelebratingFace() {
+      if (eyeL && !eyesAreCelebrating) {
+        eyeL.innerHTML = '<path d="M 98 124 Q 104 118 110 124" stroke="#1a2a45" stroke-width="3" fill="none" stroke-linecap="round"/>';
+        eyeR.innerHTML = '<path d="M 130 124 Q 136 118 142 124" stroke="#1a2a45" stroke-width="3" fill="none" stroke-linecap="round"/>';
+        eyesAreCelebrating = true;
+      }
+      if (browL) browL.setAttribute("d", browNeutralL);
+      if (browR) browR.setAttribute("d", browNeutralR);
+      if (mouth) {
+        mouth.setAttribute("d", celebrateMouth);
+        mouth.setAttribute("stroke", "none");
+        mouth.setAttribute("fill", "#3a1218");
+      }
+      lipFill.setAttribute("opacity", "1");
+    }
+
+    function restoreEyes() {
+      if (!eyesAreCelebrating) return;
+      if (eyeL) eyeL.innerHTML = originalEyeL;
+      if (eyeR) eyeR.innerHTML = originalEyeR;
+      eyesAreCelebrating = false;
+    }
+
+    function shiftPupils(x, y) {
+      const eyeRoot = document.getElementById("nour-eyes");
+      if (!eyeRoot) return;
+      for (const node of eyeRoot.querySelectorAll(".pupil, .shine")) {
+        node.setAttribute("transform", "translate(" + x + " " + y + ")");
       }
     }
 
-    // Blinks — periodic, fast.
-    const now = performance.now();
-    if (blinkProgress < 0 && now >= nextBlinkAt) {
-      blinkProgress = 0;
+    function setSmileMouth() {
+      if (!mouth) return;
+      mouth.setAttribute("d", smilePath);
+      mouth.setAttribute("stroke", "#7a2828");
+      mouth.setAttribute("stroke-width", "2.2");
+      mouth.setAttribute("stroke-linecap", "round");
+      mouth.setAttribute("fill", "none");
+      lipFill.setAttribute("opacity", "0");
     }
-    if (blinkProgress >= 0) {
-      blinkProgress += clock.getDelta() * 9; // ~110ms full blink
-      const w = blinkProgress < 0.5
-        ? blinkProgress * 2
-        : Math.max(0, 1 - (blinkProgress - 0.5) * 2);
-      for (const { mesh, index } of blinkMorphs) {
-        mesh.morphTargetInfluences[index] = w;
+
+    function interpolatePath(a, b, t) {
+      const nums = a.map((value, index) => value + (b[index] - value) * t);
+      return "M " + nums[0].toFixed(2) + " " + nums[1].toFixed(2) +
+        " Q " + nums[2].toFixed(2) + " " + nums[3].toFixed(2) +
+        " " + nums[4].toFixed(2) + " " + nums[5].toFixed(2) +
+        " Q " + nums[6].toFixed(2) + " " + nums[7].toFixed(2) +
+        " " + nums[8].toFixed(2) + " " + nums[9].toFixed(2) + " Z";
+    }
+
+    function setSpeakingMouth(amount) {
+      if (!mouth) return;
+      if (amount < 0.04) {
+        setSmileMouth();
+        return;
       }
-      if (blinkProgress >= 1) {
-        blinkProgress = -1;
-        nextBlinkAt = now + 2200 + Math.random() * 2400;
+      const eased = Math.min(1, amount);
+      mouth.setAttribute("d", interpolatePath(openShapeB, openShapeA, eased));
+      mouth.setAttribute("stroke", "none");
+      mouth.setAttribute("fill", "#3a1218");
+      lipFill.setAttribute("opacity", "0");
+    }
+
+    function ensureAudioGraph() {
+      if (analyser) return;
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      try {
+        audioCtx = new Ctx();
+        audioSource = audioCtx.createMediaElementSource(audioEl);
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 128;
+        analyser.smoothingTimeConstant = 0.6;
+        audioSource.connect(analyser);
+        analyser.connect(audioCtx.destination);
+        ampBuf = new Uint8Array(analyser.frequencyBinCount);
+      } catch (err) {
+        analyser = null;
       }
-    } else {
-      // ensure delta keeps advancing for accurate amp smoothing
-      clock.getDelta();
     }
 
-    renderer.render(scene, camera);
-  }
-
-  /* ---------- Resizing ---------- */
-  function resizeRendererToStage() {
-    if (!renderer) return;
-    const r = stage.getBoundingClientRect();
-    const w = Math.max(64, Math.round(r.width));
-    const h = Math.max(64, Math.round(r.height));
-    renderer.setSize(w, h, false);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-    // Tighter framing in corner mode — pull the camera in.
-    const mode = stage.getAttribute("data-mode");
-    if (mode === "corner") {
-      camera.fov = 22;
-      camera.position.z = isProcedural ? 0.85 : 0.78;
-    } else {
-      camera.fov = 28;
-      camera.position.z = isProcedural ? 1.05 : 0.95;
+    function readAmplitude() {
+      if (!analyser || !ampBuf) return 0;
+      analyser.getByteFrequencyData(ampBuf);
+      let sum = 0;
+      for (let i = 0; i < ampBuf.length; i++) sum += ampBuf[i];
+      return Math.min(1, (sum / ampBuf.length / 255) * 1.7);
     }
-    camera.updateProjectionMatrix();
-  }
 
-  /* ---------- Public API for the rest of the app ---------- */
-  window.kai = {
-    setMode,
-    show: setMode,                 // alias
-    isReady: () => !!avatar,
-    isProcedural: () => isProcedural,
-  };
+    function randomBlinkDelay() {
+      return 3500 + (Math.random() * 3000 - 1500);
+    }
+
+    function blink() {
+      if (!lids || currentState === "thinking" || currentState === "celebrating") return;
+      clearTimeout(blinkTimer);
+      lids.style.transition = "transform 80ms ease";
+      lids.style.transform = "scaleY(1)";
+      blinkTimer = setTimeout(() => {
+        lids.style.transition = "transform 80ms ease";
+        lids.style.transform = "scaleY(0)";
+      }, 120);
+    }
+
+    function updateBlink(now) {
+      if (currentState === "thinking" || currentState === "celebrating") return;
+      if (now < nextBlinkAt) return;
+      blink();
+      nextBlinkAt = now + (currentState === "speaking" ? 8000 : randomBlinkDelay());
+    }
+
+    function updateSparkles(now) {
+      if (!sparkles) return;
+      const cycle = (now % 2500) / 2500;
+      const active = cycle < 0.58;
+      const p = active ? cycle / 0.58 : 1;
+      const fadeIn = Math.min(1, p / 0.2);
+      const fadeOut = Math.max(0, 1 - Math.max(0, p - 0.24) / 0.76);
+      sparkles.setAttribute("opacity", String(active ? Math.min(fadeIn, fadeOut) : 0));
+      const dirs = [[-10, -8], [10, -9], [10, 7], [-10, 8]];
+      sparkleDots.forEach((dot, index) => {
+        const d = dirs[index] || [0, 0];
+        dot.setAttribute("transform", "translate(" + (d[0] * p).toFixed(1) + " " + (d[1] * p).toFixed(1) + ")");
+      });
+    }
+
+    function animate(now) {
+      if (document.hidden) {
+        raf = 0;
+        return;
+      }
+
+      const seconds = now / 1000;
+      let breath = Math.cos((seconds / 4.2) * Math.PI * 2) - 1;
+      let rotation = Math.sin((seconds / 6) * Math.PI * 2) * 1.2;
+
+      if (currentState === "speaking") {
+        rotation = Math.sin((seconds / 3) * Math.PI * 2) * 1.8;
+        const amp = readAmplitude();
+        smoothAmp += (amp - smoothAmp) * 0.45;
+        setSpeakingMouth(smoothAmp);
+      } else if (currentState === "thinking") {
+        breath = 0;
+        rotation = 6;
+      } else if (currentState === "celebrating") {
+        breath = Math.sin((seconds / 1.4) * Math.PI * 2) * -1.6;
+        rotation = Math.sin((seconds / 1.8) * Math.PI * 2) * 1.6;
+        updateSparkles(now);
+      }
+
+      if (head) {
+        head.style.transform = "translateY(" + breath.toFixed(2) + "px) rotate(" + rotation.toFixed(2) + "deg)";
+      }
+      updateBlink(now);
+      raf = requestAnimationFrame(animate);
+    }
+
+    function startLoop() {
+      if (!raf && !document.hidden) raf = requestAnimationFrame(animate);
+    }
+
+    function stopLoop() {
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+    }
+
+    audioEl.addEventListener("play", () => {
+      stage.setAttribute("data-speaking", "true");
+      ensureAudioGraph();
+      if (audioCtx && audioCtx.state === "suspended") audioCtx.resume().catch(() => {});
+      setState("speaking");
+      startLoop();
+    });
+    audioEl.addEventListener("ended", () => {
+      stage.setAttribute("data-speaking", "false");
+      setState("idle");
+    });
+    audioEl.addEventListener("pause", () => {
+      stage.setAttribute("data-speaking", "false");
+      if (currentState === "speaking") setState("idle");
+    });
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stopLoop();
+      else startLoop();
+    });
+
+    window.nour = { setMode, setState, isReady };
+    ready = true;
+    setMode("landing");
+    setState("idle");
+    startLoop();
+    window.dispatchEvent(new CustomEvent("nour:ready"));
+  })();
   </script>
 </body>
 </html>

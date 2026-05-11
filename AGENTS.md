@@ -1,16 +1,91 @@
 # tareeq — project context for Claude Code
 
 A mobile-first web app for the **CORE Assessment v4**, a 40-question
-career-discovery quiz aimed at youth in the Middle East. The user-facing
-guide is named **Kai**. The result is a "Career Compass" — top cluster,
-operational archetype, reward drivers, and ecosystem fit.
+career-discovery quiz aimed at youth in the Middle East. The prototype's
+current user-facing guide is the animated 2D mentor **Nour**. The result
+is a "Career Compass" — top cluster, operational archetype, reward
+drivers, and ecosystem fit.
+
+## Current state — 2026-05-11
+
+Phases 1, 2, 3, and 4 are complete. The repo now contains a root Next.js
+15.5.18 + TypeScript + App Router scaffold using pnpm, React 19,
+Tailwind CSS, ESLint, Prettier, and Vitest with `happy-dom`.
+
+- `prototype/` remains the reference for assessment content, scoring,
+  audio baking, brand tokens, and Nour. On 2026-05-11 its question flow
+  was redesigned into the character-led lesson layout that future
+  Next.js work should port forward.
+- `app/globals.css` ports the prototype `:root` brand tokens verbatim
+  and wires the Outfit + Fraunces font variables.
+- `app/(marketing)/page.tsx` now renders the mobile-first landing page
+  with the brand wordmark, CORE v4 summary, and assessment CTA.
+- Phase 1 dependencies are installed, including Supabase, Drizzle,
+  next-intl, react-three-fiber/drei, Three.js, lucide-react, zod, and
+  Vitest. Supabase runtime persistence is not wired yet because the
+  local environment keys are not present.
+- `pnpm-workspace.yaml` exists only to approve pnpm v11 native helper
+  builds non-interactively.
+- `db/schema.ts` defines the Phase 2 Drizzle schema for clusters,
+  content versions, questions, options, profiles, assessments, and audio
+  clips.
+- `db/migrations/0001_initial_schema.sql` and
+  `supabase/migrations/202605110001_initial_schema.sql` contain the raw
+  SQL schema, RLS policies, and auth profile trigger from
+  `ARCHITECTURE.md` sections 2-3.
+- `lib/content/seed.ts` ports the prototype assessment content:
+  4 demographic questions, 40 scored questions, 8 clusters, and
+  125 options. `lib/content/seed.test.ts` verifies those counts locally.
+- `scripts/seed_db.ts` seeds Supabase with the active `v4` content
+  version via `pnpm seed`; it requires `NEXT_PUBLIC_SUPABASE_URL` (or
+  `SUPABASE_URL`) and `SUPABASE_SERVICE_ROLE_KEY` in the environment.
+- `lib/scoring/types.ts` and `lib/scoring/index.ts` port the prototype
+  `score()` behavior into a pure TypeScript `computeScore()` function.
+  It accepts letter answers or numeric option indexes and returns a
+  structured Career Compass result.
+- `lib/scoring/scoring.test.ts` pins the four approved persona outputs:
+  All-A, All-D/B, Tech-leaning, and Arts/PPL.
+- `app/(assessment)/layout.tsx`, `app/(assessment)/start/page.tsx`, and
+  `app/(assessment)/q/[index]/page.tsx` implement the Phase 4
+  assessment flow: start/resume, one question per route, progress, back
+  navigation, country select, and completion redirect.
+- `/start` wraps the client assessment-start component in a Suspense
+  boundary so `useSearchParams()` passes the Next.js production build.
+- `components/assessment/*` contains the mobile UI shell, landing/start
+  client behavior, question rendering, and temporary guide/text-mode
+  placeholders. `QuestionScreen` includes narration/text-only controls
+  that play `/audio/<externalId>.mp3` when files exist and show a clear
+  missing-file message otherwise. The prototype's new 2D Nour stage
+  should replace the old 3D Kai/RPM plan when the character is ported.
+- `lib/assessment/questions.ts` adapts the seeded 44-question content for
+  the UI. `lib/assessment/progress.ts` persists a local draft in
+  `localStorage`, resumes at the next unanswered question, and stores the
+  completed local `CompassResult`.
+- `lib/assessment/progress.test.ts` verifies local draft creation,
+  answer merging, answer counts, and resume-index behavior.
+- `prototype/index.html` now uses a Duolingo-style question experience:
+  slim header, progress bar plus eyebrow, compact Nour lesson stage,
+  Fraunces italic speech bubble, one replay button, optional `0.75x`
+  replay, persisted Listen/Read mode, answer-pill selection, a delayed
+  final-question thinking pose, illustrated tip screens between
+  demographics/curiosities/operations/rewards/ecosystems, and a pure
+  inline SVG/JS character animation. The old Three.js + Ready Player Me
+  path has been removed from the prototype.
+- `prototype/bake_audio.py` now bakes local narration with Gemini TTS.
+  It auto-detects `GEMINI_API_KEY` and uses the Gemini API
+  (`gemini-2.5-flash-preview-tts`, voice `Kore`, `.wav` output), or can
+  use Google Cloud Text-to-Speech OAuth via `--provider cloud-tts`
+  (`.mp3` output). The copied prototype/source `audio/` directory is
+  still empty; generate local audio with `GEMINI_API_KEY=... pnpm audio:bake`.
+
+Next phase: Phase 5 — port the Career Compass results page.
 
 ## File map
 
 ```
 index.html        single-file web app (HTML + CSS + JS, no build step)
-bake_audio.py     OpenAI TTS-1 narrator (run once, pre-generates MP3s)
-audio/            generated MP3s — one per question (created by bake_audio.py)
+bake_audio.py     Gemini-TTS narrator (run once, pre-generates MP3s)
+audio/            generated WAV/MP3 files — one per question (created by bake_audio.py)
 README.md         human-facing setup notes
 CLAUDE.md         this file
 logo.svg|png|...  optional brand asset; auto-loaded if present (see below)
@@ -35,30 +110,23 @@ opening `index.html` in a browser, or via any static file server
   exists replaces the SVG. Drop a file into the folder and reload; no
   code changes needed.
 - **Audio narration** is pre-baked, not live-generated. `bake_audio.py`
-  reads question text directly from `index.html`, calls OpenAI's
-  `/v1/audio/speech` endpoint with `model=tts-1, voice=nova`, and writes
-  `audio/<question_id>.mp3` plus two narration tracks
-  (`audio/kai_intro.mp3`, `audio/kai_results.mp3`) sourced from the
+  reads question text directly from `index.html`, calls Gemini TTS, and
+  writes `audio/<question_id>.wav` for the Gemini API key path or
+  `audio/<question_id>.mp3` for the Cloud TTS OAuth path, plus two
+  narration tracks (`audio/kai_intro.*`, `audio/kai_results.*`) sourced from the
   `EXTRA_LINES` constant at the top of the script. The browser only
-  ever plays local MP3 files — the OpenAI key never reaches the client.
-  Missing files degrade gracefully (the speaker icon dims; assessment
-  continues silently).
-- **3D character "Kai"** is a Three.js scene loaded from a Ready Player
-  Me GLB (`models.readyplayer.me/<id>.glb`). Lives in a single `<canvas>`
-  inside `#kaiStage`, which has three CSS-driven modes: `landing`
-  (large hero), `corner` (64×64 fixed top-right during questions),
-  `hidden` (results). Idle animation: gentle floating, periodic
-  morph-target blinks, slight head sway. Lip-sync is amplitude-based —
-  a Web Audio AnalyserNode on the existing `<audio id="ttsAudio">`
-  drives a smoothed mouth-open value into RPM viseme morph targets
-  (or a procedural mouth on the fallback character). If the GLB load
-  fails for any reason (CORS, network, bad URL), the scene falls back
-  to a procedural on-brand character — a glowing sphere head + halo +
-  shoulder dome — so the experience never breaks.
-  - Configure the avatar URL by setting `window.TAREEQ_AVATAR_URL`
-    before the `<script type="module">` at the bottom of the page,
-    OR by appending `?avatar=<glb-url>` to the page URL. Default is
-    a Ready Player Me sample.
+  ever plays local MP3 files; Google credentials never reach the client.
+  Missing files degrade gracefully (the replay button reports unavailable;
+  assessment continues silently).
+- **2D character "Nour"** is a flat inline SVG portrait inside
+  `#kaiStage` (legacy id preserved so the surrounding layout did not
+  churn). `window.nour = { setMode, setState, isReady }` drives the
+  same CSS modes: `landing`, `lesson`, `corner`, and `hidden`. Nour has
+  breathing, blinks, nod/tilt poses, thinking and celebrating states,
+  and amplitude-based lip-sync from a Web Audio `AnalyserNode` connected
+  to the existing `<audio id="ttsAudio">`. The deprecated Three.js,
+  Ready Player Me GLB, procedural fallback, `window.kai`, and canvas
+  path have been removed from the prototype.
 - **Persistence** uses `localStorage` for the sound-toggle preference
   only. Answers are kept in memory; refreshing the page resets them.
   This is intentional for now.
@@ -89,13 +157,12 @@ the narration matches.
 # Static serve (so audio fetches work cleanly)
 python3 -m http.server 8000
 
-# Bake audio (one-time, ~$0.05 with the current 44 questions)
-python3 bake_audio.py --api-key sk-...
-# or:
-OPENAI_API_KEY=sk-... python3 bake_audio.py
+# Bake audio with Google Cloud Gemini-TTS
+gcloud auth application-default login
+GOOGLE_CLOUD_PROJECT=<project> python3 bake_audio.py
 ```
 
-Useful flags: `--voice`, `--model tts-1-hd`, `--force`, `--dry-run`. See
+Useful flags: `--voice`, `--model`, `--location`, `--force`, `--dry-run`. See
 the script's `--help`.
 
 ## Known limitations / open work
@@ -104,8 +171,8 @@ These are good things to ask Claude Code to tackle. None of them are
 blocking — the app works as-is.
 
 1. **Arabic localization.** The audience is MENA. Need: RTL layout
-   support, translated question + UI strings, Arabic narration (TTS-1
-   handles Arabic; just bake a second voice with `--out-dir audio_ar`).
+   support, translated question + UI strings, Arabic narration (bake a
+   second voice/locale with `--out-dir audio_ar` and `--language-code`).
 2. **Persistence across reloads.** Answers are in-memory only. Decide:
    `localStorage`-only, or backend submission with a session ID.
 3. **Backend.** Currently none. To capture results for research, add a
@@ -136,18 +203,15 @@ blocking — the app works as-is.
    files (~200 vs 44) and slightly higher cost (~$0.20).
 10. **Phoneme-accurate lip-sync.** Current lip-sync is amplitude-based
     (mouth opens proportional to audio loudness). For viseme-accurate
-    sync, integrate Rhubarb Lip Sync at bake time to produce a JSON
-    timeline per MP3, then drive the RPM `viseme_*` morph targets from
-    the timeline + audio.currentTime instead of from the analyser.
-11. **Custom Kai avatar.** Default is a Ready Player Me sample. Generate
-    a brand-aligned avatar at https://readyplayer.me, copy the .glb URL,
-    and either set `window.TAREEQ_AVATAR_URL` in the page or pass
-    `?avatar=<url>` in the URL. For an on-brand stylized look (not
-    photoreal humanoid), consider VRM models with a toon shader.
-12. **Avatar emotional states.** The character could nod when the user
-    selects an answer, look "thinking" while loading, or celebrate on
-    the results screen. The infrastructure is there — just add named
-    triggers from the existing event handlers.
+    sync, bake a JSON timeline per audio file, then drive Nour's SVG
+    mouth path from `audio.currentTime` instead of from the analyser.
+11. **Custom Nour illustration.** The character is currently a locked
+    inline SVG portrait with navy side bun, warm tan skin, coral panel,
+    and cyan earrings. Future art changes should preserve those brand
+    anchors unless the design direction changes explicitly.
+12. **Avatar emotional states.** Nour already supports idle/listening,
+    speaking, thinking, celebrating, nod, and tilt states. Next work
+    should port those states into the Next.js character component.
 
 ## Conventions / preferences
 
@@ -155,7 +219,7 @@ blocking — the app works as-is.
   reason to bundle. If a framework becomes necessary, prefer Vite + React
   with TypeScript and migrate cleanly rather than half-converting.
 - **No new dependencies in `bake_audio.py`** — stdlib only (urllib).
-- **Don't put the OpenAI API key in client code, ever.** If live TTS
+- **Don't put a TTS provider credential in client code, ever.** If live TTS
   becomes necessary, build a backend proxy first.
 - **Mobile-first.** Design at 380–414px width and let larger screens
   inherit. The desktop layout is just the mobile shell centered with a
@@ -183,3 +247,21 @@ blocking — the app works as-is.
   in). Verify the auto-swap loader works on iOS Safari."
 - "Add option narration to `bake_audio.py` and a per-option play button
   to the UI."
+
+
+<claude-mem-context>
+# Memory Context
+
+# claude-mem status
+
+This project has no memory yet. The current session will seed it; subsequent sessions will receive auto-injected context for relevant past work.
+
+Memory injection starts on your second session in a project.
+
+`/learn-codebase` is available if the user wants to front-load the entire repo into memory in a single pass (~5 minutes on a typical repo, optional). Otherwise memory builds passively as work happens.
+
+Live activity: http://localhost:37701
+How it works: `/how-it-works`
+
+This message disappears once the first observation lands.
+</claude-mem-context>

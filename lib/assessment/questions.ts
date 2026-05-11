@@ -1,0 +1,54 @@
+import {
+  countriesMiddleEast,
+  countriesRest,
+  seedQuestions,
+} from "@/lib/content/seed";
+import type { LocalizedText, Question } from "@/lib/scoring/types";
+
+export const assessmentQuestions = seedQuestions.map((question) => ({
+  ...question,
+  title: { ...question.title },
+  options: question.options.map((option) => ({
+    ...option,
+    text: { ...option.text },
+  })),
+})) as unknown as Question[];
+
+export const totalAssessmentQuestions = assessmentQuestions.length;
+
+export const menaCountries = [...countriesMiddleEast];
+export const restOfWorldCountries = [...countriesRest];
+
+export function getLocalizedText(text: LocalizedText, locale = "en") {
+  return text[locale] ?? text.en ?? Object.values(text)[0] ?? "";
+}
+
+export function getQuestionByIndex(index: number) {
+  return assessmentQuestions[index];
+}
+
+export function getPillarLabel(question: Question) {
+  if (question.pillar === 0) return "About You";
+  if (question.pillar === 1) return "Pillar 1 · Curiosities";
+  if (question.pillar === 2) return "Pillar 2 · Operations";
+  if (question.pillar === 3) return "Pillar 3 · Rewards";
+  return "Pillar 4 · Ecosystems";
+}
+
+export function normalizeQuestionIndex(
+  rawIndex: string | number,
+  total = totalAssessmentQuestions,
+) {
+  const index =
+    typeof rawIndex === "number" ? rawIndex : Number.parseInt(rawIndex, 10);
+
+  if (!Number.isInteger(index) || index < 0 || index >= total) {
+    return null;
+  }
+
+  return index;
+}
+
+export function getQuestionPath(index: number) {
+  return `/q/${index}`;
+}

@@ -9,15 +9,16 @@
 
 We are migrating from a single-file static prototype to a Next.js +
 Supabase full-stack app. The prototype's assessment logic, scoring
-rules, audio pipeline, and Three.js avatar all port forward; the shape
-of the app changes.
+rules, audio pipeline, and animated 2D Nour mentor all port forward; the
+shape of the app changes.
 
 **Stack chosen.**
 - Frontend + API: **Next.js 15 (App Router) + TypeScript + React 19**
 - UI: **Tailwind CSS + Radix UI primitives**, custom theme tokens (the
   existing purple/orange/cyan palette is the source of truth)
-- 3D: **react-three-fiber** + **@react-three/drei** (wraps the existing
-  Three.js work; same RPM avatar, same lip-sync logic)
+- Character: inline **SVG + React animation hooks** for Nour, preserving
+  the prototype's amplitude-based lip-sync and state machine. The older
+  Three.js/Ready Player Me path is deprecated.
 - DB + Auth + Storage: **Supabase** (Postgres + Auth + Storage + Edge Functions)
 - ORM: **Drizzle** (lightweight, SQL-first, no codegen drama)
 - i18n: **next-intl** (English + Arabic, RTL via CSS logical properties)
@@ -29,7 +30,7 @@ of the app changes.
 - The 40-question CORE Assessment + scoring rules. Locked contract — see
   `CLAUDE.md`. Scoring runs client-side for instant feedback AND server-side
   for trust. Server wins if they disagree.
-- OpenAI TTS-1 narration. Pre-baked, never live in the browser. Audio
+- Gemini-TTS narration via the Gemini API or Google Cloud Text-to-Speech. Pre-baked, never live in the browser. Audio
   files stop being checked into the repo and start being deployed to
   Supabase Storage as part of CI.
 - Brand: deep purple/violet base, pink-to-orange gradient (`--grad-warm`)
@@ -53,7 +54,7 @@ tareeq/
 │   ├── (assessment)/                 # the 40-question flow
 │   │   ├── start/page.tsx            # demographic intro
 │   │   ├── q/[index]/page.tsx        # one question per route, deep-linkable
-│   │   └── layout.tsx                # progress bar, Kai corner avatar
+│   │   └── layout.tsx                # progress bar, Nour stage/avatar
 │   ├── compass/[id]/page.tsx         # results page; [id] = assessment id
 │   ├── account/                      # user settings, history
 │   │   └── page.tsx
@@ -70,11 +71,10 @@ tareeq/
 │   ├── layout.tsx
 │   └── globals.css
 ├── components/
-│   ├── kai/                          # 3D avatar
-│   │   ├── KaiStage.tsx              # canvas, modes (landing/corner/hidden)
+│   ├── guide/                        # animated Nour mentor
+│   │   ├── NourStage.tsx             # SVG, modes (landing/lesson/corner/hidden)
 │   │   ├── useLipSync.ts             # Web Audio analyser hook
-│   │   ├── AvatarModel.tsx           # GLTF load + morph target setup
-│   │   └── ProceduralFallback.tsx    # the glowing-orb fallback
+│   │   └── useNourStage.ts           # mode/state controls
 │   ├── assessment/
 │   │   ├── QuestionCard.tsx
 │   │   ├── ProgressBar.tsx
@@ -245,7 +245,7 @@ create table audio_clips (
   question_id     uuid references questions(id) on delete cascade,
   kind            text not null,        -- 'question' | 'kai_intro' | 'kai_results'
   locale          text not null,
-  voice           text not null,        -- 'nova', 'shimmer', etc.
+  voice           text not null,        -- 'Kore', 'Charon', etc.
   storage_path    text not null,        -- 'audio/<version>/<lang>/<id>.mp3'
   bytes           int not null,
   duration_ms     int,
@@ -425,7 +425,7 @@ When questions change, the audio drifts out of sync. Two options:
 
 1. **Manual**: admin triggers a "Bake audio for active version" button in
    the admin panel. Calls a Supabase Edge Function that runs the bake
-   script (or calls OpenAI directly) and uploads to Storage.
+   script (or calls Google Cloud Text-to-Speech directly) and uploads to Storage.
 2. **CI**: GitHub Action listens for `content_versions.is_active`
    changes via Supabase webhooks, runs `bake_audio.py`, uploads new
    MP3s. Slower but no human in loop.
@@ -471,9 +471,9 @@ CLI:
 python3 scripts/bake_audio.py \
   --supabase-url $SUPABASE_URL \
   --supabase-key $SUPABASE_SERVICE_ROLE_KEY \
-  --openai-key $OPENAI_API_KEY \
+  --api-key $GEMINI_API_KEY \
   --locale en \
-  --voice nova \
+  --voice Kore \
   --version-id <uuid>
 ```
 
@@ -512,12 +512,12 @@ rebuilding. Order of operations:
 - Reuse the same DOM structure and class names where it accelerates the
   port; refactor to Tailwind once visual parity is confirmed
 
-### Step 5 — Port the avatar
-- `components/kai/KaiStage.tsx` is a Client Component that wraps a
-  `<Canvas>` from react-three-fiber
+### Step 5 — Port the character
+- `components/guide/NourStage.tsx` is a Client Component that renders the
+  inline SVG portrait from the prototype
 - The amplitude-based lip-sync hook becomes `useLipSync(audioRef)`
-- The procedural fallback becomes `<ProceduralFallback />`
-- The mode prop (`landing`/`corner`/`hidden`) is driven by the route
+- The mode prop (`landing`/`lesson`/`corner`/`hidden`) and state prop
+  (`idle`/`speaking`/`thinking`/`celebrating`) are driven by the route
 
 ### Step 6 — Wire persistence
 - Server action `saveAnswer` runs on every option click (debounced 250ms)
@@ -562,7 +562,10 @@ NEXT_PUBLIC_POSTHOG_KEY=...
 
 # Server-only
 SUPABASE_SERVICE_ROLE_KEY=...   # used by scripts and server actions
-OPENAI_API_KEY=...              # used only at audio-bake time
+GEMINI_API_KEY=...              # used only at audio-bake time
+GOOGLE_CLOUD_PROJECT=...        # used only at audio-bake time
+GOOGLE_CLOUD_REGION=global      # optional; e.g. global, eu, us
+GOOGLE_OAUTH_ACCESS_TOKEN=...   # optional; otherwise use gcloud ADC
 ```
 
 ---
@@ -672,7 +675,7 @@ Port the assessment screens from ../outputs/index.html into Next.js:
 - (marketing)/page.tsx        — landing
 - (assessment)/start/page.tsx — demographics
 - (assessment)/q/[index]/page.tsx — one question per route
-- (assessment)/layout.tsx     — progress bar + Kai corner stage
+- (assessment)/layout.tsx     — progress bar + Nour stage
 
 Use Tailwind for layout. Keep the brand exactly: same colors, Outfit +
 Fraunces fonts, glassmorphism options, gradient CTAs. Read questions
@@ -708,17 +711,18 @@ Build /account/page.tsx that lists the user's past assessments and
 links to each Compass. Add a sign-out button.
 ```
 
-### Phase 7 — 3D Kai avatar (1 session)
+### Phase 7 — Animated Nour mentor (1 session)
 
 ```
-Port the Three.js Kai avatar from ../outputs/index.html into
-components/kai/KaiStage.tsx as a react-three-fiber component. Same
-Ready Player Me GLB loading, same procedural fallback, same
-amplitude-based lip-sync against an <audio> ref.
+Port the inline SVG Nour mentor from ../outputs/index.html into
+components/guide/NourStage.tsx as a React client component. Preserve the
+same landing/lesson/corner/hidden modes, idle/listening/speaking/
+thinking/celebrating states, nod/tilt poses, SVG mouth-path lip-sync,
+and amplitude-based analyser against an <audio> ref.
 
-Add a useKaiStage() hook that exposes mode controls
-(landing/corner/hidden) so the assessment routes can drive it. Keep
-the audio file URLs identical to the prototype's structure.
+Add a useNourStage() hook that exposes mode/state controls so the
+assessment routes can drive it. Keep the audio file URLs identical to
+the prototype's structure.
 ```
 
 ### Phase 8 — Admin + analytics (1–2 sessions)
@@ -739,14 +743,14 @@ question_answered, assessment_completed, account_created, share_clicked.
 ```
 Add next-intl with locales en + ar. Route segment is /[locale]/...
 Translate UI strings (lib/i18n/messages/{en,ar}.json). Translate the
-44 questions + Kai narration lines stored in the database (jsonb keyed
+44 questions + Nour narration lines stored in the database (jsonb keyed
 by locale). Set dir="rtl" on the html when locale is 'ar'. Audit all
 layouts use logical properties (margin-inline-start, padding-inline,
 border-start-radius) — no hard-coded left/right.
 
 Update bake_audio.py to accept --locale and write audio under
-audio/<version>/<locale>/. Bake the Arabic narration with voice
-'shimmer' (or pick a different voice for Arabic).
+audio/<version>/<locale>/. Bake the Arabic narration with a Gemini-TTS
+voice that supports the target Arabic locale.
 ```
 
 ### Phase 10 — Polish + launch prep (1 session)
@@ -775,7 +779,7 @@ A few places where Claude Code would naturally drift into the wrong shape:
 - **Don't store computed results denormalized everywhere.** The result
   jsonb on the assessment row is the single canonical computed result.
   Don't cache top_cluster on the row.
-- **Don't put the OpenAI API key in any client bundle.** Even via
+- **Don't put any TTS provider credential in any client bundle.** Even via
   environment variables. The bake script is the only thing that ever
   sees it.
 - **Don't skip RLS on a "I'll add it later" basis.** Add policies as

@@ -6,7 +6,7 @@ MP3 narration.
 
 ```
 index.html        the whole web app (HTML + CSS + JS)
-bake_audio.py     pre-bakes question audio using OpenAI TTS-1
+bake_audio.py     pre-bakes question audio using Gemini-TTS
 audio/            generated MP3s — one per question (created by bake_audio.py)
 ```
 
@@ -20,24 +20,30 @@ python3 -m http.server 8000
 # then open http://localhost:8000
 ```
 
-Audio playback uses relative paths (`audio/Q1.mp3`, ...), so the app
-keeps working even when the audio folder is missing — the speaker icon
-just dims to "unavailable" and the assessment continues silently.
+Audio playback uses relative paths (`audio/Q1.mp3`, `audio/Q1.wav`, ...), so the app
+keeps working even when the audio folder is missing. The play button
+shows narration as unavailable and the assessment continues silently.
 
 ## Generating the voice narration
 
-Why a bake step? An OpenAI API key cannot safely live in client-side
-HTML — anyone who views the page source can copy it. Instead, run the
-script once with your key, ship the resulting MP3s alongside the app,
-and the browser never sees your key.
+Why a bake step? Google Cloud credentials cannot safely live in
+client-side HTML. Instead, run the script once with server-side
+credentials, ship the resulting MP3s alongside the app, and the browser
+never sees your token.
 
 ```bash
-# 1. Get an API key from https://platform.openai.com/api-keys
-# 2. From this folder:
-python3 bake_audio.py --api-key sk-...
+# 1. Set a Gemini API key:
+export GEMINI_API_KEY=...
 
-# Or via env var:
-OPENAI_API_KEY=sk-... python3 bake_audio.py
+# 2. From this folder:
+python3 bake_audio.py
+```
+
+The script also supports Google Cloud Text-to-Speech OAuth:
+
+```bash
+gcloud auth application-default login
+GOOGLE_CLOUD_PROJECT=your-project-id python3 bake_audio.py --provider cloud-tts
 ```
 
 The script reads question text directly out of `index.html`, so you
@@ -48,49 +54,54 @@ exist are skipped, so re-running is cheap.
 
 | Flag                | Default     | What it does                                                                 |
 | ------------------- | ----------- | ---------------------------------------------------------------------------- |
-| `--voice nova`      | `nova`      | Any OpenAI voice — `alloy`, `echo`, `fable`, `onyx`, `nova`, `shimmer`, etc. |
-| `--model tts-1`     | `tts-1`     | Use `tts-1-hd` for higher-quality, slower output at 2× the cost.             |
-| `--force`           | off         | Re-generate every MP3, even if it already exists.                            |
-| `--dry-run`         | off         | Show what would be generated without calling the API.                        |
-| `--out-dir audio`   | `audio`     | Where to write the MP3 files.                                                |
+| Flag                              | Default                  | What it does                                          |
+| --------------------------------- | ------------------------ | ----------------------------------------------------- |
+| `--provider auto`                 | `auto`                   | Uses `GEMINI_API_KEY` when present, otherwise Cloud TTS OAuth. |
+| `--voice Kore`                    | `Kore`                   | Gemini-TTS prebuilt voice, such as `Kore` or `Charon`. |
+| `--model`                         | provider-specific        | Gemini-TTS model to use.                              |
+| `--location global`               | `global`                 | Cloud TTS endpoint region, such as `global` or `eu`.  |
+| `--language-code en-US`           | `en-US`                  | BCP-47 language code for the narration.               |
+| `--prompt "..."`                  | Kai guide prompt         | Style direction sent with every line.                 |
+| `--force`                         | off                      | Re-generate every MP3, even if it already exists.     |
+| `--dry-run`                       | off                      | Show what would be generated without calling the API. |
+| `--out-dir audio`                 | `audio`                  | Where to write the MP3 files.                         |
 
 ### Cost
 
-The current 44 questions total about 3,000 characters. At TTS-1's rate
-of $15 per 1M characters, a full bake costs roughly **$0.05**. The
-script prints an exact estimate before it makes any API calls. Editing
-existing question wording and re-running with `--force` triggers
-another bake at the same cost.
+The current 44 questions total about 3,000 characters. Gemini-TTS
+pricing depends on the selected Google Cloud model and region; the
+script prints the character count before it makes any API calls.
+Editing existing question wording and re-running with `--force`
+triggers another bake.
 
 ### Changing question text
 
 1. Edit the question's `title` field in `index.html`.
-2. Re-run `python3 bake_audio.py --api-key sk-... --force` (or delete
-   the affected `audio/QN.mp3` and run without `--force`).
+2. Re-run `python3 bake_audio.py --force` (or delete the affected
+   `audio/QN.*` file and run without `--force`).
 
 ## How playback works in the app
 
-- The header has a speaker icon. Tap to toggle voice on/off — the
-  preference persists in `localStorage`.
-- Every time a new question is rendered, the app tries to auto-play
-  `audio/<question_id>.mp3`. If the file is missing, the small replay
-  button on the question card dims to "unavailable" and the assessment
+- The header has a text/listen mode pill. The preference persists in
+  `localStorage`.
+- Every time a new question is rendered, the app tries to auto-play the
+  matching audio file (`.mp3`, `.m4a`, then `.wav`). If the file is
+  missing, the replay button reports "unavailable" and the assessment
   continues silently.
-- The small circular button on the question card replays the current
-  question's narration. It also works to "start" audio if the browser
-  blocked the initial auto-play.
+- The circular button below the speech bubble replays the current
+  question's narration. A `0.75x` chip appears when the file exists.
 
 ## The 3D Kai avatar
 
 The landing page shows a 3D animated character ("Kai") that introduces
-the assessment, lip-syncs each question, and shrinks into a small
-floating avatar in the top-right while the user is taking the quiz.
+the assessment, lip-syncs each question, and remains large in a
+character-led lesson stage while the user is taking the quiz.
 
 - The avatar is a **Ready Player Me** GLB loaded at runtime from
   `models.readyplayer.me`. It uses Three.js (loaded from jsDelivr via
   an importmap — no build step required).
 - Lip-sync is **amplitude-based**: a Web Audio analyser reads the
-  loudness of `audio/<id>.mp3` while it plays and drives the avatar's
+  loudness of the current audio file while it plays and drives the avatar's
   `mouthOpen` / `viseme_*` morph targets. Not phoneme-accurate, but it
   feels alive.
 - If the GLB fails to load (no internet, bad URL, CORS), the scene
@@ -117,8 +128,8 @@ http://localhost:8000/?avatar=https://models.readyplayer.me/<your-id>.glb
 In addition to the 44 questions, `bake_audio.py` also generates two
 short narration tracks for Kai:
 
-- `audio/kai_intro.mp3` — plays on the landing page on first tap
-- `audio/kai_results.mp3` — plays when the Career Compass appears
+- `audio/kai_intro.*` — plays on the landing page on first tap
+- `audio/kai_results.*` — plays when the Career Compass appears
 
 Edit the `EXTRA_LINES` constant near the top of `bake_audio.py` to
 change what Kai says. Re-run with `--force` to re-generate.
@@ -130,5 +141,5 @@ generated MP3s as static assets behind a CDN. No API key ever leaves
 your build machine, and there are no per-user TTS costs.
 
 If you need on-the-fly speech (e.g. dynamically generated content), put
-the API key behind a small backend proxy that the browser calls — never
-let the key ship in the client bundle.
+the provider credential behind a small backend proxy that the browser
+calls. Never let a TTS credential ship in the client bundle.
