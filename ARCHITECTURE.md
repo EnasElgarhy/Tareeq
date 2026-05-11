@@ -24,15 +24,19 @@ shape of the app changes.
 - i18n: **next-intl** (English + Arabic, RTL via CSS logical properties)
 - Hosting: **Vercel** (app) + **Supabase Storage / Cloudflare R2** (audio MP3s)
 - Analytics: **PostHog** (events + funnel + session replay) — optional
-- TTS: keep `bake_audio.py` as a build-time script; output uploads to Storage
+- TTS: keep `bake_audio.py` as a build-time script; output uploads to
+  Storage. Provider strategy is pluggable: Gemini/Cloud TTS for managed
+  baking, Coqui XTTS-v2 for open-source English/Arabic voice continuity,
+  and SILMA TTS as a MENA-specific candidate to evaluate.
 
 **What stays the same.**
 - The 40-question CORE Assessment + scoring rules. Locked contract — see
   `CLAUDE.md`. Scoring runs client-side for instant feedback AND server-side
   for trust. Server wins if they disagree.
-- Gemini-TTS narration via the Gemini API or Google Cloud Text-to-Speech. Pre-baked, never live in the browser. Audio
-  files stop being checked into the repo and start being deployed to
-  Supabase Storage as part of CI.
+- Narration is pre-baked, never live in the browser. Gemini API, Google
+  Cloud Text-to-Speech, or local XTTS can produce the files. Audio files
+  eventually stop being checked into the repo and start being deployed
+  to Supabase Storage as part of CI.
 - Brand: deep purple/violet base, pink-to-orange gradient (`--grad-warm`)
   for accents, cyan reserved for the logo.
 - Mobile-first. Design at 380–414px width.
@@ -459,9 +463,9 @@ from code changes.
 Same `bake_audio.py` script, slightly evolved:
 
 ```
-Old: reads index.html, writes audio/Q1.mp3
+Old: reads index.html, writes audio/Q1.mp3 or audio/Q1.wav
 New: reads from Supabase (active version, given locale), writes to
-     audio/<version_id>/<locale>/<external_id>.mp3, uploads to Storage,
+     audio/<version_id>/<locale>/<external_id>.<ext>, uploads to Storage,
      inserts/updates rows in audio_clips.
 ```
 
@@ -471,9 +475,9 @@ CLI:
 python3 scripts/bake_audio.py \
   --supabase-url $SUPABASE_URL \
   --supabase-key $SUPABASE_SERVICE_ROLE_KEY \
-  --api-key $GEMINI_API_KEY \
+  --provider xtts \
+  --speaker-wav assets/voice/nour_reference.wav \
   --locale en \
-  --voice Kore \
   --version-id <uuid>
 ```
 
@@ -748,9 +752,11 @@ by locale). Set dir="rtl" on the html when locale is 'ar'. Audit all
 layouts use logical properties (margin-inline-start, padding-inline,
 border-start-radius) — no hard-coded left/right.
 
-Update bake_audio.py to accept --locale and write audio under
-audio/<version>/<locale>/. Bake the Arabic narration with a Gemini-TTS
-voice that supports the target Arabic locale.
+Update bake_audio.py to read translated database content and write audio
+under audio/<version>/<locale>/. Bake Arabic narration with an
+Arabic-capable provider. Preferred first pass: `--provider xtts
+--locale ar` with a Nour reference WAV. Also evaluate SILMA TTS for MENA
+Arabic/English quality before locking the production voice.
 ```
 
 ### Phase 10 — Polish + launch prep (1 session)

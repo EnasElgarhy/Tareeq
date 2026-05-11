@@ -15,7 +15,8 @@
     "seed": "tsx scripts/seed_db.ts",
     "audio:bake": "python3 prototype/bake_audio.py --html prototype/index.html --out-dir public/audio",
     "audio:bake:force": "python3 prototype/bake_audio.py --html prototype/index.html --out-dir public/audio --force",
-    "audio:bake:dry": "python3 prototype/bake_audio.py --html prototype/index.html --out-dir public/audio --dry-run"
+    "audio:bake:dry": "python3 prototype/bake_audio.py --html prototype/index.html --out-dir public/audio --dry-run",
+    "audio:bake:xtts:dry": "python3 prototype/bake_audio.py --provider xtts --locale ar --html prototype/index.html --out-dir public/audio_ar --dry-run"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",

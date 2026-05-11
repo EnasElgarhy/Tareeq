@@ -71,12 +71,15 @@ Tailwind CSS, ESLint, Prettier, and Vitest with `happy-dom`.
   demographics/curiosities/operations/rewards/ecosystems, and a pure
   inline SVG/JS character animation. The old Three.js + Ready Player Me
   path has been removed from the prototype.
-- `prototype/bake_audio.py` now bakes local narration with Gemini TTS.
-  It auto-detects `GEMINI_API_KEY` and uses the Gemini API
-  (`gemini-2.5-flash-preview-tts`, voice `Kore`, `.wav` output), or can
-  use Google Cloud Text-to-Speech OAuth via `--provider cloud-tts`
-  (`.mp3` output). The copied prototype/source `audio/` directory is
-  still empty; generate local audio with `GEMINI_API_KEY=... pnpm audio:bake`.
+- `prototype/bake_audio.py` now bakes local narration with multiple
+  providers. It auto-detects `GEMINI_API_KEY` and uses the Gemini API
+  (`gemini-2.5-flash-preview-tts`, voice `Kore`, `.wav` output), can use
+  Google Cloud Text-to-Speech OAuth via `--provider cloud-tts` (`.mp3`
+  output), and now has an Arabic-ready local `--provider xtts` path for
+  Coqui XTTS-v2 using `--speaker-wav` / `NOUR_SPEAKER_WAV`.
+- `prototype/audio/` currently contains temporary local macOS-generated
+  demo WAV files so the static prototype speaks without a cloud key.
+  Replace them with Gemini, Cloud TTS, or XTTS output before production.
 
 Next phase: Phase 5 — port the Career Compass results page.
 
@@ -84,7 +87,7 @@ Next phase: Phase 5 — port the Career Compass results page.
 
 ```
 index.html        single-file web app (HTML + CSS + JS, no build step)
-bake_audio.py     Gemini-TTS narrator (run once, pre-generates MP3s)
+bake_audio.py     narrator bake script (Gemini, Cloud TTS, or local XTTS)
 audio/            generated WAV/MP3 files — one per question (created by bake_audio.py)
 README.md         human-facing setup notes
 CLAUDE.md         this file
@@ -110,14 +113,13 @@ opening `index.html` in a browser, or via any static file server
   exists replaces the SVG. Drop a file into the folder and reload; no
   code changes needed.
 - **Audio narration** is pre-baked, not live-generated. `bake_audio.py`
-  reads question text directly from `index.html`, calls Gemini TTS, and
-  writes `audio/<question_id>.wav` for the Gemini API key path or
-  `audio/<question_id>.mp3` for the Cloud TTS OAuth path, plus two
-  narration tracks (`audio/kai_intro.*`, `audio/kai_results.*`) sourced from the
-  `EXTRA_LINES` constant at the top of the script. The browser only
-  ever plays local MP3 files; Google credentials never reach the client.
-  Missing files degrade gracefully (the replay button reports unavailable;
-  assessment continues silently).
+  reads question text directly from `index.html` and writes local audio
+  files. Gemini API output is `.wav`, Cloud TTS OAuth output is `.mp3`,
+  and local Coqui XTTS-v2 output is `.wav` with `--provider xtts` plus a
+  Nour reference speaker file. The legacy narration track ids are still
+  `audio/kai_intro.*` and `audio/kai_results.*`. The browser only ever
+  plays local audio files; provider credentials and model runtimes never
+  reach the client. Missing files degrade gracefully.
 - **2D character "Nour"** is a flat inline SVG portrait inside
   `#kaiStage` (legacy id preserved so the surrounding layout did not
   churn). `window.nour = { setMode, setState, isReady }` drives the
@@ -160,6 +162,10 @@ python3 -m http.server 8000
 # Bake audio with Google Cloud Gemini-TTS
 gcloud auth application-default login
 GOOGLE_CLOUD_PROJECT=<project> python3 bake_audio.py
+
+# Bake Arabic-ready local XTTS audio once Arabic strings exist
+python3 -m pip install TTS
+python3 bake_audio.py --provider xtts --speaker-wav nour.wav --locale ar --out-dir audio_ar
 ```
 
 Useful flags: `--voice`, `--model`, `--location`, `--force`, `--dry-run`. See
@@ -172,7 +178,8 @@ blocking — the app works as-is.
 
 1. **Arabic localization.** The audience is MENA. Need: RTL layout
    support, translated question + UI strings, Arabic narration (bake a
-   second voice/locale with `--out-dir audio_ar` and `--language-code`).
+   second voice/locale with `--provider xtts --locale ar --out-dir audio_ar`
+   or another Arabic-capable provider such as SILMA).
 2. **Persistence across reloads.** Answers are in-memory only. Decide:
    `localStorage`-only, or backend submission with a session ID.
 3. **Backend.** Currently none. To capture results for research, add a

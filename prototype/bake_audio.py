@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Pre-generate MP3 narration for Tareeq with Google Cloud Text-to-Speech
-Gemini-TTS. The browser only plays local files; credentials stay server-side.
+Pre-generate narration for Tareeq. The browser only plays local files;
+credentials and local model dependencies stay server-side.
 
 Setup:
   gcloud auth application-default login
@@ -11,6 +11,7 @@ Examples:
   python3 bake_audio.py
   python3 bake_audio.py --force
   python3 bake_audio.py --voice Charon --model gemini-2.5-pro-tts
+  python3 bake_audio.py --provider xtts --speaker-wav nour.wav --locale ar --out-dir audio_ar
 """
 
 import argparse
@@ -43,6 +44,11 @@ GEMINI_API_MODELS = [
 
 DEFAULT_CLOUD_MODEL = "gemini-2.5-flash-tts"
 DEFAULT_GEMINI_API_MODEL = "gemini-2.5-flash-preview-tts"
+DEFAULT_XTTS_MODEL = "tts_models/multilingual/multi-dataset/xtts_v2"
+XTTS_LANGUAGES = {
+    "ar", "en", "es", "fr", "de", "it", "pt", "pl", "tr", "ru", "nl",
+    "cs", "zh-cn", "ja", "hu", "ko", "hi",
+}
 
 KNOWN_VOICES = [
     "Achernar", "Achird", "Algenib", "Algieba", "Alnilam", "Aoede",
@@ -54,7 +60,7 @@ KNOWN_VOICES = [
 ]
 
 DEFAULT_PROMPT = (
-    "You are Kai, a warm career-discovery guide for youth in the Middle East "
+    "You are Nour, a warm career-discovery guide for youth in the Middle East "
     "and North Africa. Read the line in clear, friendly English with a calm "
     "coach-like tone. Keep the pace natural and easy for English learners."
 )
@@ -66,13 +72,15 @@ QUESTION_PATTERN = re.compile(
 
 EXTRA_LINES = [
     ("kai_intro",
-     "Hey, I'm Kai. Think of me as a filter for all the noise. "
+     "Hey, I'm Nour. Think of me as a filter for all the noise. "
      "There are no wrong answers here - just pick what you would actually do, "
      "or the closest thing to it."),
     ("kai_results",
      "Nice work. Here's your Career Compass. Remember - this is a compass, "
      "not a GPS. You still get to choose the destination."),
 ]
+
+_XTTS_CACHE = {}
 
 
 def js_string_unescape(s: str) -> str:
@@ -224,9 +232,48 @@ def call_gemini_api_tts(*, api_key: str, text: str, prompt: str, voice: str,
     write_wave(out_path, base64.b64decode(audio_b64))
 
 
+def xtts_language_code(locale_or_language: str) -> str:
+    code = (locale_or_language or "en").strip().replace("_", "-").lower()
+    if code.startswith("zh"):
+        return "zh-cn"
+    code = code.split("-", 1)[0]
+    if code not in XTTS_LANGUAGES:
+        raise ValueError(
+            f"XTTS does not advertise support for language '{locale_or_language}'. "
+            f"Use one of: {', '.join(sorted(XTTS_LANGUAGES))}"
+        )
+    return code
+
+
+def call_xtts(*, text: str, speaker_wav: Path, model: str, language: str,
+              out_path: Path) -> None:
+    try:
+        from TTS.api import TTS
+    except ImportError as exc:
+        raise RuntimeError(
+            "XTTS provider requires Coqui TTS. Install it in a separate local "
+            "environment with: python3 -m pip install TTS"
+        ) from exc
+
+    key = (model,)
+    tts = _XTTS_CACHE.get(key)
+    if tts is None:
+        tts = TTS(model_name=model, progress_bar=False)
+        _XTTS_CACHE[key] = tts
+
+    tmp = out_path.with_suffix(out_path.suffix + ".tmp")
+    tts.tts_to_file(
+        text=text,
+        speaker_wav=str(speaker_wav),
+        language=language,
+        file_path=str(tmp),
+    )
+    tmp.replace(out_path)
+
+
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(
-        description="Pre-bake Gemini-TTS MP3s for the Tareeq assessment."
+        description="Pre-bake narration files for the Tareeq assessment."
     )
     p.add_argument("--project-id",
                    default=os.environ.get("GOOGLE_CLOUD_PROJECT")
@@ -240,9 +287,10 @@ def main(argv=None) -> int:
                    default=os.environ.get("GOOGLE_OAUTH_ACCESS_TOKEN")
                    or os.environ.get("GOOGLE_ACCESS_TOKEN"),
                    help="OAuth access token. Defaults to env or gcloud ADC lookup.")
-    p.add_argument("--provider", choices=["auto", "gemini-api", "cloud-tts"],
+    p.add_argument("--provider", choices=["auto", "gemini-api", "cloud-tts", "xtts"],
                    default="auto",
-                   help="TTS provider. auto uses GEMINI_API_KEY when present, otherwise Cloud TTS OAuth.")
+                   help=("TTS provider. auto uses GEMINI_API_KEY when present, "
+                         "otherwise Cloud TTS OAuth. xtts uses local Coqui XTTS-v2."))
     p.add_argument("--location",
                    default=os.environ.get("GOOGLE_CLOUD_REGION", "global"),
                    help="Cloud TTS location, e.g. global, eu, us. Default: global")
@@ -253,9 +301,15 @@ def main(argv=None) -> int:
     p.add_argument("--voice", default="Kore",
                    help="Gemini-TTS prebuilt voice. Default: Kore")
     p.add_argument("--model", default=None,
-                   help="Gemini-TTS model. Defaults depend on provider.")
-    p.add_argument("--language-code", default="en-US",
-                   help="BCP-47 language code. Default: en-US")
+                   help="TTS model. Defaults depend on provider.")
+    p.add_argument("--locale", default=os.environ.get("TAREEQ_AUDIO_LOCALE"),
+                   help="Content locale, e.g. en or ar. Used for provider language defaults.")
+    p.add_argument("--language-code", default=None,
+                   help="BCP-47/provider language code. Defaults to --locale or en-US.")
+    p.add_argument("--speaker-wav",
+                   default=os.environ.get("NOUR_SPEAKER_WAV")
+                   or os.environ.get("XTTS_SPEAKER_WAV"),
+                   help="Reference voice WAV for --provider xtts. Defaults to NOUR_SPEAKER_WAV.")
     p.add_argument("--prompt", default=DEFAULT_PROMPT,
                    help="Style prompt sent with every line.")
     p.add_argument("--force", action="store_true",
@@ -265,26 +319,47 @@ def main(argv=None) -> int:
     p.add_argument("--delay", type=float, default=0.1,
                    help="Seconds to wait between API calls.")
     args = p.parse_args(argv)
+    args.language_code = args.language_code or args.locale or "en-US"
 
     provider = args.provider
     if provider == "auto":
         provider = "gemini-api" if args.api_key else "cloud-tts"
-    model = args.model or (
-        DEFAULT_GEMINI_API_MODEL if provider == "gemini-api" else DEFAULT_CLOUD_MODEL
-    )
-    output_ext = "wav" if provider == "gemini-api" else "mp3"
+    if args.model:
+        model = args.model
+    elif provider == "gemini-api":
+        model = DEFAULT_GEMINI_API_MODEL
+    elif provider == "xtts":
+        model = DEFAULT_XTTS_MODEL
+    else:
+        model = DEFAULT_CLOUD_MODEL
+    output_ext = "wav" if provider in ("gemini-api", "xtts") else "mp3"
 
-    known_models = GEMINI_API_MODELS if provider == "gemini-api" else VALID_MODELS
-    if model not in known_models:
+    known_models = None
+    if provider == "gemini-api":
+        known_models = GEMINI_API_MODELS
+    elif provider == "cloud-tts":
+        known_models = VALID_MODELS
+    if known_models is not None and model not in known_models:
         sys.stderr.write(
             f"warning: '{model}' is not in the known Gemini-TTS model list; "
             "passing it through anyway.\n"
         )
-    if args.voice not in KNOWN_VOICES:
+    if provider in ("gemini-api", "cloud-tts") and args.voice not in KNOWN_VOICES:
         sys.stderr.write(
             f"warning: '{args.voice}' is not in the known Gemini-TTS voice list; "
             "passing it through anyway.\n"
         )
+
+    xtts_language = None
+    speaker_wav = None
+    if provider == "xtts":
+        try:
+            xtts_language = xtts_language_code(args.language_code)
+        except ValueError as exc:
+            sys.stderr.write(f"error: {exc}\n")
+            return 2
+        if args.speaker_wav:
+            speaker_wav = Path(args.speaker_wav).expanduser()
 
     html_path = Path(args.html)
     if not html_path.exists():
@@ -307,12 +382,19 @@ def main(argv=None) -> int:
     print(f"  characters  : {total_chars:,}")
     print(f"  provider    : {provider}")
     print(f"  model       : {model}")
-    print(f"  voice       : {args.voice}")
+    if provider == "xtts":
+        print(f"  speaker wav : {speaker_wav or '(missing)'}")
+        print(f"  xtts lang   : {xtts_language}")
+    else:
+        print(f"  voice       : {args.voice}")
     print(f"  language    : {args.language_code}")
     print(f"  location    : {args.location}")
     print(f"  format      : {output_ext}")
     print(f"  output dir  : {out_dir}/")
-    print("  cost        : see Google Cloud Text-to-Speech Gemini-TTS pricing")
+    if provider == "xtts":
+        print("  cost        : local compute; no per-character provider charge")
+    else:
+        print("  cost        : see provider TTS pricing")
     print()
 
     access_token = None
@@ -334,6 +416,14 @@ def main(argv=None) -> int:
                 "error: missing OAuth token. Run `gcloud auth application-default "
                 "login`, or pass --access-token / GOOGLE_OAUTH_ACCESS_TOKEN.\n"
             )
+            return 2
+        if provider == "xtts" and not speaker_wav:
+            sys.stderr.write(
+                "error: missing --speaker-wav for XTTS (or set NOUR_SPEAKER_WAV)\n"
+            )
+            return 2
+        if provider == "xtts" and not speaker_wav.exists():
+            sys.stderr.write(f"error: speaker WAV not found: {speaker_wav}\n")
             return 2
 
     skipped = generated = failed = 0
@@ -362,7 +452,7 @@ def main(argv=None) -> int:
                     model=model,
                     out_path=out_path,
                 )
-            else:
+            elif provider == "cloud-tts":
                 call_cloud_tts(
                     access_token=access_token,
                     project_id=args.project_id,
@@ -372,6 +462,14 @@ def main(argv=None) -> int:
                     model=model,
                     language_code=args.language_code,
                     location=args.location,
+                    out_path=out_path,
+                )
+            else:
+                call_xtts(
+                    text=text,
+                    speaker_wav=speaker_wav,
+                    model=model,
+                    language=xtts_language,
                     out_path=out_path,
                 )
             print(" ok")
