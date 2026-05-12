@@ -770,7 +770,7 @@
     .spacer { flex: 1; }
 
     /* ------------------------------------------------------------------
-       Nour character stage — hero on landing, smaller lesson host on
+       Kai/Nour character stage — hero on landing, smaller lesson host on
        question screens, compact corner mode, hidden on results.
        ------------------------------------------------------------------ */
     .kai-stage {
@@ -779,7 +779,7 @@
       pointer-events: none;            /* clicks pass through to content */
       transition: all 0.55s cubic-bezier(.22,.61,.36,1);
     }
-    .kai-stage #nour {
+    .kai-stage #kaiSvg {
       display: block;
       width: 100%;
       height: 100%;
@@ -787,8 +787,59 @@
       transform-origin: 50% 72%;
       overflow: visible;
     }
-    .kai-stage #nour [stroke] {
+    .kai-stage #kaiSvg [stroke] {
       vector-effect: non-scaling-stroke;
+    }
+
+    #kai-head-breathe {
+      animation: kai-breathe 3.2s ease-in-out infinite;
+      transform-box: fill-box;
+      transform-origin: 50% 90%;
+    }
+    #kai-head-sway {
+      animation: kai-sway 6s ease-in-out infinite;
+      transform-box: fill-box;
+      transform-origin: 50% 90%;
+    }
+    #kai-bun {
+      animation: kai-bun-bob 3.2s ease-in-out infinite;
+      transform-box: fill-box;
+      transform-origin: 22px -48px;
+    }
+    #kai-eyes {
+      --kai-gaze-x: 0px;
+      --kai-gaze-y: 0px;
+      transform: translate(var(--kai-gaze-x), var(--kai-gaze-y)) scaleY(1);
+      transform-box: fill-box;
+      transform-origin: 50% 50%;
+      transition: transform 200ms ease-out;
+    }
+    #kai-eyes.blink {
+      transform: translate(var(--kai-gaze-x), var(--kai-gaze-y)) scaleY(0.08);
+      transition-duration: 90ms;
+    }
+    .kai-stage[data-state="thinking"] #kai-head-sway {
+      animation-play-state: paused;
+      transform: rotate(6deg);
+    }
+    .kai-stage[data-state="celebrating"] #kaiSvg {
+      animation: kai-celebrate 0.7s ease-in-out infinite alternate;
+    }
+    @keyframes kai-breathe {
+      0%,100% { transform: scale(1) translateY(0); }
+      50% { transform: scale(1.015) translateY(-1px); }
+    }
+    @keyframes kai-sway {
+      0%,100% { transform: rotate(-1.5deg); }
+      50% { transform: rotate(1.5deg); }
+    }
+    @keyframes kai-bun-bob {
+      0%,100% { transform: translateY(0) rotate(-18deg); }
+      50% { transform: translateY(-1.5px) rotate(-16deg); }
+    }
+    @keyframes kai-celebrate {
+      from { transform: translateY(0) scale(1); }
+      to { transform: translateY(-2px) scale(1.015); }
     }
 
     /* Landing mode — large, centered above the hero copy */
@@ -829,10 +880,10 @@
         drop-shadow(0 18px 30px rgba(255,61,131,0.24))
         drop-shadow(0 0 30px rgba(255,138,61,0.18));
     }
-    .kai-stage[data-pose="nod"] #nour {
+    .kai-stage[data-pose="nod"] #kaiSvg {
       animation: nourNod 0.34s ease-out both;
     }
-    .kai-stage[data-pose="tilt"] #nour {
+    .kai-stage[data-pose="tilt"] #kaiSvg {
       animation: nourTilt 0.5s ease-out both;
     }
     @keyframes nourNod {
@@ -887,6 +938,12 @@
     .kai-stage[data-mode="hidden"] {
       display: none;
     }
+    .kai-stage[data-mode="hidden"] #kaiSvg,
+    .kai-stage[data-mode="hidden"] #kai-head-breathe,
+    .kai-stage[data-mode="hidden"] #kai-head-sway,
+    .kai-stage[data-mode="hidden"] #kai-bun {
+      animation-play-state: paused;
+    }
 
     /* Larger screens: keep mobile feel but elevate */
     @media (min-width: 600px) {
@@ -934,66 +991,60 @@
     <!-- Nour stage. Lives outside the screens so one animated SVG can move
          between landing, lesson, corner, and hidden modes without re-init. -->
     <div id="kaiStage" class="kai-stage" data-mode="hidden" data-speaking="false">
-      <svg id="nour" viewBox="0 0 240 280" preserveAspectRatio="xMidYMid meet"
+      <svg id="kaiSvg" viewBox="-90 -90 180 200" preserveAspectRatio="xMidYMid meet"
+           style="width:100%; height:100%; display:block; filter: drop-shadow(0 8px 18px rgba(0,0,0,0.32));"
            xmlns="http://www.w3.org/2000/svg" aria-label="Nour, your guide">
-        <defs>
-          <linearGradient id="nourWarm" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#ff3d83"/>
-            <stop offset="100%" stop-color="#ff8a3d"/>
-          </linearGradient>
-          <clipPath id="nourPanel"><rect x="0" y="0" width="240" height="280" rx="32"/></clipPath>
-        </defs>
-        <g clip-path="url(#nourPanel)">
-          <rect x="0" y="0" width="240" height="280" fill="#f4715a"/>
-          <g id="nour-body">
-            <path d="M 64 230 Q 60 250 64 280 L 176 280 Q 180 250 176 230 Q 165 215 145 218 L 125 224 L 120 236 L 115 224 L 95 218 Q 75 215 64 230 Z" fill="#1a2a45"/>
-            <rect x="111" y="170" width="18" height="14" rx="3" fill="#e8a87c"/>
-          </g>
-          <g id="nour-head" style="transform-origin: 120px 168px;">
-            <g id="nour-hair-back">
-              <path d="M 148 110 Q 158 126 156 154 Q 152 178 142 182 L 138 154 Q 142 132 142 114 Z" fill="#1a2a45"/>
-              <ellipse cx="142" cy="84" rx="14" ry="10" transform="rotate(-18 142 84)" fill="#1a2a45"/>
-              <path d="M 90 114 Q 86 86 120 80 Q 154 80 156 104 Q 156 118 148 116 L 142 104 Q 120 100 98 104 L 92 116 Q 88 118 90 114 Z" fill="#1a2a45"/>
-            </g>
-            <ellipse id="nour-face" cx="120" cy="132" rx="30" ry="38" fill="#e8a87c"/>
-            <path d="M 92 114 Q 112 100 138 110 Q 142 122 138 128 L 132 112 Q 114 108 98 116 Q 92 118 92 114 Z" fill="#1a2a45"/>
-            <g id="nour-ears">
-              <ellipse cx="92" cy="131" rx="3" ry="6" fill="#e8a87c"/>
-              <ellipse cx="91" cy="133" rx="1.5" ry="3" fill="#c4845a"/>
-              <circle cx="92" cy="138" r="2.4" fill="#4ee0ff"/>
-            </g>
-            <g id="nour-brows">
-              <path id="nour-brow-l" d="M 96 116 Q 104 113 112 116" stroke="#1a2a45" stroke-width="3" stroke-linecap="round" fill="none"/>
-              <path id="nour-brow-r" d="M 128 116 Q 136 113 144 116" stroke="#1a2a45" stroke-width="3" stroke-linecap="round" fill="none"/>
-            </g>
-            <g id="nour-eyes">
-              <g id="nour-eye-l">
-                <ellipse class="eye-white" cx="104" cy="127" rx="6" ry="5" fill="#fbf2e8"/>
-                <circle class="pupil" cx="104" cy="128" r="3.5" fill="#1a2a45"/>
-                <circle class="shine" cx="106" cy="125" r="1.2" fill="#ffffff"/>
+        <g id="kai-body">
+          <rect id="kai-neck" x="-9" y="35" width="18" height="12" rx="2" fill="#e8a87c"/>
+          <path id="kai-shirt" fill="#1a2a45"
+            d="M -56 50 Q -58 70 -54 100 L 54 100 Q 58 70 56 50 Q 46 42 24 44 L 5 50 L 0 62 L -5 50 L -24 44 Q -46 42 -56 50 Z"/>
+        </g>
+        <g id="kai-head-breathe" style="transform-box: fill-box; transform-origin: 50% 90%;">
+          <g id="kai-head-sway" style="transform-box: fill-box; transform-origin: 50% 90%;">
+            <g id="kai-head" style="transform-box: fill-box; transform-origin: 50% 90%;">
+              <g id="kai-hair-back">
+                <path fill="#1a2a45" d="M 28 -22 Q 38 -6 36 22 Q 32 46 22 50 L 18 22 Q 22 0 22 -18 Z"/>
               </g>
-              <g id="nour-eye-r">
-                <ellipse class="eye-white" cx="136" cy="127" rx="6" ry="5" fill="#fbf2e8"/>
-                <circle class="pupil" cx="136" cy="128" r="3.5" fill="#1a2a45"/>
-                <circle class="shine" cx="138" cy="125" r="1.2" fill="#ffffff"/>
+              <g id="kai-bun">
+                <ellipse fill="#1a2a45" cx="22" cy="-48" rx="14" ry="10"/>
+              </g>
+              <g id="kai-hair-crown">
+                <path fill="#1a2a45"
+                  d="M -30 -18 Q -34 -46 0 -52 Q 34 -52 36 -28 Q 36 -14 28 -16 L 22 -28 Q 0 -32 -22 -28 L -28 -16 Q -32 -14 -30 -18 Z"/>
+              </g>
+              <g id="kai-face">
+                <ellipse fill="#e8a87c" cx="0" cy="0" rx="30" ry="38"/>
+                <ellipse fill="#e8a87c" cx="-28" cy="-1" rx="3" ry="6"/>
+                <ellipse fill="#c4845a" cx="-29" cy="1" rx="1.5" ry="3"/>
+              </g>
+              <g id="kai-hair-front">
+                <path fill="#1a2a45"
+                  d="M -28 -18 Q -8 -32 18 -22 Q 22 -10 18 -4 L 12 -20 Q -6 -24 -22 -16 Q -28 -14 -28 -18 Z"/>
+              </g>
+              <g id="kai-brows">
+                <path id="kai-brow-l" d="M -26 -16 Q -18 -19 -10 -15"
+                      stroke="#1a2a45" stroke-width="3" stroke-linecap="round" fill="none"/>
+                <path id="kai-brow-r" d="M 10 -15 Q 18 -19 26 -16"
+                      stroke="#1a2a45" stroke-width="3" stroke-linecap="round" fill="none"/>
+              </g>
+              <g id="kai-eyes" style="transform-box: fill-box; transform-origin: 50% 50%;">
+                <circle id="kai-eye-l" fill="#1a2a45" cx="-15" cy="-4" r="3"/>
+                <circle id="kai-eye-r" fill="#1a2a45" cx="15" cy="-4" r="3"/>
+              </g>
+              <g id="kai-nose">
+                <path d="M -2 6 Q -4 11 0 13 Q 4 11 2 6"
+                      stroke="#c4845a" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+              </g>
+              <g id="kai-cheeks">
+                <circle fill="#c4604a" opacity="0.75" cx="-22" cy="14" r="4"/>
+                <circle fill="#c4604a" opacity="0.75" cx="22" cy="14" r="4"/>
+              </g>
+              <g id="kai-mouth">
+                <path id="kai-mouth-smile" d="M -5 21 Q 0 23 5 21"
+                      stroke="#7a2828" stroke-width="2" stroke-linecap="round" fill="none"/>
+                <ellipse id="kai-mouth-open" cx="0" cy="22" rx="4" ry="0" fill="#3a1010"/>
               </g>
             </g>
-            <g id="nour-lids" style="transform-origin: 120px 127px; transform: scaleY(0);">
-              <ellipse cx="104" cy="127" rx="6.5" ry="5.5" fill="#e8a87c"/>
-              <ellipse cx="136" cy="127" rx="6.5" ry="5.5" fill="#e8a87c"/>
-            </g>
-            <path id="nour-nose" d="M 118 136 Q 116 142 120 144 Q 124 142 122 136" stroke="#c4845a" stroke-width="1.4" fill="none" stroke-linecap="round"/>
-            <g id="nour-cheeks">
-              <circle cx="98" cy="148" r="4" fill="#c4604a" opacity="0.72"/>
-              <circle cx="142" cy="148" r="4" fill="#c4604a" opacity="0.72"/>
-            </g>
-            <path id="nour-mouth" d="M 115 156 Q 120 158 125 156" stroke="#7a2828" stroke-width="2.2" stroke-linecap="round" fill="none"/>
-          </g>
-          <g id="nour-sparkles" opacity="0">
-            <circle cx="60" cy="90" r="4" fill="url(#nourWarm)"/>
-            <circle cx="190" cy="80" r="5" fill="url(#nourWarm)"/>
-            <circle cx="210" cy="150" r="3" fill="url(#nourWarm)"/>
-            <circle cx="40" cy="170" r="3" fill="url(#nourWarm)"/>
           </g>
         </g>
       </svg>
@@ -1679,24 +1730,24 @@
     $("progressEyebrow").classList.toggle("active", Boolean(label));
   }
 
-  function triggerNourPose(pose, duration = 520) {
+  function triggerKaiPose(pose, duration = 520) {
     const stage = $("kaiStage");
     if (!stage) return;
     if (pose === "thinking") {
-      if (window.nour && typeof window.nour.setState === "function") {
-        try { window.nour.setState("thinking"); } catch (e) {}
+      if (window.kai && typeof window.kai.setState === "function") {
+        try { window.kai.setState("thinking"); } catch (e) {}
       }
-      clearTimeout(triggerNourPose.timer);
-      triggerNourPose.timer = setTimeout(() => {
-        if (window.nour && typeof window.nour.setState === "function") {
-          try { window.nour.setState("idle"); } catch (e) {}
+      clearTimeout(triggerKaiPose.timer);
+      triggerKaiPose.timer = setTimeout(() => {
+        if (window.kai && typeof window.kai.setState === "function") {
+          try { window.kai.setState("idle"); } catch (e) {}
         }
       }, duration);
       return;
     }
     stage.setAttribute("data-pose", pose);
-    clearTimeout(triggerNourPose.timer);
-    triggerNourPose.timer = setTimeout(() => {
+    clearTimeout(triggerKaiPose.timer);
+    triggerKaiPose.timer = setTimeout(() => {
       if (stage.getAttribute("data-pose") === pose) {
         stage.removeAttribute("data-pose");
       }
@@ -1723,8 +1774,8 @@
     if (!tip) return false;
     state.tipTargetIdx = targetIdx;
     stopAudio();
-    nourSet("lesson", "idle");
-    triggerNourPose("nod", 360);
+    kaiSet("lesson", "idle");
+    triggerKaiPose("nod", 360);
     updateProgress(tip.eyebrow, Math.max(0, targetIdx - 1));
     $("tipEyebrow").textContent = tip.eyebrow;
     $("tipTitle").textContent = tip.title;
@@ -1758,7 +1809,7 @@
         '</optgroup>';
       sel.addEventListener("change", e => {
         state.answers[q.id] = e.target.value;
-        triggerNourPose("tilt");
+        triggerKaiPose("tilt");
         updateNextBtn();
       });
       opts.appendChild(sel);
@@ -1771,7 +1822,7 @@
         el.innerHTML = `<div class="letter">${opt.l}</div><div class="body">${opt.t}</div>`;
         el.addEventListener("click", () => {
           state.answers[q.id] = i;
-          triggerNourPose("tilt");
+          triggerKaiPose("tilt");
           playKaiTrack("got_it");
           renderQuestion({ autoPlay: false });
         });
@@ -1780,8 +1831,8 @@
     }
 
     updateProgress(q.group, state.idx);
-    nourSet("lesson", "idle");
-    triggerNourPose("nod", 360);
+    kaiSet("lesson", "idle");
+    triggerKaiPose("nod", 360);
     syncReadModeToggle();
     syncSlowButton(q.id);
     setAudioNote(isReadMode() ? "Read mode: tap play whenever you want Nour's voice." : "");
@@ -1811,7 +1862,7 @@
 
     if (answered && state.idx === TOTAL - 1 && !state.lastQuestionThinking) {
       state.lastQuestionThinking = true;
-      triggerNourPose("thinking", 1000);
+      triggerKaiPose("thinking", 1000);
       btn.disabled = true;
       footer.classList.remove("ready");
       setTimeout(() => {
@@ -1849,7 +1900,7 @@
     } else {
       // back to landing
       stopAudio();
-      nourSet("landing", "idle");
+      kaiSet("landing", "idle");
       showScreen("landing");
       $("progressWrap").style.display = "none";
       $("progressEyebrow").classList.remove("active");
@@ -2007,8 +2058,8 @@
     $("axEnvDot").style.left = r.envPos + "%";
 
     stopAudio();
-    nourSet("corner", "celebrating");
-    setTimeout(() => nourSet("hidden"), 2000);
+    kaiSet("corner", "celebrating");
+    setTimeout(() => kaiSet("hidden"), 2000);
     showScreen("results");
     $("progressWrap").style.display = "none";
     $("progressEyebrow").classList.remove("active");
@@ -2016,22 +2067,22 @@
     setTimeout(() => playKaiTrack("kai_results"), 300);
   }
 
-  // ---------- Nour stage helpers ----------
-  function nourSet(mode, stateName) {
+  // ---------- Kai stage helpers ----------
+  function kaiSet(mode, stateName) {
     const stage = $("kaiStage");
     if (stage) stage.setAttribute("data-mode", mode);
-    if (window.nour && typeof window.nour.setMode === "function") {
-      try { window.nour.setMode(mode); } catch (e) {}
+    if (window.kai && typeof window.kai.setMode === "function") {
+      try { window.kai.setMode(mode); } catch (e) {}
     }
-    if (stateName && window.nour && typeof window.nour.setState === "function") {
-      try { window.nour.setState(stateName); } catch (e) {}
+    if (stateName && window.kai && typeof window.kai.setState === "function") {
+      try { window.kai.setState(stateName); } catch (e) {}
     }
   }
 
   // ---------- Events ----------
   $("startBtn").addEventListener("click", () => {
     state.userGestured = true;
-    nourSet("lesson", "idle");
+    kaiSet("lesson", "idle");
     showScreen("question");
     state.idx = 0;
     renderQuestion();
@@ -2045,7 +2096,7 @@
     state.answers = {};
     state.tipTargetIdx = null;
     stopAudio();
-    nourSet("landing", "idle");
+    kaiSet("landing", "idle");
     showScreen("landing");
     $("progressWrap").style.display = "none";
     $("progressEyebrow").classList.remove("active");
@@ -2136,7 +2187,7 @@
         const i = parseInt(e.key, 10) - 1;
         if (i < (q.options?.length || 0)) {
           state.answers[q.id] = i;
-          triggerNourPose("tilt");
+          triggerKaiPose("tilt");
           renderQuestion({ autoPlay: false });
         }
       }
@@ -2149,303 +2200,247 @@
   </script>
 
   <!-- ============================================================
-       Nour — animated 2D SVG mentor with audio-driven lip sync.
-       No external dependencies; exposes window.nour for the app shell.
+       Kai/Nour — panel-free SVG mentor with audio-driven lip sync.
+       No external dependencies; preserves the legacy window.kai API.
        ============================================================ -->
   <script>
-  (function initNour() {
-    const stage = document.getElementById("kaiStage");
-    const nour = document.getElementById("nour");
-    const audioEl = document.getElementById("ttsAudio");
-    if (!stage || !nour || !audioEl) {
-      console.warn("Nour: required DOM nodes missing — skipping init.");
-      return;
-    }
-
-    const head = document.getElementById("nour-head");
-    const lids = document.getElementById("nour-lids");
-    const mouth = document.getElementById("nour-mouth");
-    const browL = document.getElementById("nour-brow-l");
-    const browR = document.getElementById("nour-brow-r");
-    const eyeL = document.getElementById("nour-eye-l");
-    const eyeR = document.getElementById("nour-eye-r");
-    const sparkles = document.getElementById("nour-sparkles");
-    const sparkleDots = sparkles ? Array.from(sparkles.querySelectorAll("circle")) : [];
-    const originalEyeL = eyeL ? eyeL.innerHTML : "";
-    const originalEyeR = eyeR ? eyeR.innerHTML : "";
-    const SVG_NS = "http://www.w3.org/2000/svg";
-
-    const smilePath = "M 115 156 Q 120 158 125 156";
-    const flatPath = "M 116 156 L 124 156";
-    const openShapeA = [113, 153, 120, 165, 127, 153, 120, 161, 113, 153];
-    const openShapeB = [113, 156, 120, 158, 127, 156, 120, 158, 113, 156];
-    const celebrateMouth = "M 110 153 Q 120 168 130 153 Q 120 163 110 153 Z";
-    const browNeutralL = "M 96 116 Q 104 113 112 116";
-    const browNeutralR = "M 128 116 Q 136 113 144 116";
-    const browRaisedL = "M 96 112 Q 104 108 112 112";
-
-    const lipFill = document.createElementNS(SVG_NS, "path");
-    lipFill.setAttribute("id", "nour-mouth-inner");
-    lipFill.setAttribute("d", "M 112 154 Q 120 159 128 154 Q 120 162 112 154 Z");
-    lipFill.setAttribute("fill", "#c4604a");
-    lipFill.setAttribute("opacity", "0");
-    if (mouth && mouth.parentNode) mouth.parentNode.insertBefore(lipFill, mouth.nextSibling);
-
-    let currentState = "idle";
-    let ready = false;
-    let raf = 0;
-    let audioCtx = null;
-    let analyser = null;
-    let audioSource = null;
-    let ampBuf = null;
-    let smoothAmp = 0;
-    let nextBlinkAt = performance.now() + randomBlinkDelay();
-    let blinkTimer = null;
-    let eyesAreCelebrating = false;
-
-    function setMode(mode) {
-      stage.setAttribute("data-mode", mode);
-      if (mode === "corner") {
-        nour.setAttribute("viewBox", "60 54 120 142");
-      } else {
-        nour.setAttribute("viewBox", "0 0 240 280");
-      }
-    }
-
-    function setState(nextState) {
-      if (!nextState) nextState = "idle";
-      currentState = nextState;
-      stage.setAttribute("data-state", currentState);
-      if (currentState !== "celebrating") restoreEyes();
-      if (currentState !== "speaking") smoothAmp = 0;
-      if (currentState === "thinking") applyThinkingFace();
-      else if (currentState === "celebrating") applyCelebratingFace();
-      else applyNeutralFace();
-    }
-
-    function isReady() {
-      return ready;
-    }
-
-    function applyNeutralFace() {
-      if (browL) browL.setAttribute("d", browNeutralL);
-      if (browR) browR.setAttribute("d", browNeutralR);
-      shiftPupils(0, 0);
-      setSmileMouth();
-      if (sparkles) {
-        sparkles.setAttribute("opacity", "0");
-        sparkles.removeAttribute("transform");
-      }
-      for (const dot of sparkleDots) dot.removeAttribute("transform");
-    }
-
-    function applyThinkingFace() {
-      if (browL) browL.setAttribute("d", browRaisedL);
-      if (browR) browR.setAttribute("d", browNeutralR);
-      shiftPupils(1, -1);
-      if (mouth) {
-        mouth.setAttribute("d", flatPath);
-        mouth.setAttribute("stroke", "#7a2828");
-        mouth.setAttribute("stroke-width", "2.2");
-        mouth.setAttribute("stroke-linecap", "round");
-        mouth.setAttribute("fill", "none");
-      }
-      lipFill.setAttribute("opacity", "0");
-    }
-
-    function applyCelebratingFace() {
-      if (eyeL && !eyesAreCelebrating) {
-        eyeL.innerHTML = '<path d="M 98 124 Q 104 118 110 124" stroke="#1a2a45" stroke-width="3" fill="none" stroke-linecap="round"/>';
-        eyeR.innerHTML = '<path d="M 130 124 Q 136 118 142 124" stroke="#1a2a45" stroke-width="3" fill="none" stroke-linecap="round"/>';
-        eyesAreCelebrating = true;
-      }
-      if (browL) browL.setAttribute("d", browNeutralL);
-      if (browR) browR.setAttribute("d", browNeutralR);
-      if (mouth) {
-        mouth.setAttribute("d", celebrateMouth);
-        mouth.setAttribute("stroke", "none");
-        mouth.setAttribute("fill", "#3a1218");
-      }
-      lipFill.setAttribute("opacity", "1");
-    }
-
-    function restoreEyes() {
-      if (!eyesAreCelebrating) return;
-      if (eyeL) eyeL.innerHTML = originalEyeL;
-      if (eyeR) eyeR.innerHTML = originalEyeR;
-      eyesAreCelebrating = false;
-    }
-
-    function shiftPupils(x, y) {
-      const eyeRoot = document.getElementById("nour-eyes");
-      if (!eyeRoot) return;
-      for (const node of eyeRoot.querySelectorAll(".pupil, .shine")) {
-        node.setAttribute("transform", "translate(" + x + " " + y + ")");
-      }
-    }
-
-    function setSmileMouth() {
-      if (!mouth) return;
-      mouth.setAttribute("d", smilePath);
-      mouth.setAttribute("stroke", "#7a2828");
-      mouth.setAttribute("stroke-width", "2.2");
-      mouth.setAttribute("stroke-linecap", "round");
-      mouth.setAttribute("fill", "none");
-      lipFill.setAttribute("opacity", "0");
-    }
-
-    function interpolatePath(a, b, t) {
-      const nums = a.map((value, index) => value + (b[index] - value) * t);
-      return "M " + nums[0].toFixed(2) + " " + nums[1].toFixed(2) +
-        " Q " + nums[2].toFixed(2) + " " + nums[3].toFixed(2) +
-        " " + nums[4].toFixed(2) + " " + nums[5].toFixed(2) +
-        " Q " + nums[6].toFixed(2) + " " + nums[7].toFixed(2) +
-        " " + nums[8].toFixed(2) + " " + nums[9].toFixed(2) + " Z";
-    }
-
-    function setSpeakingMouth(amount) {
-      if (!mouth) return;
-      if (amount < 0.04) {
-        setSmileMouth();
+  (function bootKaiSvg() {
+    function initKaiSvg() {
+      const stage = document.getElementById("kaiStage");
+      const kaiSvg = document.getElementById("kaiSvg");
+      const audioEl = document.getElementById("ttsAudio");
+      if (!stage || !kaiSvg || !audioEl) {
+        console.warn("Kai SVG: required DOM nodes missing — skipping init.");
         return;
       }
-      const eased = Math.min(1, amount);
-      mouth.setAttribute("d", interpolatePath(openShapeB, openShapeA, eased));
-      mouth.setAttribute("stroke", "none");
-      mouth.setAttribute("fill", "#3a1218");
-      lipFill.setAttribute("opacity", "0");
-    }
 
-    function ensureAudioGraph() {
-      if (analyser) return;
-      const Ctx = window.AudioContext || window.webkitAudioContext;
-      if (!Ctx) return;
-      try {
-        audioCtx = new Ctx();
-        audioSource = audioCtx.createMediaElementSource(audioEl);
-        analyser = audioCtx.createAnalyser();
-        analyser.fftSize = 128;
-        analyser.smoothingTimeConstant = 0.6;
-        audioSource.connect(analyser);
-        analyser.connect(audioCtx.destination);
-        ampBuf = new Uint8Array(analyser.frequencyBinCount);
-      } catch (err) {
-        analyser = null;
+      const eyes = document.getElementById("kai-eyes");
+      const eyeL = document.getElementById("kai-eye-l");
+      const eyeR = document.getElementById("kai-eye-r");
+      const mouthSmile = document.getElementById("kai-mouth-smile");
+      const mouthOpen = document.getElementById("kai-mouth-open");
+      const browL = document.getElementById("kai-brow-l");
+      const browR = document.getElementById("kai-brow-r");
+      const smilePath = "M -5 21 Q 0 23 5 21";
+      const flatPath = "M -4 21 L 4 21";
+      const wideSmilePath = "M -10 18 Q 0 31 10 18";
+      const browNeutralL = "M -26 -16 Q -18 -19 -10 -15";
+      const browNeutralR = "M 10 -15 Q 18 -19 26 -16";
+      const browRaisedL = "M -26 -20 Q -18 -25 -10 -20";
+      const originalEyeL = eyeL ? eyeL.outerHTML : "";
+      const originalEyeR = eyeR ? eyeR.outerHTML : "";
+
+      let currentState = "idle";
+      let ready = false;
+      let raf = 0;
+      let blinkTimer = 0;
+      let currentMouth = 0;
+      let audioCtx = null;
+      let analyser = null;
+      let audioSource = null;
+      let ampBuf = null;
+      let celebratingEyes = false;
+
+      function clamp(min, value, max) {
+        return Math.min(max, Math.max(min, value));
       }
-    }
 
-    function readAmplitude() {
-      if (!analyser || !ampBuf) return 0;
-      analyser.getByteFrequencyData(ampBuf);
-      let sum = 0;
-      for (let i = 0; i < ampBuf.length; i++) sum += ampBuf[i];
-      return Math.min(1, (sum / ampBuf.length / 255) * 1.7);
-    }
+      function setMode(mode) {
+        stage.setAttribute("data-mode", mode);
+      }
 
-    function randomBlinkDelay() {
-      return 3500 + (Math.random() * 3000 - 1500);
-    }
+      function show(mode) {
+        setMode(mode || "landing");
+      }
 
-    function blink() {
-      if (!lids || currentState === "thinking" || currentState === "celebrating") return;
-      clearTimeout(blinkTimer);
-      lids.style.transition = "transform 80ms ease";
-      lids.style.transform = "scaleY(1)";
-      blinkTimer = setTimeout(() => {
-        lids.style.transition = "transform 80ms ease";
-        lids.style.transform = "scaleY(0)";
-      }, 120);
-    }
+      function isReady() {
+        return ready;
+      }
 
-    function updateBlink(now) {
-      if (currentState === "thinking" || currentState === "celebrating") return;
-      if (now < nextBlinkAt) return;
-      blink();
-      nextBlinkAt = now + (currentState === "speaking" ? 8000 : randomBlinkDelay());
-    }
+      function setMouth(amount) {
+        currentMouth = clamp(0, amount, 1);
+        if (mouthOpen) mouthOpen.setAttribute("ry", String(clamp(0, currentMouth * 6, 6)));
+        if (mouthSmile) mouthSmile.style.opacity = String(clamp(0, 1 - currentMouth, 1));
+      }
 
-    function updateSparkles(now) {
-      if (!sparkles) return;
-      const cycle = (now % 2500) / 2500;
-      const active = cycle < 0.58;
-      const p = active ? cycle / 0.58 : 1;
-      const fadeIn = Math.min(1, p / 0.2);
-      const fadeOut = Math.max(0, 1 - Math.max(0, p - 0.24) / 0.76);
-      sparkles.setAttribute("opacity", String(active ? Math.min(fadeIn, fadeOut) : 0));
-      const dirs = [[-10, -8], [10, -9], [10, 7], [-10, 8]];
-      sparkleDots.forEach((dot, index) => {
-        const d = dirs[index] || [0, 0];
-        dot.setAttribute("transform", "translate(" + (d[0] * p).toFixed(1) + " " + (d[1] * p).toFixed(1) + ")");
-      });
-    }
+      function restoreEyes() {
+        if (!celebratingEyes || !eyes) return;
+        eyes.innerHTML = originalEyeL + originalEyeR;
+        celebratingEyes = false;
+      }
 
-    function animate(now) {
-      if (document.hidden) {
+      function applyNeutralFace() {
+        restoreEyes();
+        if (browL) browL.setAttribute("d", browNeutralL);
+        if (browR) browR.setAttribute("d", browNeutralR);
+        if (eyes) {
+          eyes.style.setProperty("--kai-gaze-x", "0px");
+          eyes.style.setProperty("--kai-gaze-y", "0px");
+        }
+        if (mouthSmile) {
+          mouthSmile.setAttribute("d", smilePath);
+          mouthSmile.setAttribute("stroke", "#7a2828");
+          mouthSmile.style.opacity = "1";
+        }
+        setMouth(0);
+      }
+
+      function applyThinkingFace() {
+        restoreEyes();
+        if (browL) browL.setAttribute("d", browRaisedL);
+        if (browR) browR.setAttribute("d", browNeutralR);
+        if (eyes) {
+          eyes.style.setProperty("--kai-gaze-x", "1px");
+          eyes.style.setProperty("--kai-gaze-y", "-1px");
+        }
+        if (mouthSmile) {
+          mouthSmile.setAttribute("d", flatPath);
+          mouthSmile.setAttribute("stroke", "#7a2828");
+          mouthSmile.style.opacity = "1";
+        }
+        setMouth(0);
+      }
+
+      function applyCelebratingFace() {
+        if (eyes && !celebratingEyes) {
+          eyes.innerHTML =
+            '<path d="M -21 -4 Q -15 -10 -9 -4" stroke="#1a2a45" stroke-width="3" fill="none" stroke-linecap="round"/>' +
+            '<path d="M 9 -4 Q 15 -10 21 -4" stroke="#1a2a45" stroke-width="3" fill="none" stroke-linecap="round"/>';
+          celebratingEyes = true;
+        }
+        if (browL) browL.setAttribute("d", browNeutralL);
+        if (browR) browR.setAttribute("d", browNeutralR);
+        if (mouthSmile) {
+          mouthSmile.setAttribute("d", wideSmilePath);
+          mouthSmile.setAttribute("stroke", "#7a2828");
+          mouthSmile.style.opacity = "1";
+        }
+        setMouth(0);
+      }
+
+      function setState(nextState) {
+        currentState = nextState || "idle";
+        stage.setAttribute("data-state", currentState);
+        if (currentState === "thinking") applyThinkingFace();
+        else if (currentState === "celebrating") applyCelebratingFace();
+        else applyNeutralFace();
+        startLoop();
+      }
+
+      function ensureAudioGraph() {
+        if (analyser) return;
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if (!Ctx) return;
+        try {
+          audioCtx = new Ctx();
+          audioSource = audioCtx.createMediaElementSource(audioEl);
+          analyser = audioCtx.createAnalyser();
+          analyser.fftSize = 128;
+          analyser.smoothingTimeConstant = 0.6;
+          audioSource.connect(analyser);
+          analyser.connect(audioCtx.destination);
+          ampBuf = new Uint8Array(analyser.frequencyBinCount);
+        } catch (error) {
+          analyser = null;
+          ampBuf = null;
+        }
+      }
+
+      function primeAudioGraph() {
+        ensureAudioGraph();
+        if (audioCtx && audioCtx.state === "suspended") audioCtx.resume().catch(() => {});
+      }
+
+      function readAmplitude() {
+        if (!analyser || !ampBuf) return 0;
+        analyser.getByteFrequencyData(ampBuf);
+        let sum = 0;
+        for (let i = 0; i < ampBuf.length; i++) sum += ampBuf[i];
+        return Math.min(1, (sum / ampBuf.length / 255) * 1.7);
+      }
+
+      function scheduleBlink() {
+        clearTimeout(blinkTimer);
+        const delay = 2200 + Math.random() * 2600;
+        blinkTimer = setTimeout(() => {
+          if (!document.hidden && currentState !== "speaking" && currentState !== "thinking" && currentState !== "celebrating" && eyes) {
+            eyes.classList.add("blink");
+            setTimeout(() => eyes.classList.remove("blink"), 90);
+          }
+          scheduleBlink();
+        }, delay);
+      }
+
+      function animate() {
+        if (document.hidden) {
+          raf = 0;
+          return;
+        }
+        let targetMouth = 0;
+        if (currentState === "speaking" && !audioEl.paused && !audioEl.ended) {
+          targetMouth = readAmplitude();
+        }
+        currentMouth += (targetMouth - currentMouth) * 0.45;
+        setMouth(currentMouth);
+        raf = requestAnimationFrame(animate);
+      }
+
+      function startLoop() {
+        if (!raf && !document.hidden) raf = requestAnimationFrame(animate);
+      }
+
+      function stopLoop() {
+        if (raf) cancelAnimationFrame(raf);
         raf = 0;
-        return;
       }
 
-      const seconds = now / 1000;
-      let breath = Math.cos((seconds / 4.2) * Math.PI * 2) - 1;
-      let rotation = Math.sin((seconds / 6) * Math.PI * 2) * 1.2;
-
-      if (currentState === "speaking") {
-        rotation = Math.sin((seconds / 3) * Math.PI * 2) * 1.8;
-        const amp = readAmplitude();
-        smoothAmp += (amp - smoothAmp) * 0.45;
-        setSpeakingMouth(smoothAmp);
-      } else if (currentState === "thinking") {
-        breath = 0;
-        rotation = 6;
-      } else if (currentState === "celebrating") {
-        breath = Math.sin((seconds / 1.4) * Math.PI * 2) * -1.6;
-        rotation = Math.sin((seconds / 1.8) * Math.PI * 2) * 1.6;
-        updateSparkles(now);
+      if (!window.matchMedia || !window.matchMedia("(pointer: coarse)").matches) {
+        window.addEventListener("pointermove", (event) => {
+          if (!eyes || celebratingEyes) return;
+          const dx = event.clientX - window.innerWidth / 2;
+          const dy = event.clientY - window.innerHeight / 2;
+          eyes.style.setProperty("--kai-gaze-x", clamp(-2, dx * 0.01, 2).toFixed(2) + "px");
+          eyes.style.setProperty("--kai-gaze-y", clamp(-2, dy * 0.01, 2).toFixed(2) + "px");
+        }, { passive: true });
       }
 
-      if (head) {
-        head.style.transform = "translateY(" + breath.toFixed(2) + "px) rotate(" + rotation.toFixed(2) + "deg)";
-      }
-      updateBlink(now);
-      raf = requestAnimationFrame(animate);
-    }
+      document.addEventListener("pointerdown", primeAudioGraph, { once: true, capture: true });
+      document.addEventListener("keydown", primeAudioGraph, { once: true, capture: true });
 
-    function startLoop() {
-      if (!raf && !document.hidden) raf = requestAnimationFrame(animate);
-    }
+      audioEl.addEventListener("play", () => {
+        stage.setAttribute("data-speaking", "true");
+        primeAudioGraph();
+        setState("speaking");
+      });
 
-    function stopLoop() {
-      if (raf) cancelAnimationFrame(raf);
-      raf = 0;
-    }
+      audioEl.addEventListener("ended", () => {
+        stage.setAttribute("data-speaking", "false");
+        setState("idle");
+      });
 
-    audioEl.addEventListener("play", () => {
-      stage.setAttribute("data-speaking", "true");
-      ensureAudioGraph();
-      if (audioCtx && audioCtx.state === "suspended") audioCtx.resume().catch(() => {});
-      setState("speaking");
-      startLoop();
-    });
-    audioEl.addEventListener("ended", () => {
-      stage.setAttribute("data-speaking", "false");
+      audioEl.addEventListener("pause", () => {
+        stage.setAttribute("data-speaking", "false");
+        if (currentState === "speaking") setState("idle");
+      });
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) stopLoop();
+        else startLoop();
+      });
+
+      window.kai = { setMode, show, setState, isReady };
+      ready = true;
+      setMode("landing");
       setState("idle");
-    });
-    audioEl.addEventListener("pause", () => {
-      stage.setAttribute("data-speaking", "false");
-      if (currentState === "speaking") setState("idle");
-    });
+      scheduleBlink();
+      window.dispatchEvent(new CustomEvent("kai:ready"));
+    }
 
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) stopLoop();
-      else startLoop();
-    });
-
-    window.nour = { setMode, setState, isReady };
-    ready = true;
-    setMode("landing");
-    setState("idle");
-    startLoop();
-    window.dispatchEvent(new CustomEvent("nour:ready"));
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initKaiSvg, { once: true });
+    } else {
+      initKaiSvg();
+    }
   })();
   </script>
 </body>

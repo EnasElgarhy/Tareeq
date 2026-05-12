@@ -69,14 +69,22 @@ Tailwind CSS, ESLint, Prettier, and Vitest with `happy-dom`.
   replay, persisted Listen/Read mode, answer-pill selection, a delayed
   final-question thinking pose, illustrated tip screens between
   demographics/curiosities/operations/rewards/ecosystems, and a pure
-  inline SVG/JS character animation. The old Three.js + Ready Player Me
-  path has been removed from the prototype.
+  inline SVG/JS character animation. As of 2026-05-12 the character is a
+  panel-free flat SVG (`#kaiSvg`) animated with CSS blinks/breathing and
+  the existing Web Audio analyser for mouth amplitude. The old Three.js
+  + Ready Player Me path is removed and deprecated; future Next.js work
+  should port this SVG controller instead of the 3D pipeline.
 - `prototype/bake_audio.py` now bakes local narration with multiple
-  providers. It auto-detects `GEMINI_API_KEY` and uses the Gemini API
-  (`gemini-2.5-flash-preview-tts`, voice `Kore`, `.wav` output), can use
+  providers. It auto-detects `NOUR_SPEAKER_WAV` first and uses local
+  Coqui XTTS-v2 via `--provider coqui` / `xtts` (`.wav` output), then
+  falls back to `GEMINI_API_KEY` for the Gemini API
+  (`gemini-2.5-flash-preview-tts`, voice `Kore`, `.wav` output), or
   Google Cloud Text-to-Speech OAuth via `--provider cloud-tts` (`.mp3`
-  output), and now has an Arabic-ready local `--provider xtts` path for
-  Coqui XTTS-v2 using `--speaker-wav` / `NOUR_SPEAKER_WAV`.
+  output). Coqui should be installed from the GitHub `dev` branch:
+  `python3 -m pip install "git+https://github.com/coqui-ai/TTS.git@dev"`.
+  For the desired warm human accent, use or create
+  `prototype/assets/voice/nour_warm_reference.wav`; XTTS clones accent
+  and warmth from that licensed 10-20 second reference recording.
 - `prototype/audio/` currently contains temporary local macOS-generated
   demo WAV files so the static prototype speaks without a cloud key.
   Replace them with Gemini, Cloud TTS, or XTTS output before production.
@@ -115,20 +123,23 @@ opening `index.html` in a browser, or via any static file server
 - **Audio narration** is pre-baked, not live-generated. `bake_audio.py`
   reads question text directly from `index.html` and writes local audio
   files. Gemini API output is `.wav`, Cloud TTS OAuth output is `.mp3`,
-  and local Coqui XTTS-v2 output is `.wav` with `--provider xtts` plus a
-  Nour reference speaker file. The legacy narration track ids are still
-  `audio/kai_intro.*` and `audio/kai_results.*`. The browser only ever
-  plays local audio files; provider credentials and model runtimes never
-  reach the client. Missing files degrade gracefully.
+  and local Coqui XTTS-v2 output is `.wav` with `--provider coqui` /
+  `xtts` plus a Nour reference speaker file. The preferred warm human
+  reference path is `assets/voice/nour_warm_reference.wav`. The legacy
+  narration track ids are still `audio/kai_intro.*` and
+  `audio/kai_results.*`. The browser only ever plays local audio files;
+  provider credentials and model runtimes never reach the client.
+  Missing files degrade gracefully.
 - **2D character "Nour"** is a flat inline SVG portrait inside
   `#kaiStage` (legacy id preserved so the surrounding layout did not
-  churn). `window.nour = { setMode, setState, isReady }` drives the
-  same CSS modes: `landing`, `lesson`, `corner`, and `hidden`. Nour has
+  churn). `window.kai = { setMode, show, setState, isReady }` is kept as
+  the compatibility API while driving the Nour SVG modes: `landing`,
+  `lesson`, `corner`, and `hidden`. Nour has
   breathing, blinks, nod/tilt poses, thinking and celebrating states,
   and amplitude-based lip-sync from a Web Audio `AnalyserNode` connected
   to the existing `<audio id="ttsAudio">`. The deprecated Three.js,
-  Ready Player Me GLB, procedural fallback, `window.kai`, and canvas
-  path have been removed from the prototype.
+  Ready Player Me GLB, procedural fallback, and canvas path have been
+  removed from the prototype.
 - **Persistence** uses `localStorage` for the sound-toggle preference
   only. Answers are kept in memory; refreshing the page resets them.
   This is intentional for now.
@@ -163,9 +174,9 @@ python3 -m http.server 8000
 gcloud auth application-default login
 GOOGLE_CLOUD_PROJECT=<project> python3 bake_audio.py
 
-# Bake Arabic-ready local XTTS audio once Arabic strings exist
-python3 -m pip install TTS
-python3 bake_audio.py --provider xtts --speaker-wav nour.wav --locale ar --out-dir audio_ar
+# Bake Arabic-ready local Coqui XTTS audio once Arabic strings exist
+python3 -m pip install "git+https://github.com/coqui-ai/TTS.git@dev"
+NOUR_SPEAKER_WAV=assets/voice/nour_warm_reference.wav python3 bake_audio.py --provider coqui --locale ar --out-dir audio_ar
 ```
 
 Useful flags: `--voice`, `--model`, `--location`, `--force`, `--dry-run`. See
@@ -178,7 +189,7 @@ blocking — the app works as-is.
 
 1. **Arabic localization.** The audience is MENA. Need: RTL layout
    support, translated question + UI strings, Arabic narration (bake a
-   second voice/locale with `--provider xtts --locale ar --out-dir audio_ar`
+   second voice/locale with `--provider coqui --locale ar --out-dir audio_ar`
    or another Arabic-capable provider such as SILMA).
 2. **Persistence across reloads.** Answers are in-memory only. Decide:
    `localStorage`-only, or backend submission with a session ID.

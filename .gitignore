@@ -34,6 +34,11 @@ yarn-error.log*
 .env*
 !.env.example
 
+# local voice-cloning references can contain sensitive biometric voice data
+prototype/assets/voice/*.wav
+prototype/assets/voice/*.mp3
+prototype/assets/voice/*.m4a
+
 # vercel
 .vercel
 

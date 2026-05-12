@@ -47,20 +47,25 @@ GOOGLE_CLOUD_PROJECT=your-project-id python3 bake_audio.py --provider cloud-tts
 Open-source Arabic-ready path with Coqui XTTS-v2:
 
 ```bash
-python3 -m pip install TTS
+python3 -m pip install "git+https://github.com/coqui-ai/TTS.git@dev"
+export NOUR_SPEAKER_WAV=assets/voice/nour_warm_reference.wav
 python3 bake_audio.py \
-  --provider xtts \
-  --speaker-wav path/to/nour_reference.wav \
+  --provider coqui \
   --locale en \
   --out-dir audio
 
 # Later, after Arabic strings exist:
 python3 bake_audio.py \
-  --provider xtts \
-  --speaker-wav path/to/nour_reference.wav \
+  --provider coqui \
   --locale ar \
   --out-dir audio_ar
 ```
+
+For a warmer, more human accent, the important input is the reference
+WAV. XTTS clones the voice color, accent, and warmth from that recording.
+Use a clean 10-20 second adult mentor voice: calm, friendly, clear
+English, soft MENA-friendly international accent, no music or room echo.
+See `assets/voice/README.md` for the exact recording brief.
 
 The script reads question text directly out of `index.html`, so you do
 not have to maintain a separate copy. Existing files are skipped unless
@@ -70,10 +75,10 @@ you pass `--force`.
 
 | Flag | Default | What it does |
 | --- | --- | --- |
-| `--provider auto` | `auto` | Uses `GEMINI_API_KEY` when present, otherwise Cloud TTS OAuth. |
-| `--provider xtts` | off | Uses local Coqui XTTS-v2; supports English and Arabic with a reference voice. |
+| `--provider auto` | `auto` | Uses Coqui XTTS-v2 when `NOUR_SPEAKER_WAV` is set, then `GEMINI_API_KEY`, otherwise Cloud TTS OAuth. |
+| `--provider coqui` / `xtts` | off | Uses local Coqui XTTS-v2 from the GitHub `dev` branch; supports English and Arabic with a reference voice. |
 | `--voice Kore` | `Kore` | Gemini/Cloud prebuilt voice, such as `Kore` or `Charon`. |
-| `--speaker-wav` | `NOUR_SPEAKER_WAV` | Reference WAV for XTTS voice cloning. |
+| `--speaker-wav` | `NOUR_SPEAKER_WAV` or `assets/voice/nour_warm_reference.wav` | Reference WAV for XTTS voice cloning; controls the warm human accent. |
 | `--model` | provider-specific | TTS model to use. |
 | `--locale en/ar` | unset | Content locale; helps choose provider language. |
 | `--language-code en-US` | `--locale` or `en-US` | BCP-47/provider language code. |

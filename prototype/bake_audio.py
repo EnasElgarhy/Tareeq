@@ -4,14 +4,14 @@ Pre-generate narration for Tareeq. The browser only plays local files;
 credentials and local model dependencies stay server-side.
 
 Setup:
-  gcloud auth application-default login
-  export GOOGLE_CLOUD_PROJECT=your-project-id
+  python3 -m pip install "git+https://github.com/coqui-ai/TTS.git@dev"
+  export NOUR_SPEAKER_WAV=assets/voice/nour_warm_reference.wav
 
 Examples:
-  python3 bake_audio.py
+  python3 bake_audio.py --provider coqui
   python3 bake_audio.py --force
   python3 bake_audio.py --voice Charon --model gemini-2.5-pro-tts
-  python3 bake_audio.py --provider xtts --speaker-wav nour.wav --locale ar --out-dir audio_ar
+  python3 bake_audio.py --provider coqui --speaker-wav nour.wav --locale ar --out-dir audio_ar
 """
 
 import argparse
@@ -45,6 +45,7 @@ GEMINI_API_MODELS = [
 DEFAULT_CLOUD_MODEL = "gemini-2.5-flash-tts"
 DEFAULT_GEMINI_API_MODEL = "gemini-2.5-flash-preview-tts"
 DEFAULT_XTTS_MODEL = "tts_models/multilingual/multi-dataset/xtts_v2"
+DEFAULT_XTTS_SPEAKER_WAV = Path("assets/voice/nour_warm_reference.wav")
 XTTS_LANGUAGES = {
     "ar", "en", "es", "fr", "de", "it", "pt", "pl", "tr", "ru", "nl",
     "cs", "zh-cn", "ja", "hu", "ko", "hi",
@@ -63,6 +64,13 @@ DEFAULT_PROMPT = (
     "You are Nour, a warm career-discovery guide for youth in the Middle East "
     "and North Africa. Read the line in clear, friendly English with a calm "
     "coach-like tone. Keep the pace natural and easy for English learners."
+)
+
+XTTS_REFERENCE_GUIDANCE = (
+    "Coqui XTTS controls accent and warmth through the reference WAV. Use a "
+    "clean 10-20 second recording of an adult mentor voice: warm, human, "
+    "calm, MENA-friendly English, no music, no reverb, no background noise. "
+    "Place it at assets/voice/nour_warm_reference.wav or set NOUR_SPEAKER_WAV."
 )
 
 QUESTION_PATTERN = re.compile(
@@ -245,6 +253,23 @@ def xtts_language_code(locale_or_language: str) -> str:
     return code
 
 
+def resolve_xtts_speaker_wav(explicit_path: Optional[str]) -> Optional[Path]:
+    if explicit_path:
+        return Path(explicit_path).expanduser()
+
+    script_dir = Path(__file__).resolve().parent
+    candidates = [
+        DEFAULT_XTTS_SPEAKER_WAV,
+        script_dir / DEFAULT_XTTS_SPEAKER_WAV,
+        Path("assets/voice/nour_reference.wav"),
+        script_dir / "assets/voice/nour_reference.wav",
+    ]
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    return None
+
+
 def call_xtts(*, text: str, speaker_wav: Path, model: str, language: str,
               out_path: Path) -> None:
     try:
@@ -252,7 +277,8 @@ def call_xtts(*, text: str, speaker_wav: Path, model: str, language: str,
     except ImportError as exc:
         raise RuntimeError(
             "XTTS provider requires Coqui TTS. Install it in a separate local "
-            "environment with: python3 -m pip install TTS"
+            "environment with: python3 -m pip install "
+            "\"git+https://github.com/coqui-ai/TTS.git@dev\""
         ) from exc
 
     key = (model,)
@@ -287,10 +313,11 @@ def main(argv=None) -> int:
                    default=os.environ.get("GOOGLE_OAUTH_ACCESS_TOKEN")
                    or os.environ.get("GOOGLE_ACCESS_TOKEN"),
                    help="OAuth access token. Defaults to env or gcloud ADC lookup.")
-    p.add_argument("--provider", choices=["auto", "gemini-api", "cloud-tts", "xtts"],
+    p.add_argument("--provider", choices=["auto", "gemini-api", "cloud-tts", "xtts", "coqui"],
                    default="auto",
-                   help=("TTS provider. auto uses GEMINI_API_KEY when present, "
-                         "otherwise Cloud TTS OAuth. xtts uses local Coqui XTTS-v2."))
+                   help=("TTS provider. auto uses local Coqui XTTS-v2 when "
+                         "NOUR_SPEAKER_WAV is set, then GEMINI_API_KEY, "
+                         "otherwise Cloud TTS OAuth. coqui is an alias for xtts."))
     p.add_argument("--location",
                    default=os.environ.get("GOOGLE_CLOUD_REGION", "global"),
                    help="Cloud TTS location, e.g. global, eu, us. Default: global")
@@ -309,7 +336,9 @@ def main(argv=None) -> int:
     p.add_argument("--speaker-wav",
                    default=os.environ.get("NOUR_SPEAKER_WAV")
                    or os.environ.get("XTTS_SPEAKER_WAV"),
-                   help="Reference voice WAV for --provider xtts. Defaults to NOUR_SPEAKER_WAV.")
+                   help=("Reference voice WAV for --provider coqui/xtts. "
+                         "Defaults to NOUR_SPEAKER_WAV or "
+                         "assets/voice/nour_warm_reference.wav when present."))
     p.add_argument("--prompt", default=DEFAULT_PROMPT,
                    help="Style prompt sent with every line.")
     p.add_argument("--force", action="store_true",
@@ -320,10 +349,11 @@ def main(argv=None) -> int:
                    help="Seconds to wait between API calls.")
     args = p.parse_args(argv)
     args.language_code = args.language_code or args.locale or "en-US"
+    resolved_xtts_speaker_wav = resolve_xtts_speaker_wav(args.speaker_wav)
 
-    provider = args.provider
+    provider = "xtts" if args.provider == "coqui" else args.provider
     if provider == "auto":
-        provider = "gemini-api" if args.api_key else "cloud-tts"
+        provider = "xtts" if resolved_xtts_speaker_wav else ("gemini-api" if args.api_key else "cloud-tts")
     if args.model:
         model = args.model
     elif provider == "gemini-api":
@@ -358,8 +388,7 @@ def main(argv=None) -> int:
         except ValueError as exc:
             sys.stderr.write(f"error: {exc}\n")
             return 2
-        if args.speaker_wav:
-            speaker_wav = Path(args.speaker_wav).expanduser()
+        speaker_wav = resolved_xtts_speaker_wav
 
     html_path = Path(args.html)
     if not html_path.exists():
@@ -419,11 +448,16 @@ def main(argv=None) -> int:
             return 2
         if provider == "xtts" and not speaker_wav:
             sys.stderr.write(
-                "error: missing --speaker-wav for XTTS (or set NOUR_SPEAKER_WAV)\n"
+                "error: missing --speaker-wav for Coqui XTTS "
+                "(or set NOUR_SPEAKER_WAV)\n"
+                f"hint: {XTTS_REFERENCE_GUIDANCE}\n"
             )
             return 2
         if provider == "xtts" and not speaker_wav.exists():
-            sys.stderr.write(f"error: speaker WAV not found: {speaker_wav}\n")
+            sys.stderr.write(
+                f"error: speaker WAV not found: {speaker_wav}\n"
+                f"hint: {XTTS_REFERENCE_GUIDANCE}\n"
+            )
             return 2
 
     skipped = generated = failed = 0

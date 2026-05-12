@@ -43,14 +43,18 @@ For an Arabic-ready open-source path, use the prototype script directly with
 Coqui XTTS-v2 and a Nour reference voice WAV:
 
 ```bash
-python3 -m pip install TTS
+python3 -m pip install "git+https://github.com/coqui-ai/TTS.git@dev"
+export NOUR_SPEAKER_WAV=prototype/assets/voice/nour_warm_reference.wav
 python3 prototype/bake_audio.py \
-  --provider xtts \
-  --speaker-wav path/to/nour_reference.wav \
+  --provider coqui \
   --locale ar \
   --html prototype/index.html \
   --out-dir public/audio_ar
 ```
+
+The warm human accent comes from that reference WAV. Use a clean,
+licensed 10-20 second adult mentor recording with calm, friendly English
+and a soft MENA-friendly international accent.
 
 ## Reference Prototype
 

@@ -475,8 +475,8 @@ CLI:
 python3 scripts/bake_audio.py \
   --supabase-url $SUPABASE_URL \
   --supabase-key $SUPABASE_SERVICE_ROLE_KEY \
-  --provider xtts \
-  --speaker-wav assets/voice/nour_reference.wav \
+  --provider coqui \
+  --speaker-wav assets/voice/nour_warm_reference.wav \
   --locale en \
   --version-id <uuid>
 ```
@@ -754,7 +754,7 @@ border-start-radius) — no hard-coded left/right.
 
 Update bake_audio.py to read translated database content and write audio
 under audio/<version>/<locale>/. Bake Arabic narration with an
-Arabic-capable provider. Preferred first pass: `--provider xtts
+Arabic-capable provider. Preferred first pass: `--provider coqui
 --locale ar` with a Nour reference WAV. Also evaluate SILMA TTS for MENA
 Arabic/English quality before locking the production voice.
 ```
