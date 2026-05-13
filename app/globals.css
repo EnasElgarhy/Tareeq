@@ -3,32 +3,40 @@
 @tailwind utilities;
 
 /* ============================================================
- * Tareeq Design System v2 — Trendy mystical, authentic
+ * Tareeq Design System v2.0
+ * Source of truth: docs/design.md
  * ============================================================ */
 :root {
-  /* v2 — Night-violet primary surface system */
-  --night: #0e0a28;          /* deepest near-black violet */
-  --midnight: #1b1240;       /* mid-dark violet, gradient mid */
-  --dusk: #3d2270;           /* purple secondary */
-  --violet: #6e48e4;         /* vibrant violet, primary action */
-  --violet-soft: #9d7ff0;    /* softer violet for highlights */
-  --lilac: #c8b6f0;          /* lightest violet, text accent on dark */
+  /* Night — primary product surfaces */
+  --night: #0e0a28;
+  --midnight: #1b1240;
+  --dusk: #3d2270;
 
-  /* v2 — Warm contrast field (light surfaces, celebratory moments) */
-  --sand: #f5eee6;           /* warm cream — main light surface */
-  --paper: #f9f4ec;          /* slightly warmer for layered light cards */
+  /* Violet — primary brand */
+  --violet: #6e48e4;
+  --violet-soft: #9d7ff0;
+  --lilac: #c8b6f0;
 
-  /* v2 — Type ink for cream surfaces */
-  --carbon: #14101f;         /* near-black with violet undertone */
-  --carbon-soft: #2b2440;    /* secondary text on cream */
+  /* Sand — celebratory contrast surfaces */
+  --sand: #f5eee6;
+  --paper: #f9f4ec;
 
-  /* v2 — Accents (used selectively, not all on one surface) */
-  --gold: #f4c660;           /* warm golden yellow — primary accent CTA */
-  --gold-soft: #fde7a8;      /* light gold for surfaces */
-  --blush: #f2a8b3;          /* soft pink-coral, secondary accent */
-  --mint: #6fe0c0;           /* cool teal-mint, tertiary accent */
+  /* Carbon — type ink on cream surfaces */
+  --carbon: #14101f;
+  --carbon-soft: #2b2440;
 
-  /* v2 — Gradients */
+  /* Accents */
+  --gold: #f4c660;
+  --gold-soft: #fde7a8;
+  --blush: #f2a8b3;
+  --mint: #6fe0c0;
+
+  /* Functional */
+  --success: #6fe0c0;
+  --warning: #f4c660;
+  --error: #e07a6f;
+
+  /* Gradients */
   --night-gradient: linear-gradient(
     180deg,
     #0e0a28 0%,
@@ -43,64 +51,9 @@
     #f4c660 100%
   );
   --gold-gradient: linear-gradient(135deg, #f4c660 0%, #f5d57f 100%);
+  --violet-gradient: linear-gradient(135deg, #6e48e4 0%, #9d7ff0 100%);
 
-  /* ============================================================
-   * v1 tokens kept for back-compat during the migration.
-   * Will be pruned after v2 reaches all surfaces.
-   * ============================================================ */
-  /* Brand */
-  --tareeq-plum: #1b0e3f;
-  --plum-deep: #0f0824;
-  --plum-mid: #3d2270;
-  --mauve: #5b3d8c;
-  --lavender: #b8a5d9;
-  --lavender-mist: #e5daf5;
-
-  /* Accent */
-  --coral: #ff6b47;
-  --coral-glow: #ff8252;
-  --coral-deep: #e55530;
-
-  /* Signature */
-  --cyan: #5bd6e8;
-
-  /* Neutrals */
-  --ink: #0d1b21;
-  --ink-soft: #0f0824;
-  --cream: #f5eee6;
-  --mist: #e8e0d4;
-  --white: #ffffff;
-
-  /* Functional */
-  --success: #2e8b6f;
-  --warning: #d49a2a;
-  --error: #c2453a;
-  --info: #5b3d8c;
-
-  /* Gradients */
-  --plum-gradient: linear-gradient(
-    135deg,
-    #1b0e3f 0%,
-    #3d2270 55%,
-    #5b3d8c 100%
-  );
-  --plum-gradient-soft: linear-gradient(160deg, #2a1758 0%, #4d2b7e 100%);
-  --coral-gradient: linear-gradient(135deg, #ff6b47 0%, #ff8252 100%);
-  /* Signature warm sweep — pink → red-orange → gold. Used on big
-     headline accents. */
-  --grad-warm: linear-gradient(
-    95deg,
-    #ff3d83 0%,
-    #ff6b3d 55%,
-    #ffa53d 100%
-  );
-  --grad-warm-soft: linear-gradient(
-    95deg,
-    rgba(255, 61, 131, 0.18),
-    rgba(255, 138, 61, 0.18)
-  );
-
-  /* Spacing scale */
+  /* Spacing */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -113,50 +66,50 @@
   --space-16: 64px;
   --space-20: 80px;
   --space-24: 96px;
-  --space-32: 128px;
 
-  /* Radii */
-  --radius-xs: 4px;
+  /* Radius */
   --radius-sm: 8px;
   --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
-  --radius-2xl: 32px;
-  --radius-full: 9999px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-2xl: 36px;
+  --radius-pill: 9999px;
 
   /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(13, 27, 33, 0.06),
-    0 1px 3px rgba(13, 27, 33, 0.04);
-  --shadow-md: 0 4px 8px rgba(13, 27, 33, 0.06),
-    0 2px 4px rgba(13, 27, 33, 0.04);
-  --shadow-lg: 0 12px 24px rgba(13, 27, 33, 0.08),
-    0 4px 8px rgba(13, 27, 33, 0.04);
-  --shadow-xl: 0 24px 48px rgba(13, 27, 33, 0.1),
-    0 8px 16px rgba(13, 27, 33, 0.06);
-  --shadow-coral-glow: 0 8px 24px rgba(255, 107, 71, 0.4),
-    0 4px 8px rgba(255, 107, 71, 0.2);
-  --shadow-bubble: 0 12px 32px rgba(0, 0, 0, 0.25),
-    0 2px 6px rgba(0, 0, 0, 0.18);
+  --ring-dark-sm: inset 0 0 0 1px rgba(245, 238, 230, 0.08);
+  --ring-dark-md: inset 0 0 0 1px rgba(245, 238, 230, 0.14);
+  --shadow-sand-sm: 0 1px 2px rgba(20, 16, 31, 0.04),
+    0 1px 3px rgba(20, 16, 31, 0.06);
+  --shadow-sand-md: 0 8px 24px rgba(20, 16, 31, 0.06),
+    0 2px 8px rgba(20, 16, 31, 0.04);
+  --shadow-sand-lg: 0 24px 48px rgba(20, 16, 31, 0.08),
+    0 8px 16px rgba(20, 16, 31, 0.05);
+  --shadow-gold-glow: 0 12px 28px rgba(244, 198, 96, 0.35),
+    0 4px 10px rgba(244, 198, 96, 0.15);
+  --shadow-violet-glow: 0 12px 28px rgba(110, 72, 228, 0.35),
+    0 4px 10px rgba(110, 72, 228, 0.15);
 
   /* Motion */
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --ease-emphasis: cubic-bezier(0.3, 0, 0, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --duration-fast: 120ms;
   --duration-base: 200ms;
   --duration-slow: 320ms;
   --duration-reveal: 480ms;
 
   /* Font stacks (overridden by next/font CSS vars in <html>) */
-  --font-sans: var(--font-jakarta), system-ui, -apple-system, "Segoe UI",
-    Roboto, sans-serif;
+  --font-sans: var(--font-jakarta), system-ui, -apple-system, "Segoe UI", Roboto,
+    sans-serif;
   --font-arabic-stack: var(--font-arabic), "SF Arabic", "Segoe UI Arabic",
     Tahoma, sans-serif;
   --font-question-stack: var(--font-question), Georgia, "Times New Roman",
     serif;
+  --font-display: var(--font-display-italic), Georgia, "Times New Roman", serif;
 }
 
 /* ============================================================
- * Base
+ * Base reset
  * ============================================================ */
 *,
 *::before,
@@ -173,16 +126,15 @@ body {
 
 html {
   min-height: 100%;
-  background: var(--cream);
-  color-scheme: light;
+  background: var(--night);
+  color-scheme: dark;
 }
 
 body {
   min-height: 100dvh;
   font-family: var(--font-sans);
-  font-feature-settings: "ss01", "cv11";
-  color: var(--ink);
-  background: var(--cream);
+  color: var(--sand);
+  background: var(--night);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -193,12 +145,11 @@ body {
 }
 
 a {
-  color: var(--tareeq-plum);
+  color: var(--violet-soft);
   text-decoration: none;
 }
-
 a:hover {
-  color: var(--plum-deep);
+  color: var(--lilac);
 }
 
 button {
@@ -206,7 +157,6 @@ button {
   color: inherit;
 }
 
-/* Logical alignment defaults */
 input,
 textarea,
 select,
@@ -215,16 +165,10 @@ button {
 }
 
 /* ============================================================
- * Type scale (§3)
- * ============================================================ */
-/* ============================================================
- * v2 — Editorial display typography
- *
- * Display heads use Fraunces with weight + SOFT axis cranked for the
- * chunky soft-serif look. Body stays Plus Jakarta Sans.
+ * Typography
  * ============================================================ */
 .text-hero {
-  font-family: var(--font-display-italic), Georgia, serif;
+  font-family: var(--font-display);
   font-weight: 800;
   font-style: normal;
   font-size: clamp(2.5rem, 1.6rem + 5vw, 4.5rem);
@@ -233,673 +177,59 @@ button {
   font-variation-settings: "SOFT" 100, "opsz" 144;
 }
 .text-display-2 {
-  font-family: var(--font-display-italic), Georgia, serif;
+  font-family: var(--font-display);
   font-weight: 700;
+  font-style: normal;
   font-size: clamp(2rem, 1.2rem + 3.5vw, 3rem);
   line-height: 1.02;
   letter-spacing: -0.02em;
   font-variation-settings: "SOFT" 100, "opsz" 144;
 }
 .text-display-3 {
-  font-family: var(--font-display-italic), Georgia, serif;
+  font-family: var(--font-display);
   font-weight: 600;
+  font-style: normal;
   font-size: clamp(1.5rem, 1rem + 2vw, 2rem);
   line-height: 1.1;
   letter-spacing: -0.015em;
   font-variation-settings: "SOFT" 60, "opsz" 96;
 }
-.text-eyebrow {
-  font-family: var(--font-jakarta), system-ui, sans-serif;
-  font-weight: 600;
-  font-size: 12px;
-  line-height: 16px;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-}
-.text-lead {
-  font-family: var(--font-jakarta), system-ui, sans-serif;
-  font-weight: 400;
-  font-size: clamp(15px, 14px + 0.2vw, 17px);
-  line-height: 1.55;
-}
-
-/* v1 legacy classes kept below */
-.text-display {
-  font: 700 44px/52px var(--font-sans);
-  letter-spacing: -0.01em;
-}
-.text-h1 {
-  font: 700 32px/40px var(--font-sans);
-  letter-spacing: -0.005em;
-}
-.text-h2 {
-  font: 600 24px/32px var(--font-sans);
-}
 .text-h3 {
   font: 600 18px/26px var(--font-sans);
+  letter-spacing: -0.005em;
 }
 .text-subhead {
   font: 500 16px/24px var(--font-sans);
 }
+.text-lead {
+  font: 400 17px/1.55 var(--font-sans);
+}
 .text-body {
-  font: 400 16px/24px var(--font-sans);
+  font: 400 15px/22px var(--font-sans);
 }
 .text-body-sm {
-  font: 400 14px/22px var(--font-sans);
+  font: 400 13.5px/20px var(--font-sans);
 }
-.text-caption {
-  font: 500 12px/16px var(--font-sans);
+.text-eyebrow {
+  font: 600 12px/16px var(--font-sans);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.16em;
 }
 .text-button {
-  font: 600 14px/20px var(--font-sans);
-}
-
-/* Gradient text — applies the warm sweep to a text run.
- * Sets both `color` and `-webkit-text-fill-color` so the clip lands
- * reliably in Safari and Firefox as well as Chrome. */
-.text-grad-warm {
-  background-image: var(--grad-warm);
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  /* Avoid descender clipping in tight line-heights */
-  padding-block-end: 0.04em;
-}
-
-/* The assessment-only voice */
-.text-question {
-  font: 400 italic 24px/30px var(--font-question-stack);
+  font: 600 16px/1 var(--font-sans);
   letter-spacing: -0.005em;
 }
-.text-question:lang(ar) {
-  line-height: 1.6;
-}
-/* Compact assessment voice — fits above the fold on small viewports */
-.text-question-tight {
-  font: 400 italic clamp(18px, 16px + 0.5vw, 22px) / 1.22
+.text-question {
+  font: 400 italic clamp(20px, 1rem + 1.6vw, 28px) / 1.25
     var(--font-question-stack);
   letter-spacing: -0.005em;
 }
-.text-question-tight:lang(ar) {
-  line-height: 1.45;
-}
-
-/* ============================================================
- * Buttons (§5.1)
- * ============================================================ */
-.tareeq-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  border: 1px solid transparent;
-  border-radius: var(--radius-md);
-  font: 600 14px/20px var(--font-sans);
-  cursor: pointer;
-  user-select: none;
-  white-space: nowrap;
-  transition:
-    background var(--duration-fast) var(--ease-standard),
-    color var(--duration-fast) var(--ease-standard),
-    transform var(--duration-fast) var(--ease-standard),
-    box-shadow var(--duration-base) var(--ease-standard),
-    border-color var(--duration-fast) var(--ease-standard);
-}
-
-.tareeq-btn[data-size="sm"] {
-  height: 32px;
-  padding: 0 12px;
-  font-size: 13px;
-}
-.tareeq-btn[data-size="md"] {
-  height: 40px;
-  padding: 0 16px;
-}
-.tareeq-btn[data-size="lg"] {
-  height: 48px;
-  padding: 0 20px;
-  font-size: 16px;
-}
-.tareeq-btn[data-size="xl"] {
-  height: 56px;
-  padding: 0 24px;
-  font-size: 18px;
-}
-
-.tareeq-btn[data-variant="primary"] {
-  background: var(--coral);
-  color: var(--cream);
-}
-.tareeq-btn[data-variant="primary"]:hover:not(:disabled) {
-  background: var(--coral-deep);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-coral-glow);
-}
-.tareeq-btn[data-variant="primary"]:active:not(:disabled) {
-  transform: translateY(0);
-}
-
-.tareeq-btn[data-variant="secondary"] {
-  background: var(--tareeq-plum);
-  color: var(--cream);
-}
-.tareeq-btn[data-variant="secondary"]:hover:not(:disabled) {
-  background: var(--plum-deep);
-}
-
-.tareeq-btn[data-variant="tertiary"] {
-  background: transparent;
-  color: var(--tareeq-plum);
-}
-.tareeq-btn[data-variant="tertiary"]:hover:not(:disabled) {
-  background: var(--lavender-mist);
-}
-
-.tareeq-btn[data-variant="ghost"] {
-  background: transparent;
-  color: var(--ink);
-  border-color: var(--mist);
-}
-.tareeq-btn[data-variant="ghost"]:hover:not(:disabled) {
-  background: var(--cream);
-}
-
-.tareeq-btn[data-variant="ghost-on-dark"] {
-  background: transparent;
-  color: var(--cream);
-  border-color: rgba(245, 238, 230, 0.32);
-}
-.tareeq-btn[data-variant="ghost-on-dark"]:hover:not(:disabled) {
-  background: rgba(245, 238, 230, 0.1);
-}
-
-.tareeq-btn[data-variant="destructive"] {
-  background: var(--error);
-  color: var(--cream);
-}
-
-.tareeq-btn:focus-visible {
-  outline: 2px solid var(--cyan);
-  outline-offset: 2px;
-}
-.tareeq-btn:disabled {
-  opacity: 0.4;
-  pointer-events: none;
-}
-
-@media (pointer: coarse) {
-  .tareeq-btn {
-    min-height: 44px;
-    min-width: 44px;
-  }
-}
-
-/* RTL arrow flip */
-[dir="rtl"] .tareeq-btn [data-flip-rtl] {
-  transform: scaleX(-1);
-}
-
-/* ============================================================
- * Input (§5.2)
- * ============================================================ */
-.tareeq-input-field {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.tareeq-input-label {
-  font: 500 12px/16px var(--font-sans);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: rgba(13, 27, 33, 0.65);
-}
-.tareeq-input-field input,
-.tareeq-input-field textarea,
-.tareeq-input-field select {
-  width: 100%;
-  height: 44px;
-  padding: 0 16px;
-  border: 1px solid var(--mist);
-  border-radius: var(--radius-sm);
-  background: var(--white);
-  font: 400 16px/24px var(--font-sans);
-  color: var(--ink);
-  transition: border-color var(--duration-fast) var(--ease-standard),
-    box-shadow var(--duration-fast) var(--ease-standard);
-}
-.tareeq-input-field input::placeholder {
-  color: rgba(13, 27, 33, 0.4);
-}
-.tareeq-input-field input:focus-visible,
-.tareeq-input-field textarea:focus-visible,
-.tareeq-input-field select:focus-visible {
-  outline: none;
-  border-color: var(--tareeq-plum);
-  box-shadow: 0 0 0 3px rgba(91, 214, 232, 0.25);
-}
-.tareeq-input-field input[aria-invalid="true"] {
-  border-color: var(--error);
-}
-.tareeq-input-helper {
-  font: 400 14px/22px var(--font-sans);
-  color: rgba(13, 27, 33, 0.6);
-}
-.tareeq-input-error {
-  font: 400 14px/22px var(--font-sans);
-  color: var(--error);
-}
-
-/* ============================================================
- * Cards (§5.3)
- * ============================================================ */
-[data-card] {
-  border-radius: var(--radius-lg);
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-[data-card="quiet"] {
-  background: var(--cream);
-  border: 1px solid var(--mist);
-}
-[data-card="default"] {
-  background: var(--white);
-  border: 1px solid var(--mist);
-}
-[data-card="raised"] {
-  background: var(--white);
-  box-shadow: var(--shadow-md);
-  border-radius: var(--radius-xl);
-}
-[data-card="glass"] {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(245, 238, 230, 0.16);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  color: var(--cream);
-}
-
-/* ============================================================
- * Avatar card (§5.4)
- * ============================================================ */
-.tareeq-avatar-card {
-  width: 144px;
-  height: 144px;
-  background: var(--coral-gradient);
-  border-radius: var(--radius-2xl);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: var(--shadow-coral-glow);
-  position: relative;
-  isolation: isolate;
-}
-.tareeq-avatar-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(
-    circle at 30% 22%,
-    rgba(255, 255, 255, 0.5),
-    transparent 55%
-  );
-  pointer-events: none;
-  mix-blend-mode: screen;
-}
-.tareeq-avatar-card svg,
-.tareeq-avatar-card img {
-  width: 75%;
-  height: 75%;
-  position: relative;
-  z-index: 1;
-}
-
-/* ============================================================
- * Speech bubble (§5.5)
- * ============================================================ */
-.tareeq-bubble {
-  background: var(--cream);
-  border-radius: var(--radius-lg);
-  padding: 20px 24px;
-  position: relative;
-  box-shadow: var(--shadow-bubble);
-  max-width: 540px;
-}
-.tareeq-bubble[data-tight] {
-  padding: 14px 18px;
-  border-radius: var(--radius-md);
-}
-
-/* Light-surface variant — white bubble for use on cream pages. Keeps
- * the speech-tail metaphor but reads against the warm radial backdrop. */
-.tareeq-bubble[data-surface="light"] {
-  background: var(--white);
-  box-shadow:
-    0 10px 28px rgba(15, 8, 36, 0.10),
-    0 2px 6px rgba(15, 8, 36, 0.06),
-    inset 0 0 0 1px rgba(13, 27, 33, 0.05);
-}
-.tareeq-bubble[data-surface="light"]::before {
-  border-bottom-color: var(--white);
-  filter: drop-shadow(0 -1px 1px rgba(15, 8, 36, 0.05));
-}
-
-/* Centered tail — used when the bubble sits directly under the avatar */
-.tareeq-bubble[data-tail="center"]::before {
-  inset-inline-start: 50%;
-  transform: translateX(-50%);
-}
-[dir="rtl"] .tareeq-bubble[data-tail="center"]::before {
-  inset-inline-end: 50%;
-  inset-inline-start: auto;
-  transform: translateX(50%);
-}
-
-/* Bottom-edge tail — bubble sits ABOVE the speaker; tail points DOWN.
- * Flips the triangle vertically and pins it to the bubble's bottom edge. */
-.tareeq-bubble[data-tail-edge="bottom"]::before {
-  top: auto;
-  bottom: -10px;
-  border-bottom: none;
-  border-top: 10px solid var(--cream);
-  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.08));
-}
-.tareeq-bubble[data-tail-edge="bottom"][data-surface="light"]::before {
-  border-top-color: var(--white);
-  filter: drop-shadow(0 1px 1px rgba(15, 8, 36, 0.06));
-}
-.tareeq-bubble[data-tail-edge="bottom"][data-tail="center"]::before {
-  inset-inline-start: 50%;
-  transform: translateX(-50%);
-}
-.tareeq-bubble::before {
-  content: "";
-  position: absolute;
-  top: -10px;
-  inset-inline-start: 28px;
-  width: 0;
-  height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 10px solid var(--cream);
-  filter: drop-shadow(0 -1px 0 rgba(0, 0, 0, 0.08));
-}
-.tareeq-bubble__q {
-  font: 400 italic 24px/30px var(--font-question-stack);
-  color: var(--plum-deep);
-  letter-spacing: -0.005em;
-  margin: 0;
-}
-.tareeq-bubble__q:lang(ar) {
-  line-height: 1.6;
-}
-
-/* ============================================================
- * Play button + speed pill (§5.6)
- * ============================================================ */
-.tareeq-play {
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radius-full);
-  background: var(--coral-gradient);
-  color: var(--cream);
-  border: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: var(--shadow-coral-glow);
-  transition: transform var(--duration-fast) var(--ease-standard);
-}
-.tareeq-play:hover:not(:disabled) {
-  transform: scale(1.04);
-}
-.tareeq-play:active:not(:disabled) {
-  transform: scale(0.98);
-}
-.tareeq-play:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-.tareeq-play:focus-visible {
-  outline: 2px solid var(--cyan);
-  outline-offset: 3px;
-}
-.tareeq-play svg {
-  width: 20px;
-  height: 20px;
-}
-
-.tareeq-speed-pill {
-  height: 36px;
-  padding: 0 16px;
-  border-radius: var(--radius-full);
-  background: rgba(245, 238, 230, 0.1);
-  color: var(--cream);
-  border: 1px solid rgba(245, 238, 230, 0.18);
-  font: 500 14px/1 var(--font-sans);
-  cursor: pointer;
-  transition: background var(--duration-fast) var(--ease-standard);
-}
-.tareeq-speed-pill:hover {
-  background: rgba(245, 238, 230, 0.18);
-}
-.tareeq-speed-pill:focus-visible {
-  outline: 2px solid var(--cyan);
-  outline-offset: 2px;
-}
-
-/* ============================================================
- * Progress (§5.7)
- * ============================================================ */
-.tareeq-progress {
-  height: 4px;
-  border-radius: var(--radius-full);
-  background: rgba(245, 238, 230, 0.18);
-  overflow: hidden;
-}
-.tareeq-progress[data-on-light] {
-  background: var(--mist);
-}
-.tareeq-progress__fill {
-  height: 100%;
-  background: var(--coral);
-  border-radius: inherit;
-  transition: width var(--duration-base) var(--ease-standard);
-  box-shadow: 0 0 12px rgba(255, 107, 71, 0.55);
-}
-
-/* ============================================================
- * Select pill (§5.8)
- * ============================================================ */
-.tareeq-select-pill {
-  width: 100%;
-  height: 56px;
-  padding: 0 20px;
-  border: none;
-  background: var(--cream);
-  color: var(--plum-deep);
-  border-radius: var(--radius-full);
-  font: 600 16px/1 var(--font-sans);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  text-align: start;
-  transition: transform var(--duration-fast) var(--ease-standard);
-  box-shadow: 0 6px 18px rgba(15, 8, 36, 0.25);
-}
-.tareeq-select-pill:hover {
-  transform: translateY(-1px);
-}
-.tareeq-select-pill .placeholder {
-  color: rgba(15, 8, 36, 0.55);
-  font-weight: 500;
-}
-.tareeq-select-pill svg {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-}
-.tareeq-select-pill:focus-visible {
-  outline: 2px solid var(--cyan);
-  outline-offset: 2px;
-}
-/* When the pill wraps a native <select> */
-.tareeq-select-pill > select {
-  all: unset;
-  flex: 1;
-  cursor: pointer;
-}
-
-/* ============================================================
- * Badge / Tag (§5.9)
- * ============================================================ */
-.tareeq-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border-radius: var(--radius-xs);
-  font: 500 11px/16px var(--font-sans);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-.tareeq-badge--brand {
-  background: var(--lavender-mist);
-  color: var(--tareeq-plum);
-}
-.tareeq-badge--accent {
-  background: rgba(255, 107, 71, 0.16);
-  color: var(--coral-deep);
-}
-.tareeq-badge--neutral {
-  background: var(--mist);
-  color: var(--ink);
-}
-.tareeq-badge--success {
-  background: rgba(46, 139, 111, 0.16);
-  color: var(--success);
-}
-.tareeq-badge--on-dark {
-  background: rgba(245, 238, 230, 0.1);
-  border: 1px solid rgba(245, 238, 230, 0.22);
-  color: var(--cream);
-}
-
-/* ============================================================
- * Speak pill (§5.10)
- * ============================================================ */
-.tareeq-speak-pill {
-  height: 36px;
-  padding: 0 20px;
-  border-radius: var(--radius-full);
-  background: transparent;
-  border: 1px solid rgba(245, 238, 230, 0.4);
-  color: var(--cream);
-  font: 600 14px/1 var(--font-sans);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  transition: background var(--duration-fast) var(--ease-standard);
-}
-.tareeq-speak-pill:hover {
-  background: rgba(245, 238, 230, 0.12);
-}
-.tareeq-speak-pill:focus-visible {
-  outline: 2px solid var(--cyan);
-  outline-offset: 2px;
+.text-question:lang(ar) {
+  line-height: 1.5;
 }
 
 /* ============================================================
  * Surfaces
- * ============================================================ */
-.surface-plum {
-  background: var(--plum-gradient);
-  color: var(--cream);
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-}
-.surface-plum::before {
-  content: "";
-  position: absolute;
-  top: -10%;
-  inset-inline-end: -20%;
-  width: 60%;
-  aspect-ratio: 1;
-  background: radial-gradient(
-    circle,
-    rgba(124, 91, 181, 0.55),
-    transparent 65%
-  );
-  pointer-events: none;
-  z-index: -1;
-}
-.surface-plum::after {
-  content: "";
-  position: absolute;
-  bottom: -20%;
-  inset-inline-start: -10%;
-  width: 60%;
-  aspect-ratio: 1;
-  background: radial-gradient(
-    circle,
-    rgba(91, 214, 232, 0.16),
-    transparent 65%
-  );
-  pointer-events: none;
-  z-index: -1;
-}
-
-.surface-cream {
-  background: var(--cream);
-  color: var(--ink);
-}
-
-/* ============================================================
- * RTL helpers
- * ============================================================ */
-[dir="rtl"] .tareeq-bubble::before {
-  inset-inline-start: auto;
-  inset-inline-end: 28px;
-}
-[dir="rtl"] .flip-rtl {
-  transform: scaleX(-1);
-}
-
-/* ============================================================
- * Motion accessibility
- * ============================================================ */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 120ms !important;
-    transition-property: opacity, color, background-color !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* ============================================================
- * Focus reset — never strip focus rings without replacement
- * ============================================================ */
-:focus-visible {
-  outline-color: var(--cyan);
-}
-
-/* ============================================================
- * v2 — Mystical surfaces + button system
  * ============================================================ */
 .surface-night {
   background: var(--night-gradient);
@@ -917,7 +247,7 @@ button {
   aspect-ratio: 1;
   background: radial-gradient(
     circle,
-    rgba(157, 127, 240, 0.25),
+    rgba(157, 127, 240, 0.28),
     transparent 65%
   );
   pointer-events: none;
@@ -933,7 +263,7 @@ button {
   aspect-ratio: 1;
   background: radial-gradient(
     circle,
-    rgba(244, 198, 96, 0.15),
+    rgba(244, 198, 96, 0.16),
     transparent 65%
   );
   pointer-events: none;
@@ -944,17 +274,47 @@ button {
 .surface-sand {
   background: var(--sand);
   color: var(--carbon);
+  position: relative;
+}
+.surface-sand::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+      60% 50% at 80% 0%,
+      rgba(110, 72, 228, 0.07),
+      transparent 60%
+    ),
+    radial-gradient(
+      50% 40% at 15% 100%,
+      rgba(244, 198, 96, 0.10),
+      transparent 65%
+    );
+  pointer-events: none;
+  z-index: -1;
 }
 
-/* v2 — Gold primary button (replaces coral CTA on dark surfaces) */
+.bg-night-stars {
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, rgba(245, 238, 230, 0.4), transparent 1.5px),
+    radial-gradient(1px 1px at 70% 20%, rgba(245, 238, 230, 0.35), transparent 1.5px),
+    radial-gradient(1px 1px at 50% 70%, rgba(245, 238, 230, 0.3), transparent 1.5px),
+    radial-gradient(1px 1px at 85% 80%, rgba(245, 238, 230, 0.5), transparent 1.5px),
+    radial-gradient(1px 1px at 15% 85%, rgba(245, 238, 230, 0.4), transparent 1.5px),
+    radial-gradient(1px 1px at 90% 35%, rgba(245, 238, 230, 0.3), transparent 1.5px);
+}
+
+/* ============================================================
+ * Buttons
+ * ============================================================ */
 .btn-v2 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  border: none;
-  border-radius: 9999px;
-  font-family: var(--font-jakarta), system-ui, sans-serif;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-sans);
   font-weight: 600;
   font-size: 16px;
   line-height: 1;
@@ -962,12 +322,57 @@ button {
   cursor: pointer;
   user-select: none;
   white-space: nowrap;
-  height: 60px;
-  padding: 0 28px;
   transition:
     transform var(--duration-fast) var(--ease-standard),
     box-shadow var(--duration-base) var(--ease-standard),
-    background var(--duration-fast) var(--ease-standard);
+    background var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+.btn-v2[data-size="sm"] {
+  height: 44px;
+  padding: 0 18px;
+  font-size: 14px;
+}
+.btn-v2[data-size="md"] {
+  height: 52px;
+  padding: 0 22px;
+}
+.btn-v2[data-size="lg"] {
+  height: 60px;
+  padding: 0 28px;
+}
+.btn-v2--primary {
+  background: var(--gold-gradient);
+  color: var(--carbon);
+  box-shadow: var(--shadow-gold-glow);
+}
+.btn-v2--primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+.btn-v2--violet {
+  background: var(--violet);
+  color: var(--sand);
+  box-shadow: var(--shadow-violet-glow);
+}
+.btn-v2--violet:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: #7d57f0;
+}
+.btn-v2--ghost-on-dark {
+  background: rgba(245, 238, 230, 0.08);
+  color: var(--sand);
+  border-color: rgba(245, 238, 230, 0.18);
+}
+.btn-v2--ghost-on-dark:hover:not(:disabled) {
+  background: rgba(245, 238, 230, 0.14);
+}
+.btn-v2--ghost-on-light {
+  background: rgba(20, 16, 31, 0.05);
+  color: var(--carbon);
+  border-color: rgba(20, 16, 31, 0.12);
+}
+.btn-v2--ghost-on-light:hover:not(:disabled) {
+  background: rgba(20, 16, 31, 0.09);
 }
 .btn-v2:focus-visible {
   outline: 2px solid var(--gold);
@@ -977,62 +382,129 @@ button {
   opacity: 0.4;
   pointer-events: none;
 }
-.btn-v2--primary {
-  background: var(--gold-gradient);
-  color: var(--carbon);
-  box-shadow:
-    0 12px 28px rgba(244, 198, 96, 0.35),
-    0 4px 10px rgba(244, 198, 96, 0.15);
-}
-.btn-v2--primary:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow:
-    0 18px 36px rgba(244, 198, 96, 0.45),
-    0 6px 14px rgba(244, 198, 96, 0.2);
-}
-.btn-v2--violet {
-  background: var(--violet);
-  color: var(--sand);
-  box-shadow:
-    0 12px 28px rgba(110, 72, 228, 0.35),
-    0 4px 10px rgba(110, 72, 228, 0.15);
-}
-.btn-v2--violet:hover:not(:disabled) {
-  transform: translateY(-1px);
-  background: #7d57f0;
-}
-.btn-v2--ghost-on-dark {
-  background: rgba(245, 238, 230, 0.08);
-  color: var(--sand);
-  border: 1px solid rgba(245, 238, 230, 0.18);
-}
-.btn-v2--ghost-on-dark:hover:not(:disabled) {
-  background: rgba(245, 238, 230, 0.14);
+@media (pointer: coarse) {
+  .btn-v2 {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }
 
-/* v2 — Editorial card (used on dark surfaces) */
+/* ============================================================
+ * Cards
+ * ============================================================ */
 .card-night {
   background: rgba(245, 238, 230, 0.04);
   border: 1px solid rgba(245, 238, 230, 0.08);
-  border-radius: 24px;
+  border-radius: var(--radius-xl);
   padding: 20px;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
-
-/* v2 — Atmospheric stars on a dark surface */
-.bg-night-stars {
-  background-image:
-    radial-gradient(1px 1px at 20% 30%, rgba(245, 238, 230, 0.4), transparent 1.5px),
-    radial-gradient(1px 1px at 70% 20%, rgba(245, 238, 230, 0.35), transparent 1.5px),
-    radial-gradient(1px 1px at 50% 70%, rgba(245, 238, 230, 0.3), transparent 1.5px),
-    radial-gradient(1px 1px at 85% 80%, rgba(245, 238, 230, 0.5), transparent 1.5px),
-    radial-gradient(1px 1px at 15% 85%, rgba(245, 238, 230, 0.4), transparent 1.5px);
+.card-sand {
+  background: var(--paper);
+  border: 1px solid rgba(20, 16, 31, 0.08);
+  border-radius: var(--radius-xl);
+  padding: 20px;
+  box-shadow: var(--shadow-sand-md);
 }
 
 /* ============================================================
- * Motion — keyframes + utility classes
+ * Speech bubble (Kai's voice)
  * ============================================================ */
+.bubble {
+  position: relative;
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  max-width: 540px;
+}
+.bubble[data-surface="night"] {
+  background: var(--sand);
+  color: var(--carbon);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+}
+.bubble[data-surface="sand"] {
+  background: var(--paper);
+  color: var(--carbon);
+  box-shadow: var(--shadow-sand-md);
+  border: 1px solid rgba(20, 16, 31, 0.06);
+}
+.bubble__tail {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+}
+.bubble[data-tail-edge="top"] .bubble__tail {
+  top: -10px;
+  border-bottom: 10px solid currentColor;
+}
+.bubble[data-tail-edge="bottom"] .bubble__tail {
+  bottom: -10px;
+  border-top: 10px solid currentColor;
+}
+.bubble[data-tail-position="start"] .bubble__tail {
+  inset-inline-start: 28px;
+}
+.bubble[data-tail-position="center"] .bubble__tail {
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+}
+[dir="rtl"] .bubble[data-tail-position="center"] .bubble__tail {
+  transform: translateX(50%);
+}
+
+/* ============================================================
+ * Badge / chip
+ * ============================================================ */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  font: 600 12px/16px var(--font-sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.chip--violet-on-dark {
+  background: rgba(157, 127, 240, 0.16);
+  color: var(--violet-soft);
+}
+.chip--gold-on-dark {
+  background: rgba(244, 198, 96, 0.16);
+  color: var(--gold);
+}
+.chip--violet-on-light {
+  background: rgba(110, 72, 228, 0.12);
+  color: var(--violet);
+}
+
+/* ============================================================
+ * Motion — keyframes
+ * ============================================================ */
+@keyframes screen-enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes screen-exit-forward {
+  to {
+    opacity: 0;
+    transform: translateY(-18px);
+  }
+}
+@keyframes screen-exit-back {
+  to {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
 @keyframes bubble-in {
   from {
     opacity: 0;
@@ -1043,17 +515,6 @@ button {
     transform: translateY(0) scale(1);
   }
 }
-
-@keyframes avatar-bob {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
-
 @keyframes avatar-pop-in {
   0% {
     opacity: 0;
@@ -1068,134 +529,24 @@ button {
     transform: translateY(0) scale(1);
   }
 }
-
-@keyframes option-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
+@keyframes avatar-bob {
+  0%, 100% {
     transform: translateY(0);
   }
+  50% {
+    transform: translateY(-5px);
+  }
 }
-
-@keyframes option-confirm {
+@keyframes aura-bloom {
   0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  100% {
+    opacity: 1;
     transform: scale(1);
-    box-shadow: var(--shadow-coral-glow);
-  }
-  45% {
-    transform: scale(1.025);
-    box-shadow:
-      0 0 0 6px rgba(91, 214, 232, 0.22),
-      var(--shadow-coral-glow);
-  }
-  100% {
-    transform: scale(1);
-    box-shadow: var(--shadow-coral-glow);
   }
 }
-
-@keyframes screen-enter {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes screen-exit-forward {
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(-18px);
-  }
-}
-
-@keyframes screen-exit-back {
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-}
-
-@keyframes progress-shimmer {
-  from {
-    background-position: -120% 0;
-  }
-  to {
-    background-position: 220% 0;
-  }
-}
-
-@keyframes ring-pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(91, 214, 232, 0.55);
-  }
-  100% {
-    box-shadow: 0 0 0 14px rgba(91, 214, 232, 0);
-  }
-}
-
-/* Career-tag drift — three subtle, looped animations.
- * Each variant uses different translate axes + timing so the orbit feels
- * lived-in instead of in lock-step. */
-@keyframes tag-float-a {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(0, -6px, 0);
-  }
-}
-@keyframes tag-float-b {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(5px, 4px, 0);
-  }
-}
-@keyframes tag-float-c {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(-4px, -5px, 0);
-  }
-}
-@keyframes tag-enter {
-  from {
-    opacity: 0;
-    transform: scale(0.85) translate3d(0, 4px, 0);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translate3d(0, 0, 0);
-  }
-}
-@keyframes orbit-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Multi-color aura — slow rotation + gentle breathing pulse.
- * Used behind the Kai character on the intro screen. */
 @keyframes aura-rotate {
   0% {
     transform: rotate(0deg) scale(1);
@@ -1207,30 +558,6 @@ button {
     transform: rotate(360deg) scale(1);
   }
 }
-
-@keyframes caret-blink {
-  0%,
-  60% {
-    opacity: 1;
-  }
-  61%,
-  100% {
-    opacity: 0;
-  }
-}
-
-/* Choreographed entrance — used by /intro */
-@keyframes aura-bloom {
-  0% {
-    opacity: 0;
-    transform: scale(0.6);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
 @keyframes kai-pop-overshoot {
   0% {
     opacity: 0;
@@ -1245,20 +572,18 @@ button {
     transform: scale(1) translateY(0);
   }
 }
-
 @keyframes eyebrow-fade-up {
   0% {
     opacity: 0;
     transform: translateY(6px);
-    letter-spacing: 0.18em;
+    letter-spacing: 0.12em;
   }
   100% {
     opacity: 1;
     transform: translateY(0);
-    letter-spacing: 0.22em;
+    letter-spacing: 0.16em;
   }
 }
-
 @keyframes accent-line-grow {
   0% {
     transform: scaleX(0);
@@ -1267,7 +592,6 @@ button {
     transform: scaleX(1);
   }
 }
-
 @keyframes cta-spring-up {
   0% {
     opacity: 0;
@@ -1282,10 +606,34 @@ button {
     transform: translateY(0) scale(1);
   }
 }
-
-@keyframes particle-drift-a {
-  0%,
+@keyframes option-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes option-confirm {
+  0% {
+    transform: scale(1);
+    box-shadow: var(--shadow-gold-glow);
+  }
+  45% {
+    transform: scale(1.025);
+    box-shadow:
+      0 0 0 6px rgba(157, 127, 240, 0.22),
+      var(--shadow-gold-glow);
+  }
   100% {
+    transform: scale(1);
+    box-shadow: var(--shadow-gold-glow);
+  }
+}
+@keyframes particle-drift-a {
+  0%, 100% {
     transform: translate(0, 0);
     opacity: 0.45;
   }
@@ -1295,8 +643,7 @@ button {
   }
 }
 @keyframes particle-drift-b {
-  0%,
-  100% {
+  0%, 100% {
     transform: translate(0, 0);
     opacity: 0.5;
   }
@@ -1306,8 +653,7 @@ button {
   }
 }
 @keyframes particle-drift-c {
-  0%,
-  100% {
+  0%, 100% {
     transform: translate(0, 0);
     opacity: 0.4;
   }
@@ -1316,8 +662,25 @@ button {
     opacity: 0.8;
   }
 }
+@keyframes caret-blink {
+  0%, 60% {
+    opacity: 1;
+  }
+  61%, 100% {
+    opacity: 0;
+  }
+}
 
 /* Utility classes */
+.anim-screen-enter {
+  animation: screen-enter 360ms var(--ease-emphasis) both;
+}
+.anim-screen-exit-forward {
+  animation: screen-exit-forward 240ms var(--ease-standard) forwards;
+}
+.anim-screen-exit-back {
+  animation: screen-exit-back 240ms var(--ease-standard) forwards;
+}
 .anim-bubble-in {
   animation: bubble-in var(--duration-reveal) var(--ease-emphasis) both;
 }
@@ -1328,77 +691,15 @@ button {
   animation: avatar-bob 4.2s ease-in-out infinite;
   animation-delay: var(--duration-reveal);
 }
-.anim-option-in {
-  animation: option-in var(--duration-slow) var(--ease-standard) both;
+.anim-aura-bloom {
+  animation: aura-bloom 900ms var(--ease-emphasis) both;
 }
-.anim-option-confirm {
-  animation: option-confirm 360ms var(--ease-standard) both;
-}
-.anim-screen-enter {
-  animation: screen-enter 360ms var(--ease-emphasis) both;
-}
-.anim-screen-exit-forward {
-  animation: screen-exit-forward 240ms var(--ease-standard) forwards;
-}
-.anim-screen-exit-back {
-  animation: screen-exit-back 240ms var(--ease-standard) forwards;
-}
-.anim-ring-pulse::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  animation: ring-pulse 700ms var(--ease-emphasis) forwards;
-}
-
-/* Progress fill — shimmer texture */
-.tareeq-progress__fill {
-  background-image: linear-gradient(
-    90deg,
-    var(--coral) 0%,
-    var(--coral-glow) 50%,
-    var(--coral) 100%
-  );
-  background-size: 200% 100%;
-  animation: progress-shimmer 2.4s linear infinite;
-}
-
-/* Career orbit utility classes */
-.anim-tag-float-a {
-  animation: tag-float-a 5.5s ease-in-out infinite;
-}
-.anim-tag-float-b {
-  animation: tag-float-b 6.2s ease-in-out infinite;
-}
-.anim-tag-float-c {
-  animation: tag-float-c 5.1s ease-in-out infinite;
-}
-.anim-tag-enter {
-  animation: tag-enter 420ms var(--ease-emphasis) both;
-}
-.anim-orbit-spin {
-  animation: orbit-spin 60s linear infinite;
-  transform-origin: center;
-}
-
-/* Aura behind the character — soft multi-color blob, breathes + rotates. */
 .anim-aura-rotate {
   animation: aura-rotate 16s ease-in-out infinite;
   transform-origin: center;
 }
-
-/* Typewriter caret */
-.anim-caret-blink {
-  animation: caret-blink 1s steps(1) infinite;
-}
-
-/* Intro choreography */
-.anim-aura-bloom {
-  animation: aura-bloom 900ms var(--ease-emphasis) both;
-}
 .anim-kai-pop {
-  animation: kai-pop-overshoot 700ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation: kai-pop-overshoot 700ms var(--ease-spring) both;
 }
 .anim-eyebrow-fade-up {
   animation: eyebrow-fade-up 700ms var(--ease-emphasis) both;
@@ -1411,7 +712,13 @@ button {
   transform-origin: right center;
 }
 .anim-cta-spring {
-  animation: cta-spring-up 600ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation: cta-spring-up 600ms var(--ease-spring) both;
+}
+.anim-option-in {
+  animation: option-in var(--duration-slow) var(--ease-standard) both;
+}
+.anim-option-confirm {
+  animation: option-confirm 360ms var(--ease-standard) both;
 }
 .anim-particle-a {
   animation: particle-drift-a 4.5s ease-in-out infinite;
@@ -1422,32 +729,38 @@ button {
 .anim-particle-c {
   animation: particle-drift-c 4s ease-in-out infinite;
 }
+.anim-caret-blink {
+  animation: caret-blink 1s steps(1) infinite;
+}
 
-/* Reduced-motion overrides — kill bob, shimmer, screen translations */
+/* RTL helpers */
+[dir="rtl"] .flip-rtl {
+  transform: scaleX(-1);
+}
+
+/* ============================================================
+ * Focus + a11y
+ * ============================================================ */
+:focus-visible {
+  outline-color: var(--gold);
+}
+
 @media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 120ms !important;
+    transition-property: opacity, color, background-color !important;
+    scroll-behavior: auto !important;
+  }
   .anim-avatar-bob,
-  .anim-tag-float-a,
-  .anim-tag-float-b,
-  .anim-tag-float-c,
-  .anim-orbit-spin,
   .anim-aura-rotate,
-  .anim-caret-blink,
   .anim-particle-a,
   .anim-particle-b,
   .anim-particle-c,
-  .tareeq-progress__fill {
+  .anim-caret-blink {
     animation: none !important;
-  }
-  .anim-bubble-in,
-  .anim-avatar-in,
-  .anim-option-in,
-  .anim-screen-enter,
-  .anim-tag-enter {
-    animation-duration: 120ms !important;
-    animation-timing-function: linear !important;
-  }
-  .anim-screen-exit-forward,
-  .anim-screen-exit-back {
-    animation-duration: 80ms !important;
   }
 }

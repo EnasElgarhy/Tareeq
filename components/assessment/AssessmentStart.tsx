@@ -2,23 +2,8 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import {
-  TareeqArrowRight,
-  TareeqLock,
-  TareeqRotate,
-  TareeqSparkle,
-} from "@/components/brand/icons";
-import {
-  AssessIcon,
-  DiscoverIcon,
-  GrowIcon,
-} from "@/components/brand/StepIcons";
-import { CareerOrbit } from "@/components/brand/CareerOrbit";
-import { Button } from "@/components/primitives/Button";
-import {
-  PathSteps,
-  type PathStep,
-} from "@/components/onboarding/PathSteps";
+import { Kai } from "@/components/brand/Kai";
+import { KaiAuraV2 } from "@/components/brand/KaiAuraV2";
 import { uiSounds } from "@/lib/audio/ui-sounds";
 import {
   answeredQuestionCount,
@@ -35,26 +20,11 @@ interface AssessmentStartProps {
   totalQuestions: number;
 }
 
-const STEPS: ReadonlyArray<PathStep> = [
-  {
-    n: 1,
-    title: "Take the assessment",
-    body: "12 minutes. 60 honest questions. Tap an answer and we keep moving.",
-    icon: <AssessIcon />,
-  },
-  {
-    n: 2,
-    title: "Meet your Compass",
-    body: "One persona, four pillars, and a shortlist of careers that fit how you're wired.",
-    icon: <DiscoverIcon />,
-  },
-  {
-    n: 3,
-    title: "Walk the path with us",
-    body: "Curated courses, mentors and a community of students on similar paths.",
-    icon: <GrowIcon />,
-  },
-];
+const STEPS = [
+  { n: 1, title: "Take the assessment", meta: "12 min · 54 questions" },
+  { n: 2, title: "Meet your Compass", meta: "Persona + four pillars" },
+  { n: 3, title: "Walk the path with us", meta: "Mentors + community" },
+] as const;
 
 export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
   const router = useRouter();
@@ -84,7 +54,6 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
     uiSounds.advance();
     resetLocalAssessment();
     writeLocalAssessment(createLocalAssessment());
-    // Fresh starts route through the Kai intro + CORE contract, then Q1.
     router.push("/intro");
   }
 
@@ -98,58 +67,70 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
   return (
     <section
       aria-labelledby="start-heading"
-      className="anim-screen-enter flex flex-1 flex-col gap-5 pb-4"
+      className="anim-screen-enter flex flex-1 flex-col gap-7 pb-4"
     >
-      {/* Editorial headline — bold sans paired with soft italic Fraunces
-       *  on the gradient accent. Magazine pull-quote energy. */}
-      <header className="flex flex-col gap-2">
-        <h1
-          id="start-heading"
-          className="max-w-[16ch] text-[clamp(1.875rem,1.2rem+2.6vw,2.375rem)] font-bold leading-[1.04] tracking-[-0.018em] text-cream"
+      {/* Eyebrow chip */}
+      <span className="anim-eyebrow-fade-up chip chip--violet-on-dark w-fit">
+        <span className="size-1.5 rounded-full bg-gold" />A career compass
+      </span>
+
+      {/* Editorial hero headline */}
+      <h1 id="start-heading" className="text-hero text-sand">
+        Find the work
+        <br />
+        that&rsquo;s been{" "}
+        <span
+          className="text-gold"
+          style={{
+            fontStyle: "italic",
+            fontVariationSettings: '"SOFT" 100, "opsz" 144',
+          }}
         >
-          Fast track{" "}
-          <span
-            className="text-grad-warm font-normal italic"
-            style={{
-              fontFamily: "var(--font-display-italic), Georgia, serif",
-            }}
-          >
-            career success
-          </span>
-        </h1>
-        <p className="max-w-[34ch] text-[14.5px] leading-relaxed text-cream/72">
-          Discover yourself, unlock your future.
-        </p>
-      </header>
+          waiting
+        </span>{" "}
+        for you.
+      </h1>
 
-      {/* Hero — career orbit illustration with floating path tags */}
-      <CareerOrbit />
+      {/* Hero illustration — aurora + Kai */}
+      <div className="relative mx-auto flex h-[260px] w-[260px] items-center justify-center">
+        <div className="anim-aura-bloom absolute inset-0">
+          <KaiAuraV2 size="100%" />
+        </div>
+        <div
+          aria-label="Kai, your guide"
+          role="img"
+          className="anim-kai-pop relative"
+          style={{ animationDelay: "260ms" }}
+        >
+          <div className="anim-avatar-bob" style={{ animationDelay: "1100ms" }}>
+            <Kai mood="warm" size={172} />
+          </div>
+        </div>
+      </div>
 
-      {/* The 3-step vertical ladder */}
-      <PathSteps steps={STEPS} />
-
-      {/* Resume / complete banners — only when relevant, kept tiny */}
+      {/* Resume / complete banners */}
       {canResume && resumeAt ? (
         <div
           role="status"
           aria-live="polite"
-          className="anim-bubble-in flex items-center justify-between gap-3 rounded-md border border-coral/35 bg-coral/10 px-3 py-2 text-cream"
+          className="anim-bubble-in card-night flex items-center justify-between gap-3 !py-3"
         >
-          <p className="text-body-sm leading-5">
-            On{" "}
-            <span className="font-semibold tabular-nums">
-              question {resumeAt}
-            </span>
-            <span className="text-cream/55"> of {totalQuestions}</span>
-          </p>
-          <Button
-            variant="ghost-on-dark"
-            size="sm"
+          <div className="flex items-center gap-3">
+            <span className="size-2 rounded-full bg-gold" />
+            <p className="text-body-sm leading-5 text-sand">
+              On question{" "}
+              <span className="font-semibold tabular-nums">{resumeAt}</span>
+              <span className="text-sand/55"> of {totalQuestions}</span>
+            </p>
+          </div>
+          <button
+            type="button"
+            className="btn-v2 btn-v2--ghost-on-dark"
+            data-size="sm"
             onClick={resume}
-            iconRight={<TareeqArrowRight size={14} />}
           >
-            Resume
-          </Button>
+            Resume →
+          </button>
         </div>
       ) : null}
 
@@ -157,46 +138,73 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
         <div
           role="status"
           aria-live="polite"
-          className="anim-bubble-in flex items-center gap-2 rounded-md border border-cyan-brand/40 bg-cyan-brand/12 px-3 py-2 text-cream"
+          className="anim-bubble-in card-night flex items-center gap-2.5"
+          style={{ borderColor: "rgba(244, 198, 96, 0.4)" }}
         >
-          <TareeqSparkle size={16} className="shrink-0 text-cyan-brand" />
-          <p className="text-body-sm leading-5 text-cream/90">
+          <span className="size-2 rounded-full bg-gold" />
+          <p className="text-body-sm leading-5 text-sand">
             Your Compass is saved on this device.
           </p>
         </div>
       ) : null}
 
-      {/* Spacer */}
+      {/* Step ladder */}
+      <ol className="relative grid gap-4 ps-1">
+        <span
+          aria-hidden="true"
+          className="absolute start-[15px] top-5 bottom-5 w-px bg-gradient-to-b from-violet-soft/40 via-violet-soft/20 to-gold/40"
+        />
+        {STEPS.map((step, i) => (
+          <li
+            key={step.n}
+            className="anim-option-in relative grid grid-cols-[32px_1fr] items-center gap-4"
+            style={{ animationDelay: `${320 + i * 90}ms` }}
+          >
+            <span className="relative z-10 grid size-8 place-items-center rounded-full bg-violet/15 text-sand text-[13px] font-bold ring-1 ring-violet-soft/30">
+              {step.n}
+            </span>
+            <div>
+              <p className="text-body font-semibold text-sand">{step.title}</p>
+              <p className="text-body-sm text-sand/55">{step.meta}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
       <div className="flex-1" />
 
-      {/* CTAs */}
-      <div className="grid gap-2">
-        <Button
-          variant="primary"
-          size="xl"
-          fullWidth
+      {/* Primary CTA */}
+      <div className="grid gap-3">
+        <button
+          type="button"
           onClick={canResume ? resume : startFresh}
-          iconRight={<TareeqArrowRight size={20} />}
+          className="btn-v2 btn-v2--primary w-full"
+          data-size="lg"
         >
-          {canResume
-            ? `Resume at ${resumeAt} of ${totalQuestions}`
-            : "Take the assessment"}
-        </Button>
+          {canResume ? `Resume at ${resumeAt} of ${totalQuestions}` : "Begin"}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+            <path
+              d="M5 12h14M13 6l6 6-6 6"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
 
         {canResume ? (
-          <Button
-            variant="ghost-on-dark"
-            size="md"
-            fullWidth
+          <button
+            type="button"
             onClick={startFresh}
-            iconRight={<TareeqRotate size={14} />}
+            className="btn-v2 btn-v2--ghost-on-dark w-full"
+            data-size="md"
           >
             Start over
-          </Button>
+          </button>
         ) : null}
 
-        <p className="flex items-center justify-center gap-1.5 pt-1 text-caption text-cream/45">
-          <TareeqLock size={11} />
+        <p className="text-center text-eyebrow text-sand/45">
           ~12 min · Free · Stays on your device
         </p>
       </div>

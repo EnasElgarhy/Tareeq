@@ -1,5 +1,12 @@
 import type { Config } from "tailwindcss";
 
+/**
+ * Tareeq v2 Tailwind config.
+ *
+ * Token names match docs/design.md §2. Legacy v1 names (plum, coral,
+ * cyan-brand, ink, cream, mist) are aliased to their nearest v2
+ * equivalent so existing components keep working while they migrate.
+ */
 const config: Config = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
@@ -9,7 +16,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        /* v2 mystical palette */
+        /* v2 palette */
         night: "#0E0A28",
         midnight: "#1B1240",
         dusk: "#3D2270",
@@ -31,32 +38,32 @@ const config: Config = {
         blush: "#F2A8B3",
         mint: "#6FE0C0",
 
-        /* v1 tokens preserved */
+        /* v1 → v2 aliases (so legacy components keep rendering during migration) */
         plum: {
-          DEFAULT: "#1B0E3F",
-          deep: "#0F0824",
-          mid: "#3D2270",
+          DEFAULT: "#1B1240", // → midnight
+          deep: "#0E0A28", // → night
+          mid: "#3D2270", // → dusk
         },
-        mauve: "#5B3D8C",
+        mauve: "#6E48E4", // → violet
         lavender: {
-          DEFAULT: "#B8A5D9",
-          mist: "#E5DAF5",
+          DEFAULT: "#9D7FF0", // → violet-soft
+          mist: "#C8B6F0", // → lilac
         },
         coral: {
-          DEFAULT: "#FF6B47",
-          glow: "#FF8252",
-          deep: "#E55530",
+          DEFAULT: "#F4C660", // → gold (CTA color migrated)
+          glow: "#F5D57F",
+          deep: "#D9A93D",
         },
-        "cyan-brand": "#5BD6E8",
+        "cyan-brand": "#6FE0C0", // → mint
         ink: {
-          DEFAULT: "#0D1B21",
-          soft: "#0F0824",
+          DEFAULT: "#14101F", // → carbon
+          soft: "#0E0A28", // → night
         },
-        cream: "#F5EEE6",
+        cream: "#F5EEE6", // → sand
         mist: "#E8E0D4",
-        success: "#2E8B6F",
-        warning: "#D49A2A",
-        error: "#C2453A",
+        success: "#6FE0C0",
+        warning: "#F4C660",
+        error: "#E07A6F",
       },
       backgroundImage: {
         "night-gradient":
@@ -65,17 +72,18 @@ const config: Config = {
           "linear-gradient(135deg, #6E48E4 0%, #9D7FF0 35%, #F2A8B3 70%, #F4C660 100%)",
         "gold-gradient":
           "linear-gradient(135deg, #F4C660 0%, #F5D57F 100%)",
+        "violet-gradient":
+          "linear-gradient(135deg, #6E48E4 0%, #9D7FF0 100%)",
 
+        /* legacy aliases */
         "plum-gradient":
-          "linear-gradient(135deg, #1B0E3F 0%, #3D2270 55%, #5B3D8C 100%)",
+          "linear-gradient(180deg, #0E0A28 0%, #1B1240 60%, #3D2270 100%)",
         "plum-gradient-soft":
-          "linear-gradient(160deg, #2A1758 0%, #4D2B7E 100%)",
+          "linear-gradient(160deg, #1B1240 0%, #3D2270 100%)",
         "coral-gradient":
-          "linear-gradient(135deg, #FF6B47 0%, #FF8252 100%)",
+          "linear-gradient(135deg, #F4C660 0%, #F5D57F 100%)",
         "grad-warm":
-          "linear-gradient(95deg, #FF3D83 0%, #FF6B3D 55%, #FFA53D 100%)",
-        "grad-warm-soft":
-          "linear-gradient(95deg, rgba(255,61,131,0.18), rgba(255,138,61,0.18))",
+          "linear-gradient(95deg, #F2A8B3 0%, #F4C660 50%, #FDE7A8 100%)",
       },
       fontFamily: {
         sans: [
@@ -99,33 +107,37 @@ const config: Config = {
           "Times New Roman",
           "serif",
         ],
-        "display-italic": [
+        display: [
           "var(--font-display-italic)",
           "Georgia",
+          "Times New Roman",
           "serif",
         ],
       },
       borderRadius: {
-        xs: "4px",
         sm: "8px",
         md: "12px",
-        lg: "16px",
-        xl: "24px",
-        "2xl": "32px",
+        lg: "20px",
+        xl: "28px",
+        "2xl": "36px",
+        pill: "9999px",
       },
       boxShadow: {
-        sm: "0 1px 2px rgba(13, 27, 33, 0.06), 0 1px 3px rgba(13, 27, 33, 0.04)",
-        md: "0 4px 8px rgba(13, 27, 33, 0.06), 0 2px 4px rgba(13, 27, 33, 0.04)",
-        lg: "0 12px 24px rgba(13, 27, 33, 0.08), 0 4px 8px rgba(13, 27, 33, 0.04)",
-        xl: "0 24px 48px rgba(13, 27, 33, 0.10), 0 8px 16px rgba(13, 27, 33, 0.06)",
-        "coral-glow":
-          "0 8px 24px rgba(255, 107, 71, 0.40), 0 4px 8px rgba(255, 107, 71, 0.20)",
-        "bubble":
-          "0 12px 32px rgba(0, 0, 0, 0.25), 0 2px 6px rgba(0, 0, 0, 0.18)",
+        "sand-sm":
+          "0 1px 2px rgba(20, 16, 31, 0.04), 0 1px 3px rgba(20, 16, 31, 0.06)",
+        "sand-md":
+          "0 8px 24px rgba(20, 16, 31, 0.06), 0 2px 8px rgba(20, 16, 31, 0.04)",
+        "sand-lg":
+          "0 24px 48px rgba(20, 16, 31, 0.08), 0 8px 16px rgba(20, 16, 31, 0.05)",
+        "gold-glow":
+          "0 12px 28px rgba(244, 198, 96, 0.35), 0 4px 10px rgba(244, 198, 96, 0.15)",
+        "violet-glow":
+          "0 12px 28px rgba(110, 72, 228, 0.35), 0 4px 10px rgba(110, 72, 228, 0.15)",
       },
       transitionTimingFunction: {
         standard: "cubic-bezier(0.2, 0, 0, 1)",
         emphasis: "cubic-bezier(0.3, 0, 0, 1)",
+        spring: "cubic-bezier(0.34, 1.56, 0.64, 1)",
       },
       transitionDuration: {
         fast: "120ms",
