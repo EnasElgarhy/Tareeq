@@ -2,78 +2,1232 @@
 @tailwind components;
 @tailwind utilities;
 
-/* prettier-ignore */
+/* ============================================================
+ * Tareeq Design System — tokens
+ * design.md v1.0 · Q2 2026
+ * ============================================================ */
 :root {
-  --bg-0: #14082b;
-  --bg-1: #2b1265;
-  --bg-2: #4b1a8a;
-  --accent-pink: #ff3d83;
-  --accent-orange: #ff8a3d;
-  --accent-gold: #ffc24d;
-  --logo-cyan: #4ee0ff;
-  --text-100: #ffffff;
-  --text-80: rgba(255,255,255,0.82);
-  --text-60: rgba(255,255,255,0.62);
-  --text-40: rgba(255,255,255,0.40);
-  --glass: rgba(255,255,255,0.06);
-  --glass-strong: rgba(255,255,255,0.10);
-  --glass-border: rgba(255,255,255,0.14);
-  --grad-warm: linear-gradient(95deg, #ff3d83 0%, #ff6b3d 55%, #ffa53d 100%);
-  --grad-warm-soft: linear-gradient(95deg, rgba(255,61,131,0.18), rgba(255,138,61,0.18));
+  /* Brand */
+  --tareeq-plum: #1b0e3f;
+  --plum-deep: #0f0824;
+  --plum-mid: #3d2270;
+  --mauve: #5b3d8c;
+  --lavender: #b8a5d9;
+  --lavender-mist: #e5daf5;
+
+  /* Accent */
+  --coral: #ff6b47;
+  --coral-glow: #ff8252;
+  --coral-deep: #e55530;
+
+  /* Signature */
+  --cyan: #5bd6e8;
+
+  /* Neutrals */
+  --ink: #0d1b21;
+  --ink-soft: #0f0824;
+  --cream: #f5eee6;
+  --mist: #e8e0d4;
+  --white: #ffffff;
+
+  /* Functional */
+  --success: #2e8b6f;
+  --warning: #d49a2a;
+  --error: #c2453a;
+  --info: #5b3d8c;
+
+  /* Gradients */
+  --plum-gradient: linear-gradient(
+    135deg,
+    #1b0e3f 0%,
+    #3d2270 55%,
+    #5b3d8c 100%
+  );
+  --plum-gradient-soft: linear-gradient(160deg, #2a1758 0%, #4d2b7e 100%);
+  --coral-gradient: linear-gradient(135deg, #ff6b47 0%, #ff8252 100%);
+  /* Signature warm sweep — pink → red-orange → gold. Used on big
+     headline accents. */
+  --grad-warm: linear-gradient(
+    95deg,
+    #ff3d83 0%,
+    #ff6b3d 55%,
+    #ffa53d 100%
+  );
+  --grad-warm-soft: linear-gradient(
+    95deg,
+    rgba(255, 61, 131, 0.18),
+    rgba(255, 138, 61, 0.18)
+  );
+
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+  --space-32: 128px;
+
+  /* Radii */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(13, 27, 33, 0.06),
+    0 1px 3px rgba(13, 27, 33, 0.04);
+  --shadow-md: 0 4px 8px rgba(13, 27, 33, 0.06),
+    0 2px 4px rgba(13, 27, 33, 0.04);
+  --shadow-lg: 0 12px 24px rgba(13, 27, 33, 0.08),
+    0 4px 8px rgba(13, 27, 33, 0.04);
+  --shadow-xl: 0 24px 48px rgba(13, 27, 33, 0.1),
+    0 8px 16px rgba(13, 27, 33, 0.06);
+  --shadow-coral-glow: 0 8px 24px rgba(255, 107, 71, 0.4),
+    0 4px 8px rgba(255, 107, 71, 0.2);
+  --shadow-bubble: 0 12px 32px rgba(0, 0, 0, 0.25),
+    0 2px 6px rgba(0, 0, 0, 0.18);
+
+  /* Motion */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasis: cubic-bezier(0.3, 0, 0, 1);
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 320ms;
+  --duration-reveal: 480ms;
+
+  /* Font stacks (overridden by next/font CSS vars in <html>) */
+  --font-sans: var(--font-jakarta), system-ui, -apple-system, "Segoe UI",
+    Roboto, sans-serif;
+  --font-arabic-stack: var(--font-arabic), "SF Arabic", "Segoe UI Arabic",
+    Tahoma, sans-serif;
+  --font-question-stack: var(--font-question), Georgia, "Times New Roman",
+    serif;
 }
 
-* {
+/* ============================================================
+ * Base
+ * ============================================================ */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
 }
 
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
 html {
   min-height: 100%;
-  background: var(--bg-0);
+  background: var(--cream);
+  color-scheme: light;
 }
 
 body {
-  min-height: 100vh;
   min-height: 100dvh;
-  margin: 0;
-  overflow-x: hidden;
-  background:
-    radial-gradient(
-      60% 50% at 20% 10%,
-      rgba(255, 61, 131, 0.35),
-      transparent 60%
-    ),
-    radial-gradient(
-      70% 60% at 85% 20%,
-      rgba(120, 60, 255, 0.55),
-      transparent 65%
-    ),
-    radial-gradient(
-      80% 70% at 50% 100%,
-      rgba(75, 26, 138, 0.95),
-      transparent 70%
-    ),
-    linear-gradient(180deg, #190a36 0%, #1b0b3a 50%, #110626 100%);
-  color: var(--text-100);
-  font-family:
-    var(--font-outfit),
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-  letter-spacing: 0;
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+  color: var(--ink);
+  background: var(--cream);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-body::before {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
+:lang(ar) {
+  font-family: var(--font-arabic-stack);
+}
+
+a {
+  color: var(--tareeq-plum);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--plum-deep);
+}
+
+button {
+  font-family: inherit;
+  color: inherit;
+}
+
+/* Logical alignment defaults */
+input,
+textarea,
+select,
+button {
+  text-align: start;
+}
+
+/* ============================================================
+ * Type scale (§3)
+ * ============================================================ */
+.text-display {
+  font: 700 44px/52px var(--font-sans);
+  letter-spacing: -0.01em;
+}
+.text-h1 {
+  font: 700 32px/40px var(--font-sans);
+  letter-spacing: -0.005em;
+}
+.text-h2 {
+  font: 600 24px/32px var(--font-sans);
+}
+.text-h3 {
+  font: 600 18px/26px var(--font-sans);
+}
+.text-subhead {
+  font: 500 16px/24px var(--font-sans);
+}
+.text-body {
+  font: 400 16px/24px var(--font-sans);
+}
+.text-body-sm {
+  font: 400 14px/22px var(--font-sans);
+}
+.text-caption {
+  font: 500 12px/16px var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.text-button {
+  font: 600 14px/20px var(--font-sans);
+}
+
+/* Gradient text — applies the warm sweep to a text run.
+ * Sets both `color` and `-webkit-text-fill-color` so the clip lands
+ * reliably in Safari and Firefox as well as Chrome. */
+.text-grad-warm {
+  background-image: var(--grad-warm);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  /* Avoid descender clipping in tight line-heights */
+  padding-block-end: 0.04em;
+}
+
+/* The assessment-only voice */
+.text-question {
+  font: 400 italic 24px/30px var(--font-question-stack);
+  letter-spacing: -0.005em;
+}
+.text-question:lang(ar) {
+  line-height: 1.6;
+}
+/* Compact assessment voice — fits above the fold on small viewports */
+.text-question-tight {
+  font: 400 italic clamp(18px, 16px + 0.5vw, 22px) / 1.22
+    var(--font-question-stack);
+  letter-spacing: -0.005em;
+}
+.text-question-tight:lang(ar) {
+  line-height: 1.45;
+}
+
+/* ============================================================
+ * Buttons (§5.1)
+ * ============================================================ */
+.tareeq-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font: 600 14px/20px var(--font-sans);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  transition:
+    background var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-base) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+}
+
+.tareeq-btn[data-size="sm"] {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+.tareeq-btn[data-size="md"] {
+  height: 40px;
+  padding: 0 16px;
+}
+.tareeq-btn[data-size="lg"] {
+  height: 48px;
+  padding: 0 20px;
+  font-size: 16px;
+}
+.tareeq-btn[data-size="xl"] {
+  height: 56px;
+  padding: 0 24px;
+  font-size: 18px;
+}
+
+.tareeq-btn[data-variant="primary"] {
+  background: var(--coral);
+  color: var(--cream);
+}
+.tareeq-btn[data-variant="primary"]:hover:not(:disabled) {
+  background: var(--coral-deep);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-coral-glow);
+}
+.tareeq-btn[data-variant="primary"]:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.tareeq-btn[data-variant="secondary"] {
+  background: var(--tareeq-plum);
+  color: var(--cream);
+}
+.tareeq-btn[data-variant="secondary"]:hover:not(:disabled) {
+  background: var(--plum-deep);
+}
+
+.tareeq-btn[data-variant="tertiary"] {
+  background: transparent;
+  color: var(--tareeq-plum);
+}
+.tareeq-btn[data-variant="tertiary"]:hover:not(:disabled) {
+  background: var(--lavender-mist);
+}
+
+.tareeq-btn[data-variant="ghost"] {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--mist);
+}
+.tareeq-btn[data-variant="ghost"]:hover:not(:disabled) {
+  background: var(--cream);
+}
+
+.tareeq-btn[data-variant="ghost-on-dark"] {
+  background: transparent;
+  color: var(--cream);
+  border-color: rgba(245, 238, 230, 0.32);
+}
+.tareeq-btn[data-variant="ghost-on-dark"]:hover:not(:disabled) {
+  background: rgba(245, 238, 230, 0.1);
+}
+
+.tareeq-btn[data-variant="destructive"] {
+  background: var(--error);
+  color: var(--cream);
+}
+
+.tareeq-btn:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+.tareeq-btn:disabled {
+  opacity: 0.4;
   pointer-events: none;
+}
+
+@media (pointer: coarse) {
+  .tareeq-btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* RTL arrow flip */
+[dir="rtl"] .tareeq-btn [data-flip-rtl] {
+  transform: scaleX(-1);
+}
+
+/* ============================================================
+ * Input (§5.2)
+ * ============================================================ */
+.tareeq-input-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.tareeq-input-label {
+  font: 500 12px/16px var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgba(13, 27, 33, 0.65);
+}
+.tareeq-input-field input,
+.tareeq-input-field textarea,
+.tareeq-input-field select {
+  width: 100%;
+  height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--mist);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  font: 400 16px/24px var(--font-sans);
+  color: var(--ink);
+  transition: border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+.tareeq-input-field input::placeholder {
+  color: rgba(13, 27, 33, 0.4);
+}
+.tareeq-input-field input:focus-visible,
+.tareeq-input-field textarea:focus-visible,
+.tareeq-input-field select:focus-visible {
+  outline: none;
+  border-color: var(--tareeq-plum);
+  box-shadow: 0 0 0 3px rgba(91, 214, 232, 0.25);
+}
+.tareeq-input-field input[aria-invalid="true"] {
+  border-color: var(--error);
+}
+.tareeq-input-helper {
+  font: 400 14px/22px var(--font-sans);
+  color: rgba(13, 27, 33, 0.6);
+}
+.tareeq-input-error {
+  font: 400 14px/22px var(--font-sans);
+  color: var(--error);
+}
+
+/* ============================================================
+ * Cards (§5.3)
+ * ============================================================ */
+[data-card] {
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+[data-card="quiet"] {
+  background: var(--cream);
+  border: 1px solid var(--mist);
+}
+[data-card="default"] {
+  background: var(--white);
+  border: 1px solid var(--mist);
+}
+[data-card="raised"] {
+  background: var(--white);
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-xl);
+}
+[data-card="glass"] {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(245, 238, 230, 0.16);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--cream);
+}
+
+/* ============================================================
+ * Avatar card (§5.4)
+ * ============================================================ */
+.tareeq-avatar-card {
+  width: 144px;
+  height: 144px;
+  background: var(--coral-gradient);
+  border-radius: var(--radius-2xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-coral-glow);
+  position: relative;
+  isolation: isolate;
+}
+.tareeq-avatar-card::after {
   content: "";
-  opacity: 0.07;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at 30% 22%,
+    rgba(255, 255, 255, 0.5),
+    transparent 55%
+  );
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+.tareeq-avatar-card svg,
+.tareeq-avatar-card img {
+  width: 75%;
+  height: 75%;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+ * Speech bubble (§5.5)
+ * ============================================================ */
+.tareeq-bubble {
+  background: var(--cream);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  position: relative;
+  box-shadow: var(--shadow-bubble);
+  max-width: 540px;
+}
+.tareeq-bubble[data-tight] {
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+}
+
+/* Light-surface variant — white bubble for use on cream pages. Keeps
+ * the speech-tail metaphor but reads against the warm radial backdrop. */
+.tareeq-bubble[data-surface="light"] {
+  background: var(--white);
+  box-shadow:
+    0 10px 28px rgba(15, 8, 36, 0.10),
+    0 2px 6px rgba(15, 8, 36, 0.06),
+    inset 0 0 0 1px rgba(13, 27, 33, 0.05);
+}
+.tareeq-bubble[data-surface="light"]::before {
+  border-bottom-color: var(--white);
+  filter: drop-shadow(0 -1px 1px rgba(15, 8, 36, 0.05));
+}
+
+/* Centered tail — used when the bubble sits directly under the avatar */
+.tareeq-bubble[data-tail="center"]::before {
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+}
+[dir="rtl"] .tareeq-bubble[data-tail="center"]::before {
+  inset-inline-end: 50%;
+  inset-inline-start: auto;
+  transform: translateX(50%);
+}
+
+/* Bottom-edge tail — bubble sits ABOVE the speaker; tail points DOWN.
+ * Flips the triangle vertically and pins it to the bubble's bottom edge. */
+.tareeq-bubble[data-tail-edge="bottom"]::before {
+  top: auto;
+  bottom: -10px;
+  border-bottom: none;
+  border-top: 10px solid var(--cream);
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.08));
+}
+.tareeq-bubble[data-tail-edge="bottom"][data-surface="light"]::before {
+  border-top-color: var(--white);
+  filter: drop-shadow(0 1px 1px rgba(15, 8, 36, 0.06));
+}
+.tareeq-bubble[data-tail-edge="bottom"][data-tail="center"]::before {
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+}
+.tareeq-bubble::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  inset-inline-start: 28px;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid var(--cream);
+  filter: drop-shadow(0 -1px 0 rgba(0, 0, 0, 0.08));
+}
+.tareeq-bubble__q {
+  font: 400 italic 24px/30px var(--font-question-stack);
+  color: var(--plum-deep);
+  letter-spacing: -0.005em;
+  margin: 0;
+}
+.tareeq-bubble__q:lang(ar) {
+  line-height: 1.6;
+}
+
+/* ============================================================
+ * Play button + speed pill (§5.6)
+ * ============================================================ */
+.tareeq-play {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  background: var(--coral-gradient);
+  color: var(--cream);
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-coral-glow);
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+.tareeq-play:hover:not(:disabled) {
+  transform: scale(1.04);
+}
+.tareeq-play:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.tareeq-play:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.tareeq-play:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+.tareeq-play svg {
+  width: 20px;
+  height: 20px;
+}
+
+.tareeq-speed-pill {
+  height: 36px;
+  padding: 0 16px;
+  border-radius: var(--radius-full);
+  background: rgba(245, 238, 230, 0.1);
+  color: var(--cream);
+  border: 1px solid rgba(245, 238, 230, 0.18);
+  font: 500 14px/1 var(--font-sans);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-standard);
+}
+.tareeq-speed-pill:hover {
+  background: rgba(245, 238, 230, 0.18);
+}
+.tareeq-speed-pill:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+ * Progress (§5.7)
+ * ============================================================ */
+.tareeq-progress {
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: rgba(245, 238, 230, 0.18);
+  overflow: hidden;
+}
+.tareeq-progress[data-on-light] {
+  background: var(--mist);
+}
+.tareeq-progress__fill {
+  height: 100%;
+  background: var(--coral);
+  border-radius: inherit;
+  transition: width var(--duration-base) var(--ease-standard);
+  box-shadow: 0 0 12px rgba(255, 107, 71, 0.55);
+}
+
+/* ============================================================
+ * Select pill (§5.8)
+ * ============================================================ */
+.tareeq-select-pill {
+  width: 100%;
+  height: 56px;
+  padding: 0 20px;
+  border: none;
+  background: var(--cream);
+  color: var(--plum-deep);
+  border-radius: var(--radius-full);
+  font: 600 16px/1 var(--font-sans);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  text-align: start;
+  transition: transform var(--duration-fast) var(--ease-standard);
+  box-shadow: 0 6px 18px rgba(15, 8, 36, 0.25);
+}
+.tareeq-select-pill:hover {
+  transform: translateY(-1px);
+}
+.tareeq-select-pill .placeholder {
+  color: rgba(15, 8, 36, 0.55);
+  font-weight: 500;
+}
+.tareeq-select-pill svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+.tareeq-select-pill:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+/* When the pill wraps a native <select> */
+.tareeq-select-pill > select {
+  all: unset;
+  flex: 1;
+  cursor: pointer;
+}
+
+/* ============================================================
+ * Badge / Tag (§5.9)
+ * ============================================================ */
+.tareeq-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-xs);
+  font: 500 11px/16px var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.tareeq-badge--brand {
+  background: var(--lavender-mist);
+  color: var(--tareeq-plum);
+}
+.tareeq-badge--accent {
+  background: rgba(255, 107, 71, 0.16);
+  color: var(--coral-deep);
+}
+.tareeq-badge--neutral {
+  background: var(--mist);
+  color: var(--ink);
+}
+.tareeq-badge--success {
+  background: rgba(46, 139, 111, 0.16);
+  color: var(--success);
+}
+.tareeq-badge--on-dark {
+  background: rgba(245, 238, 230, 0.1);
+  border: 1px solid rgba(245, 238, 230, 0.22);
+  color: var(--cream);
+}
+
+/* ============================================================
+ * Speak pill (§5.10)
+ * ============================================================ */
+.tareeq-speak-pill {
+  height: 36px;
+  padding: 0 20px;
+  border-radius: var(--radius-full);
+  background: transparent;
+  border: 1px solid rgba(245, 238, 230, 0.4);
+  color: var(--cream);
+  font: 600 14px/1 var(--font-sans);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background var(--duration-fast) var(--ease-standard);
+}
+.tareeq-speak-pill:hover {
+  background: rgba(245, 238, 230, 0.12);
+}
+.tareeq-speak-pill:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+ * Surfaces
+ * ============================================================ */
+.surface-plum {
+  background: var(--plum-gradient);
+  color: var(--cream);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.surface-plum::before {
+  content: "";
+  position: absolute;
+  top: -10%;
+  inset-inline-end: -20%;
+  width: 60%;
+  aspect-ratio: 1;
+  background: radial-gradient(
+    circle,
+    rgba(124, 91, 181, 0.55),
+    transparent 65%
+  );
+  pointer-events: none;
+  z-index: -1;
+}
+.surface-plum::after {
+  content: "";
+  position: absolute;
+  bottom: -20%;
+  inset-inline-start: -10%;
+  width: 60%;
+  aspect-ratio: 1;
+  background: radial-gradient(
+    circle,
+    rgba(91, 214, 232, 0.16),
+    transparent 65%
+  );
+  pointer-events: none;
+  z-index: -1;
+}
+
+.surface-cream {
+  background: var(--cream);
+  color: var(--ink);
+}
+
+/* ============================================================
+ * RTL helpers
+ * ============================================================ */
+[dir="rtl"] .tareeq-bubble::before {
+  inset-inline-start: auto;
+  inset-inline-end: 28px;
+}
+[dir="rtl"] .flip-rtl {
+  transform: scaleX(-1);
+}
+
+/* ============================================================
+ * Motion accessibility
+ * ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 120ms !important;
+    transition-property: opacity, color, background-color !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+ * Focus reset — never strip focus rings without replacement
+ * ============================================================ */
+:focus-visible {
+  outline-color: var(--cyan);
+}
+
+/* ============================================================
+ * Motion — keyframes + utility classes
+ * ============================================================ */
+@keyframes bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes avatar-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes avatar-pop-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.92);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(2px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes option-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes option-confirm {
+  0% {
+    transform: scale(1);
+    box-shadow: var(--shadow-coral-glow);
+  }
+  45% {
+    transform: scale(1.025);
+    box-shadow:
+      0 0 0 6px rgba(91, 214, 232, 0.22),
+      var(--shadow-coral-glow);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: var(--shadow-coral-glow);
+  }
+}
+
+@keyframes screen-enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes screen-exit-forward {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-18px);
+  }
+}
+
+@keyframes screen-exit-back {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+@keyframes progress-shimmer {
+  from {
+    background-position: -120% 0;
+  }
+  to {
+    background-position: 220% 0;
+  }
+}
+
+@keyframes ring-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(91, 214, 232, 0.55);
+  }
+  100% {
+    box-shadow: 0 0 0 14px rgba(91, 214, 232, 0);
+  }
+}
+
+/* Career-tag drift — three subtle, looped animations.
+ * Each variant uses different translate axes + timing so the orbit feels
+ * lived-in instead of in lock-step. */
+@keyframes tag-float-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -6px, 0);
+  }
+}
+@keyframes tag-float-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(5px, 4px, 0);
+  }
+}
+@keyframes tag-float-c {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(-4px, -5px, 0);
+  }
+}
+@keyframes tag-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.85) translate3d(0, 4px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+}
+@keyframes orbit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Multi-color aura — slow rotation + gentle breathing pulse.
+ * Used behind the Kai character on the intro screen. */
+@keyframes aura-rotate {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.06);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+@keyframes caret-blink {
+  0%,
+  60% {
+    opacity: 1;
+  }
+  61%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Choreographed entrance — used by /intro */
+@keyframes aura-bloom {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes kai-pop-overshoot {
+  0% {
+    opacity: 0;
+    transform: scale(0.4) translateY(20px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.06) translateY(-4px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes eyebrow-fade-up {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+    letter-spacing: 0.18em;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    letter-spacing: 0.22em;
+  }
+}
+
+@keyframes accent-line-grow {
+  0% {
+    transform: scaleX(0);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes cta-spring-up {
+  0% {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-3px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes particle-drift-a {
+  0%,
+  100% {
+    transform: translate(0, 0);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translate(8px, -12px);
+    opacity: 0.85;
+  }
+}
+@keyframes particle-drift-b {
+  0%,
+  100% {
+    transform: translate(0, 0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(-10px, -8px);
+    opacity: 0.95;
+  }
+}
+@keyframes particle-drift-c {
+  0%,
+  100% {
+    transform: translate(0, 0);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translate(6px, 14px);
+    opacity: 0.8;
+  }
+}
+
+/* Utility classes */
+.anim-bubble-in {
+  animation: bubble-in var(--duration-reveal) var(--ease-emphasis) both;
+}
+.anim-avatar-in {
+  animation: avatar-pop-in var(--duration-reveal) var(--ease-emphasis) both;
+}
+.anim-avatar-bob {
+  animation: avatar-bob 4.2s ease-in-out infinite;
+  animation-delay: var(--duration-reveal);
+}
+.anim-option-in {
+  animation: option-in var(--duration-slow) var(--ease-standard) both;
+}
+.anim-option-confirm {
+  animation: option-confirm 360ms var(--ease-standard) both;
+}
+.anim-screen-enter {
+  animation: screen-enter 360ms var(--ease-emphasis) both;
+}
+.anim-screen-exit-forward {
+  animation: screen-exit-forward 240ms var(--ease-standard) forwards;
+}
+.anim-screen-exit-back {
+  animation: screen-exit-back 240ms var(--ease-standard) forwards;
+}
+.anim-ring-pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  animation: ring-pulse 700ms var(--ease-emphasis) forwards;
+}
+
+/* Progress fill — shimmer texture */
+.tareeq-progress__fill {
+  background-image: linear-gradient(
+    90deg,
+    var(--coral) 0%,
+    var(--coral-glow) 50%,
+    var(--coral) 100%
+  );
+  background-size: 200% 100%;
+  animation: progress-shimmer 2.4s linear infinite;
+}
+
+/* Career orbit utility classes */
+.anim-tag-float-a {
+  animation: tag-float-a 5.5s ease-in-out infinite;
+}
+.anim-tag-float-b {
+  animation: tag-float-b 6.2s ease-in-out infinite;
+}
+.anim-tag-float-c {
+  animation: tag-float-c 5.1s ease-in-out infinite;
+}
+.anim-tag-enter {
+  animation: tag-enter 420ms var(--ease-emphasis) both;
+}
+.anim-orbit-spin {
+  animation: orbit-spin 60s linear infinite;
+  transform-origin: center;
+}
+
+/* Aura behind the character — soft multi-color blob, breathes + rotates. */
+.anim-aura-rotate {
+  animation: aura-rotate 16s ease-in-out infinite;
+  transform-origin: center;
+}
+
+/* Typewriter caret */
+.anim-caret-blink {
+  animation: caret-blink 1s steps(1) infinite;
+}
+
+/* Intro choreography */
+.anim-aura-bloom {
+  animation: aura-bloom 900ms var(--ease-emphasis) both;
+}
+.anim-kai-pop {
+  animation: kai-pop-overshoot 700ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.anim-eyebrow-fade-up {
+  animation: eyebrow-fade-up 700ms var(--ease-emphasis) both;
+}
+.anim-accent-line-grow {
+  animation: accent-line-grow 4000ms ease-out both;
+  transform-origin: left center;
+}
+[dir="rtl"] .anim-accent-line-grow {
+  transform-origin: right center;
+}
+.anim-cta-spring {
+  animation: cta-spring-up 600ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.anim-particle-a {
+  animation: particle-drift-a 4.5s ease-in-out infinite;
+}
+.anim-particle-b {
+  animation: particle-drift-b 5.2s ease-in-out infinite;
+}
+.anim-particle-c {
+  animation: particle-drift-c 4s ease-in-out infinite;
+}
+
+/* Reduced-motion overrides — kill bob, shimmer, screen translations */
+@media (prefers-reduced-motion: reduce) {
+  .anim-avatar-bob,
+  .anim-tag-float-a,
+  .anim-tag-float-b,
+  .anim-tag-float-c,
+  .anim-orbit-spin,
+  .anim-aura-rotate,
+  .anim-caret-blink,
+  .anim-particle-a,
+  .anim-particle-b,
+  .anim-particle-c,
+  .tareeq-progress__fill {
+    animation: none !important;
+  }
+  .anim-bubble-in,
+  .anim-avatar-in,
+  .anim-option-in,
+  .anim-screen-enter,
+  .anim-tag-enter {
+    animation-duration: 120ms !important;
+    animation-timing-function: linear !important;
+  }
+  .anim-screen-exit-forward,
+  .anim-screen-exit-back {
+    animation-duration: 80ms !important;
+  }
 }

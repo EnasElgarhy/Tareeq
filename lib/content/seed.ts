@@ -1602,6 +1602,114 @@ export const seedQuestions = [
       },
     ],
   },
+
+  // ============================================================
+  // Open-text reflection — 10 free-response questions appended
+  // after the scored Q1–Q40 set. Stored as raw strings; not used
+  // by the CORE scorer. Pillar 4 keeps them in the existing
+  // grouping; the chrome shows them under "Reflect" instead of
+  // a pillar number (see getPillarLabel).
+  // ============================================================
+  {
+    externalId: "QT1",
+    pillar: 4,
+    position: 41,
+    kind: "text",
+    title: {
+      en: "When you finish something you’re proud of, what is it usually about?",
+    },
+    options: [],
+  },
+  {
+    externalId: "QT2",
+    pillar: 4,
+    position: 42,
+    kind: "text",
+    title: {
+      en: "Describe a day that would feel completely worth living. What are you doing?",
+    },
+    options: [],
+  },
+  {
+    externalId: "QT3",
+    pillar: 4,
+    position: 43,
+    kind: "text",
+    title: {
+      en: "What’s a problem in the world that genuinely bothers you?",
+    },
+    options: [],
+  },
+  {
+    externalId: "QT4",
+    pillar: 4,
+    position: 44,
+    kind: "text",
+    title: {
+      en: "If you could shadow anyone for a week to learn what they do, who would it be and why?",
+    },
+    options: [],
+  },
+  {
+    externalId: "QT5",
+    pillar: 4,
+    position: 45,
+    kind: "text",
+    title: {
+      en: "When people compliment you, what do they most often say?",
+    },
+    options: [],
+  },
+  {
+    externalId: "QT6",
+    pillar: 4,
+    position: 46,
+    kind: "text",
+    title: {
+      en: "Describe a moment when time disappeared because you were so absorbed.",
+    },
+    options: [],
+  },
+  {
+    externalId: "QT7",
+    pillar: 4,
+    position: 47,
+    kind: "text",
+    title: {
+      en: "What do you do in your free time when no one is watching?",
+    },
+    options: [],
+  },
+  {
+    externalId: "QT8",
+    pillar: 4,
+    position: 48,
+    kind: "text",
+    title: {
+      en: "If you had to teach one thing for an hour, what would it be?",
+    },
+    options: [],
+  },
+  {
+    externalId: "QT9",
+    pillar: 4,
+    position: 49,
+    kind: "text",
+    title: {
+      en: "What kind of conversations leave you energised rather than drained?",
+    },
+    options: [],
+  },
+  {
+    externalId: "QT10",
+    pillar: 4,
+    position: 50,
+    kind: "text",
+    title: {
+      en: "Picture a regular Wednesday ten years from now in your best life. What does it look like?",
+    },
+    options: [],
+  },
 ] as const;
 
 export type SeedCluster = (typeof clusters)[number];

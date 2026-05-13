@@ -28,6 +28,9 @@ export function getQuestionByIndex(index: number) {
 }
 
 export function getPillarLabel(question: Question) {
+  // Open-text reflection questions get a distinct label so the user
+  // sees the mode change from "tap" to "write".
+  if (question.kind === "text") return "Reflect";
   if (question.pillar === 0) return "About You";
   if (question.pillar === 1) return "Pillar 1 · Curiosities";
   if (question.pillar === 2) return "Pillar 2 · Operations";

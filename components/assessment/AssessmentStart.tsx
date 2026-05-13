@@ -1,8 +1,25 @@
 "use client";
 
-import { ArrowRight, RotateCcw } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import {
+  TareeqArrowRight,
+  TareeqLock,
+  TareeqRotate,
+  TareeqSparkle,
+} from "@/components/brand/icons";
+import {
+  AssessIcon,
+  DiscoverIcon,
+  GrowIcon,
+} from "@/components/brand/StepIcons";
+import { CareerOrbit } from "@/components/brand/CareerOrbit";
+import { Button } from "@/components/primitives/Button";
+import {
+  PathSteps,
+  type PathStep,
+} from "@/components/onboarding/PathSteps";
+import { uiSounds } from "@/lib/audio/ui-sounds";
 import {
   answeredQuestionCount,
   createLocalAssessment,
@@ -14,9 +31,30 @@ import {
 } from "@/lib/assessment/progress";
 import { getQuestionPath } from "@/lib/assessment/questions";
 
-type AssessmentStartProps = {
+interface AssessmentStartProps {
   totalQuestions: number;
-};
+}
+
+const STEPS: ReadonlyArray<PathStep> = [
+  {
+    n: 1,
+    title: "Take the assessment",
+    body: "12 minutes. 60 honest questions. Tap an answer and we keep moving.",
+    icon: <AssessIcon />,
+  },
+  {
+    n: 2,
+    title: "Meet your Compass",
+    body: "One persona, four pillars, and a shortlist of careers that fit how you're wired.",
+    icon: <DiscoverIcon />,
+  },
+  {
+    n: 3,
+    title: "Walk the path with us",
+    body: "Curated courses, mentors and a community of students on similar paths.",
+    icon: <GrowIcon />,
+  },
+];
 
 export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
   const router = useRouter();
@@ -32,116 +70,135 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
   const answeredCount = answeredQuestionCount(progress);
   const canResume = answeredCount > 0 && !progress?.completedAt;
   const completed =
-    searchParams.get("complete") === "1" || progress?.completedAt;
+    searchParams.get("complete") === "1" || Boolean(progress?.completedAt);
 
-  const resumeLabel = useMemo(() => {
-    if (!progress) return "Resume";
-    return `Resume at ${Math.min(
+  const resumeAt = useMemo(() => {
+    if (!progress) return null;
+    return Math.min(
       getResumeQuestionIndex(progress, totalQuestions) + 1,
       totalQuestions,
-    )} / ${totalQuestions}`;
+    );
   }, [progress, totalQuestions]);
 
   function startFresh() {
+    uiSounds.advance();
     resetLocalAssessment();
     writeLocalAssessment(createLocalAssessment());
-    router.push(getQuestionPath(0));
+    // Fresh starts route through the Kai intro + CORE contract, then Q1.
+    router.push("/intro");
   }
 
   function resume() {
+    uiSounds.advance();
     router.push(
       getQuestionPath(getResumeQuestionIndex(progress, totalQuestions)),
     );
   }
 
   return (
-    <section className="flex flex-1 flex-col justify-center pb-4 pt-2">
-      <div className="mb-5 inline-flex w-max items-center gap-2 rounded-full border border-glass-border bg-glass px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.13em] text-text-80">
-        <span className="size-1.5 rounded-full bg-accent-orange shadow-[0_0_12px_var(--accent-orange)]" />
-        CORE Assessment · v4
-      </div>
-
-      <h1 className="max-w-[12ch] font-display text-[2.55rem] font-medium leading-[1.03] tracking-normal text-text-100">
-        Find the work that{" "}
-        <em className="bg-grad-warm bg-clip-text font-normal italic text-transparent">
-          lights you up.
-        </em>
-      </h1>
-
-      <p className="mt-5 max-w-[31ch] text-[1.05rem] leading-7 text-text-80">
-        Answer honestly and Kai will turn your choices into a Career Compass.
-      </p>
-
-      <div className="my-8 grid grid-cols-3 gap-3">
-        {[
-          ["44", "Prompts"],
-          ["~7", "Minutes"],
-          ["8", "Clusters"],
-        ].map(([number, label]) => (
-          <div
-            key={label}
-            className="rounded-2xl border border-glass-border bg-glass px-3 py-4"
+    <section
+      aria-labelledby="start-heading"
+      className="anim-screen-enter flex flex-1 flex-col gap-5 pb-4"
+    >
+      {/* Editorial headline — bold sans paired with soft italic Fraunces
+       *  on the gradient accent. Magazine pull-quote energy. */}
+      <header className="flex flex-col gap-2">
+        <h1
+          id="start-heading"
+          className="max-w-[16ch] text-[clamp(1.875rem,1.2rem+2.6vw,2.375rem)] font-bold leading-[1.04] tracking-[-0.018em] text-cream"
+        >
+          Fast track{" "}
+          <span
+            className="text-grad-warm font-normal italic"
+            style={{
+              fontFamily: "var(--font-display-italic), Georgia, serif",
+            }}
           >
-            <div className="font-display text-2xl font-semibold leading-none text-accent-orange">
-              {number}
-            </div>
-            <div className="mt-1 text-[0.67rem] font-semibold uppercase tracking-[0.1em] text-text-60">
-              {label}
-            </div>
-          </div>
-        ))}
-      </div>
+            career success
+          </span>
+        </h1>
+        <p className="max-w-[34ch] text-[14.5px] leading-relaxed text-cream/72">
+          Discover yourself, unlock your future.
+        </p>
+      </header>
 
-      {completed ? (
-        <div className="mb-4 rounded-2xl border border-glass-border bg-glass-strong p-4 text-sm leading-6 text-text-80">
-          Your Compass is ready. The full result screen lands in the next phase;
-          this build already saves the completed score locally.
+      {/* Hero — career orbit illustration with floating path tags */}
+      <CareerOrbit />
+
+      {/* The 3-step vertical ladder */}
+      <PathSteps steps={STEPS} />
+
+      {/* Resume / complete banners — only when relevant, kept tiny */}
+      {canResume && resumeAt ? (
+        <div
+          role="status"
+          aria-live="polite"
+          className="anim-bubble-in flex items-center justify-between gap-3 rounded-md border border-coral/35 bg-coral/10 px-3 py-2 text-cream"
+        >
+          <p className="text-body-sm leading-5">
+            On{" "}
+            <span className="font-semibold tabular-nums">
+              question {resumeAt}
+            </span>
+            <span className="text-cream/55"> of {totalQuestions}</span>
+          </p>
+          <Button
+            variant="ghost-on-dark"
+            size="sm"
+            onClick={resume}
+            iconRight={<TareeqArrowRight size={14} />}
+          >
+            Resume
+          </Button>
         </div>
       ) : null}
 
-      <div className="rounded-2xl border border-glass-border bg-glass p-4">
-        <div className="flex gap-3">
-          <div className="grid size-11 shrink-0 place-items-center rounded-full bg-grad-warm font-display text-xl font-bold shadow-[0_8px_24px_rgba(255,61,131,0.35)]">
-            K
-          </div>
-          <p className="text-sm leading-6 text-text-80">
-            <strong className="font-semibold text-text-100">
-              Hey, I&apos;m Kai.
-            </strong>{" "}
-            No wrong answers. Pick what you would actually do, not what sounds
-            impressive.
+      {completed ? (
+        <div
+          role="status"
+          aria-live="polite"
+          className="anim-bubble-in flex items-center gap-2 rounded-md border border-cyan-brand/40 bg-cyan-brand/12 px-3 py-2 text-cream"
+        >
+          <TareeqSparkle size={16} className="shrink-0 text-cyan-brand" />
+          <p className="text-body-sm leading-5 text-cream/90">
+            Your Compass is saved on this device.
           </p>
         </div>
-      </div>
+      ) : null}
 
-      <div className="mt-6 grid gap-3">
+      {/* Spacer */}
+      <div className="flex-1" />
+
+      {/* CTAs */}
+      <div className="grid gap-2">
+        <Button
+          variant="primary"
+          size="xl"
+          fullWidth
+          onClick={canResume ? resume : startFresh}
+          iconRight={<TareeqArrowRight size={20} />}
+        >
+          {canResume
+            ? `Resume at ${resumeAt} of ${totalQuestions}`
+            : "Take the assessment"}
+        </Button>
+
         {canResume ? (
-          <button
-            type="button"
-            onClick={resume}
-            className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-grad-warm px-5 text-sm font-bold uppercase tracking-[0.04em] text-white shadow-[0_14px_40px_rgba(255,61,131,0.42)] transition active:scale-[0.99]"
+          <Button
+            variant="ghost-on-dark"
+            size="md"
+            fullWidth
+            onClick={startFresh}
+            iconRight={<TareeqRotate size={14} />}
           >
-            {resumeLabel}
-            <ArrowRight aria-hidden="true" size={18} strokeWidth={2.4} />
-          </button>
+            Start over
+          </Button>
         ) : null}
 
-        <button
-          type="button"
-          onClick={startFresh}
-          className={
-            canResume
-              ? "inline-flex min-h-14 items-center justify-center gap-2 rounded-full border border-glass-border bg-glass px-5 text-sm font-semibold text-text-100 transition active:scale-[0.99]"
-              : "inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-grad-warm px-5 text-sm font-bold uppercase tracking-[0.04em] text-white shadow-[0_14px_40px_rgba(255,61,131,0.42)] transition active:scale-[0.99]"
-          }
-        >
-          {canResume ? "Start Over" : "Start the Assessment"}
-          {canResume ? (
-            <RotateCcw aria-hidden="true" size={17} strokeWidth={2.3} />
-          ) : (
-            <ArrowRight aria-hidden="true" size={18} strokeWidth={2.4} />
-          )}
-        </button>
+        <p className="flex items-center justify-center gap-1.5 pt-1 text-caption text-cream/45">
+          <TareeqLock size={11} />
+          ~12 min · Free · Stays on your device
+        </p>
       </div>
     </section>
   );

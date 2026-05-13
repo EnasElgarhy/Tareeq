@@ -32,7 +32,7 @@ export type AxisValue =
   | "DYN"
   | "PRE";
 
-export type QuestionKind = "single" | "binary" | "select";
+export type QuestionKind = "single" | "binary" | "select" | "text";
 
 export type LocalizedText = Record<string, string>;
 
