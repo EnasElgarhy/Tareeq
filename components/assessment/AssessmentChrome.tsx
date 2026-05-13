@@ -169,7 +169,13 @@ export function AssessmentChrome({
         </p>
       ) : null}
 
-      <div className="relative z-10 flex flex-1 flex-col min-h-0">{children}</div>
+      {/* Scrollable content well — the chrome locks to the viewport, but
+       *  inner content can overflow vertically on short phones (iPhone SE,
+       *  landscape, etc.) and scroll. `overscroll-contain` keeps the rubber
+       *  band inside the well so the body never bounces. */}
+      <div className="relative z-10 flex flex-1 flex-col min-h-0 -mx-5 overflow-y-auto overscroll-contain px-5 pb-1">
+        {children}
+      </div>
     </main>
   );
 }
