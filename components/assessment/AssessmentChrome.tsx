@@ -32,7 +32,8 @@ export function AssessmentChrome({
   const router = useRouter();
   const questionIndex = getIndexFromPathname(pathname);
   const hasQuestion = questionIndex !== null;
-  const isLight = hasQuestion; // /q/* uses light mode; /start stays plum
+  const isLight = hasQuestion; // /q/* uses light mode
+  const isNight = pathname === "/intro"; // v2 mystical redesign surface
 
   function goBack() {
     uiSounds.back();
@@ -78,7 +79,11 @@ export function AssessmentChrome({
         hasQuestion
           ? "gap-3 pt-[max(env(safe-area-inset-top),0.75rem)]"
           : "gap-5 pt-[max(env(safe-area-inset-top),1.5rem)]",
-        isLight ? "text-ink" : "surface-plum text-cream",
+        isLight
+          ? "text-ink"
+          : isNight
+            ? "surface-night text-sand"
+            : "surface-plum text-cream",
       ].join(" ")}
       style={isLight ? { background: lightBg } : undefined}
     >

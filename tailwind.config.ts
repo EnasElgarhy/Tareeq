@@ -9,6 +9,29 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        /* v2 mystical palette */
+        night: "#0E0A28",
+        midnight: "#1B1240",
+        dusk: "#3D2270",
+        violet: {
+          DEFAULT: "#6E48E4",
+          soft: "#9D7FF0",
+        },
+        lilac: "#C8B6F0",
+        sand: "#F5EEE6",
+        paper: "#F9F4EC",
+        carbon: {
+          DEFAULT: "#14101F",
+          soft: "#2B2440",
+        },
+        gold: {
+          DEFAULT: "#F4C660",
+          soft: "#FDE7A8",
+        },
+        blush: "#F2A8B3",
+        mint: "#6FE0C0",
+
+        /* v1 tokens preserved */
         plum: {
           DEFAULT: "#1B0E3F",
           deep: "#0F0824",
@@ -36,6 +59,13 @@ const config: Config = {
         error: "#C2453A",
       },
       backgroundImage: {
+        "night-gradient":
+          "linear-gradient(180deg, #0E0A28 0%, #1B1240 60%, #3D2270 100%)",
+        aurora:
+          "linear-gradient(135deg, #6E48E4 0%, #9D7FF0 35%, #F2A8B3 70%, #F4C660 100%)",
+        "gold-gradient":
+          "linear-gradient(135deg, #F4C660 0%, #F5D57F 100%)",
+
         "plum-gradient":
           "linear-gradient(135deg, #1B0E3F 0%, #3D2270 55%, #5B3D8C 100%)",
         "plum-gradient-soft":

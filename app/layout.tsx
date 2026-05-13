@@ -38,7 +38,7 @@ const question = DM_Serif_Display({
 const displayItalic = Fraunces({
   variable: "--font-display-italic",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500", "600", "700", "800", "900"],
   style: ["italic", "normal"],
   display: "swap",
 });

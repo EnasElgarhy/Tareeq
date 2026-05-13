@@ -3,10 +3,51 @@
 @tailwind utilities;
 
 /* ============================================================
- * Tareeq Design System — tokens
- * design.md v1.0 · Q2 2026
+ * Tareeq Design System v2 — Trendy mystical, authentic
  * ============================================================ */
 :root {
+  /* v2 — Night-violet primary surface system */
+  --night: #0e0a28;          /* deepest near-black violet */
+  --midnight: #1b1240;       /* mid-dark violet, gradient mid */
+  --dusk: #3d2270;           /* purple secondary */
+  --violet: #6e48e4;         /* vibrant violet, primary action */
+  --violet-soft: #9d7ff0;    /* softer violet for highlights */
+  --lilac: #c8b6f0;          /* lightest violet, text accent on dark */
+
+  /* v2 — Warm contrast field (light surfaces, celebratory moments) */
+  --sand: #f5eee6;           /* warm cream — main light surface */
+  --paper: #f9f4ec;          /* slightly warmer for layered light cards */
+
+  /* v2 — Type ink for cream surfaces */
+  --carbon: #14101f;         /* near-black with violet undertone */
+  --carbon-soft: #2b2440;    /* secondary text on cream */
+
+  /* v2 — Accents (used selectively, not all on one surface) */
+  --gold: #f4c660;           /* warm golden yellow — primary accent CTA */
+  --gold-soft: #fde7a8;      /* light gold for surfaces */
+  --blush: #f2a8b3;          /* soft pink-coral, secondary accent */
+  --mint: #6fe0c0;           /* cool teal-mint, tertiary accent */
+
+  /* v2 — Gradients */
+  --night-gradient: linear-gradient(
+    180deg,
+    #0e0a28 0%,
+    #1b1240 60%,
+    #3d2270 100%
+  );
+  --aurora: linear-gradient(
+    135deg,
+    #6e48e4 0%,
+    #9d7ff0 35%,
+    #f2a8b3 70%,
+    #f4c660 100%
+  );
+  --gold-gradient: linear-gradient(135deg, #f4c660 0%, #f5d57f 100%);
+
+  /* ============================================================
+   * v1 tokens kept for back-compat during the migration.
+   * Will be pruned after v2 reaches all surfaces.
+   * ============================================================ */
   /* Brand */
   --tareeq-plum: #1b0e3f;
   --plum-deep: #0f0824;
@@ -176,6 +217,53 @@ button {
 /* ============================================================
  * Type scale (§3)
  * ============================================================ */
+/* ============================================================
+ * v2 — Editorial display typography
+ *
+ * Display heads use Fraunces with weight + SOFT axis cranked for the
+ * chunky soft-serif look. Body stays Plus Jakarta Sans.
+ * ============================================================ */
+.text-hero {
+  font-family: var(--font-display-italic), Georgia, serif;
+  font-weight: 800;
+  font-style: normal;
+  font-size: clamp(2.5rem, 1.6rem + 5vw, 4.5rem);
+  line-height: 0.96;
+  letter-spacing: -0.025em;
+  font-variation-settings: "SOFT" 100, "opsz" 144;
+}
+.text-display-2 {
+  font-family: var(--font-display-italic), Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 1.2rem + 3.5vw, 3rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  font-variation-settings: "SOFT" 100, "opsz" 144;
+}
+.text-display-3 {
+  font-family: var(--font-display-italic), Georgia, serif;
+  font-weight: 600;
+  font-size: clamp(1.5rem, 1rem + 2vw, 2rem);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  font-variation-settings: "SOFT" 60, "opsz" 96;
+}
+.text-eyebrow {
+  font-family: var(--font-jakarta), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+.text-lead {
+  font-family: var(--font-jakarta), system-ui, sans-serif;
+  font-weight: 400;
+  font-size: clamp(15px, 14px + 0.2vw, 17px);
+  line-height: 1.55;
+}
+
+/* v1 legacy classes kept below */
 .text-display {
   font: 700 44px/52px var(--font-sans);
   letter-spacing: -0.01em;
@@ -808,6 +896,138 @@ button {
  * ============================================================ */
 :focus-visible {
   outline-color: var(--cyan);
+}
+
+/* ============================================================
+ * v2 — Mystical surfaces + button system
+ * ============================================================ */
+.surface-night {
+  background: var(--night-gradient);
+  color: var(--sand);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.surface-night::before {
+  content: "";
+  position: absolute;
+  top: 5%;
+  left: 60%;
+  width: 60%;
+  aspect-ratio: 1;
+  background: radial-gradient(
+    circle,
+    rgba(157, 127, 240, 0.25),
+    transparent 65%
+  );
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(20px);
+}
+.surface-night::after {
+  content: "";
+  position: absolute;
+  bottom: 5%;
+  right: 55%;
+  width: 50%;
+  aspect-ratio: 1;
+  background: radial-gradient(
+    circle,
+    rgba(244, 198, 96, 0.15),
+    transparent 65%
+  );
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(24px);
+}
+
+.surface-sand {
+  background: var(--sand);
+  color: var(--carbon);
+}
+
+/* v2 — Gold primary button (replaces coral CTA on dark surfaces) */
+.btn-v2 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: none;
+  border-radius: 9999px;
+  font-family: var(--font-jakarta), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  height: 60px;
+  padding: 0 28px;
+  transition:
+    transform var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-base) var(--ease-standard),
+    background var(--duration-fast) var(--ease-standard);
+}
+.btn-v2:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+.btn-v2:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+.btn-v2--primary {
+  background: var(--gold-gradient);
+  color: var(--carbon);
+  box-shadow:
+    0 12px 28px rgba(244, 198, 96, 0.35),
+    0 4px 10px rgba(244, 198, 96, 0.15);
+}
+.btn-v2--primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow:
+    0 18px 36px rgba(244, 198, 96, 0.45),
+    0 6px 14px rgba(244, 198, 96, 0.2);
+}
+.btn-v2--violet {
+  background: var(--violet);
+  color: var(--sand);
+  box-shadow:
+    0 12px 28px rgba(110, 72, 228, 0.35),
+    0 4px 10px rgba(110, 72, 228, 0.15);
+}
+.btn-v2--violet:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: #7d57f0;
+}
+.btn-v2--ghost-on-dark {
+  background: rgba(245, 238, 230, 0.08);
+  color: var(--sand);
+  border: 1px solid rgba(245, 238, 230, 0.18);
+}
+.btn-v2--ghost-on-dark:hover:not(:disabled) {
+  background: rgba(245, 238, 230, 0.14);
+}
+
+/* v2 — Editorial card (used on dark surfaces) */
+.card-night {
+  background: rgba(245, 238, 230, 0.04);
+  border: 1px solid rgba(245, 238, 230, 0.08);
+  border-radius: 24px;
+  padding: 20px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* v2 — Atmospheric stars on a dark surface */
+.bg-night-stars {
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, rgba(245, 238, 230, 0.4), transparent 1.5px),
+    radial-gradient(1px 1px at 70% 20%, rgba(245, 238, 230, 0.35), transparent 1.5px),
+    radial-gradient(1px 1px at 50% 70%, rgba(245, 238, 230, 0.3), transparent 1.5px),
+    radial-gradient(1px 1px at 85% 80%, rgba(245, 238, 230, 0.5), transparent 1.5px),
+    radial-gradient(1px 1px at 15% 85%, rgba(245, 238, 230, 0.4), transparent 1.5px);
 }
 
 /* ============================================================
