@@ -1,68 +1,86 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import type { ComponentType, SVGProps } from "react";
+import {
+  ClusterIcon,
+  HeartIcon,
+  LensIcon,
+  PathIcon,
+  PulseIcon,
+  VibeIcon,
+} from "@/components/brand/ContractIcons";
 import { uiSounds } from "@/lib/audio/ui-sounds";
 import { getQuestionPath } from "@/lib/assessment/questions";
 
+interface ContractIconProps extends SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
 interface ContractItem {
-  icon: string;
-  tone: "violet" | "gold" | "blush" | "mint" | "lilac" | "soft";
+  Icon: ComponentType<ContractIconProps>;
   title: string;
   body: string;
 }
 
+/**
+ * Six promises. Read like a quiet vow, not a checklist.
+ * Each entry pairs one of the warm-gradient ContractIcons with a
+ * single intention — what this assessment is, and what it isn't.
+ */
 const ITEMS: ReadonlyArray<ContractItem> = [
   {
-    icon: "✦",
-    tone: "violet",
-    title: "The “Vibe” Check",
-    body: "This isn’t about what you’re “good” at in school. It’s about what makes time fly by for you.",
+    Icon: VibeIcon,
+    title: "Energy over achievement",
+    body: "Not what you’re good at in school — what makes time disappear.",
   },
   {
-    icon: "◐",
-    tone: "gold",
-    title: "Non-entertainment focus",
-    body: "Answer for what ignites your curiosity — not what just grabs your attention for doom-scrolling.",
+    Icon: LensIcon,
+    title: "Curiosity, not distraction",
+    body: "Pick what ignites a question, not what steals an hour of scrolling.",
   },
   {
-    icon: "✓",
-    tone: "blush",
-    title: "The “No-Wrong-Answer” rule",
-    body: "Picking “Gaming” over “Studying” doesn’t make you lazy — it tells us how your brain solves problems.",
+    Icon: HeartIcon,
+    title: "No wrong answers",
+    body: "Choosing “gaming” over “studying” tells us how your mind solves.",
   },
   {
-    icon: "↗",
-    tone: "mint",
-    title: "Intent over output",
-    body: "These questions focus on intent — the why and how behind your daily and digital habits.",
+    Icon: PulseIcon,
+    title: "Intent beneath the habit",
+    body: "We listen to the why behind your scroll, not the scroll itself.",
   },
   {
-    icon: "◯",
-    tone: "lilac",
-    title: "A Cluster, not a job title",
-    body: "You won’t get “Accountant.” You’ll get a Career Cluster — a world where people like you thrive.",
+    Icon: ClusterIcon,
+    title: "A cluster, not a job title",
+    body: "You won’t get “Accountant.” You’ll get a world where people like you thrive.",
   },
   {
-    icon: "→",
-    tone: "soft",
-    title: "A Compass, not a GPS",
-    body: "We point the direction. You still get to choose the destination.",
+    Icon: PathIcon,
+    title: "A compass, not a GPS",
+    body: "We point the direction. The destination stays yours.",
   },
 ];
 
-const TONE_STYLES: Record<ContractItem["tone"], { bg: string; fg: string }> = {
-  violet: { bg: "bg-violet", fg: "text-sand" },
-  gold: { bg: "bg-gold", fg: "text-carbon" },
-  blush: { bg: "bg-blush", fg: "text-carbon" },
-  mint: { bg: "bg-mint", fg: "text-carbon" },
-  lilac: { bg: "bg-lilac", fg: "text-carbon" },
-  soft: { bg: "bg-gold-soft", fg: "text-carbon" },
-};
+// Stagger choreography (ms)
+const ITEM_START_DELAY = 380;
+const ITEM_STEP = 180;
+const ITEM_DURATION = 720;
+// CTA appears the moment the last item finishes settling
+const CTA_REVEAL_DELAY =
+  ITEM_START_DELAY + (ITEMS.length - 1) * ITEM_STEP + ITEM_DURATION - 120;
 
 export function ContractScreen() {
   const router = useRouter();
+  const [ctaReady, setCtaReady] = useState(false);
+
+  useEffect(() => {
+    const t = window.setTimeout(() => setCtaReady(true), CTA_REVEAL_DELAY);
+    return () => window.clearTimeout(t);
+  }, []);
 
   function start() {
+    if (!ctaReady) return;
     uiSounds.advance();
     router.push(getQuestionPath(0));
   }
@@ -70,53 +88,64 @@ export function ContractScreen() {
   return (
     <section
       aria-labelledby="contract-heading"
-      className="anim-screen-enter flex flex-1 flex-col gap-7 pb-4"
+      className="anim-screen-enter flex flex-1 flex-col gap-3"
     >
       <span className="anim-eyebrow-fade-up chip chip--violet-on-dark w-fit">
         <span className="size-1.5 rounded-full bg-gold" />
-        Before we start
+        Before we begin
       </span>
 
-      <h1 id="contract-heading" className="text-hero text-sand">
-        The CORE{" "}
+      <h1 id="contract-heading" className="text-display-2 text-sand max-w-[14ch]">
+        A quiet{" "}
         <span
-          className="text-gold"
+          className="text-grad-warm"
           style={{
             fontStyle: "italic",
             fontVariationSettings: '"SOFT" 100, "opsz" 144',
           }}
         >
-          Contract of Honesty
+          contract
         </span>
         .
       </h1>
 
-      <ol className="flex flex-col gap-3.5">
+      <p className="text-body-sm text-sand/65 leading-snug max-w-[34ch]">
+        Six small promises between us before the first question.
+      </p>
+
+      <ol className="mt-1 flex flex-col gap-2.5">
         {ITEMS.map((item, i) => {
-          const tone = TONE_STYLES[item.tone];
+          const Icon = item.Icon;
           return (
             <li
               key={item.title}
-              className="anim-option-in card-night flex items-start gap-4 !p-4"
-              style={{ animationDelay: `${120 + i * 80}ms` }}
+              className="anim-contract-item glass-card relative flex items-center gap-3.5 !p-3 !pe-4 !rounded-2xl"
+              style={{ animationDelay: `${ITEM_START_DELAY + i * ITEM_STEP}ms` }}
             >
               <span
                 aria-hidden="true"
-                className={[
-                  "grid size-12 shrink-0 place-items-center rounded-2xl text-[20px] font-bold",
-                  tone.bg,
-                  tone.fg,
-                ].join(" ")}
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontVariationSettings: '"SOFT" 100, "opsz" 96',
-                }}
+                className="glass-tile relative grid size-11 shrink-0 place-items-center rounded-xl"
               >
-                {item.icon}
+                <Icon size={26} />
               </span>
-              <div className="pt-0.5">
-                <h3 className="text-h3 text-sand">{item.title}</h3>
-                <p className="mt-1 text-body-sm leading-snug text-sand/68">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-baseline gap-2">
+                  <span
+                    aria-hidden="true"
+                    className="text-[12px] tabular-nums text-sand/35 leading-none"
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      fontStyle: "italic",
+                      fontVariationSettings: '"SOFT" 60, "opsz" 96',
+                    }}
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <h3 className="text-[15px] font-semibold text-sand leading-tight">
+                    {item.title}
+                  </h3>
+                </div>
+                <p className="mt-1 text-[13.5px] leading-snug text-sand/65">
                   {item.body}
                 </p>
               </div>
@@ -130,11 +159,18 @@ export function ContractScreen() {
       <button
         type="button"
         onClick={start}
-        className="btn-v2 btn-v2--primary w-full"
+        disabled={!ctaReady}
+        aria-hidden={!ctaReady}
+        className="btn-v2 btn-v2--primary w-full transition-[opacity,transform] duration-500 ease-out"
         data-size="lg"
+        style={{
+          opacity: ctaReady ? 1 : 0,
+          transform: ctaReady ? "translateY(0)" : "translateY(12px)",
+          pointerEvents: ctaReady ? "auto" : "none",
+        }}
       >
-        I&rsquo;m ready
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+        I agree, begin
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
           <path
             d="M5 12h14M13 6l6 6-6 6"
             stroke="currentColor"

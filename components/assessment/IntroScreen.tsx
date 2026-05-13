@@ -7,21 +7,9 @@ import { KaiAuraV2 } from "@/components/brand/KaiAuraV2";
 import { Typewriter } from "@/components/primitives/Typewriter";
 import { uiSounds } from "@/lib/audio/ui-sounds";
 
-const INTRO_SCRIPT =
-  "Hey! I’m Kai. Think of me as a filter for all the noise. We’re looking for your Energy Flows — the stuff that actually makes you lose track of time.\n\nThis isn’t a school test. There are no wrong answers. Pick what you would actually do.";
+const INTRO_BODY =
+  "Think of me as a filter for all the noise. We’re looking for your Energy Flows — the stuff that makes you lose track of time. Pick what you’d actually do.";
 
-/**
- * IntroScreen — v2 mystical-editorial redesign.
- *
- * Composition (top → bottom):
- *   ✦ Tiny eyebrow chip "MEET YOUR GUIDE"
- *   ✦ Chunky display headline "Meet Kai."  (Fraunces 800, soft axis)
- *   ✦ Painterly aurora + Kai
- *   ✦ Typewriter body
- *   ✦ Gold CTA at the bottom (replaces the v1 coral)
- *
- * Surface: night-gradient with star-field overlay.
- */
 export function IntroScreen() {
   const router = useRouter();
   const [typingDone, setTypingDone] = useState(false);
@@ -38,29 +26,10 @@ export function IntroScreen() {
   return (
     <section
       aria-labelledby="intro-heading"
-      className="anim-screen-enter relative flex flex-1 flex-col gap-7 pb-4 pt-2"
+      className="anim-screen-enter flex flex-1 flex-col items-center justify-center gap-5 pb-4 text-center"
     >
-      {/* Header — eyebrow + display headline */}
-      <header className="flex flex-col items-start gap-3">
-        <span className="anim-eyebrow-fade-up inline-flex items-center gap-2 rounded-full bg-violet/15 px-3 py-1.5 text-eyebrow text-violet-soft">
-          <span className="size-1.5 rounded-full bg-gold" />
-          Meet your guide
-        </span>
-        <h1
-          id="intro-heading"
-          className="text-hero text-sand"
-          style={{ animationDelay: "120ms" }}
-        >
-          Meet{" "}
-          <span className="italic text-gold" style={{ fontStyle: "italic" }}>
-            Kai
-          </span>
-          <span className="text-gold">.</span>
-        </h1>
-      </header>
-
-      {/* Aurora + Kai — painterly, breathing */}
-      <div className="relative mx-auto flex h-[280px] w-[280px] items-center justify-center">
+      {/* Character first — Kai with aurora */}
+      <div className="relative flex h-[220px] w-[220px] items-center justify-center">
         <div className="anim-aura-bloom absolute inset-0">
           <KaiAuraV2 size="100%" />
         </div>
@@ -68,48 +37,65 @@ export function IntroScreen() {
           aria-label="Kai, your guide"
           role="img"
           className="anim-kai-pop relative"
-          style={{ animationDelay: "320ms" }}
+          style={{ animationDelay: "180ms" }}
         >
-          <div className="anim-avatar-bob" style={{ animationDelay: "1100ms" }}>
-            <Kai mood="warm" size={176} />
+          <div className="anim-avatar-bob" style={{ animationDelay: "900ms" }}>
+            <Kai mood="warm" size={150} />
           </div>
         </div>
       </div>
 
-      {/* Typewriter body */}
-      <div className="flex flex-col items-start">
-        <Typewriter
-          as="p"
-          text={INTRO_SCRIPT}
-          speed={20}
-          startDelay={900}
-          onComplete={() => setTypingDone(true)}
-          className="min-h-[160px] max-w-[36ch] whitespace-pre-line text-lead text-sand/82"
-        />
+      {/* "Meet Kai." fades up below the character */}
+      <h1
+        id="intro-heading"
+        className="text-hero text-sand anim-fade-up"
+        style={{ animationDelay: "700ms" }}
+      >
+        Meet{" "}
         <span
-          aria-hidden="true"
-          className="anim-accent-line-grow mt-3 block h-px w-full max-w-[260px] bg-gradient-to-r from-violet-soft/0 via-violet-soft/70 to-gold/0"
-          style={{ animationDelay: "900ms" }}
-        />
-      </div>
+          className="text-grad-warm"
+          style={{
+            fontStyle: "italic",
+            fontVariationSettings: '"SOFT" 100, "opsz" 144',
+          }}
+        >
+          Kai
+        </span>
+        .
+      </h1>
+
+      {/* Body — typewriter, slow + deliberate so it feels handwritten */}
+      <Typewriter
+        as="p"
+        text={INTRO_BODY}
+        speed={48}
+        startDelay={1300}
+        onComplete={() => setTypingDone(true)}
+        className="max-w-[34ch] text-sand/85 text-center"
+        style={{
+          fontFamily: "var(--font-display)",
+          fontStyle: "italic",
+          fontWeight: 500,
+          fontSize: "clamp(17px, 0.95rem + 1vw, 21px)",
+          lineHeight: 1.4,
+          letterSpacing: "-0.005em",
+          fontVariationSettings: '"SOFT" 60, "opsz" 96',
+          minHeight: "5.6em",
+        }}
+      />
 
       <div className="flex-1" />
 
       {typingDone ? (
-        <div className="anim-cta-spring">
+        <div className="anim-cta-spring w-full">
           <button
             type="button"
             onClick={next}
             className="btn-v2 btn-v2--primary w-full"
+            data-size="lg"
           >
             Continue
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
-            >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
               <path
                 d="M5 12h14M13 6l6 6-6 6"
                 stroke="currentColor"
@@ -121,7 +107,7 @@ export function IntroScreen() {
           </button>
         </div>
       ) : (
-        <div className="h-[60px]" aria-hidden="true" />
+        <div className="h-[60px] w-full" aria-hidden="true" />
       )}
     </section>
   );

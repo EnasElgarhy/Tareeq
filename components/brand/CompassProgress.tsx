@@ -78,8 +78,9 @@ export function CompassProgress({
       >
         <defs>
           <linearGradient id="cmp-fill" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#FF6B47" />
-            <stop offset="100%" stopColor="#FF8252" />
+            <stop offset="0%" stopColor="#FF3D83" />
+            <stop offset="55%" stopColor="#FF6B3D" />
+            <stop offset="100%" stopColor="#FFA53D" />
           </linearGradient>
         </defs>
 
@@ -120,17 +121,17 @@ export function CompassProgress({
               {/* Active pulse ring around this quadrant */}
               {isActive ? (
                 <path
-                  d={arc(cx, cy, outerR + 2, start, end)}
-                  stroke="#5BD6E8"
-                  strokeWidth="1.5"
+                  d={arc(cx, cy, outerR + 2.5, start, end)}
+                  stroke="url(#cmp-fill)"
+                  strokeWidth="2"
                   strokeLinecap="round"
                   fill="none"
-                  opacity="0.85"
+                  opacity="0.95"
                 >
                   <animate
                     attributeName="opacity"
-                    values="0.85;0.35;0.85"
-                    dur="2.2s"
+                    values="1;0.5;1"
+                    dur="1.8s"
                     repeatCount="indefinite"
                   />
                 </path>

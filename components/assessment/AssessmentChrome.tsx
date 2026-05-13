@@ -12,6 +12,7 @@ import {
   getQuestionPath,
 } from "@/lib/assessment/questions";
 import { buildCompassSnapshot } from "@/lib/assessment/pillar-progress";
+import { useAnimatedSnapshot } from "@/lib/assessment/use-animated-snapshot";
 
 interface AssessmentChromeProps {
   children: ReactNode;
@@ -39,6 +40,9 @@ export function AssessmentChrome({
   const router = useRouter();
   const questionIndex = getIndexFromPathname(pathname);
   const hasQuestion = questionIndex !== null;
+  // Ceremonial screens — Meet Kai and the Contract — get a larger,
+  // centered Tareeq mark with the warm-gradient icon.
+  const isCeremony = pathname === "/intro" || pathname === "/contract";
 
   function goBack() {
     uiSounds.back();
@@ -59,84 +63,113 @@ export function AssessmentChrome({
     );
   }
 
-  const snapshot = hasQuestion
-    ? buildCompassSnapshot({
-        questions: assessmentQuestions,
-        completedCount: questionIndex,
-        activeIndex: questionIndex,
-      })
-    : null;
+  // Always build a snapshot so the animation hook has stable inputs.
+  // When no question is active we feed an empty snapshot — the compass
+  // simply isn't rendered, but the hook keeps a consistent call site.
+  const rawSnapshot = buildCompassSnapshot({
+    questions: assessmentQuestions,
+    completedCount: hasQuestion ? questionIndex : 0,
+    activeIndex: hasQuestion ? questionIndex : null,
+  });
+  const snapshot = useAnimatedSnapshot(rawSnapshot);
 
   const activeQuestion = hasQuestion ? assessmentQuestions[questionIndex] : null;
   const pillarLabel = activeQuestion ? getPillarLabel(activeQuestion) : null;
 
   return (
-    <main className="surface-night relative mx-auto flex min-h-dvh w-full max-w-[480px] flex-col gap-5 px-5 pb-6 pt-[max(env(safe-area-inset-top),1.25rem)] text-sand">
-      <div className="absolute inset-0 bg-night-stars opacity-50 pointer-events-none" />
+    <main className="surface-night relative mx-auto flex h-dvh w-full max-w-[480px] flex-col gap-3 overflow-hidden px-5 pb-4 pt-[max(env(safe-area-inset-top),0.875rem)] text-sand">
+      <div className="absolute inset-0 bg-night-stars opacity-80 pointer-events-none" />
 
-      {/* Header */}
-      <header className="relative z-10 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={goBack}
-            aria-label="Go back"
-            className="inline-flex size-10 items-center justify-center rounded-full bg-sand/8 text-sand transition hover:bg-sand/14 active:scale-95"
-          >
-            <TareeqArrowLeft size={16} className="flip-rtl" />
-          </button>
-
-          {hasQuestion && snapshot ? (
-            <div className="flex items-center gap-2.5">
-              <CompassProgress
-                snapshot={snapshot}
-                size={48}
-                layout="bare"
-                surface="dark"
-              />
-              <p className="text-eyebrow tabular-nums text-sand/60">
-                <span className="text-gold">
-                  {String(questionIndex + 1).padStart(2, "0")}
-                </span>
-                <span className="text-sand/35"> / {totalQuestions}</span>
-              </p>
-            </div>
-          ) : null}
-        </div>
-
-        {/* Tareeq mark */}
-        <Link
-          href="/"
-          aria-label="Tareeq home"
-          className="inline-flex items-center gap-1.5"
+      {/* Header
+       *
+       * Two layouts:
+       *  · question screens (/q/*) — back-button left, big compass centered, no logo
+       *  · everywhere else        — back-button + counter left, Tareeq mark right
+       *                              (mark goes centered+warm-gradient on ceremony screens)
+       */}
+      <header
+        className={`relative z-10 flex items-center justify-between gap-2 ${
+          hasQuestion ? "h-14" : "h-10"
+        }`}
+      >
+        <button
+          type="button"
+          onClick={goBack}
+          aria-label="Go back"
+          className="glass-tile inline-flex size-9 shrink-0 items-center justify-center rounded-full text-sand transition hover:text-sand active:scale-95"
         >
-          <span
-            aria-hidden="true"
-            className="inline-block size-7 bg-aurora"
-            style={{
-              WebkitMaskImage: "url('/logo/tareeq-mark.svg')",
-              maskImage: "url('/logo/tareeq-mark.svg')",
-              WebkitMaskRepeat: "no-repeat",
-              maskRepeat: "no-repeat",
-              WebkitMaskPosition: "center",
-              maskPosition: "center",
-              WebkitMaskSize: "contain",
-              maskSize: "contain",
-            }}
-          />
-          <span className="text-[18px] font-bold leading-none tracking-[-0.025em] text-sand lowercase">
-            tareeq
-          </span>
-        </Link>
+          <TareeqArrowLeft size={15} className="flip-rtl" />
+        </button>
+
+        {hasQuestion ? (
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            <CompassProgress
+              snapshot={snapshot}
+              size={56}
+              layout="bare"
+              surface="dark"
+            />
+          </div>
+        ) : (
+          /* Tareeq mark — centered + warm-gradient on ceremony screens, right on others */
+          <Link
+            href="/"
+            aria-label="Tareeq home"
+            className={
+              isCeremony
+                ? "absolute left-1/2 top-1/2 inline-flex -translate-x-1/2 -translate-y-1/2 items-center gap-2"
+                : "inline-flex items-center gap-1.5"
+            }
+          >
+            <span
+              aria-hidden="true"
+              className={`inline-block ${
+                isCeremony ? "size-8 bg-grad-warm" : "size-6 bg-aurora"
+              }`}
+              style={{
+                WebkitMaskImage: "url('/logo/tareeq-mark.svg')",
+                maskImage: "url('/logo/tareeq-mark.svg')",
+                WebkitMaskRepeat: "no-repeat",
+                maskRepeat: "no-repeat",
+                WebkitMaskPosition: "center",
+                maskPosition: "center",
+                WebkitMaskSize: "contain",
+                maskSize: "contain",
+              }}
+            />
+            <span
+              className={`font-bold leading-none tracking-[-0.025em] text-sand lowercase ${
+                isCeremony ? "text-[20px]" : "text-[16px]"
+              }`}
+            >
+              tareeq
+            </span>
+          </Link>
+        )}
+
+        {/* Right-hand spacer to balance the back button when no logo renders. */}
+        {hasQuestion ? (
+          <span aria-hidden="true" className="size-9 shrink-0" />
+        ) : null}
       </header>
 
       {hasQuestion && pillarLabel ? (
-        <p className="relative z-10 text-eyebrow text-sand/55" aria-live="polite">
-          {pillarLabel}
+        <p
+          className="relative z-10 -mt-1 text-center text-eyebrow text-sand/65"
+          aria-live="polite"
+        >
+          <span className="text-sand/85">{pillarLabel}</span>
+          <span className="text-sand/30"> · </span>
+          <span className="tabular-nums">
+            <span className="text-grad-warm font-semibold">
+              {String(questionIndex + 1).padStart(2, "0")}
+            </span>
+            <span className="text-sand/40"> / {totalQuestions}</span>
+          </span>
         </p>
       ) : null}
 
-      <div className="relative z-10 flex flex-1 flex-col">{children}</div>
+      <div className="relative z-10 flex flex-1 flex-col min-h-0">{children}</div>
     </main>
   );
 }

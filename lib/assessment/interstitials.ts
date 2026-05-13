@@ -10,10 +10,11 @@
 
 import type { ComponentType, SVGProps } from "react";
 import {
-  CommunityScene,
-  CompassScene,
-  PersonaScene,
-} from "@/components/brand/Illustrations";
+  CrossingPathsScene,
+  DualWaysScene,
+  PatternEmergingScene,
+  PeakReachedScene,
+} from "@/components/brand/InterstitialScenes";
 
 export type InterstitialIllustration = ComponentType<
   SVGProps<SVGSVGElement> & {
@@ -40,7 +41,7 @@ export const INTERSTITIALS: ReadonlyArray<Interstitial> = [
   {
     key: "after-10",
     triggerAfterIndex: 9,
-    illustration: CompassScene,
+    illustration: PatternEmergingScene,
     glow: "coral",
     title: "Curiosity has a shape",
     body: "People with similar curiosity patterns end up clustering in the same kinds of work — even across countries. Your Compass is already starting to draw yours.",
@@ -49,7 +50,7 @@ export const INTERSTITIALS: ReadonlyArray<Interstitial> = [
   {
     key: "after-20",
     triggerAfterIndex: 19,
-    illustration: PersonaScene,
+    illustration: CrossingPathsScene,
     glow: "lavender",
     title: "Most students switch paths twice",
     body: "Across MENA, students change direction at least twice before graduation. Knowing what fits earlier saves years of doubt — and that’s what the next stretch sharpens.",
@@ -58,7 +59,7 @@ export const INTERSTITIALS: ReadonlyArray<Interstitial> = [
   {
     key: "after-30",
     triggerAfterIndex: 29,
-    illustration: PersonaScene,
+    illustration: DualWaysScene,
     glow: "cyan",
     title: "How matters as much as what",
     body: "Two people in the same job can have completely different experiences. These next questions capture how you actually want to work — not just what you can do.",
@@ -67,7 +68,7 @@ export const INTERSTITIALS: ReadonlyArray<Interstitial> = [
   {
     key: "after-40",
     triggerAfterIndex: 39,
-    illustration: CommunityScene,
+    illustration: PeakReachedScene,
     glow: "coral",
     title: "Almost at your Compass",
     body: "The last few questions sharpen your environment fit — the difference between a job you tolerate and a path you actually want to walk.",

@@ -23,7 +23,7 @@ interface AssessmentStartProps {
 const STEPS = [
   { n: 1, title: "Take the assessment", meta: "12 min · 54 questions" },
   { n: 2, title: "Meet your Compass", meta: "Persona + four pillars" },
-  { n: 3, title: "Walk the path with us", meta: "Mentors + community" },
+  { n: 3, title: "Walk with us", meta: "Mentors + community" },
 ] as const;
 
 export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
@@ -67,32 +67,30 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
   return (
     <section
       aria-labelledby="start-heading"
-      className="anim-screen-enter flex flex-1 flex-col gap-7 pb-4"
+      className="anim-screen-enter flex flex-1 flex-col gap-3"
     >
-      {/* Eyebrow chip */}
       <span className="anim-eyebrow-fade-up chip chip--violet-on-dark w-fit">
         <span className="size-1.5 rounded-full bg-gold" />A career compass
       </span>
 
-      {/* Editorial hero headline */}
-      <h1 id="start-heading" className="text-hero text-sand">
+      <h1 id="start-heading" className="text-hero text-sand max-w-[16ch]">
         Find the work
         <br />
         that&rsquo;s been{" "}
         <span
-          className="text-gold"
+          className="text-grad-warm"
           style={{
             fontStyle: "italic",
             fontVariationSettings: '"SOFT" 100, "opsz" 144',
           }}
         >
           waiting
-        </span>{" "}
-        for you.
+        </span>
+        .
       </h1>
 
-      {/* Hero illustration — aurora + Kai */}
-      <div className="relative mx-auto flex h-[260px] w-[260px] items-center justify-center">
+      {/* Hero illustration — compact */}
+      <div className="relative mx-auto flex h-[180px] w-[180px] items-center justify-center">
         <div className="anim-aura-bloom absolute inset-0">
           <KaiAuraV2 size="100%" />
         </div>
@@ -103,43 +101,41 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
           style={{ animationDelay: "260ms" }}
         >
           <div className="anim-avatar-bob" style={{ animationDelay: "1100ms" }}>
-            <Kai mood="warm" size={172} />
+            <Kai mood="warm" size={130} />
           </div>
         </div>
       </div>
 
-      {/* Resume / complete banners */}
+      {/* Resume / complete banner — only on returning visit */}
       {canResume && resumeAt ? (
         <div
           role="status"
           aria-live="polite"
-          className="anim-bubble-in card-night flex items-center justify-between gap-3 !py-3"
+          className="anim-bubble-in glass-card flex items-center justify-between gap-3 !p-3 !rounded-2xl"
         >
-          <div className="flex items-center gap-3">
-            <span className="size-2 rounded-full bg-gold" />
-            <p className="text-body-sm leading-5 text-sand">
-              On question{" "}
-              <span className="font-semibold tabular-nums">{resumeAt}</span>
-              <span className="text-sand/55"> of {totalQuestions}</span>
-            </p>
-          </div>
+          <p className="text-body-sm leading-5 text-sand">
+            On{" "}
+            <span className="font-semibold tabular-nums">
+              question {resumeAt}
+            </span>{" "}
+            of {totalQuestions}
+          </p>
           <button
             type="button"
             className="btn-v2 btn-v2--ghost-on-dark"
             data-size="sm"
             onClick={resume}
           >
-            Resume →
+            Resume
           </button>
         </div>
       ) : null}
 
-      {completed ? (
+      {completed && !canResume ? (
         <div
           role="status"
           aria-live="polite"
-          className="anim-bubble-in card-night flex items-center gap-2.5"
-          style={{ borderColor: "rgba(244, 198, 96, 0.4)" }}
+          className="anim-bubble-in glass-card flex items-center gap-2 !p-3 !rounded-2xl"
         >
           <span className="size-2 rounded-full bg-gold" />
           <p className="text-body-sm leading-5 text-sand">
@@ -148,24 +144,28 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
         </div>
       ) : null}
 
-      {/* Step ladder */}
-      <ol className="relative grid gap-4 ps-1">
+      {/* Step ladder — denser */}
+      <ol className="relative grid gap-2.5 ps-0.5">
         <span
           aria-hidden="true"
-          className="absolute start-[15px] top-5 bottom-5 w-px bg-gradient-to-b from-violet-soft/40 via-violet-soft/20 to-gold/40"
+          className="absolute start-[13px] top-4 bottom-4 w-px bg-gradient-to-b from-violet-soft/40 via-violet-soft/20 to-gold/40"
         />
         {STEPS.map((step, i) => (
           <li
             key={step.n}
-            className="anim-option-in relative grid grid-cols-[32px_1fr] items-center gap-4"
+            className="anim-option-in relative grid grid-cols-[28px_1fr] items-center gap-3"
             style={{ animationDelay: `${320 + i * 90}ms` }}
           >
-            <span className="relative z-10 grid size-8 place-items-center rounded-full bg-violet/15 text-sand text-[13px] font-bold ring-1 ring-violet-soft/30">
+            <span className="glass-tile relative z-10 grid size-7 place-items-center rounded-full text-sand text-[12px] font-bold">
               {step.n}
             </span>
             <div>
-              <p className="text-body font-semibold text-sand">{step.title}</p>
-              <p className="text-body-sm text-sand/55">{step.meta}</p>
+              <p className="text-body-sm font-semibold text-sand leading-tight">
+                {step.title}
+              </p>
+              <p className="text-[12px] text-sand/55 leading-tight">
+                {step.meta}
+              </p>
             </div>
           </li>
         ))}
@@ -173,16 +173,15 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
 
       <div className="flex-1" />
 
-      {/* Primary CTA */}
-      <div className="grid gap-3">
+      <div className="grid gap-2">
         <button
           type="button"
           onClick={canResume ? resume : startFresh}
           className="btn-v2 btn-v2--primary w-full"
           data-size="lg"
         >
-          {canResume ? `Resume at ${resumeAt} of ${totalQuestions}` : "Begin"}
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+          {canResume ? `Resume at ${resumeAt}` : "Begin"}
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
             <path
               d="M5 12h14M13 6l6 6-6 6"
               stroke="currentColor"
@@ -202,11 +201,11 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
           >
             Start over
           </button>
-        ) : null}
-
-        <p className="text-center text-eyebrow text-sand/45">
-          ~12 min · Free · Stays on your device
-        </p>
+        ) : (
+          <p className="text-center text-eyebrow text-sand/45 pt-0.5">
+            ~12 min · Free · Stays on your device
+          </p>
+        )}
       </div>
     </section>
   );

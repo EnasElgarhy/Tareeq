@@ -16,10 +16,10 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        /* v2 palette */
-        night: "#0E0A28",
-        midnight: "#1B1240",
-        dusk: "#3D2270",
+        /* v2 palette — Orbit-inspired near-black night with violet bloom */
+        night: "#08051A",
+        midnight: "#100A24",
+        dusk: "#221248",
         violet: {
           DEFAULT: "#6E48E4",
           soft: "#9D7FF0",
@@ -67,7 +67,7 @@ const config: Config = {
       },
       backgroundImage: {
         "night-gradient":
-          "linear-gradient(180deg, #0E0A28 0%, #1B1240 60%, #3D2270 100%)",
+          "linear-gradient(180deg, #221248 0%, #100A24 38%, #08051A 100%)",
         aurora:
           "linear-gradient(135deg, #6E48E4 0%, #9D7FF0 35%, #F2A8B3 70%, #F4C660 100%)",
         "gold-gradient":
@@ -75,15 +75,18 @@ const config: Config = {
         "violet-gradient":
           "linear-gradient(135deg, #6E48E4 0%, #9D7FF0 100%)",
 
+        /* Warm gradient — pink → red-orange → gold. Used for headline
+           accents and the primary CTA. */
+        "grad-warm":
+          "linear-gradient(95deg, #FF3D83 0%, #FF6B3D 55%, #FFA53D 100%)",
+
         /* legacy aliases */
         "plum-gradient":
           "linear-gradient(180deg, #0E0A28 0%, #1B1240 60%, #3D2270 100%)",
         "plum-gradient-soft":
           "linear-gradient(160deg, #1B1240 0%, #3D2270 100%)",
         "coral-gradient":
-          "linear-gradient(135deg, #F4C660 0%, #F5D57F 100%)",
-        "grad-warm":
-          "linear-gradient(95deg, #F2A8B3 0%, #F4C660 50%, #FDE7A8 100%)",
+          "linear-gradient(135deg, #FF3D83 0%, #FF6B3D 55%, #FFA53D 100%)",
       },
       fontFamily: {
         sans: [
@@ -133,6 +136,8 @@ const config: Config = {
           "0 12px 28px rgba(244, 198, 96, 0.35), 0 4px 10px rgba(244, 198, 96, 0.15)",
         "violet-glow":
           "0 12px 28px rgba(110, 72, 228, 0.35), 0 4px 10px rgba(110, 72, 228, 0.15)",
+        "warm-glow":
+          "0 14px 32px rgba(255, 61, 131, 0.38), 0 6px 14px rgba(255, 107, 61, 0.22)",
       },
       transitionTimingFunction: {
         standard: "cubic-bezier(0.2, 0, 0, 1)",

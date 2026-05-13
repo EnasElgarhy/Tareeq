@@ -1,6 +1,12 @@
 "use client";
 
-import { createElement, useEffect, useState, type ElementType } from "react";
+import {
+  createElement,
+  useEffect,
+  useState,
+  type CSSProperties,
+  type ElementType,
+} from "react";
 import { prefersReducedMotion } from "@/lib/audio/ui-sounds";
 
 interface TypewriterProps {
@@ -15,6 +21,8 @@ interface TypewriterProps {
   /** Show a blinking caret while typing (and briefly after). */
   showCaret?: boolean;
   className?: string;
+  /** Inline styles forwarded to the wrapping element. */
+  style?: CSSProperties;
   /** Tag used to wrap the visible text. Default `p`. */
   as?: ElementType;
 }
@@ -34,6 +42,7 @@ export function Typewriter({
   onComplete,
   showCaret = true,
   className,
+  style,
   as: Tag = "p",
 }: TypewriterProps) {
   const [index, setIndex] = useState(0);
@@ -68,7 +77,7 @@ export function Typewriter({
 
   return createElement(
     Tag,
-    { "aria-label": text, className },
+    { "aria-label": text, className, style },
     <span aria-hidden="true">
       {visible}
       {showCaret && isTyping ? (

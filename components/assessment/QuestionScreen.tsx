@@ -309,7 +309,7 @@ export function QuestionScreen({
         key={question.externalId}
         aria-labelledby="question-text"
         aria-busy={Boolean(exiting)}
-        className={`flex flex-1 flex-col gap-5 pt-3 ${exitClass}`}
+        className={`flex flex-1 flex-col gap-3 ${exitClass}`}
       >
         <audio
           ref={audioRef}
@@ -324,8 +324,8 @@ export function QuestionScreen({
         />
 
         {/* Hero — aurora + Kai + question bubble below */}
-        <div className="flex flex-col items-center gap-4">
-          <div className="relative flex h-[170px] w-[170px] items-center justify-center">
+        <div className="flex flex-col items-center gap-2.5">
+          <div className="relative flex h-[156px] w-[156px] items-center justify-center">
             <div className="anim-aura-bloom absolute inset-0">
               <KaiAuraV2 size="100%" />
             </div>
@@ -342,28 +342,33 @@ export function QuestionScreen({
 
           {/* Question bubble */}
           <div
-            className="bubble anim-bubble-in w-full max-w-[420px]"
+            className="bubble anim-bubble-in w-full max-w-[420px] !py-3 !px-4"
             data-surface="night"
             data-tail-edge="top"
             data-tail-position="center"
-            style={{ color: "var(--sand)" }}
           >
             <span className="bubble__tail" aria-hidden="true" />
             <p
               id="question-text"
-              className="text-question text-carbon m-0"
+              className="text-carbon m-0 italic"
+              style={{
+                fontFamily: "var(--font-question-stack)",
+                fontSize: "clamp(16px, 0.95rem + 1.1vw, 22px)",
+                lineHeight: 1.28,
+                letterSpacing: "-0.005em",
+              }}
             >
               {title}
             </p>
           </div>
         </div>
 
-        {/* Audio controls */}
-        <div className="flex items-center justify-center gap-2">
+        {/* Audio controls — compact */}
+        <div className="flex items-center justify-center gap-1.5">
           <button
             type="button"
             onClick={toggleSound}
-            className="inline-flex size-9 items-center justify-center rounded-full bg-sand/8 text-sand/80 transition hover:bg-sand/14"
+            className="glass-tile inline-flex size-8 items-center justify-center rounded-full text-sand/80 transition hover:text-sand"
             aria-label={soundOn ? "Mute narration" : "Unmute narration"}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
@@ -406,7 +411,7 @@ export function QuestionScreen({
             type="button"
             onClick={playQuestionAudio}
             disabled={!soundOn}
-            className="inline-flex size-10 items-center justify-center rounded-full bg-gold-gradient text-carbon shadow-gold-glow transition hover:scale-105 active:scale-95 disabled:opacity-40"
+            className="inline-flex size-9 items-center justify-center rounded-full bg-gold-gradient text-carbon shadow-gold-glow transition hover:scale-105 active:scale-95 disabled:opacity-40"
             aria-label={
               audioState === "playing" ? "Pause question" : "Play question"
             }
@@ -429,7 +434,7 @@ export function QuestionScreen({
               const next = cycle[(cycle.indexOf(speed) + 1) % cycle.length];
               if (next != null) setSpeed(next);
             }}
-            className="inline-flex h-9 items-center justify-center rounded-full bg-sand/8 px-3 text-[12px] font-semibold text-sand/80 transition hover:bg-sand/14"
+            className="glass-tile inline-flex h-8 items-center justify-center rounded-full px-2.5 text-[11px] font-semibold text-sand/80 transition hover:text-sand"
             aria-label={`Playback speed ${speed}× — tap to change`}
           >
             {speed}×
@@ -437,7 +442,7 @@ export function QuestionScreen({
         </div>
 
         {/* Answers */}
-        <div className="flex flex-1 flex-col gap-2 pt-1">
+        <div className="flex flex-1 flex-col gap-1.5 min-h-0">
           {isSelect ? (
             <select
               value={selected}
@@ -475,7 +480,7 @@ export function QuestionScreen({
               </p>
             </div>
           ) : (
-            <div className="grid gap-2">
+            <div className="grid gap-1.5">
               {question.options.map((option, optionIdx) => {
                 const palette =
                   OPTION_PALETTE[optionIdx % OPTION_PALETTE.length] ??
@@ -509,19 +514,19 @@ export function QuestionScreen({
                             : `inset 0 0 0 1px rgba(245,238,230,0.10)`,
                     }}
                     className={[
-                      "anim-option-in group relative flex min-h-[56px] items-center gap-3 rounded-2xl px-4 py-3 text-start transition",
+                      "anim-option-in group relative flex min-h-[44px] items-center gap-2.5 rounded-xl px-3 py-2 text-start transition",
                       "disabled:opacity-45 disabled:pointer-events-none active:scale-[0.99]",
                       isConfirming
-                        ? "anim-option-confirm bg-gold-gradient text-carbon"
+                        ? "anim-option-confirm bg-grad-warm text-sand shadow-warm-glow"
                         : active
-                          ? "bg-gold-gradient text-carbon"
-                          : "bg-sand/4 text-sand hover:bg-sand/8",
+                          ? "bg-grad-warm text-sand shadow-warm-glow"
+                          : "glass-card !p-3 !rounded-xl text-sand",
                     ].join(" ")}
                   >
                     <span
                       aria-hidden="true"
                       className={[
-                        "grid size-8 shrink-0 place-items-center rounded-full text-[12px] font-bold transition",
+                        "grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-bold transition",
                         isConfirming || active
                           ? "bg-carbon/15 text-carbon"
                           : "text-sand/85",
@@ -534,7 +539,7 @@ export function QuestionScreen({
                     >
                       {option.letter}
                     </span>
-                    <span className="flex-1 text-[14.5px] leading-snug">
+                    <span className="flex-1 text-[13.5px] leading-snug">
                       {getLocalizedText(option.text)}
                     </span>
                     <span
@@ -573,13 +578,13 @@ export function QuestionScreen({
 
         {/* Footer */}
         {isExplicit ? (
-          <footer className="flex items-center gap-2 pt-1">
+          <footer className="flex items-center gap-2">
             <button
               type="button"
               onClick={goPrevious}
               aria-label="Previous question"
               disabled={Boolean(exiting)}
-              className="inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-sand/8 text-sand transition hover:bg-sand/14 active:scale-95 disabled:opacity-40"
+              className="glass-tile inline-flex size-11 shrink-0 items-center justify-center rounded-full text-sand transition hover:text-sand active:scale-95 disabled:opacity-40"
             >
               <TareeqArrowLeft size={16} className="flip-rtl" />
             </button>
@@ -609,9 +614,9 @@ export function QuestionScreen({
             </button>
           </footer>
         ) : (
-          <p className="flex items-center justify-between gap-2 pt-1 text-eyebrow text-sand/45">
-            <span>
-              {confirming ? "Saving…" : "Tap to continue · 1, 2, 3"}
+          <p className="flex items-center justify-between gap-2 text-eyebrow text-sand/45">
+            <span className="truncate">
+              {confirming ? "Saving…" : "Tap to continue"}
             </span>
             <button
               type="button"
