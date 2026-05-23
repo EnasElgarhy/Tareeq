@@ -1,24 +1,27 @@
 "use client";
 
 import {
-  AlertTriangle,
-  BookOpen,
-  BriefcaseBusiness,
-  Compass,
   Download,
   FileText,
-  Footprints,
-  GraduationCap,
-  Map,
   RefreshCcw,
-  Route,
   Share2,
   Sparkles,
-  Target,
-  Users,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { CSSProperties, ReactNode, useEffect, useState } from "react";
+import {
+  AcademicIcon,
+  ArchetypeIcon,
+  CareerIcon,
+  CompassResultIcon,
+  ConstellationIcon,
+  DriverIcon,
+  EcosystemIcon,
+  NextStepsIcon,
+  PathForwardIcon,
+  RealityIcon,
+  UniversityIcon,
+} from "@/components/brand/ResultIcons";
 import { resetLocalAssessment } from "@/lib/assessment/progress";
 import {
   clearResultStorage,
@@ -27,8 +30,6 @@ import {
 } from "@/lib/results/storage";
 import type { PersonalizedCompassReport } from "@/lib/results/types";
 import type { ClusterCode } from "@/lib/scoring";
-
-const iconClass = "size-4";
 
 const CLUSTER_VISUALS: Record<
   ClusterCode,
@@ -206,34 +207,42 @@ export function ResultsScreen() {
 
       <section className="grid grid-cols-1 gap-2">
         <WorkTile
-          icon={<Compass className={iconClass} />}
+          icon={<ArchetypeIcon size={22} />}
           label="How you work"
           value={report.archetype}
+          accent="violet"
         />
         <WorkTile
-          icon={<Target className={iconClass} />}
+          icon={<DriverIcon size={22} />}
           label="What pulls you forward"
           value={report.primaryDriver}
+          accent="warm"
         />
         <WorkTile
-          icon={<Users className={iconClass} />}
+          icon={<EcosystemIcon size={22} />}
           label="Where you thrive"
           value={report.ecosystemFit}
+          accent="mint"
         />
       </section>
 
       <section className="rounded-[24px] border border-sand/10 bg-night/35 p-4">
         <div className="mb-4 flex items-center justify-between gap-3">
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-sand/42">
-              Cluster signal
-            </p>
-            <h2 className="mt-1 text-[18px] font-black text-sand">
-              Your top directions
-            </h2>
+          <div className="flex items-center gap-3">
+            <span className="grid size-10 shrink-0 place-items-center rounded-full bg-sand/[0.08]">
+              <ConstellationIcon size={22} />
+            </span>
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-sand/42">
+                Cluster signal
+              </p>
+              <h2 className="mt-1 text-[18px] font-black text-sand">
+                Your top directions
+              </h2>
+            </div>
           </div>
           <span className="rounded-full border border-sand/10 px-3 py-1 text-[11px] font-bold text-sand/58">
-            Final score
+            Final
           </span>
         </div>
 
@@ -285,29 +294,33 @@ export function ResultsScreen() {
 
       <section className="grid gap-2">
         <div className="flex items-end justify-between gap-3">
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-sand/42">
-              Path forward
-            </p>
-            <h2 className="mt-1 text-[20px] font-black text-sand">
-              What to explore next
-            </h2>
+          <div className="flex items-center gap-3">
+            <span className="grid size-10 shrink-0 place-items-center rounded-full bg-sand/[0.08]">
+              <PathForwardIcon size={22} />
+            </span>
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-sand/42">
+                Path forward
+              </p>
+              <h2 className="mt-1 text-[20px] font-black text-sand">
+                What to explore next
+              </h2>
+            </div>
           </div>
-          <Route size={22} className="text-gold" />
         </div>
 
         <PathPanel
-          icon={<GraduationCap className={iconClass} />}
+          icon={<AcademicIcon size={20} />}
           title="School focus"
           items={report.highSchoolSubjects}
         />
         <PathPanel
-          icon={<BookOpen className={iconClass} />}
+          icon={<UniversityIcon size={20} />}
           title="University paths"
           items={report.universityMajors}
         />
         <PathPanel
-          icon={<Map className={iconClass} />}
+          icon={<CareerIcon size={20} />}
           title="Career examples"
           items={report.careerExamples}
         />
@@ -315,7 +328,7 @@ export function ResultsScreen() {
 
       <ReportSection
         accent={clusterVisual.color}
-        icon={<GraduationCap className={iconClass} />}
+        icon={<AcademicIcon size={20} />}
         title="Academic Path"
       >
         <p>{report.academicPath}</p>
@@ -323,7 +336,7 @@ export function ResultsScreen() {
 
       <ReportSection
         accent={clusterVisual.color}
-        icon={<BriefcaseBusiness className={iconClass} />}
+        icon={<CareerIcon size={20} />}
         title="Career Landscape"
       >
         <p>{report.careerLandscape}</p>
@@ -332,7 +345,7 @@ export function ResultsScreen() {
 
       <ReportSection
         accent={clusterVisual.color}
-        icon={<Compass className={iconClass} />}
+        icon={<CompassResultIcon size={20} />}
         title="How You Work"
       >
         <p>{report.integration}</p>
@@ -340,7 +353,7 @@ export function ResultsScreen() {
 
       <ReportSection
         accent={clusterVisual.color}
-        icon={<AlertTriangle className={iconClass} />}
+        icon={<RealityIcon size={20} />}
         title="Reality Check"
       >
         <p>{report.realityCheck}</p>
@@ -348,7 +361,7 @@ export function ResultsScreen() {
 
       <ReportSection
         accent={clusterVisual.color}
-        icon={<Footprints className={iconClass} />}
+        icon={<NextStepsIcon size={20} />}
         title="Next Steps"
       >
         <p>{report.nextSteps}</p>
@@ -364,6 +377,14 @@ export function ResultsScreen() {
           <Share2 size={18} />
           Share result
         </button>
+        <a
+          href="/profile"
+          className="btn-v2 btn-v2--ghost-on-dark w-full"
+          data-size="md"
+        >
+          <Sparkles size={16} />
+          View your profile
+        </a>
         <div className="grid grid-cols-2 gap-2">
           <button
             type="button"
@@ -472,23 +493,39 @@ function WorkTile({
   icon,
   label,
   value,
+  accent = "warm",
 }: {
   icon: ReactNode;
   label: string;
   value: string;
+  /** Tints the icon tile background. `warm` is the brand default;
+   *  `violet`/`mint` give the three personality cards a sense of
+   *  visual rotation rather than a uniform stack. */
+  accent?: "warm" | "violet" | "mint";
 }) {
+  const tileBg = {
+    warm: "linear-gradient(135deg, rgba(255,107,61,0.22), rgba(255,165,61,0.10))",
+    violet: "linear-gradient(135deg, rgba(157,127,240,0.22), rgba(110,72,228,0.10))",
+    mint: "linear-gradient(135deg, rgba(111,224,192,0.22), rgba(111,224,192,0.06))",
+  }[accent];
+  const tileRing = {
+    warm: "rgba(255,107,61,0.32)",
+    violet: "rgba(157,127,240,0.36)",
+    mint: "rgba(111,224,192,0.34)",
+  }[accent];
+
   return (
     <div className="flex items-center gap-3 rounded-[22px] border border-sand/10 bg-sand/[0.055] p-3">
       <span
-        className="grid size-10 shrink-0 place-items-center rounded-full text-gold"
+        className="relative grid size-11 shrink-0 place-items-center rounded-2xl"
         style={{
-          backgroundColor:
-            "color-mix(in srgb, var(--result-accent) 24%, transparent)",
+          background: tileBg,
+          boxShadow: `inset 0 0 0 1px ${tileRing}`,
         }}
       >
         {icon}
       </span>
-      <div className="min-w-0">
+      <div className="min-w-0 flex-1">
         <p className="text-[10px] font-bold uppercase tracking-[0.13em] text-sand/42">
           {label}
         </p>
