@@ -45,3 +45,7 @@ prototype/assets/voice/*.m4a
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Iteration screenshots used to author the docs/* PDFs — the PDFs
+# embed everything they need, so keep these locally for reference only.
+docs/screenshots/

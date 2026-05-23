@@ -2,6 +2,8 @@
 
 import { useEffect, useId, useState } from "react";
 import { createPortal } from "react-dom";
+import { Kai } from "@/components/brand/Kai";
+import { KaiAuraV2 } from "@/components/brand/KaiAuraV2";
 import type { Interstitial } from "@/lib/assessment/interstitials";
 import { uiSounds } from "@/lib/audio/ui-sounds";
 
@@ -116,11 +118,20 @@ export function DidYouKnow({ interstitial, onDismiss }: DidYouKnowProps) {
           className="relative mx-auto mb-3 block h-1.5 w-10 rounded-full bg-sand/20"
         />
 
-        {/* Eyebrow chip */}
-        <div className="anim-bubble-in relative flex justify-center">
+        {/* Kai-narrated eyebrow — small animated Kai + "Did you know?" chip.
+         *  Signals that the fact is voiced by Kai rather than the brand. */}
+        <div className="anim-bubble-in relative flex items-center justify-center gap-3">
+          <div className="relative flex size-12 items-center justify-center">
+            <div className="absolute inset-0">
+              <KaiAuraV2 size="100%" />
+            </div>
+            <div className="relative">
+              <Kai mood="encouraging" size={44} />
+            </div>
+          </div>
           <span className="chip chip--violet-on-dark">
             <span className="size-1.5 rounded-full bg-gold" />
-            Did you know?
+            Kai · did you know?
           </span>
         </div>
 
