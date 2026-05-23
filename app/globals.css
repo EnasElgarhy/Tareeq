@@ -907,6 +907,97 @@ button {
     background-position: 200% 50%;
   }
 }
+/* ─────────── Analyzer v2: orbit field + tokens + threads ─────────── */
+@keyframes analysis-thread-draw {
+  0% {
+    stroke-dasharray: 0 100;
+    opacity: 0.15;
+  }
+  60% {
+    stroke-dasharray: 100 0;
+    opacity: 0.75;
+  }
+  100% {
+    stroke-dasharray: 100 0;
+    opacity: 0.25;
+  }
+}
+@keyframes analysis-orbit-token-in {
+  0% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--ox, 0px)), calc(-50% + var(--oy, 0px))) scale(0.4);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(calc(-50% + var(--ox, 0px)), calc(-50% + var(--oy, 0px))) scale(1);
+  }
+}
+@keyframes analysis-orbit-token-pulse {
+  0%, 100% {
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
+  }
+  50% {
+    box-shadow:
+      0 8px 22px rgba(0, 0, 0, 0.4),
+      0 0 0 6px rgba(255, 165, 61, 0.18);
+  }
+}
+@keyframes analysis-aura-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 0 rgba(255, 165, 61, 0.45),
+      0 0 0 0 rgba(255, 61, 131, 0.25);
+  }
+  50% {
+    box-shadow:
+      0 0 0 14px rgba(255, 165, 61, 0),
+      0 0 0 28px rgba(255, 61, 131, 0);
+  }
+}
+@keyframes analysis-particle-float {
+  0% {
+    opacity: 0;
+    transform: translateY(0px);
+  }
+  20% {
+    opacity: 0.75;
+  }
+  80% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-22px);
+  }
+}
+@keyframes analysis-spark {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.25);
+  }
+}
+@keyframes analysis-step-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes analysis-step-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(244, 198, 96, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0 10px rgba(244, 198, 96, 0);
+  }
+}
 @keyframes result-compass-drift {
   to {
     transform: rotate(360deg);
@@ -1068,6 +1159,66 @@ button {
 .analysis-step:has(.animate-spin) {
   transform: translateX(2px);
 }
+
+/* ─────── Analyzer v2: orbit + threads + tokens + particles ─────── */
+.analysis-thread {
+  stroke-dasharray: 100 0;
+  pathLength: 100;
+  animation: analysis-thread-draw 2.4s ease-in-out infinite;
+}
+.analysis-thread--n {
+  animation-delay: 0s;
+}
+.analysis-thread--e {
+  animation-delay: 0.6s;
+}
+.analysis-thread--s {
+  animation-delay: 1.2s;
+}
+.analysis-thread--w {
+  animation-delay: 1.8s;
+}
+.analysis-orbit-token {
+  animation:
+    analysis-orbit-token-in 0.8s var(--ease-spring) both,
+    analysis-orbit-token-pulse 3s 1s ease-in-out infinite;
+  letter-spacing: -0.02em;
+}
+.analysis-aura {
+  animation: analysis-aura-pulse 3.2s ease-in-out infinite;
+}
+.analysis-particle {
+  background: linear-gradient(135deg, #ffa53d, #ff3d83);
+  box-shadow: 0 0 8px rgba(255, 165, 61, 0.6);
+  animation: analysis-particle-float 7s ease-in-out infinite;
+}
+.analysis-spark {
+  display: inline-block;
+  animation: analysis-spark 1.4s ease-in-out infinite;
+}
+.analysis-progress-sheen {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 100%
+  );
+  animation: analysis-progress-sheen 1.8s ease-in-out infinite;
+}
+.analysis-step-card {
+  animation: analysis-step-card-in 0.55s var(--ease-spring) both;
+}
+.analysis-step-ring {
+  animation: analysis-step-ring 1.6s ease-out infinite;
+}
+.analysis-step-active {
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    rgba(244, 198, 96, 0.18),
+    rgba(255, 107, 61, 0.12)
+  );
+}
 .result-hero {
   background: linear-gradient(
     135deg,
@@ -1122,6 +1273,14 @@ button {
   .analysis-scanline,
   .analysis-signal,
   .analysis-progress,
+  .analysis-progress-sheen,
+  .analysis-thread,
+  .analysis-orbit-token,
+  .analysis-aura,
+  .analysis-particle,
+  .analysis-spark,
+  .analysis-step-card,
+  .analysis-step-ring,
   .result-compass-spin {
     animation: none !important;
   }
