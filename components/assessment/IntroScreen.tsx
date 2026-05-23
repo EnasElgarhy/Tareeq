@@ -40,7 +40,7 @@ export function IntroScreen() {
           style={{ animationDelay: "180ms" }}
         >
           <div className="anim-avatar-bob" style={{ animationDelay: "900ms" }}>
-            <Kai mood="warm" size={150} />
+            <Kai mood="warm" gesture="wave" size={150} />
           </div>
         </div>
       </div>

@@ -15,6 +15,12 @@ import {
   writeLocalAssessment,
 } from "@/lib/assessment/progress";
 import { getQuestionPath } from "@/lib/assessment/questions";
+import {
+  readGeneratedReport,
+  readPlatformConsent,
+  readResultRegistration,
+  writePlatformConsent,
+} from "@/lib/results/storage";
 
 interface AssessmentStartProps {
   totalQuestions: number;
@@ -32,9 +38,12 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
   const [progress, setProgress] = useState<LocalAssessmentProgress | null>(
     null,
   );
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [startError, setStartError] = useState("");
 
   useEffect(() => {
     setProgress(readLocalAssessment());
+    setTermsAccepted(Boolean(readPlatformConsent()));
   }, []);
 
   const answeredCount = answeredQuestionCount(progress);
@@ -51,7 +60,13 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
   }, [progress, totalQuestions]);
 
   function startFresh() {
+    if (!termsAccepted && !readPlatformConsent()) {
+      setStartError("Please accept Tareeq’s platform terms before starting.");
+      return;
+    }
+
     uiSounds.advance();
+    if (!readPlatformConsent()) writePlatformConsent();
     resetLocalAssessment();
     writeLocalAssessment(createLocalAssessment());
     router.push("/intro");
@@ -59,9 +74,23 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
 
   function resume() {
     uiSounds.advance();
+    setStartError("");
     router.push(
       getQuestionPath(getResumeQuestionIndex(progress, totalQuestions)),
     );
+  }
+
+  function continueCompleted() {
+    uiSounds.advance();
+    if (readGeneratedReport()) {
+      router.push("/results");
+      return;
+    }
+    if (readResultRegistration()) {
+      router.push("/analyzing");
+      return;
+    }
+    router.push("/register");
   }
 
   return (
@@ -135,12 +164,22 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
         <div
           role="status"
           aria-live="polite"
-          className="anim-bubble-in glass-card flex items-center gap-2 !p-3 !rounded-2xl"
+          className="anim-bubble-in glass-card flex items-center justify-between gap-3 !p-3 !rounded-2xl"
         >
-          <span className="size-2 rounded-full bg-gold" />
-          <p className="text-body-sm leading-5 text-sand">
-            Your Compass is saved on this device.
-          </p>
+          <div className="flex items-center gap-2">
+            <span className="size-2 rounded-full bg-gold" />
+            <p className="text-body-sm leading-5 text-sand">
+              Your answers are saved.
+            </p>
+          </div>
+          <button
+            type="button"
+            className="btn-v2 btn-v2--ghost-on-dark"
+            data-size="sm"
+            onClick={continueCompleted}
+          >
+            Continue
+          </button>
         </div>
       ) : null}
 
@@ -181,7 +220,13 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
           data-size="lg"
         >
           {canResume ? `Resume at ${resumeAt}` : "Begin"}
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden
+          >
             <path
               d="M5 12h14M13 6l6 6-6 6"
               stroke="currentColor"
@@ -202,9 +247,37 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
             Start over
           </button>
         ) : (
-          <p className="text-center text-eyebrow text-sand/45 pt-0.5">
-            ~12 min · Free · Stays on your device
-          </p>
+          <>
+            {!completed ? (
+              <label className="flex items-start gap-2 rounded-2xl border border-sand/10 bg-sand/[0.045] px-3 py-2 text-start">
+                <input
+                  type="checkbox"
+                  checked={termsAccepted}
+                  onChange={(event) => {
+                    setTermsAccepted(event.target.checked);
+                    setStartError("");
+                  }}
+                  className="mt-0.5 size-4 accent-gold"
+                />
+                <span className="text-[11px] leading-snug text-sand/58">
+                  I agree to Tareeq’s platform terms and privacy notice. I can
+                  still choose separately whether my anonymized answers are used
+                  for research after the assessment.
+                </span>
+              </label>
+            ) : null}
+            {startError ? (
+              <p
+                role="alert"
+                className="text-center text-[11px] font-semibold text-error"
+              >
+                {startError}
+              </p>
+            ) : null}
+            <p className="text-center text-eyebrow text-sand/45 pt-0.5">
+              ~12 min · Free · Stays on your device
+            </p>
+          </>
         )}
       </div>
     </section>

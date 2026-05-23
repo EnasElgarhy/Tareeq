@@ -18,7 +18,8 @@ export type ArchetypeName =
   | "Precisionist"
   | "Coordinator"
   | "Explorer"
-  | "Catalyst";
+  | "Catalyst"
+  | "Adaptive";
 
 export type AxisCode = "PROC" | "SCOPE" | "SOC" | "ENV";
 
@@ -57,17 +58,40 @@ export type Question = {
 
 export type RankedScore<TCode extends string> = [TCode, number];
 
+export type ConfidenceLabel = "High" | "Moderate" | "Low";
+
+export type EcosystemFitName =
+  | "High-Energy Team Player"
+  | "Structured Team Player"
+  | "Solo Sprinter"
+  | "Solo Specialist";
+
 export type CompassResult = {
+  /** Raw Pillar 1 curiosity scores before modifiers. */
   cluster: Record<ClusterCode, number>;
+  clusterRaw: Record<ClusterCode, number>;
+  clusterBonus: Record<ClusterCode, number>;
+  clusterFinal: Record<ClusterCode, number>;
+  clusterRankedRaw: RankedScore<ClusterCode>[];
+  /** Final cluster ranking after operational/ecosystem modifiers. */
   clusterRanked: RankedScore<ClusterCode>[];
   topCluster: ClusterCode;
+  primaryClusterScore: number;
+  confidencePercentage: number;
+  confidenceLabel: ConfidenceLabel;
+  isMultiCurious: boolean;
+  multiCuriousClusters: ClusterCode[];
   archetype: ArchetypeName;
   archetypeDesc: string;
   driver: Record<DriverCode, number>;
   driverRanked: RankedScore<DriverCode>[];
   primaryDriver: DriverCode;
   secondaryDriver: DriverCode;
+  primaryDrivers: DriverCode[];
+  secondaryDrivers: DriverCode[];
+  motivationLabel: string;
   driverNames: Record<DriverCode, string>;
+  ecosystemFit: EcosystemFitName;
   socialPos: number;
   envPos: number;
   procPos: number;

@@ -8,10 +8,14 @@ import { CompassProgress } from "@/components/brand/CompassProgress";
 import { uiSounds } from "@/lib/audio/ui-sounds";
 import {
   assessmentQuestions,
-  getPillarLabel,
   getQuestionPath,
 } from "@/lib/assessment/questions";
-import { buildCompassSnapshot } from "@/lib/assessment/pillar-progress";
+import {
+  buildCompassSnapshot,
+  COMPASS_PILLARS,
+  PILLAR_META,
+  type CompassSnapshot,
+} from "@/lib/assessment/pillar-progress";
 import { useAnimatedSnapshot } from "@/lib/assessment/use-animated-snapshot";
 
 interface AssessmentChromeProps {
@@ -30,7 +34,7 @@ function getIndexFromPathname(pathname: string) {
  *
  * Header layout:
  *   /start, /intro, /contract   →  [back]                [tareeq mark]
- *   /q/[index]                  →  [back] [compass] [n/total]   [mark]
+ *   /q/[index]                  →  [back] [readable compass panel]
  */
 export function AssessmentChrome({
   children,
@@ -73,9 +77,6 @@ export function AssessmentChrome({
   });
   const snapshot = useAnimatedSnapshot(rawSnapshot);
 
-  const activeQuestion = hasQuestion ? assessmentQuestions[questionIndex] : null;
-  const pillarLabel = activeQuestion ? getPillarLabel(activeQuestion) : null;
-
   return (
     <main className="surface-night relative mx-auto flex h-dvh w-full max-w-[480px] flex-col gap-3 overflow-hidden px-5 pb-4 pt-[max(env(safe-area-inset-top),0.875rem)] text-sand">
       <div className="absolute inset-0 bg-night-stars opacity-80 pointer-events-none" />
@@ -83,33 +84,34 @@ export function AssessmentChrome({
       {/* Header
        *
        * Two layouts:
-       *  · question screens (/q/*) — back-button left, big compass centered, no logo
+       *  · question screens (/q/*) — back-button left, readable compass panel
        *  · everywhere else        — back-button + counter left, Tareeq mark right
        *                              (mark goes centered+warm-gradient on ceremony screens)
        */}
       <header
-        className={`relative z-10 flex items-center justify-between gap-2 ${
-          hasQuestion ? "h-14" : "h-10"
-        }`}
+        className={
+          hasQuestion
+            ? "relative z-10 grid grid-cols-[2.25rem_minmax(0,1fr)] items-start gap-2"
+            : "relative z-10 flex h-10 items-center justify-between gap-2"
+        }
       >
         <button
           type="button"
           onClick={goBack}
           aria-label="Go back"
-          className="glass-tile inline-flex size-9 shrink-0 items-center justify-center rounded-full text-sand transition hover:text-sand active:scale-95"
+          className={`glass-tile inline-flex size-9 shrink-0 items-center justify-center rounded-full text-sand transition hover:text-sand active:scale-95 ${
+            hasQuestion ? "mt-1" : ""
+          }`}
         >
           <TareeqArrowLeft size={15} className="flip-rtl" />
         </button>
 
         {hasQuestion ? (
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-            <CompassProgress
-              snapshot={snapshot}
-              size={56}
-              layout="bare"
-              surface="dark"
-            />
-          </div>
+          <QuestionCompassPanel
+            snapshot={snapshot}
+            questionIndex={questionIndex}
+            totalQuestions={totalQuestions}
+          />
         ) : (
           /* Tareeq mark — centered + warm-gradient on ceremony screens, right on others */
           <Link
@@ -146,28 +148,7 @@ export function AssessmentChrome({
             </span>
           </Link>
         )}
-
-        {/* Right-hand spacer to balance the back button when no logo renders. */}
-        {hasQuestion ? (
-          <span aria-hidden="true" className="size-9 shrink-0" />
-        ) : null}
       </header>
-
-      {hasQuestion && pillarLabel ? (
-        <p
-          className="relative z-10 -mt-1 text-center text-eyebrow text-sand/65"
-          aria-live="polite"
-        >
-          <span className="text-sand/85">{pillarLabel}</span>
-          <span className="text-sand/30"> · </span>
-          <span className="tabular-nums">
-            <span className="text-grad-warm font-semibold">
-              {String(questionIndex + 1).padStart(2, "0")}
-            </span>
-            <span className="text-sand/40"> / {totalQuestions}</span>
-          </span>
-        </p>
-      ) : null}
 
       {/* Scrollable content well — the chrome locks to the viewport, but
        *  inner content can overflow vertically on short phones (iPhone SE,
@@ -177,5 +158,93 @@ export function AssessmentChrome({
         {children}
       </div>
     </main>
+  );
+}
+
+interface QuestionCompassPanelProps {
+  snapshot: CompassSnapshot;
+  questionIndex: number;
+  totalQuestions: number;
+}
+
+function QuestionCompassPanel({
+  snapshot,
+  questionIndex,
+  totalQuestions,
+}: QuestionCompassPanelProps) {
+  const activeMeta = snapshot.activePillar
+    ? PILLAR_META[snapshot.activePillar]
+    : null;
+
+  return (
+    <section
+      className="min-w-0 rounded-[20px] border border-sand/10 bg-sand/[0.075] px-2.5 py-2 shadow-[0_14px_34px_rgba(0,0,0,0.24)] backdrop-blur-md"
+      aria-label="CORE compass progress"
+      aria-live="polite"
+    >
+      <div className="flex min-w-0 items-center gap-2.5">
+        <div className="shrink-0 rounded-full bg-night/35 p-1 shadow-inner shadow-black/20">
+          <CompassProgress
+            snapshot={snapshot}
+            size={58}
+            layout="bare"
+            surface="dark"
+          />
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-sand/45">
+              Compass
+            </p>
+            <p className="shrink-0 text-[11px] font-semibold tabular-nums text-sand/55">
+              {String(questionIndex + 1).padStart(2, "0")} / {totalQuestions}
+            </p>
+          </div>
+
+          <p className="mt-0.5 truncate text-[15px] font-semibold leading-tight text-sand">
+            {activeMeta ? activeMeta.name : "About you"}
+          </p>
+          <p className="mt-0.5 truncate text-[11px] leading-snug text-sand/58">
+            {activeMeta ? activeMeta.blurb : "Setting your starting point"}
+          </p>
+
+          <div className="mt-1.5 grid grid-cols-4 gap-1">
+            {COMPASS_PILLARS.map((pillar) => {
+              const meta = PILLAR_META[pillar];
+              const value = snapshot.byPillar[pillar];
+              const percent = Math.round(value * 100);
+              const isActive = snapshot.activePillar === pillar;
+
+              return (
+                <div
+                  key={pillar}
+                  className={`min-w-0 rounded-full border px-1.5 py-1 ${
+                    isActive
+                      ? "border-coral/55 bg-coral/15"
+                      : "border-sand/10 bg-sand/[0.045]"
+                  }`}
+                  aria-label={`${meta.name}: ${percent} percent complete`}
+                >
+                  <span
+                    className={`block text-[10px] font-bold leading-none ${
+                      isActive ? "text-coral" : "text-sand/68"
+                    }`}
+                  >
+                    {meta.letter}
+                  </span>
+                  <span className="mt-1 block h-0.5 overflow-hidden rounded-full bg-sand/14">
+                    <span
+                      className="block h-full rounded-full bg-grad-warm"
+                      style={{ width: `${percent}%` }}
+                    />
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }

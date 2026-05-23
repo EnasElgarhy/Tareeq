@@ -24,17 +24,32 @@ function buildAnswers(pick: (question: Question) => string | undefined) {
 function summarize(result: CompassResult) {
   return {
     topCluster: result.topCluster,
-    topClusterScore: result.cluster[result.topCluster],
+    topClusterScore: result.primaryClusterScore,
+    confidence: {
+      label: result.confidenceLabel,
+      percentage: result.confidencePercentage,
+    },
+    ecosystemFit: result.ecosystemFit,
     archetype: result.archetype,
     drivers: result.driverRanked.slice(0, 2).map(([code, count]) => ({
       code,
       name: result.driverNames[code],
       count,
     })),
+    primaryDrivers: result.primaryDrivers.map(
+      (code) => result.driverNames[code],
+    ),
     clusterTop: result.clusterRanked.slice(0, 5),
+    rawClusterTop: result.clusterRankedRaw.slice(0, 5),
     driverCounts: result.driver,
     axes: result.axes,
   };
+}
+
+function findQuestion(externalId: string) {
+  const question = questions.find((entry) => entry.externalId === externalId);
+  if (!question) throw new Error(`Missing question ${externalId}`);
+  return question;
 }
 
 const techLeaningClusterAnswers: Record<string, string> = {
@@ -102,6 +117,41 @@ const artsPeopleRewardAnswers: Record<string, string> = {
 };
 
 describe("computeScore", () => {
+  it("matches the May 21 Pillar 1 cluster mapping corrections", () => {
+    expect(
+      findQuestion("Q7").options.find((option) => option.letter === "D")
+        ?.clusterCode,
+    ).toBe("ART");
+    expect(
+      findQuestion("Q15").options.find((option) => option.letter === "B")
+        ?.clusterCode,
+    ).toBe("LAW");
+  });
+
+  it("uses the specified tie-breakers for operations", () => {
+    const result = computeScore(
+      buildAnswers((question) => {
+        const tieAnswers: Record<string, string> = {
+          Q17: "A",
+          Q18: "B",
+          Q19: "A",
+          Q20: "B",
+          Q21: "A",
+          Q22: "B",
+          Q23: "B",
+          Q24: "A",
+        };
+
+        return tieAnswers[question.externalId] ?? "A";
+      }),
+      questions,
+    );
+
+    expect(result.axes.processing).toBe("FLEX");
+    expect(result.axes.scope).toBe("DEEP");
+    expect(result.archetype).toBe("Explorer");
+  });
+
   it("pins the All-A persona", () => {
     const result = computeScore(
       buildAnswers(() => "A"),
@@ -130,14 +180,14 @@ describe("computeScore", () => {
           ],
           [
             "BUS",
-            3,
-          ],
-          [
-            "ART",
-            2,
+            3.5,
           ],
           [
             "PPL",
+            2.5,
+          ],
+          [
+            "ART",
             2,
           ],
           [
@@ -145,6 +195,10 @@ describe("computeScore", () => {
             1,
           ],
         ],
+        "confidence": {
+          "label": "High",
+          "percentage": 44,
+        },
         "driverCounts": {
           "AUT": 1,
           "IMP": 0,
@@ -163,6 +217,34 @@ describe("computeScore", () => {
             "count": 3,
             "name": "Mastery",
           },
+        ],
+        "ecosystemFit": "High-Energy Team Player",
+        "primaryDrivers": [
+          "Recognition",
+          "Mastery",
+          "Stability",
+        ],
+        "rawClusterTop": [
+          [
+            "LAW",
+            7,
+          ],
+          [
+            "BUS",
+            3,
+          ],
+          [
+            "ART",
+            2,
+          ],
+          [
+            "PPL",
+            2,
+          ],
+          [
+            "TECH",
+            1,
+          ],
         ],
         "topCluster": "LAW",
         "topClusterScore": 7,
@@ -195,26 +277,30 @@ describe("computeScore", () => {
         },
         "clusterTop": [
           [
+            "PPL",
+            3.5,
+          ],
+          [
             "TECH",
-            4,
+            3,
           ],
           [
             "BUS",
             3,
           ],
           [
-            "PPL",
-            3,
-          ],
-          [
             "SCI",
-            2,
+            2.5,
           ],
           [
-            "LAW",
-            2,
+            "ART",
+            2.5,
           ],
         ],
+        "confidence": {
+          "label": "Low",
+          "percentage": 22,
+        },
         "driverCounts": {
           "AUT": 3,
           "IMP": 4,
@@ -234,8 +320,34 @@ describe("computeScore", () => {
             "name": "Autonomy",
           },
         ],
-        "topCluster": "TECH",
-        "topClusterScore": 4,
+        "ecosystemFit": "Solo Specialist",
+        "primaryDrivers": [
+          "Impact",
+        ],
+        "rawClusterTop": [
+          [
+            "TECH",
+            3,
+          ],
+          [
+            "BUS",
+            3,
+          ],
+          [
+            "PPL",
+            3,
+          ],
+          [
+            "SCI",
+            2,
+          ],
+          [
+            "ART",
+            2,
+          ],
+        ],
+        "topCluster": "PPL",
+        "topClusterScore": 3.5,
       }
     `);
   });
@@ -270,7 +382,7 @@ describe("computeScore", () => {
         "clusterTop": [
           [
             "TECH",
-            6,
+            5,
           ],
           [
             "ENG",
@@ -282,13 +394,17 @@ describe("computeScore", () => {
           ],
           [
             "BUS",
-            2,
+            2.5,
           ],
           [
             "ART",
-            0,
+            1.5,
           ],
         ],
+        "confidence": {
+          "label": "Moderate",
+          "percentage": 31,
+        },
         "driverCounts": {
           "AUT": 4,
           "IMP": 1,
@@ -308,8 +424,34 @@ describe("computeScore", () => {
             "name": "Mastery",
           },
         ],
+        "ecosystemFit": "High-Energy Team Player",
+        "primaryDrivers": [
+          "Autonomy",
+        ],
+        "rawClusterTop": [
+          [
+            "TECH",
+            5,
+          ],
+          [
+            "ENG",
+            4,
+          ],
+          [
+            "SCI",
+            4,
+          ],
+          [
+            "BUS",
+            2,
+          ],
+          [
+            "ART",
+            1,
+          ],
+        ],
         "topCluster": "TECH",
-        "topClusterScore": 6,
+        "topClusterScore": 5,
       }
     `);
   });
@@ -348,21 +490,25 @@ describe("computeScore", () => {
           ],
           [
             "PPL",
-            5,
+            4.5,
           ],
           [
             "LAW",
-            2,
+            3,
           ],
           [
             "SCI",
-            1,
+            1.5,
           ],
           [
-            "TECH",
-            0,
+            "ENG",
+            0.5,
           ],
         ],
+        "confidence": {
+          "label": "High",
+          "percentage": 50,
+        },
         "driverCounts": {
           "AUT": 0,
           "IMP": 4,
@@ -381,6 +527,32 @@ describe("computeScore", () => {
             "count": 2,
             "name": "Recognition",
           },
+        ],
+        "ecosystemFit": "High-Energy Team Player",
+        "primaryDrivers": [
+          "Impact",
+        ],
+        "rawClusterTop": [
+          [
+            "ART",
+            8,
+          ],
+          [
+            "PPL",
+            4,
+          ],
+          [
+            "LAW",
+            3,
+          ],
+          [
+            "SCI",
+            1,
+          ],
+          [
+            "TECH",
+            0,
+          ],
         ],
         "topCluster": "ART",
         "topClusterScore": 8,

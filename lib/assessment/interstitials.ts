@@ -2,10 +2,8 @@
  * "Did you know" interstitials — pause-beat content shown between
  * every 10 questions to break up the assessment rhythm.
  *
- * Voice rules (from design-system.md §10):
- *   • Confident, energetic, grounded
- *   • One title (sentence case), one short paragraph (≤ 2 sentences)
- *   • Curly quotes, `·` separators, no exclamation marks
+ * Content follows the May 21 Wahba fun-facts spec: surprising,
+ * source-backed career data with a short personal implication.
  */
 
 import type { ComponentType, SVGProps } from "react";
@@ -15,6 +13,7 @@ import {
   PatternEmergingScene,
   PeakReachedScene,
 } from "@/components/brand/InterstitialScenes";
+import { KAI_SECTION_ENCOURAGEMENTS } from "@/lib/audio/kai-narration";
 
 export type InterstitialIllustration = ComponentType<
   SVGProps<SVGSVGElement> & {
@@ -32,46 +31,122 @@ export interface Interstitial {
   illustration: InterstitialIllustration;
   /** Optional accent for the soft glow behind the illustration */
   glow: "coral" | "cyan" | "lavender";
+  audioId: string;
   title: string;
   body: string;
+  source?: string;
   ctaLabel: string;
 }
 
 export const INTERSTITIALS: ReadonlyArray<Interstitial> = [
   {
-    key: "after-10",
+    key: "after-10-gcc-entrepreneurship",
     triggerAfterIndex: 9,
     illustration: PatternEmergingScene,
     glow: "coral",
-    title: "Curiosity has a shape",
-    body: "People with similar curiosity patterns end up clustering in the same kinds of work — even across countries. Your Compass is already starting to draw yours.",
+    audioId: KAI_SECTION_ENCOURAGEMENTS[0].audioId,
+    title: "Did you know?",
+    body: "55% of GCC youth plan to start their own business in the next 5 years. The Middle East has the highest entrepreneurship ambition globally.",
+    source: "2020 Arab Youth Survey",
     ctaLabel: "Got it",
   },
   {
-    key: "after-20",
+    key: "after-10-mena-workforce",
+    triggerAfterIndex: 9,
+    illustration: PatternEmergingScene,
+    glow: "coral",
+    audioId: KAI_SECTION_ENCOURAGEMENTS[0].audioId,
+    title: "Did you know?",
+    body: "The MENA region will add 127 million new workers by 2035. Your generation is literally shaping the future of work in the region.",
+    source: "World Bank 2024",
+    ctaLabel: "Got it",
+  },
+  {
+    key: "after-10-major-pivots",
+    triggerAfterIndex: 9,
+    illustration: PatternEmergingScene,
+    glow: "coral",
+    audioId: KAI_SECTION_ENCOURAGEMENTS[0].audioId,
+    title: "Did you know?",
+    body: "Only 27% of college graduates end up working in a field directly related to their major. Your first job does not define your whole career.",
+    source: "Federal Reserve Bank of New York",
+    ctaLabel: "Got it",
+  },
+  {
+    key: "after-20-art-history",
     triggerAfterIndex: 19,
     illustration: CrossingPathsScene,
     glow: "lavender",
-    title: "Most students switch paths twice",
-    body: "Across MENA, students change direction at least twice before graduation. Knowing what fits earlier saves years of doubt — and that’s what the next stretch sharpens.",
+    audioId: KAI_SECTION_ENCOURAGEMENTS[1].audioId,
+    title: "Did you know?",
+    body: "Art History majors have a lower unemployment rate than Computer Science majors in one major dataset. The job market is not always what people expect.",
+    source: "Federal Reserve Bank of New York, 2023",
     ctaLabel: "Keep going",
   },
   {
-    key: "after-30",
+    key: "after-20-automation",
+    triggerAfterIndex: 19,
+    illustration: CrossingPathsScene,
+    glow: "lavender",
+    audioId: KAI_SECTION_ENCOURAGEMENTS[1].audioId,
+    title: "Did you know?",
+    body: "Automation will remove many routine jobs, but it is also creating new work for people who can use data, tools, and AI well.",
+    source: "McKinsey Global Institute",
+    ctaLabel: "Keep going",
+  },
+  {
+    key: "after-20-nursing",
+    triggerAfterIndex: 19,
+    illustration: CrossingPathsScene,
+    glow: "lavender",
+    audioId: KAI_SECTION_ENCOURAGEMENTS[1].audioId,
+    title: "Did you know?",
+    body: "Nursing has one of the lowest unemployment rates of any major. Healthcare careers can stay resilient even when the economy shifts.",
+    source: "Federal Reserve Bank of New York",
+    ctaLabel: "Keep going",
+  },
+  {
+    key: "after-30-gen-z-leadership",
     triggerAfterIndex: 29,
     illustration: DualWaysScene,
     glow: "cyan",
-    title: "How matters as much as what",
-    body: "Two people in the same job can have completely different experiences. These next questions capture how you actually want to work — not just what you can do.",
+    audioId: KAI_SECTION_ENCOURAGEMENTS[2].audioId,
+    title: "Did you know?",
+    body: "Only 6% of Gen Z say reaching senior leadership is their top career goal. Learning, balance, and purpose are becoming serious career priorities.",
+    source: "Deloitte Middle East Gen Z Study 2025",
     ctaLabel: "Makes sense",
   },
   {
-    key: "after-40",
+    key: "after-30-career-changes",
+    triggerAfterIndex: 29,
+    illustration: DualWaysScene,
+    glow: "cyan",
+    audioId: KAI_SECTION_ENCOURAGEMENTS[2].audioId,
+    title: "Did you know?",
+    body: "The average person changes careers several times in their lifetime. Choosing your first path does not lock you in forever.",
+    source: "Bureau of Labor Statistics",
+    ctaLabel: "Makes sense",
+  },
+  {
+    key: "after-30-soft-skills",
+    triggerAfterIndex: 29,
+    illustration: DualWaysScene,
+    glow: "cyan",
+    audioId: KAI_SECTION_ENCOURAGEMENTS[2].audioId,
+    title: "Did you know?",
+    body: "Many Gen Z and Millennial workers say soft skills matter more in the age of AI. Being human is still a competitive advantage.",
+    source: "Deloitte Global Gen Z Survey 2025",
+    ctaLabel: "Makes sense",
+  },
+  {
+    key: "after-40-future-jobs",
     triggerAfterIndex: 39,
     illustration: PeakReachedScene,
     glow: "coral",
-    title: "Almost at your Compass",
-    body: "The last few questions sharpen your environment fit — the difference between a job you tolerate and a path you actually want to walk.",
+    audioId: KAI_SECTION_ENCOURAGEMENTS[3].audioId,
+    title: "Did you know?",
+    body: "By 2030, millions of jobs will be displaced, but even more new roles are expected to emerge. Change creates risk, but it also creates openings.",
+    source: "World Economic Forum Future of Jobs Report",
     ctaLabel: "Finish strong",
   },
 ];
@@ -80,9 +155,15 @@ export const INTERSTITIALS: ReadonlyArray<Interstitial> = [
 export function findInterstitialFor(
   questionIndex: number,
 ): Interstitial | null {
-  return (
-    INTERSTITIALS.find((i) => i.triggerAfterIndex === questionIndex) ?? null
+  const candidates = INTERSTITIALS.filter(
+    (i) => i.triggerAfterIndex === questionIndex,
   );
+  if (candidates.length === 0) return null;
+
+  const seen = readSeen();
+  const unseen = candidates.filter((candidate) => !seen.has(candidate.key));
+  const pool = unseen.length > 0 ? unseen : candidates;
+  return pool[Math.floor(Math.random() * pool.length)] ?? null;
 }
 
 // ---------- Persistence helpers ----------

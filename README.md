@@ -23,21 +23,38 @@ Phase 1 does not need live keys. When they are needed:
 
 - `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` are browser-safe.
 - `SUPABASE_SERVICE_ROLE_KEY` is server-only.
-- `GEMINI_API_KEY`, Google Cloud OAuth credentials, or local TTS model assets are only for audio baking and must never reach client code.
+- `GEMINI_API_KEY`, `ELEVENLABS_API_KEY`, Google Cloud OAuth credentials, or local TTS model assets are only for audio baking and must never reach client code.
 
 ## Audio Baking
 
-Tareeq pre-generates local narration. The browser only plays files from
-`public/audio`; TTS credentials and local model runtimes never reach client code.
+Tareeq pre-generates local narration from `lib/content/seed.ts`. The browser
+only plays files from `public/audio`; TTS credentials and local model runtimes
+never reach client code.
 
 ```bash
 GEMINI_API_KEY=... pnpm audio:bake
 ```
 
 This writes `public/audio/<questionId>.wav` for the Gemini API key path, such as
-`public/audio/Q1.wav`. The prototype also supports existing `.mp3` files.
-Use `pnpm audio:bake:dry` to inspect the bake list without calling Google Cloud, and
-`pnpm audio:bake:force` after question text changes.
+`public/audio/Q1.wav`. Use `pnpm audio:bake:dry` to inspect the full app bake
+list without calling a provider, and `pnpm audio:bake:force` after question text
+changes.
+
+For ElevenLabs / ElevenStudio narration, put your key in `.env.local` as
+`ELEVENLABS_API_KEY`. Kai uses the Matilda voice by default
+(`XrExE9yKIg1WjnnlVkGX`) with stability `0.4`, similarity boost `0.75`, style
+`0.3`, and speed `0.95`. Then bake MP3 files:
+
+```bash
+pnpm audio:bake:elevenlabs
+```
+
+This writes `public/audio/<questionId>.mp3`, which is the format the assessment
+question screens request.
+
+Question screens can also request speech through the server-only
+`/api/kai-tts/<audioId>` route. That route keeps the ElevenLabs credential out of
+the browser and uses the same Matilda settings above.
 
 For an Arabic-ready open-source path, use the prototype script directly with
 Coqui XTTS-v2 and a Nour reference voice WAV:

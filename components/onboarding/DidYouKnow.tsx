@@ -9,6 +9,17 @@ import { uiSounds } from "@/lib/audio/ui-sounds";
 
 interface DidYouKnowProps {
   interstitial: Interstitial;
+  audioState?:
+    | "idle"
+    | "loading"
+    | "playing"
+    | "muted"
+    | "locked"
+    | "unavailable";
+  mouthOpen?: number;
+  soundOn?: boolean;
+  onReplay?(): void;
+  onToggleSound?(): void;
   onDismiss(): void;
 }
 
@@ -28,7 +39,15 @@ interface DidYouKnowProps {
  * chrome's stacking context (`isolation: isolate` + `overflow: hidden`).
  * Tapping the backdrop dismisses, same as the CTA.
  */
-export function DidYouKnow({ interstitial, onDismiss }: DidYouKnowProps) {
+export function DidYouKnow({
+  interstitial,
+  audioState = "idle",
+  mouthOpen = 0,
+  soundOn = true,
+  onReplay,
+  onToggleSound,
+  onDismiss,
+}: DidYouKnowProps) {
   const Illustration = interstitial.illustration;
   const titleId = useId();
   const bodyId = useId();
@@ -126,13 +145,94 @@ export function DidYouKnow({ interstitial, onDismiss }: DidYouKnowProps) {
               <KaiAuraV2 size="100%" />
             </div>
             <div className="relative">
-              <Kai mood="encouraging" size={44} />
+              <Kai mood="encouraging" mouthOpen={mouthOpen} size={44} />
             </div>
           </div>
           <span className="chip chip--violet-on-dark">
             <span className="size-1.5 rounded-full bg-gold" />
             Kai · did you know?
           </span>
+          {onToggleSound ? (
+            <button
+              type="button"
+              onClick={onToggleSound}
+              className="glass-tile inline-flex size-8 items-center justify-center rounded-full text-sand/80 transition hover:text-sand"
+              aria-label={soundOn ? "Mute narration" : "Unmute narration"}
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden
+              >
+                <path
+                  d="M4 9.5 H7.5 L12 6 V18 L7.5 14.5 H4 Z"
+                  fill="currentColor"
+                  fillOpacity="0.12"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                />
+                {soundOn ? (
+                  <path
+                    d="M15 9.5 a3.8 3.8 0 0 1 0 5"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                    strokeLinecap="round"
+                  />
+                ) : (
+                  <path
+                    d="M15.5 9.5 L20.5 14.5 M20.5 9.5 L15.5 14.5"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                    strokeLinecap="round"
+                  />
+                )}
+              </svg>
+            </button>
+          ) : null}
+          {onReplay ? (
+            <button
+              type="button"
+              onClick={onReplay}
+              disabled={!soundOn}
+              className={[
+                "inline-flex h-8 items-center justify-center rounded-full transition active:scale-95 disabled:opacity-40",
+                audioState === "locked"
+                  ? "bg-gold-gradient px-3 text-[11px] font-semibold text-carbon shadow-gold-glow"
+                  : "glass-tile size-8 text-sand/75 hover:text-sand",
+              ].join(" ")}
+              aria-label={
+                audioState === "locked" ? "Start Kai voice" : "Replay narration"
+              }
+            >
+              {audioState === "locked" ? (
+                "Start voice"
+              ) : (
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden
+                >
+                  <path
+                    d="M17.5 7.1 C15.9 5.8 13.9 5 11.8 5 C7.5 5 4 8.5 4 12.8 C4 17.1 7.5 20.6 11.8 20.6 C15.5 20.6 18.6 18 19.4 14.6"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M18.2 3.8 V7.8 H14.2"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              )}
+            </button>
+          ) : null}
         </div>
 
         {/* Illustration on a glass plate */}
@@ -184,6 +284,14 @@ export function DidYouKnow({ interstitial, onDismiss }: DidYouKnowProps) {
           >
             {interstitial.body}
           </p>
+          {interstitial.source ? (
+            <p
+              className="anim-option-in text-[11px] font-semibold uppercase tracking-[0.14em] text-sand/38"
+              style={{ animationDelay: "360ms" }}
+            >
+              Source: {interstitial.source}
+            </p>
+          ) : null}
         </div>
 
         {/* CTA */}

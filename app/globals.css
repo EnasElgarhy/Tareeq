@@ -9,9 +9,9 @@
 :root {
   /* Night — primary product surfaces (Orbit-inspired near-black base
      with a soft violet glow only at the top) */
-  --night: #08051a;       /* deepest near-black with hint of violet */
-  --midnight: #100a24;    /* mid-dark, used as the gradient core */
-  --dusk: #221248;        /* the violet bloom at the top */
+  --night: #08051a; /* deepest near-black with hint of violet */
+  --midnight: #100a24; /* mid-dark, used as the gradient core */
+  --dusk: #221248; /* the violet bloom at the top */
 
   /* Violet — primary brand */
   --violet: #6e48e4;
@@ -55,12 +55,7 @@
   --violet-gradient: linear-gradient(135deg, #6e48e4 0%, #9d7ff0 100%);
   /* Warm sweep — pink → red-orange → gold. The primary accent for
      headline highlights and the main CTA button. */
-  --grad-warm: linear-gradient(
-    95deg,
-    #ff3d83 0%,
-    #ff6b3d 55%,
-    #ffa53d 100%
-  );
+  --grad-warm: linear-gradient(95deg, #ff3d83 0%, #ff6b3d 55%, #ffa53d 100%);
 
   /* Spacing */
   --space-1: 4px;
@@ -87,18 +82,18 @@
   /* Shadows */
   --ring-dark-sm: inset 0 0 0 1px rgba(245, 238, 230, 0.08);
   --ring-dark-md: inset 0 0 0 1px rgba(245, 238, 230, 0.14);
-  --shadow-sand-sm: 0 1px 2px rgba(20, 16, 31, 0.04),
-    0 1px 3px rgba(20, 16, 31, 0.06);
-  --shadow-sand-md: 0 8px 24px rgba(20, 16, 31, 0.06),
-    0 2px 8px rgba(20, 16, 31, 0.04);
-  --shadow-sand-lg: 0 24px 48px rgba(20, 16, 31, 0.08),
-    0 8px 16px rgba(20, 16, 31, 0.05);
-  --shadow-gold-glow: 0 12px 28px rgba(244, 198, 96, 0.35),
-    0 4px 10px rgba(244, 198, 96, 0.15);
-  --shadow-violet-glow: 0 12px 28px rgba(110, 72, 228, 0.35),
-    0 4px 10px rgba(110, 72, 228, 0.15);
-  --shadow-warm-glow: 0 14px 32px rgba(255, 61, 131, 0.38),
-    0 6px 14px rgba(255, 107, 61, 0.22);
+  --shadow-sand-sm:
+    0 1px 2px rgba(20, 16, 31, 0.04), 0 1px 3px rgba(20, 16, 31, 0.06);
+  --shadow-sand-md:
+    0 8px 24px rgba(20, 16, 31, 0.06), 0 2px 8px rgba(20, 16, 31, 0.04);
+  --shadow-sand-lg:
+    0 24px 48px rgba(20, 16, 31, 0.08), 0 8px 16px rgba(20, 16, 31, 0.05);
+  --shadow-gold-glow:
+    0 12px 28px rgba(244, 198, 96, 0.35), 0 4px 10px rgba(244, 198, 96, 0.15);
+  --shadow-violet-glow:
+    0 12px 28px rgba(110, 72, 228, 0.35), 0 4px 10px rgba(110, 72, 228, 0.15);
+  --shadow-warm-glow:
+    0 14px 32px rgba(255, 61, 131, 0.38), 0 6px 14px rgba(255, 107, 61, 0.22);
 
   /* Motion */
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
@@ -110,12 +105,13 @@
   --duration-reveal: 480ms;
 
   /* Font stacks (overridden by next/font CSS vars in <html>) */
-  --font-sans: var(--font-jakarta), system-ui, -apple-system, "Segoe UI", Roboto,
+  --font-sans:
+    var(--font-jakarta), system-ui, -apple-system, "Segoe UI", Roboto,
     sans-serif;
-  --font-arabic-stack: var(--font-arabic), "SF Arabic", "Segoe UI Arabic",
-    Tahoma, sans-serif;
-  --font-question-stack: var(--font-question), Georgia, "Times New Roman",
-    serif;
+  --font-arabic-stack:
+    var(--font-arabic), "SF Arabic", "Segoe UI Arabic", Tahoma, sans-serif;
+  --font-question-stack:
+    var(--font-question), Georgia, "Times New Roman", serif;
   --font-display: var(--font-display-italic), Georgia, "Times New Roman", serif;
 }
 
@@ -185,7 +181,9 @@ button {
   font-size: clamp(1.875rem, 1.1rem + 4.2vw, 3.5rem);
   line-height: 1;
   letter-spacing: -0.022em;
-  font-variation-settings: "SOFT" 100, "opsz" 144;
+  font-variation-settings:
+    "SOFT" 100,
+    "opsz" 144;
 }
 .text-display-2 {
   font-family: var(--font-display);
@@ -194,7 +192,9 @@ button {
   font-size: clamp(1.625rem, 1rem + 2.8vw, 2.5rem);
   line-height: 1.04;
   letter-spacing: -0.018em;
-  font-variation-settings: "SOFT" 100, "opsz" 144;
+  font-variation-settings:
+    "SOFT" 100,
+    "opsz" 144;
 }
 .text-display-3 {
   font-family: var(--font-display);
@@ -203,7 +203,9 @@ button {
   font-size: clamp(1.5rem, 1rem + 2vw, 2rem);
   line-height: 1.1;
   letter-spacing: -0.015em;
-  font-variation-settings: "SOFT" 60, "opsz" 96;
+  font-variation-settings:
+    "SOFT" 60,
+    "opsz" 96;
 }
 .text-h3 {
   font: 600 18px/26px var(--font-sans);
@@ -310,14 +312,15 @@ button {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(
+  background:
+    radial-gradient(
       60% 50% at 80% 0%,
       rgba(110, 72, 228, 0.07),
       transparent 60%
     ),
     radial-gradient(
       50% 40% at 15% 100%,
-      rgba(244, 198, 96, 0.10),
+      rgba(244, 198, 96, 0.1),
       transparent 65%
     );
   pointer-events: none;
@@ -327,19 +330,67 @@ button {
 .bg-night-stars {
   background-image:
     /* Violet-tinted dust — primary specks (Orbit-style) */
-    radial-gradient(1.5px 1.5px at 12% 18%, rgba(157, 127, 240, 0.55), transparent 2px),
-    radial-gradient(1.5px 1.5px at 78% 24%, rgba(157, 127, 240, 0.45), transparent 2px),
-    radial-gradient(1px 1px at 42% 12%, rgba(157, 127, 240, 0.4), transparent 1.5px),
-    radial-gradient(1.5px 1.5px at 88% 52%, rgba(200, 182, 240, 0.5), transparent 2px),
-    radial-gradient(1px 1px at 8% 62%, rgba(157, 127, 240, 0.42), transparent 1.5px),
-    radial-gradient(1.5px 1.5px at 32% 78%, rgba(200, 182, 240, 0.55), transparent 2px),
-    radial-gradient(1px 1px at 68% 88%, rgba(157, 127, 240, 0.4), transparent 1.5px),
-    radial-gradient(1.5px 1.5px at 92% 92%, rgba(200, 182, 240, 0.45), transparent 2px),
-    radial-gradient(1px 1px at 22% 42%, rgba(157, 127, 240, 0.32), transparent 1.5px),
-    radial-gradient(1px 1px at 58% 58%, rgba(200, 182, 240, 0.35), transparent 1.5px),
+    radial-gradient(
+      1.5px 1.5px at 12% 18%,
+      rgba(157, 127, 240, 0.55),
+      transparent 2px
+    ),
+    radial-gradient(
+      1.5px 1.5px at 78% 24%,
+      rgba(157, 127, 240, 0.45),
+      transparent 2px
+    ),
+    radial-gradient(
+      1px 1px at 42% 12%,
+      rgba(157, 127, 240, 0.4),
+      transparent 1.5px
+    ),
+    radial-gradient(
+      1.5px 1.5px at 88% 52%,
+      rgba(200, 182, 240, 0.5),
+      transparent 2px
+    ),
+    radial-gradient(
+      1px 1px at 8% 62%,
+      rgba(157, 127, 240, 0.42),
+      transparent 1.5px
+    ),
+    radial-gradient(
+      1.5px 1.5px at 32% 78%,
+      rgba(200, 182, 240, 0.55),
+      transparent 2px
+    ),
+    radial-gradient(
+      1px 1px at 68% 88%,
+      rgba(157, 127, 240, 0.4),
+      transparent 1.5px
+    ),
+    radial-gradient(
+      1.5px 1.5px at 92% 92%,
+      rgba(200, 182, 240, 0.45),
+      transparent 2px
+    ),
+    radial-gradient(
+      1px 1px at 22% 42%,
+      rgba(157, 127, 240, 0.32),
+      transparent 1.5px
+    ),
+    radial-gradient(
+      1px 1px at 58% 58%,
+      rgba(200, 182, 240, 0.35),
+      transparent 1.5px
+    ),
     /* A few warm cream highlights for atmosphere */
-    radial-gradient(1px 1px at 50% 30%, rgba(245, 238, 230, 0.35), transparent 1.5px),
-    radial-gradient(1px 1px at 18% 96%, rgba(245, 238, 230, 0.4), transparent 1.5px);
+    radial-gradient(
+        1px 1px at 50% 30%,
+        rgba(245, 238, 230, 0.35),
+        transparent 1.5px
+      ),
+    radial-gradient(
+      1px 1px at 18% 96%,
+      rgba(245, 238, 230, 0.4),
+      transparent 1.5px
+    );
 }
 
 /* ============================================================
@@ -438,12 +489,11 @@ button {
  * the night surface. */
 .card-night,
 .glass-card {
-  background:
-    linear-gradient(
-      180deg,
-      rgba(245, 238, 230, 0.10) 0%,
-      rgba(245, 238, 230, 0.04) 100%
-    );
+  background: linear-gradient(
+    180deg,
+    rgba(245, 238, 230, 0.1) 0%,
+    rgba(245, 238, 230, 0.04) 100%
+  );
   border: 1px solid rgba(245, 238, 230, 0.14);
   border-radius: var(--radius-xl);
   padding: 20px;
@@ -459,12 +509,11 @@ button {
     transform var(--duration-fast) var(--ease-standard);
 }
 .glass-card:hover {
-  background:
-    linear-gradient(
-      180deg,
-      rgba(245, 238, 230, 0.14) 0%,
-      rgba(245, 238, 230, 0.06) 100%
-    );
+  background: linear-gradient(
+    180deg,
+    rgba(245, 238, 230, 0.14) 0%,
+    rgba(245, 238, 230, 0.06) 100%
+  );
   border-color: rgba(245, 238, 230, 0.22);
   box-shadow:
     inset 0 1px 0 rgba(245, 238, 230, 0.22),
@@ -473,12 +522,11 @@ button {
 
 /* Smaller glass surface — chips, station nodes, audio buttons */
 .glass-tile {
-  background:
-    linear-gradient(
-      180deg,
-      rgba(245, 238, 230, 0.14) 0%,
-      rgba(245, 238, 230, 0.06) 100%
-    );
+  background: linear-gradient(
+    180deg,
+    rgba(245, 238, 230, 0.14) 0%,
+    rgba(245, 238, 230, 0.06) 100%
+  );
   border: 1px solid rgba(245, 238, 230, 0.18);
   backdrop-filter: blur(12px) saturate(140%);
   -webkit-backdrop-filter: blur(12px) saturate(140%);
@@ -553,12 +601,11 @@ button {
   text-transform: uppercase;
 }
 .chip--violet-on-dark {
-  background:
-    linear-gradient(
-      180deg,
-      rgba(157, 127, 240, 0.22) 0%,
-      rgba(157, 127, 240, 0.10) 100%
-    );
+  background: linear-gradient(
+    180deg,
+    rgba(157, 127, 240, 0.22) 0%,
+    rgba(157, 127, 240, 0.1) 100%
+  );
   color: var(--violet-soft);
   backdrop-filter: blur(12px) saturate(140%);
   -webkit-backdrop-filter: blur(12px) saturate(140%);
@@ -624,7 +671,8 @@ button {
   }
 }
 @keyframes avatar-bob {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -752,7 +800,8 @@ button {
   }
 }
 @keyframes particle-drift-a {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0, 0);
     opacity: 0.45;
   }
@@ -762,7 +811,8 @@ button {
   }
 }
 @keyframes particle-drift-b {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0, 0);
     opacity: 0.5;
   }
@@ -772,7 +822,8 @@ button {
   }
 }
 @keyframes particle-drift-c {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0, 0);
     opacity: 0.4;
   }
@@ -782,10 +833,12 @@ button {
   }
 }
 @keyframes caret-blink {
-  0%, 60% {
+  0%,
+  60% {
     opacity: 1;
   }
-  61%, 100% {
+  61%,
+  100% {
     opacity: 0;
   }
 }
@@ -797,6 +850,66 @@ button {
   100% {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+@keyframes analysis-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes analysis-spin-back {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+@keyframes analysis-route-draw {
+  0% {
+    stroke-dashoffset: 360;
+    opacity: 0.25;
+  }
+  45% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0.35;
+  }
+}
+@keyframes analysis-scan {
+  0% {
+    transform: rotate(0deg);
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: rotate(360deg);
+    opacity: 0.3;
+  }
+}
+@keyframes analysis-signal {
+  0%,
+  100% {
+    transform: scale(0.72);
+    opacity: 0.28;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0.92;
+  }
+}
+@keyframes analysis-progress-sheen {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+@keyframes result-compass-drift {
+  to {
+    transform: rotate(360deg);
   }
 }
 
@@ -860,8 +973,12 @@ button {
   }
 }
 @keyframes backdrop-fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 .anim-sheet-up {
   animation: sheet-up 380ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
@@ -891,6 +1008,85 @@ button {
 .anim-fade-up {
   animation: fade-up 700ms var(--ease-emphasis) both;
 }
+.analysis-grid {
+  background-image:
+    linear-gradient(rgba(245, 238, 230, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 238, 230, 0.06) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(circle at center, #000 40%, transparent 72%);
+}
+.analysis-spin-slow {
+  animation: analysis-spin 18s linear infinite;
+}
+.analysis-spin-reverse {
+  animation: analysis-spin-back 14s linear infinite;
+}
+.analysis-route {
+  stroke-dasharray: 360;
+  animation: analysis-route-draw 2.4s ease-in-out infinite alternate;
+}
+.analysis-scanline {
+  animation: analysis-scan 3.8s linear infinite;
+}
+.analysis-signal {
+  position: absolute;
+  z-index: 12;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-pill);
+  background: var(--gold);
+  box-shadow: 0 0 0 6px rgba(244, 198, 96, 0.12);
+  animation: analysis-signal 1.8s ease-in-out infinite;
+}
+.analysis-signal--one {
+  top: 22%;
+  right: 20%;
+}
+.analysis-signal--two {
+  bottom: 20%;
+  right: 30%;
+  animation-delay: 420ms;
+}
+.analysis-signal--three {
+  left: 22%;
+  bottom: 34%;
+  background: var(--mint);
+  box-shadow: 0 0 0 6px rgba(111, 224, 192, 0.12);
+  animation-delay: 820ms;
+}
+.analysis-progress {
+  background-size: 200% 100%;
+  animation: analysis-progress-sheen 1.4s linear infinite;
+  transition: width 460ms var(--ease-emphasis);
+}
+.analysis-step {
+  transition:
+    border-color 220ms var(--ease-standard),
+    background-color 220ms var(--ease-standard),
+    transform 220ms var(--ease-standard);
+}
+.analysis-step:has(.animate-spin) {
+  transform: translateX(2px);
+}
+.result-hero {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--result-accent) 54%, var(--night)) 0%,
+    rgba(16, 10, 36, 0.96) 56%,
+    rgba(8, 5, 26, 0.98) 100%
+  );
+}
+.result-hero-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: linear-gradient(180deg, #000, transparent 92%);
+}
+.result-compass-spin {
+  animation: result-compass-drift 28s linear infinite;
+  transform-origin: center;
+}
 
 /* RTL helpers */
 [dir="rtl"] .flip-rtl {
@@ -919,7 +1115,14 @@ button {
   .anim-particle-a,
   .anim-particle-b,
   .anim-particle-c,
-  .anim-caret-blink {
+  .anim-caret-blink,
+  .analysis-spin-slow,
+  .analysis-spin-reverse,
+  .analysis-route,
+  .analysis-scanline,
+  .analysis-signal,
+  .analysis-progress,
+  .result-compass-spin {
     animation: none !important;
   }
 }

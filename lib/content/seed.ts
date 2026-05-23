@@ -549,7 +549,7 @@ export const seedQuestions = [
         text: {
           en: '"New app lets anyone design their own virtual world without coding."',
         },
-        clusterCode: "TECH",
+        clusterCode: "ART",
       },
     ],
   },
@@ -877,7 +877,7 @@ export const seedQuestions = [
         text: {
           en: "Speaking any language fluently, with deep cultural understanding.",
         },
-        clusterCode: "PPL",
+        clusterCode: "LAW",
       },
       {
         letter: "C",

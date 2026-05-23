@@ -37,6 +37,14 @@ export GEMINI_API_KEY=...
 python3 bake_audio.py
 ```
 
+ElevenLabs / ElevenStudio key path:
+
+```bash
+export ELEVENLABS_API_KEY=...
+export ELEVENLABS_VOICE_ID=... # optional, but recommended
+python3 bake_audio.py --provider elevenlabs
+```
+
 Google Cloud Text-to-Speech OAuth path:
 
 ```bash
@@ -75,9 +83,11 @@ you pass `--force`.
 
 | Flag | Default | What it does |
 | --- | --- | --- |
-| `--provider auto` | `auto` | Uses Coqui XTTS-v2 when `NOUR_SPEAKER_WAV` is set, then `GEMINI_API_KEY`, otherwise Cloud TTS OAuth. |
+| `--provider auto` | `auto` | Uses Coqui XTTS-v2 when `NOUR_SPEAKER_WAV` is set, then `ELEVENLABS_API_KEY`, then `GEMINI_API_KEY`, otherwise Cloud TTS OAuth. |
+| `--provider elevenlabs` / `elevenstudio` | off | Uses ElevenLabs text-to-speech and writes MP3 files. Requires `ELEVENLABS_API_KEY`; set `ELEVENLABS_VOICE_ID` for a specific workspace voice. |
 | `--provider coqui` / `xtts` | off | Uses local Coqui XTTS-v2 from the GitHub `dev` branch; supports English and Arabic with a reference voice. |
 | `--voice Kore` | `Kore` | Gemini/Cloud prebuilt voice, such as `Kore` or `Charon`. |
+| `--elevenlabs-voice-id` | Matilda | ElevenLabs voice id. Defaults to `ELEVENLABS_VOICE_ID` or Kai's approved Matilda voice (`XrExE9yKIg1WjnnlVkGX`). |
 | `--speaker-wav` | `NOUR_SPEAKER_WAV` or `assets/voice/nour_warm_reference.wav` | Reference WAV for XTTS voice cloning; controls the warm human accent. |
 | `--model` | provider-specific | TTS model to use. |
 | `--locale en/ar` | unset | Content locale; helps choose provider language. |

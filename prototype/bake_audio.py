@@ -23,6 +23,7 @@ import subprocess
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 import wave
 from pathlib import Path
@@ -46,6 +47,16 @@ DEFAULT_CLOUD_MODEL = "gemini-2.5-flash-tts"
 DEFAULT_GEMINI_API_MODEL = "gemini-2.5-flash-preview-tts"
 DEFAULT_XTTS_MODEL = "tts_models/multilingual/multi-dataset/xtts_v2"
 DEFAULT_XTTS_SPEAKER_WAV = Path("assets/voice/nour_warm_reference.wav")
+DEFAULT_ELEVENLABS_MODEL = "eleven_multilingual_v2"
+DEFAULT_ELEVENLABS_OUTPUT_FORMAT = "mp3_44100_128"
+# Matilda is the approved Kai TTS voice.
+DEFAULT_ELEVENLABS_VOICE_ID = "XrExE9yKIg1WjnnlVkGX"
+DEFAULT_ELEVENLABS_VOICE_SETTINGS = {
+    "stability": 0.4,
+    "similarity_boost": 0.75,
+    "style": 0.3,
+    "speed": 0.95,
+}
 XTTS_LANGUAGES = {
     "ar", "en", "es", "fr", "de", "it", "pt", "pl", "tr", "ru", "nl",
     "cs", "zh-cn", "ja", "hu", "ko", "hi",
@@ -61,7 +72,7 @@ KNOWN_VOICES = [
 ]
 
 DEFAULT_PROMPT = (
-    "You are Nour, a warm career-discovery guide for youth in the Middle East "
+    "You are Kai, a warm career-discovery guide for youth in the Middle East "
     "and North Africa. Read the line in clear, friendly English with a calm "
     "coach-like tone. Keep the pace natural and easy for English learners."
 )
@@ -80,7 +91,7 @@ QUESTION_PATTERN = re.compile(
 
 EXTRA_LINES = [
     ("kai_intro",
-     "Hey, I'm Nour. Think of me as a filter for all the noise. "
+     "Hey, I'm Kai. Think of me as a filter for all the noise. "
      "There are no wrong answers here - just pick what you would actually do, "
      "or the closest thing to it."),
     ("kai_results",
@@ -89,6 +100,20 @@ EXTRA_LINES = [
 ]
 
 _XTTS_CACHE = {}
+
+
+def load_env_file(path: Path) -> None:
+    if not path.exists():
+        return
+    for raw_line in path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key = key.strip()
+        value = value.strip().strip('"').strip("'")
+        if key and key not in os.environ:
+            os.environ[key] = value
 
 
 def js_string_unescape(s: str) -> str:
@@ -111,8 +136,75 @@ def extract_questions(html_path: Path):
             continue
         seen.add(qid)
         out.append((qid, js_string_unescape(raw)))
-    out.extend(EXTRA_LINES)
-    return out
+    return with_extra_lines(out)
+
+
+def with_extra_lines(questions):
+    seen = {qid for qid, _ in questions}
+    return questions + [line for line in EXTRA_LINES if line[0] not in seen]
+
+
+def normalize_manifest_rows(rows, source_label: str):
+    out = []
+    seen = set()
+    for row in rows:
+        if not isinstance(row, dict):
+            raise RuntimeError(f"{source_label} contains a non-object row")
+        qid = str(row.get("id", "")).strip()
+        text = str(row.get("text", "")).strip()
+        if not qid or not text:
+            raise RuntimeError(
+                f"{source_label} rows must include non-empty id and text fields"
+            )
+        if qid in seen:
+            continue
+        seen.add(qid)
+        out.append((qid, text))
+    return with_extra_lines(out)
+
+
+def extract_manifest(manifest_path: Path):
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if not isinstance(payload, list):
+        raise RuntimeError(f"{manifest_path} must be a JSON array")
+    return normalize_manifest_rows(payload, str(manifest_path))
+
+
+def extract_seed_questions(locale: Optional[str]):
+    root_dir = Path(__file__).resolve().parent.parent
+    exporter = root_dir / "scripts" / "export_audio_manifest.ts"
+    if not exporter.exists():
+        raise RuntimeError(f"seed manifest exporter not found: {exporter}")
+
+    cmd = ["pnpm", "exec", "tsx", str(exporter)]
+    if locale:
+        cmd.append(f"--locale={locale}")
+
+    try:
+        proc = subprocess.run(
+            cmd,
+            cwd=root_dir,
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+    except FileNotFoundError as exc:
+        raise RuntimeError(
+            "pnpm is required to export audio from lib/content/seed.ts"
+        ) from exc
+    except subprocess.TimeoutExpired as exc:
+        raise RuntimeError("seed audio manifest export timed out") from exc
+    except subprocess.CalledProcessError as exc:
+        detail = (exc.stderr or exc.stdout or "").strip()
+        raise RuntimeError(
+            f"seed audio manifest export failed: {detail}"
+        ) from exc
+
+    payload = json.loads(proc.stdout)
+    if not isinstance(payload, list):
+        raise RuntimeError("seed audio manifest exporter returned non-array JSON")
+    return normalize_manifest_rows(payload, "seed audio manifest")
 
 
 def endpoint_for_location(location: str) -> str:
@@ -240,6 +332,42 @@ def call_gemini_api_tts(*, api_key: str, text: str, prompt: str, voice: str,
     write_wave(out_path, base64.b64decode(audio_b64))
 
 
+def call_elevenlabs_tts(*, api_key: str, text: str, voice_id: str, model: str,
+                        output_format: str, language_code: Optional[str],
+                        out_path: Path, timeout: int = 90) -> None:
+    body = {
+        "text": text,
+        "model_id": model,
+        "voice_settings": DEFAULT_ELEVENLABS_VOICE_SETTINGS,
+    }
+    language = (language_code or "").strip().replace("_", "-").lower()
+    if language:
+        body["language_code"] = language.split("-", 1)[0]
+
+    query = urllib.parse.urlencode({"output_format": output_format})
+    url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}?{query}"
+    req = urllib.request.Request(
+        url,
+        data=json.dumps(body).encode("utf-8"),
+        headers={
+            "xi-api-key": api_key,
+            "Content-Type": "application/json",
+            "Accept": "audio/mpeg",
+        },
+        method="POST",
+    )
+
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        data = resp.read()
+
+    if not data:
+        raise RuntimeError("ElevenLabs response did not include audio bytes")
+
+    tmp = out_path.with_suffix(out_path.suffix + ".tmp")
+    tmp.write_bytes(data)
+    tmp.replace(out_path)
+
+
 def xtts_language_code(locale_or_language: str) -> str:
     code = (locale_or_language or "en").strip().replace("_", "-").lower()
     if code.startswith("zh"):
@@ -298,6 +426,15 @@ def call_xtts(*, text: str, speaker_wav: Path, model: str, language: str,
 
 
 def main(argv=None) -> int:
+    script_dir = Path(__file__).resolve().parent
+    for env_path in (
+        Path(".env.local"),
+        Path(".env"),
+        script_dir.parent / ".env.local",
+        script_dir.parent / ".env",
+    ):
+        load_env_file(env_path)
+
     p = argparse.ArgumentParser(
         description="Pre-bake narration files for the Tareeq assessment."
     )
@@ -309,24 +446,51 @@ def main(argv=None) -> int:
                    default=os.environ.get("GEMINI_API_KEY")
                    or os.environ.get("GOOGLE_API_KEY"),
                    help="Gemini API key. Defaults to GEMINI_API_KEY / GOOGLE_API_KEY.")
+    p.add_argument("--elevenlabs-api-key",
+                   default=os.environ.get("ELEVENLABS_API_KEY")
+                   or os.environ.get("ELEVEN_API_KEY"),
+                   help=("ElevenLabs API key. Defaults to ELEVENLABS_API_KEY "
+                         "/ ELEVEN_API_KEY. Never expose this to client code."))
     p.add_argument("--access-token",
                    default=os.environ.get("GOOGLE_OAUTH_ACCESS_TOKEN")
                    or os.environ.get("GOOGLE_ACCESS_TOKEN"),
                    help="OAuth access token. Defaults to env or gcloud ADC lookup.")
-    p.add_argument("--provider", choices=["auto", "gemini-api", "cloud-tts", "xtts", "coqui"],
+    p.add_argument("--provider",
+                   choices=["auto", "gemini-api", "cloud-tts", "elevenlabs",
+                            "elevenstudio", "xtts", "coqui"],
                    default="auto",
                    help=("TTS provider. auto uses local Coqui XTTS-v2 when "
-                         "NOUR_SPEAKER_WAV is set, then GEMINI_API_KEY, "
-                         "otherwise Cloud TTS OAuth. coqui is an alias for xtts."))
+                         "NOUR_SPEAKER_WAV is set, then ELEVENLABS_API_KEY, "
+                         "then GEMINI_API_KEY, otherwise Cloud TTS OAuth. "
+                         "coqui is an alias for xtts; elevenstudio is an "
+                         "alias for elevenlabs."))
     p.add_argument("--location",
                    default=os.environ.get("GOOGLE_CLOUD_REGION", "global"),
                    help="Cloud TTS location, e.g. global, eu, us. Default: global")
     p.add_argument("--html", default="index.html",
                    help="Path to the web app HTML. Default: index.html")
+    p.add_argument("--source", choices=["prototype", "seed"],
+                   default=os.environ.get("TAREEQ_AUDIO_SOURCE", "prototype"),
+                   help=("Narration text source. prototype reads --html; seed "
+                         "exports the Next app content from lib/content/seed.ts. "
+                         "Default: prototype"))
+    p.add_argument("--manifest", default=None,
+                   help=("Optional JSON manifest of {id, text} rows. When set, "
+                         "this overrides --source and --html."))
     p.add_argument("--out-dir", default="audio",
                    help="Directory to write MP3 files into. Default: audio/")
     p.add_argument("--voice", default="Kore",
                    help="Gemini-TTS prebuilt voice. Default: Kore")
+    p.add_argument("--elevenlabs-voice-id",
+                   default=os.environ.get("ELEVENLABS_VOICE_ID")
+                   or DEFAULT_ELEVENLABS_VOICE_ID,
+                   help=("ElevenLabs voice id. Defaults to ELEVENLABS_VOICE_ID "
+                         "or Kai's approved Matilda voice."))
+    p.add_argument("--elevenlabs-output-format",
+                   default=os.environ.get("ELEVENLABS_OUTPUT_FORMAT")
+                   or DEFAULT_ELEVENLABS_OUTPUT_FORMAT,
+                   help=("ElevenLabs output format. Default: "
+                         f"{DEFAULT_ELEVENLABS_OUTPUT_FORMAT}"))
     p.add_argument("--model", default=None,
                    help="TTS model. Defaults depend on provider.")
     p.add_argument("--locale", default=os.environ.get("TAREEQ_AUDIO_LOCALE"),
@@ -352,14 +516,25 @@ def main(argv=None) -> int:
     resolved_xtts_speaker_wav = resolve_xtts_speaker_wav(args.speaker_wav)
 
     provider = "xtts" if args.provider == "coqui" else args.provider
+    provider = "elevenlabs" if provider == "elevenstudio" else provider
     if provider == "auto":
-        provider = "xtts" if resolved_xtts_speaker_wav else ("gemini-api" if args.api_key else "cloud-tts")
+        provider = (
+            "xtts"
+            if resolved_xtts_speaker_wav else
+            "elevenlabs"
+            if args.elevenlabs_api_key else
+            "gemini-api"
+            if args.api_key else
+            "cloud-tts"
+        )
     if args.model:
         model = args.model
     elif provider == "gemini-api":
         model = DEFAULT_GEMINI_API_MODEL
     elif provider == "xtts":
         model = DEFAULT_XTTS_MODEL
+    elif provider == "elevenlabs":
+        model = os.environ.get("ELEVENLABS_MODEL_ID") or DEFAULT_ELEVENLABS_MODEL
     else:
         model = DEFAULT_CLOUD_MODEL
     output_ext = "wav" if provider in ("gemini-api", "xtts") else "mp3"
@@ -390,15 +565,27 @@ def main(argv=None) -> int:
             return 2
         speaker_wav = resolved_xtts_speaker_wav
 
-    html_path = Path(args.html)
-    if not html_path.exists():
-        sys.stderr.write(f"error: {html_path} not found\n")
+    try:
+        if args.manifest:
+            source_label = args.manifest
+            questions = extract_manifest(Path(args.manifest))
+        elif args.source == "seed":
+            source_label = "lib/content/seed.ts"
+            questions = extract_seed_questions(args.locale or args.language_code)
+        else:
+            html_path = Path(args.html)
+            source_label = str(html_path)
+            if not html_path.exists():
+                sys.stderr.write(f"error: {html_path} not found\n")
+                return 2
+            questions = extract_questions(html_path)
+    except (json.JSONDecodeError, RuntimeError) as exc:
+        sys.stderr.write(f"error: {exc}\n")
         return 2
 
-    questions = extract_questions(html_path)
     if not questions:
         sys.stderr.write(
-            f"error: no questions found in {html_path}; has the source format changed?\n"
+            f"error: no questions found in {source_label}; has the source format changed?\n"
         )
         return 1
 
@@ -407,6 +594,7 @@ def main(argv=None) -> int:
 
     total_chars = sum(len(t) for _, t in questions)
     print("tareeq - bake_audio")
+    print(f"  source      : {source_label}")
     print(f"  questions   : {len(questions)}")
     print(f"  characters  : {total_chars:,}")
     print(f"  provider    : {provider}")
@@ -414,6 +602,9 @@ def main(argv=None) -> int:
     if provider == "xtts":
         print(f"  speaker wav : {speaker_wav or '(missing)'}")
         print(f"  xtts lang   : {xtts_language}")
+    elif provider == "elevenlabs":
+        print(f"  voice id    : {args.elevenlabs_voice_id}")
+        print(f"  output fmt  : {args.elevenlabs_output_format}")
     else:
         print(f"  voice       : {args.voice}")
     print(f"  language    : {args.language_code}")
@@ -431,6 +622,18 @@ def main(argv=None) -> int:
         if provider == "gemini-api" and not args.api_key:
             sys.stderr.write(
                 "error: missing --api-key (or set GEMINI_API_KEY)\n"
+            )
+            return 2
+        if provider == "elevenlabs" and not args.elevenlabs_api_key:
+            sys.stderr.write(
+                "error: missing --elevenlabs-api-key "
+                "(or set ELEVENLABS_API_KEY)\n"
+            )
+            return 2
+        if provider == "elevenlabs" and not args.elevenlabs_voice_id:
+            sys.stderr.write(
+                "error: missing --elevenlabs-voice-id "
+                "(or set ELEVENLABS_VOICE_ID)\n"
             )
             return 2
         if provider == "cloud-tts" and not args.project_id:
@@ -484,6 +687,16 @@ def main(argv=None) -> int:
                     prompt=args.prompt,
                     voice=args.voice,
                     model=model,
+                    out_path=out_path,
+                )
+            elif provider == "elevenlabs":
+                call_elevenlabs_tts(
+                    api_key=args.elevenlabs_api_key,
+                    text=text,
+                    voice_id=args.elevenlabs_voice_id,
+                    model=model,
+                    output_format=args.elevenlabs_output_format,
+                    language_code=args.language_code,
                     out_path=out_path,
                 )
             elif provider == "cloud-tts":
