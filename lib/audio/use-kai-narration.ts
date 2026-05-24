@@ -241,19 +241,58 @@ export function useKaiNarration({
   }, [stopLipSync]);
 
   // Auto-play on mount once we know the gesture requirement.
-  // On touch devices we wait for an explicit click; on desktop we go.
+  //
+  //  · Desktop / non-touch: play immediately.
+  //  · Touch / mobile: still try to play immediately first — many
+  //    browsers (notably Safari 17+ in standalone PWA mode and
+  //    Chrome on Android with high engagement score) will allow it.
+  //    If the browser blocks it, we install one-shot listeners on
+  //    `document` for the first ANY interaction (pointerdown,
+  //    touchstart, keydown, click, scroll). The user does not need
+  //    to find the Start-voice button — the very first time their
+  //    finger touches the screen, the voice begins.
   const autoPlayRef = useRef(false);
   useEffect(() => {
     if (!autoPlay) return;
     if (autoPlayRef.current) return;
     if (!soundOn) return;
-    if (voiceRequiresGesture && !voiceUnlocked) {
-      setAudioState("locked");
-      return;
-    }
+
     autoPlayRef.current = true;
+
+    // Try optimistically. If the browser blocks, `play()` will set
+    // audioState to "locked" via its catch path on failure, OR more
+    // commonly the browser silently rejects — we cover both cases
+    // by also arming the gesture listener below regardless.
     void play();
-  }, [autoPlay, play, soundOn, voiceRequiresGesture, voiceUnlocked]);
+
+    // Always arm a one-shot first-interaction listener so the second
+    // a touch / scroll / key happens anywhere on the page, narration
+    // starts without the user having to tap the explicit button.
+    if (!voiceRequiresGesture) return;
+
+    let fired = false;
+    const trigger = () => {
+      if (fired) return;
+      fired = true;
+      cleanup();
+      void play(true);
+    };
+    const opts = { capture: true, passive: true } as const;
+    const events: Array<keyof DocumentEventMap> = [
+      "pointerdown",
+      "touchstart",
+      "click",
+      "keydown",
+      "scroll",
+    ];
+    events.forEach((evt) => document.addEventListener(evt, trigger, opts));
+    function cleanup() {
+      events.forEach((evt) =>
+        document.removeEventListener(evt, trigger, opts),
+      );
+    }
+    return cleanup;
+  }, [autoPlay, play, soundOn, voiceRequiresGesture]);
 
   // Cleanup on unmount
   useEffect(() => {
