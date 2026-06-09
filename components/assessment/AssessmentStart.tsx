@@ -4,7 +4,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Kai } from "@/components/brand/Kai";
 import { KaiAuraV2 } from "@/components/brand/KaiAuraV2";
-import { uiSounds } from "@/lib/audio/ui-sounds";
+import {
+  defaultVoiceOnForAssessmentStart,
+  uiSounds,
+} from "@/lib/audio/ui-sounds";
 import {
   answeredQuestionCount,
   createLocalAssessment,
@@ -65,6 +68,7 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
       return;
     }
 
+    defaultVoiceOnForAssessmentStart();
     uiSounds.advance();
     if (!readPlatformConsent()) writePlatformConsent();
     resetLocalAssessment();
@@ -73,6 +77,7 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
   }
 
   function resume() {
+    defaultVoiceOnForAssessmentStart();
     uiSounds.advance();
     setStartError("");
     router.push(

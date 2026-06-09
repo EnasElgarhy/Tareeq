@@ -41,9 +41,9 @@ list without calling a provider, and `pnpm audio:bake:force` after question text
 changes.
 
 For ElevenLabs / ElevenStudio narration, put your key in `.env.local` as
-`ELEVENLABS_API_KEY`. Kai uses the Matilda voice by default
-(`XrExE9yKIg1WjnnlVkGX`) with stability `0.4`, similarity boost `0.75`, style
-`0.3`, and speed `0.95`. Then bake MP3 files:
+`ELEVENLABS_API_KEY`. Kai uses the configured character voice by default
+(`ZF6FPAbjXT4488VcRRnw`) with stability `0.48`, similarity boost `0.84`, style
+`0.28`, and speed `1`. Then bake MP3 files:
 
 ```bash
 pnpm audio:bake:elevenlabs
@@ -54,7 +54,7 @@ question screens request.
 
 Question screens can also request speech through the server-only
 `/api/kai-tts/<audioId>` route. That route keeps the ElevenLabs credential out of
-the browser and uses the same Matilda settings above.
+the browser and uses the same Kai voice settings above.
 
 For an Arabic-ready open-source path, use the prototype script directly with
 Coqui XTTS-v2 and a Nour reference voice WAV:

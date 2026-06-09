@@ -484,14 +484,14 @@ export function buildFallbackReport({
       : "Your motivations look balanced, so context matters: judge opportunities by the team, mission, learning curve, and stability together.";
 
   const headline = isMultiCurious
-    ? "Your Compass points toward intersections"
-    : `Your Compass points toward ${cluster.name}`;
+    ? "Your curiosity compass points toward intersections"
+    : `Your answers point to high curiosity for ${cluster.name}`;
 
   const summary = isMultiCurious
     ? `${greeting} curiosities span ${multiCuriousClusters.join(
         ", ",
       )}. This is not confusion; it is a signal to explore intersections where multiple fields meet.`
-    : `${greeting} curiosities point toward ${cluster.essence}. This is a direction to explore, not a box to live inside.`;
+    : `${greeting} answers point to a high curiosity for ${cluster.essence}. This is a direction to explore, not a box to live inside.`;
 
   return {
     generatedAt: new Date().toISOString(),
@@ -508,16 +508,16 @@ export function buildFallbackReport({
     ecosystemFit,
     headline,
     summary,
-    academicPath: `If you are still in high school, prioritise ${cluster.subjects
+    academicPath: `Because these career families reward ${cluster.essence}, university programs worth exploring include ${cluster.majors
       .slice(0, 5)
       .join(
         ", ",
-      )}. If your school uses A-Levels, Tawjihi, IB, or another track, choose the version of those subjects that gives you the strongest foundation. At university, explore ${cluster.majors
-      .slice(0, 8)
+      )}. To keep those doors open in high school, prioritise ${cluster.subjects
+      .slice(0, 5)
       .join(
         ", ",
-      )}. These paths build the habits this territory asks for: evidence, practice, discipline, and the ability to turn interest into useful work.`,
-    careerLandscape: `Early paths can include ${cluster.careers
+      )}. If your school uses A-Levels, Tawjihi, IB, or another track, choose the version of those subjects that gives you the strongest foundation.`,
+    careerLandscape: `Your profile may thrive in career families such as ${cluster.careers
       .slice(0, 5)
       .join(
         ", ",
@@ -529,7 +529,9 @@ export function buildFallbackReport({
     integration: `Your operational style is ${result.archetype}. ${
       ARCHETYPE_COPY[result.archetype]
     } ${motivationSentence} Your strongest environment signal is ${ecosystemFit}; use that when judging schools, internships, teams, and first jobs.`,
-    realityCheck: `${cluster.realityCheck} Because ${driverName} is a strong reward driver for you, pay attention to whether a path actually provides that reward day to day, not just in the brochure.`,
+    realityCheck: `${cluster.realityCheck} Because ${driverName} is a strong reward driver for you, pay attention to whether a path actually provides that reward day to day, not just in the brochure. Before choosing, watch a few “day in the life” videos for ${cluster.careers
+      .slice(0, 2)
+      .join(" and ")} so you see the routine, not only the title.`,
     nextSteps: `This week: ${cluster.nextStep} This term: speak to one student, graduate, or working professional already close to this field. This year: build proof. A small project, portfolio piece, experiment, volunteer role, or shadowing day will teach you more than another hour of guessing.`,
     highSchoolSubjects: cluster.subjects,
     universityMajors: cluster.majors,

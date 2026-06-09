@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { computeKaiMouthLevel } from "@/lib/audio/lip-sync";
 
 /**
  * useKaiNarration — drop-in voice + lip-sync hook for any screen that
@@ -17,6 +18,15 @@ import { useCallback, useEffect, useRef, useState } from "react";
  */
 
 const FALLBACK_EXTENSIONS = ["m4a", "mp3"] as const;
+
+function getNarrationSrc(audioId: string, fallbackIndex: number) {
+  if (fallbackIndex === 0) {
+    return `/api/kai-tts/${encodeURIComponent(audioId)}`;
+  }
+
+  const ext = FALLBACK_EXTENSIONS[fallbackIndex - 1] ?? "mp3";
+  return `/audio/${audioId}.${ext}`;
+}
 
 export type KaiNarrationState =
   | "idle"
@@ -113,13 +123,17 @@ export function useKaiNarration({
     const context = audioContextRef.current;
     if (!audioSourceRef.current) {
       const analyser = context.createAnalyser();
-      analyser.fftSize = 512;
-      analyser.smoothingTimeConstant = 0.32;
-      const source = context.createMediaElementSource(audio);
-      source.connect(analyser);
-      analyser.connect(context.destination);
-      audioSourceRef.current = source;
-      analyserRef.current = analyser;
+      analyser.fftSize = 1024;
+      analyser.smoothingTimeConstant = 0.18;
+      try {
+        const source = context.createMediaElementSource(audio);
+        source.connect(analyser);
+        analyser.connect(context.destination);
+        audioSourceRef.current = source;
+        analyserRef.current = analyser;
+      } catch {
+        analyserRef.current = null;
+      }
     }
     return context;
   }, []);
@@ -133,17 +147,14 @@ export function useKaiNarration({
     const data = new Uint8Array(analyser.fftSize);
     const tick = () => {
       analyser.getByteTimeDomainData(data);
-      let sum = 0;
-      for (const value of data) {
-        const centered = (value - 128) / 128;
-        sum += centered * centered;
-      }
-      const rms = Math.sqrt(sum / data.length);
-      const rawLevel = Math.min(1, Math.max(0, (rms - 0.018) * 13));
-      const nextLevel = lipSyncLevelRef.current * 0.58 + rawLevel * 0.42;
+      const nextLevel = computeKaiMouthLevel(
+        data,
+        lipSyncLevelRef.current,
+        performance.now(),
+      );
       lipSyncLevelRef.current = nextLevel;
       setMouthOpen((current) =>
-        Math.abs(current - nextLevel) > 0.018 ? nextLevel : current,
+        Math.abs(current - nextLevel) > 0.012 ? nextLevel : current,
       );
       lipSyncFrameRef.current = window.requestAnimationFrame(tick);
     };
@@ -165,23 +176,27 @@ export function useKaiNarration({
       }
 
       try {
-        const ext = FALLBACK_EXTENSIONS[fallbackIdxRef.current] ?? "mp3";
-        if (!audio.src || !audio.src.includes(`${audioId}.${ext}`)) {
-          audio.src = `/audio/${audioId}.${ext}`;
+        const nextSrc = getNarrationSrc(audioId, fallbackIdxRef.current);
+        const needsSourceLoad =
+          !audio.getAttribute("src")?.endsWith(nextSrc) ||
+          audio.readyState === 0;
+        if (needsSourceLoad) {
+          audio.src = nextSrc;
           audio.load();
         }
         setAudioState("loading");
         const ctx = ensureLipSyncGraph(audio);
-        if (ctx && ctx.state === "suspended") {
-          await ctx.resume();
-        }
         audio.currentTime = 0;
-        await audio.play();
+        const playPromise = audio.play();
+        if (ctx && ctx.state === "suspended") {
+          void ctx.resume().catch(() => {});
+        }
+        await playPromise;
         setAudioState("playing");
         startLipSync();
       } catch {
-        // Try the other format once
-        if (fallbackIdxRef.current < FALLBACK_EXTENSIONS.length - 1) {
+        // Try local baked files if the live TTS route is unavailable.
+        if (fallbackIdxRef.current < FALLBACK_EXTENSIONS.length) {
           fallbackIdxRef.current += 1;
           await play(userGesture);
           return;
@@ -225,6 +240,11 @@ export function useKaiNarration({
       setAudioState((s) => (s === "playing" ? "idle" : s));
     };
     const handleError = () => {
+      if (fallbackIdxRef.current < FALLBACK_EXTENSIONS.length) {
+        fallbackIdxRef.current += 1;
+        void play(true);
+        return;
+      }
       setAudioState("unavailable");
       stopLipSync();
     };
@@ -238,7 +258,7 @@ export function useKaiNarration({
       audio.removeEventListener("error", handleError);
     };
     // audioRef.current is a ref — won't change between mounts
-  }, [stopLipSync]);
+  }, [play, stopLipSync]);
 
   // Auto-play on mount once we know the gesture requirement.
   //

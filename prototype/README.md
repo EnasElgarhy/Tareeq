@@ -87,7 +87,7 @@ you pass `--force`.
 | `--provider elevenlabs` / `elevenstudio` | off | Uses ElevenLabs text-to-speech and writes MP3 files. Requires `ELEVENLABS_API_KEY`; set `ELEVENLABS_VOICE_ID` for a specific workspace voice. |
 | `--provider coqui` / `xtts` | off | Uses local Coqui XTTS-v2 from the GitHub `dev` branch; supports English and Arabic with a reference voice. |
 | `--voice Kore` | `Kore` | Gemini/Cloud prebuilt voice, such as `Kore` or `Charon`. |
-| `--elevenlabs-voice-id` | Matilda | ElevenLabs voice id. Defaults to `ELEVENLABS_VOICE_ID` or Kai's approved Matilda voice (`XrExE9yKIg1WjnnlVkGX`). |
+| `--elevenlabs-voice-id` | Kai voice | ElevenLabs voice id. Defaults to `ELEVENLABS_VOICE_ID` or Kai's approved voice (`ZF6FPAbjXT4488VcRRnw`). |
 | `--speaker-wav` | `NOUR_SPEAKER_WAV` or `assets/voice/nour_warm_reference.wav` | Reference WAV for XTTS voice cloning; controls the warm human accent. |
 | `--model` | provider-specific | TTS model to use. |
 | `--locale en/ar` | unset | Content locale; helps choose provider language. |

@@ -25,6 +25,7 @@ type ToneOptions = {
 };
 
 let ctx: AudioContext | null = null;
+const SOUND_PREF_KEY = "tareeq:sound";
 
 function getCtx(): AudioContext | null {
   if (typeof window === "undefined") return null;
@@ -40,7 +41,12 @@ function getCtx(): AudioContext | null {
 
 function isSoundEnabled(): boolean {
   if (typeof window === "undefined") return false;
-  return window.localStorage.getItem("tareeq:sound") !== "off";
+  return window.localStorage.getItem(SOUND_PREF_KEY) !== "off";
+}
+
+export function defaultVoiceOnForAssessmentStart(): void {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(SOUND_PREF_KEY, "on");
 }
 
 function play(opts: ToneOptions): void {

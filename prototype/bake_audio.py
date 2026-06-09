@@ -49,13 +49,13 @@ DEFAULT_XTTS_MODEL = "tts_models/multilingual/multi-dataset/xtts_v2"
 DEFAULT_XTTS_SPEAKER_WAV = Path("assets/voice/nour_warm_reference.wav")
 DEFAULT_ELEVENLABS_MODEL = "eleven_multilingual_v2"
 DEFAULT_ELEVENLABS_OUTPUT_FORMAT = "mp3_44100_128"
-# Matilda is the approved Kai TTS voice.
-DEFAULT_ELEVENLABS_VOICE_ID = "XrExE9yKIg1WjnnlVkGX"
+# Kai's approved ElevenLabs TTS voice.
+DEFAULT_ELEVENLABS_VOICE_ID = "ZF6FPAbjXT4488VcRRnw"
 DEFAULT_ELEVENLABS_VOICE_SETTINGS = {
-    "stability": 0.4,
-    "similarity_boost": 0.75,
-    "style": 0.3,
-    "speed": 0.95,
+    "stability": 0.48,
+    "similarity_boost": 0.84,
+    "style": 0.28,
+    "speed": 1,
 }
 XTTS_LANGUAGES = {
     "ar", "en", "es", "fr", "de", "it", "pt", "pl", "tr", "ru", "nl",
@@ -485,7 +485,7 @@ def main(argv=None) -> int:
                    default=os.environ.get("ELEVENLABS_VOICE_ID")
                    or DEFAULT_ELEVENLABS_VOICE_ID,
                    help=("ElevenLabs voice id. Defaults to ELEVENLABS_VOICE_ID "
-                         "or Kai's approved Matilda voice."))
+                         "or Kai's approved ElevenLabs voice."))
     p.add_argument("--elevenlabs-output-format",
                    default=os.environ.get("ELEVENLABS_OUTPUT_FORMAT")
                    or DEFAULT_ELEVENLABS_OUTPUT_FORMAT,

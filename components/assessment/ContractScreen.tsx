@@ -11,7 +11,10 @@ import {
   PulseIcon,
   VibeIcon,
 } from "@/components/brand/ContractIcons";
-import { uiSounds } from "@/lib/audio/ui-sounds";
+import {
+  defaultVoiceOnForAssessmentStart,
+  uiSounds,
+} from "@/lib/audio/ui-sounds";
 import { getQuestionPath } from "@/lib/assessment/questions";
 
 interface ContractIconProps extends SVGProps<SVGSVGElement> {
@@ -81,6 +84,7 @@ export function ContractScreen() {
 
   function start() {
     if (!ctaReady) return;
+    defaultVoiceOnForAssessmentStart();
     uiSounds.advance();
     router.push(getQuestionPath(0));
   }

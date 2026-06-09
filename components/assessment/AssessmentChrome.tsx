@@ -12,7 +12,6 @@ import {
 } from "@/lib/assessment/questions";
 import {
   buildCompassSnapshot,
-  COMPASS_PILLARS,
   PILLAR_META,
   type CompassSnapshot,
 } from "@/lib/assessment/pillar-progress";
@@ -78,7 +77,13 @@ export function AssessmentChrome({
   const snapshot = useAnimatedSnapshot(rawSnapshot);
 
   return (
-    <main className="surface-night relative mx-auto flex h-dvh w-full max-w-[480px] flex-col gap-3 overflow-hidden px-5 pb-4 pt-[max(env(safe-area-inset-top),0.875rem)] text-sand">
+    <main
+      className={`surface-night relative mx-auto flex h-dvh w-full max-w-[480px] flex-col overflow-hidden px-5 text-sand ${
+        hasQuestion
+          ? "gap-2 pb-3 pt-[max(env(safe-area-inset-top),0.625rem)]"
+          : "gap-3 pb-4 pt-[max(env(safe-area-inset-top),0.875rem)]"
+      }`}
+    >
       <div className="absolute inset-0 bg-night-stars opacity-80 pointer-events-none" />
 
       {/* Header
@@ -91,7 +96,7 @@ export function AssessmentChrome({
       <header
         className={
           hasQuestion
-            ? "relative z-10 grid grid-cols-[2.25rem_minmax(0,1fr)] items-start gap-2"
+            ? "relative z-10 grid grid-cols-[2rem_minmax(0,1fr)] items-center gap-1.5"
             : "relative z-10 flex h-10 items-center justify-between gap-2"
         }
       >
@@ -99,8 +104,8 @@ export function AssessmentChrome({
           type="button"
           onClick={goBack}
           aria-label="Go back"
-          className={`glass-tile inline-flex size-9 shrink-0 items-center justify-center rounded-full text-sand transition hover:text-sand active:scale-95 ${
-            hasQuestion ? "mt-1" : ""
+          className={`glass-tile inline-flex shrink-0 items-center justify-center rounded-full text-sand transition hover:text-sand active:scale-95 ${
+            hasQuestion ? "size-8" : "size-9"
           }`}
         >
           <TareeqArrowLeft size={15} className="flip-rtl" />
@@ -186,71 +191,40 @@ function QuestionCompassPanel({
 
   return (
     <section
-      className="min-w-0 rounded-[20px] border border-sand/10 bg-sand/[0.075] px-2.5 py-2 shadow-[0_14px_34px_rgba(0,0,0,0.24)] backdrop-blur-md"
+      className="min-w-0 rounded-[18px] border border-sand/10 bg-sand/[0.07] px-2 py-1.5 shadow-[0_10px_24px_rgba(0,0,0,0.22)] backdrop-blur-md"
       aria-label="CORE compass progress"
       aria-live="polite"
     >
-      <div className="flex min-w-0 items-center gap-2.5">
-        <div className="shrink-0 rounded-full bg-night/35 p-1 shadow-inner shadow-black/20">
+      <div className="flex min-w-0 items-center gap-2">
+        <div className="grid size-12 shrink-0 place-items-center rounded-full border border-sand/10 bg-night/35 shadow-inner shadow-black/20">
           <CompassProgress
             snapshot={snapshot}
-            size={58}
+            size={42}
             layout="bare"
             surface="dark"
           />
         </div>
 
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-sand/45">
-              Compass
-            </p>
-            <p className="shrink-0 text-[11px] font-semibold tabular-nums text-sand/55">
+        <div className="min-w-0 flex-1 pr-1">
+          <div className="flex min-w-0 items-center justify-between gap-2">
+            <div className="min-w-0">
+              <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-sand/42">
+                Compass
+              </p>
+              <p className="truncate text-[13px] font-semibold leading-tight text-sand">
+                {activeMeta ? activeMeta.name : "About you"}
+              </p>
+            </div>
+            <p className="shrink-0 rounded-full border border-sand/10 bg-night/25 px-2 py-1 text-[10px] font-semibold tabular-nums text-sand/64">
               {String(questionIndex + 1).padStart(2, "0")} / {totalQuestions}
             </p>
           </div>
-
-          <p className="mt-0.5 truncate text-[15px] font-semibold leading-tight text-sand">
-            {activeMeta ? activeMeta.name : "About you"}
-          </p>
-          <p className="mt-0.5 truncate text-[11px] leading-snug text-sand/58">
-            {activeMeta ? activeMeta.blurb : "Setting your starting point"}
-          </p>
-
-          <div className="mt-1.5 grid grid-cols-4 gap-1">
-            {COMPASS_PILLARS.map((pillar) => {
-              const meta = PILLAR_META[pillar];
-              const value = snapshot.byPillar[pillar];
-              const percent = Math.round(value * 100);
-              const isActive = snapshot.activePillar === pillar;
-
-              return (
-                <div
-                  key={pillar}
-                  className={`min-w-0 rounded-full border px-1.5 py-1 ${
-                    isActive
-                      ? "border-coral/55 bg-coral/15"
-                      : "border-sand/10 bg-sand/[0.045]"
-                  }`}
-                  aria-label={`${meta.name}: ${percent} percent complete`}
-                >
-                  <span
-                    className={`block text-[10px] font-bold leading-none ${
-                      isActive ? "text-coral" : "text-sand/68"
-                    }`}
-                  >
-                    {meta.letter}
-                  </span>
-                  <span className="mt-1 block h-0.5 overflow-hidden rounded-full bg-sand/14">
-                    <span
-                      className="block h-full rounded-full bg-grad-warm"
-                      style={{ width: `${percent}%` }}
-                    />
-                  </span>
-                </div>
-              );
-            })}
-          </div>
+          <span className="mt-1 block h-1 overflow-hidden rounded-full bg-sand/12">
+            <span
+              className="block h-full rounded-full bg-grad-warm"
+              style={{ width: `${Math.round(snapshot.overall * 100)}%` }}
+            />
+          </span>
         </div>
       </div>
     </section>

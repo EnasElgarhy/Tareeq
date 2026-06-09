@@ -28,11 +28,11 @@ export const KAI_SECTION_ENCOURAGEMENTS = [
 export const KAI_EXTRA_NARRATION = [
   {
     id: "kai_intro",
-    text: "Hey, I'm Kai. Think of me as a filter for all the noise. There are no wrong answers here - just pick what you would actually do, or the closest thing to it.",
+    text: "Hey, I'm Kai. Think of me as a filter for all the noise. There are no wrong answers here — just pick what you would actually do, or the closest thing to it.",
   },
   {
     id: "kai_results",
-    text: "Nice work. Here's your Career Compass. Remember - this is a compass, not a GPS. You still get to choose the destination.",
+    text: "Nice work. Here's your Career Compass. Remember — this is a compass, not a GPS. You still get to choose the destination.",
   },
 ] as const;
 

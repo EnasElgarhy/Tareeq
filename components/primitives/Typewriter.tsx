@@ -3,6 +3,7 @@
 import {
   createElement,
   useEffect,
+  useRef,
   useState,
   type CSSProperties,
   type ElementType,
@@ -47,30 +48,48 @@ export function Typewriter({
 }: TypewriterProps) {
   const [index, setIndex] = useState(0);
   const [started, setStarted] = useState(false);
+  const onCompleteRef = useRef(onComplete);
+  const completedRef = useRef(false);
   const reduced =
     typeof window !== "undefined" ? prefersReducedMotion() : false;
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
+
+  useEffect(() => {
+    setIndex(0);
+    setStarted(false);
+    completedRef.current = false;
+  }, [text]);
 
   // Start delay
   useEffect(() => {
     if (reduced) {
       setIndex(text.length);
-      onComplete?.();
+      if (!completedRef.current) {
+        completedRef.current = true;
+        onCompleteRef.current?.();
+      }
       return;
     }
     const t = window.setTimeout(() => setStarted(true), startDelay);
     return () => window.clearTimeout(t);
-  }, [reduced, startDelay, text.length, onComplete]);
+  }, [reduced, startDelay, text.length]);
 
   // Character tick
   useEffect(() => {
     if (!started || reduced) return;
     if (index >= text.length) {
-      onComplete?.();
+      if (!completedRef.current) {
+        completedRef.current = true;
+        onCompleteRef.current?.();
+      }
       return;
     }
     const t = window.setTimeout(() => setIndex((i) => i + 1), speed);
     return () => window.clearTimeout(t);
-  }, [started, index, text, speed, reduced, onComplete]);
+  }, [started, index, text, speed, reduced]);
 
   const visible = text.slice(0, index);
   const isTyping = index < text.length;

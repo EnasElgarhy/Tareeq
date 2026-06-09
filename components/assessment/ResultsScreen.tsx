@@ -1,8 +1,10 @@
 "use client";
 
 import {
+  ChevronDown,
   Download,
   FileText,
+  PlayCircle,
   RefreshCcw,
   Share2,
   Sparkles,
@@ -108,7 +110,7 @@ export function ResultsScreen() {
   async function handleShare() {
     if (!report) return;
 
-    const shareText = `My Tareeq Compass points toward ${report.clusterName}. Work style: ${report.archetype}. Motivation: ${report.primaryDriver}.`;
+    const shareText = `My Tareeq answers point to high curiosity for ${report.clusterName}. Work style: ${report.archetype}. Motivation: ${report.primaryDriver}.`;
 
     try {
       if (navigator.share) {
@@ -134,9 +136,10 @@ export function ResultsScreen() {
 
   if (!report) return null;
 
-  const rankedClusters = report.score.clusterRanked.slice(0, 4);
+  const rankedClusters = report.score.clusterRanked;
   const maxClusterScore = Math.max(1, rankedClusters[0]?.[1] ?? 1);
   const clusterVisual = CLUSTER_VISUALS[report.clusterCode];
+  const videoSuggestions = buildVideoSuggestions(report);
 
   return (
     <section
@@ -152,7 +155,7 @@ export function ResultsScreen() {
         <div className="relative z-10 flex items-center justify-between gap-3">
           <span className="chip chip--violet-on-dark">
             <Sparkles size={13} />
-            Career Compass
+            Curiosity Compass
           </span>
           <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white/62">
             CORE v4
@@ -171,25 +174,30 @@ export function ResultsScreen() {
 
           <div className="grid gap-2">
             <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/50">
-              Primary direction
+              Curiosity signal
             </p>
             <h1 className="text-[42px] font-black uppercase leading-[0.9] text-white">
               {clusterVisual.label}
             </h1>
             <p className="max-w-[30ch] text-[14px] font-semibold leading-snug text-white/74">
-              {clusterVisual.tagline}
+              Your answers point to a high curiosity for this territory. Use it
+              as a direction to explore, not a final prescription.
             </p>
           </div>
         </div>
 
         <div className="relative z-10 mt-4 grid grid-cols-3 gap-2">
           <StatPill
+            label="Signal"
+            value="High curiosity"
+            meta={clusterVisual.label}
+          />
+          <StatPill
             label="Confidence"
             value={`${report.score.confidencePercentage}%`}
             meta={report.score.confidenceLabel}
           />
           <StatPill label="Style" value={report.archetype} meta="Work mode" />
-          <StatPill label="Drive" value={report.primaryDriver} meta="Reward" />
         </div>
       </header>
 
@@ -198,32 +206,65 @@ export function ResultsScreen() {
           Kai’s read
         </p>
         <h2 className="mt-2 text-[22px] font-black leading-[1.05] text-sand">
-          {report.headline}
+          A direction to test, not a box to live inside.
         </h2>
         <p className="mt-3 text-[14px] leading-relaxed text-sand/72">
           {report.summary}
         </p>
       </section>
 
-      <section className="grid grid-cols-1 gap-2">
-        <WorkTile
-          icon={<ArchetypeIcon size={22} />}
-          label="How you work"
+      <section className="grid gap-2">
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-sand/42">
+            Tap each box
+          </p>
+          <h2 className="mt-1 text-[20px] font-black text-sand">
+            What the four CORE signals mean
+          </h2>
+        </div>
+        <CoreSignalCard
+          letter="C"
+          icon={<CompassResultIcon size={20} />}
+          label="Curiosities"
+          value={clusterVisual.label}
+          accent="warm"
+        >
+          This is what keeps pulling your attention. It is why the compass
+          starts with {clusterVisual.label}, while the full score map below
+          still shows every cluster signal.
+        </CoreSignalCard>
+        <CoreSignalCard
+          letter="O"
+          icon={<ArchetypeIcon size={20} />}
+          label="Operations"
           value={report.archetype}
           accent="violet"
-        />
-        <WorkTile
-          icon={<DriverIcon size={22} />}
-          label="What pulls you forward"
+        >
+          This describes how you tend to approach work: the pace, structure, and
+          problem-solving rhythm that may make a path feel natural day to day.
+        </CoreSignalCard>
+        <CoreSignalCard
+          letter="R"
+          icon={<DriverIcon size={20} />}
+          label="Rewards"
           value={report.primaryDriver}
           accent="warm"
-        />
-        <WorkTile
-          icon={<EcosystemIcon size={22} />}
-          label="Where you thrive"
+        >
+          This is what makes a path worth staying with. Use it to judge whether
+          a career only looks interesting, or actually gives you the reward you
+          need to keep going.
+        </CoreSignalCard>
+        <CoreSignalCard
+          letter="E"
+          icon={<EcosystemIcon size={20} />}
+          label="Ecosystems"
           value={report.ecosystemFit}
           accent="mint"
-        />
+        >
+          This is the working environment signal: team shape, independence,
+          predictability, and energy level. It helps you compare schools,
+          internships, and first jobs.
+        </CoreSignalCard>
       </section>
 
       <section className="rounded-[24px] border border-sand/10 bg-night/35 p-4">
@@ -234,15 +275,15 @@ export function ResultsScreen() {
             </span>
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-sand/42">
-                Cluster signal
+                Cluster score map
               </p>
               <h2 className="mt-1 text-[18px] font-black text-sand">
-                Your top directions
+                All 8 curiosity signals
               </h2>
             </div>
           </div>
           <span className="rounded-full border border-sand/10 px-3 py-1 text-[11px] font-bold text-sand/58">
-            Final
+            Scores
           </span>
         </div>
 
@@ -300,55 +341,79 @@ export function ResultsScreen() {
             </span>
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-sand/42">
-                Path forward
+                Career direction
               </p>
               <h2 className="mt-1 text-[20px] font-black text-sand">
-                What to explore next
+                Your profile may thrive in career families like…
               </h2>
             </div>
           </div>
         </div>
 
-        <PathPanel
-          icon={<AcademicIcon size={20} />}
-          title="School focus"
-          items={report.highSchoolSubjects}
-        />
+        <div className="grid gap-2">
+          {report.careerExamples.slice(0, 6).map((career, index) => (
+            <CareerFamilyCard
+              key={career}
+              career={career}
+              index={index}
+              accent={clusterVisual.color}
+            />
+          ))}
+        </div>
+
         <PathPanel
           icon={<UniversityIcon size={20} />}
-          title="University paths"
+          title="Based on that, university majors to explore"
           items={report.universityMajors}
         />
-        <PathPanel
-          icon={<CareerIcon size={20} />}
-          title="Career examples"
-          items={report.careerExamples}
-        />
+
+        <section className="rounded-[22px] border border-sand/10 bg-sand/[0.055] p-3">
+          <div className="mb-3 flex items-center gap-2">
+            <span className="grid size-8 place-items-center rounded-full bg-gold/12 text-gold">
+              <AcademicIcon size={20} />
+            </span>
+            <h3 className="text-[14px] font-black text-sand">
+              Then choose high-school subjects that keep those doors open
+            </h3>
+          </div>
+          <div className="grid gap-2">
+            {report.highSchoolSubjects.slice(0, 6).map((subject, index) => (
+              <SubjectReasonCard
+                key={subject}
+                subject={subject}
+                index={index}
+                clusterName={clusterVisual.label}
+              />
+            ))}
+          </div>
+        </section>
       </section>
 
       <ReportSection
         accent={clusterVisual.color}
-        icon={<AcademicIcon size={20} />}
-        title="Academic Path"
+        icon={<CareerIcon size={20} />}
+        title="Why these career families fit"
+      >
+        <p>{report.careerLandscape}</p>
+      </ReportSection>
+
+      <ReportSection
+        accent={clusterVisual.color}
+        icon={<UniversityIcon size={20} />}
+        title="How the study path connects"
       >
         <p>{report.academicPath}</p>
       </ReportSection>
 
       <ReportSection
         accent={clusterVisual.color}
-        icon={<CareerIcon size={20} />}
-        title="Career Landscape"
+        icon={<Sparkles size={20} />}
+        title="Less obvious paths"
       >
-        <p>{report.careerLandscape}</p>
-        <TagList title="Less obvious paths" items={report.nonObviousPaths} />
-      </ReportSection>
-
-      <ReportSection
-        accent={clusterVisual.color}
-        icon={<CompassResultIcon size={20} />}
-        title="How You Work"
-      >
-        <p>{report.integration}</p>
+        <TagList
+          title="These intersections can be surprisingly strong"
+          items={report.nonObviousPaths}
+        />
       </ReportSection>
 
       <ReportSection
@@ -357,6 +422,15 @@ export function ResultsScreen() {
         title="Reality Check"
       >
         <p>{report.realityCheck}</p>
+        <VideoSuggestionList suggestions={videoSuggestions} />
+      </ReportSection>
+
+      <ReportSection
+        accent={clusterVisual.color}
+        icon={<CompassResultIcon size={20} />}
+        title="How your work style changes the path"
+      >
+        <p>{report.integration}</p>
       </ReportSection>
 
       <ReportSection
@@ -489,49 +563,175 @@ function StatPill({
   );
 }
 
-function WorkTile({
+type TileAccent = "warm" | "violet" | "mint";
+
+function getTileTone(accent: TileAccent) {
+  return {
+    warm: {
+      background:
+        "linear-gradient(135deg, rgba(255,107,61,0.22), rgba(255,165,61,0.10))",
+      ring: "rgba(255,107,61,0.32)",
+    },
+    violet: {
+      background:
+        "linear-gradient(135deg, rgba(157,127,240,0.22), rgba(110,72,228,0.10))",
+      ring: "rgba(157,127,240,0.36)",
+    },
+    mint: {
+      background:
+        "linear-gradient(135deg, rgba(111,224,192,0.22), rgba(111,224,192,0.06))",
+      ring: "rgba(111,224,192,0.34)",
+    },
+  }[accent];
+}
+
+function CoreSignalCard({
+  letter,
   icon,
   label,
   value,
   accent = "warm",
+  children,
 }: {
+  letter: string;
   icon: ReactNode;
   label: string;
   value: string;
-  /** Tints the icon tile background. `warm` is the brand default;
-   *  `violet`/`mint` give the three personality cards a sense of
-   *  visual rotation rather than a uniform stack. */
-  accent?: "warm" | "violet" | "mint";
+  accent?: TileAccent;
+  children: ReactNode;
 }) {
-  const tileBg = {
-    warm: "linear-gradient(135deg, rgba(255,107,61,0.22), rgba(255,165,61,0.10))",
-    violet: "linear-gradient(135deg, rgba(157,127,240,0.22), rgba(110,72,228,0.10))",
-    mint: "linear-gradient(135deg, rgba(111,224,192,0.22), rgba(111,224,192,0.06))",
-  }[accent];
-  const tileRing = {
-    warm: "rgba(255,107,61,0.32)",
-    violet: "rgba(157,127,240,0.36)",
-    mint: "rgba(111,224,192,0.34)",
-  }[accent];
+  const tone = getTileTone(accent);
 
   return (
-    <div className="flex items-center gap-3 rounded-[22px] border border-sand/10 bg-sand/[0.055] p-3">
-      <span
-        className="relative grid size-11 shrink-0 place-items-center rounded-2xl"
-        style={{
-          background: tileBg,
-          boxShadow: `inset 0 0 0 1px ${tileRing}`,
-        }}
-      >
-        {icon}
-      </span>
-      <div className="min-w-0 flex-1">
-        <p className="text-[10px] font-bold uppercase tracking-[0.13em] text-sand/42">
-          {label}
-        </p>
-        <p className="mt-0.5 text-[15px] font-black leading-tight text-sand">
-          {value}
-        </p>
+    <details className="group rounded-[22px] border border-sand/10 bg-sand/[0.055] p-3 open:bg-sand/[0.075]">
+      <summary className="flex cursor-pointer list-none items-center gap-3 [&::-webkit-details-marker]:hidden">
+        <span
+          className="relative grid size-11 shrink-0 place-items-center rounded-2xl"
+          style={{
+            background: tone.background,
+            boxShadow: `inset 0 0 0 1px ${tone.ring}`,
+          }}
+        >
+          <span className="absolute left-1 top-1 text-[9px] font-black text-sand/54">
+            {letter}
+          </span>
+          {icon}
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-[10px] font-bold uppercase tracking-[0.13em] text-sand/42">
+            {label}
+          </span>
+          <span className="mt-0.5 block text-[15px] font-black leading-tight text-sand">
+            {value}
+          </span>
+        </span>
+        <ChevronDown
+          size={16}
+          className="shrink-0 text-sand/45 transition group-open:rotate-180"
+        />
+      </summary>
+      <p className="mt-3 border-t border-sand/10 pt-3 text-[12.5px] leading-relaxed text-sand/68">
+        {children}
+      </p>
+    </details>
+  );
+}
+
+function CareerFamilyCard({
+  career,
+  index,
+  accent,
+}: {
+  career: string;
+  index: number;
+  accent: string;
+}) {
+  return (
+    <div className="rounded-[22px] border border-sand/10 bg-sand/[0.055] p-3">
+      <div className="flex items-start gap-3">
+        <span
+          className="grid size-8 shrink-0 place-items-center rounded-full text-[11px] font-black text-white"
+          style={{ background: index === 0 ? accent : "rgba(245,238,230,0.12)" }}
+        >
+          {index + 1}
+        </span>
+        <div className="min-w-0 flex-1">
+          <h3 className="text-[14px] font-black leading-tight text-sand">
+            {career}
+          </h3>
+          <p className="mt-1 text-[12px] leading-snug text-sand/60">
+            Explore what the work looks like before choosing the subject path.
+          </p>
+          <a
+            href={youtubeSearchUrl(`day in the life of ${career}`)}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-gold/25 bg-gold/10 px-2.5 py-1 text-[11px] font-bold text-gold"
+          >
+            <PlayCircle size={13} />
+            Day in the life
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SubjectReasonCard({
+  subject,
+  index,
+  clusterName,
+}: {
+  subject: string;
+  index: number;
+  clusterName: string;
+}) {
+  const priority = index < 2 ? "Core" : index < 4 ? "Strong" : "Useful";
+
+  return (
+    <details className="group rounded-[18px] border border-sand/10 bg-night/35 px-3 py-2.5 open:bg-night/50">
+      <summary className="flex cursor-pointer list-none items-center gap-2 [&::-webkit-details-marker]:hidden">
+        <span className="rounded-full bg-gold/12 px-2 py-1 text-[10px] font-black uppercase tracking-[0.1em] text-gold">
+          {priority}
+        </span>
+        <span className="min-w-0 flex-1 text-[13px] font-black text-sand">
+          {subject}
+        </span>
+        <ChevronDown
+          size={15}
+          className="shrink-0 text-sand/42 transition group-open:rotate-180"
+        />
+      </summary>
+      <p className="mt-2 text-[12px] leading-relaxed text-sand/64">
+        {getSubjectReason(subject, clusterName)}
+      </p>
+    </details>
+  );
+}
+
+function VideoSuggestionList({
+  suggestions,
+}: {
+  suggestions: Array<{ label: string; query: string }>;
+}) {
+  return (
+    <div className="grid gap-2 rounded-[18px] border border-sand/10 bg-night/35 p-3">
+      <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.13em] text-sand/42">
+        <PlayCircle size={13} />
+        Watch before choosing
+      </p>
+      <div className="grid gap-1.5">
+        {suggestions.map((suggestion) => (
+          <a
+            key={suggestion.query}
+            href={youtubeSearchUrl(suggestion.query)}
+            target="_blank"
+            rel="noreferrer"
+            className="rounded-full border border-sand/10 bg-sand/[0.055] px-3 py-2 text-[11px] font-bold leading-none text-sand/74 transition hover:border-gold/35 hover:text-gold"
+          >
+            {suggestion.label}
+          </a>
+        ))}
       </div>
     </div>
   );
@@ -617,4 +817,73 @@ function TagList({ title, items }: { title: string; items: string[] }) {
       </div>
     </div>
   );
+}
+
+function buildVideoSuggestions(report: PersonalizedCompassReport) {
+  const candidates = [
+    ...report.careerExamples.slice(0, 2).map((career) => ({
+      label: `Day in the life: ${career}`,
+      query: `day in the life of ${career}`,
+    })),
+    report.universityMajors[0]
+      ? {
+          label: `What studying ${report.universityMajors[0]} is like`,
+          query: `what is it like studying ${report.universityMajors[0]}`,
+        }
+      : null,
+    report.nonObviousPaths[0]
+      ? {
+          label: `Less obvious path: ${report.nonObviousPaths[0]}`,
+          query: `${report.nonObviousPaths[0]} career explained`,
+        }
+      : null,
+  ].filter(Boolean) as Array<{ label: string; query: string }>;
+
+  const seen = new Set<string>();
+  return candidates.filter((candidate) => {
+    const key = candidate.query.toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function youtubeSearchUrl(query: string) {
+  return `https://www.youtube.com/results?search_query=${encodeURIComponent(
+    query,
+  )}`;
+}
+
+function getSubjectReason(subject: string, clusterName: string) {
+  const normalized = subject.toLowerCase();
+
+  if (/(computer|it|coding|technology|data|statistics)/.test(normalized)) {
+    return `This gives you practical tools to test ${clusterName} ideas, build small projects, and understand the digital systems behind many modern careers.`;
+  }
+
+  if (/(math|mathematics|further maths)/.test(normalized)) {
+    return `This builds the quantitative fluency many ${clusterName} routes depend on, especially when choices later involve data, modelling, finance, engineering, or research.`;
+  }
+
+  if (/(physics|chemistry|biology|environmental|geography|science)/.test(
+    normalized,
+  )) {
+    return `This keeps the evidence-based side of ${clusterName} open, especially for careers that need experiments, fieldwork, systems thinking, or technical credibility.`;
+  }
+
+  if (/(english|literature|history|government|politics|language|philosophy)/.test(
+    normalized,
+  )) {
+    return `This strengthens communication, argument, and interpretation: skills that help you explain ${clusterName} ideas clearly to people who do not think like you.`;
+  }
+
+  if (/(art|design|media|film|drama|music|visual)/.test(normalized)) {
+    return `This helps you build a portfolio and communicate ideas visually, which can turn ${clusterName} curiosity into work people can actually see and respond to.`;
+  }
+
+  if (/(business|economics|accounting)/.test(normalized)) {
+    return `This helps you understand money, markets, and organisations, so ${clusterName} interests can become practical opportunities rather than only ideas.`;
+  }
+
+  return `This subject can support ${clusterName} by giving you vocabulary, practice, and proof that you are serious enough to test the path properly.`;
 }

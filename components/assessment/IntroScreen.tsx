@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Kai } from "@/components/brand/Kai";
 import { KaiAuraV2 } from "@/components/brand/KaiAuraV2";
@@ -16,6 +16,9 @@ export function IntroScreen() {
   const [typingDone, setTypingDone] = useState(false);
   const [soundOn, setSoundOn] = useState(true);
   const [soundPrefReady, setSoundPrefReady] = useState(false);
+  const [introCopyActive, setIntroCopyActive] = useState(false);
+  const [introCopyRun, setIntroCopyRun] = useState(0);
+  const [introTypeSpeed, setIntroTypeSpeed] = useState(44);
 
   // Hydrate sound preference from localStorage so muting persists
   // across screens, matching what /q/* already does.
@@ -34,6 +37,41 @@ export function IntroScreen() {
     soundOn,
   });
 
+  const syncTypeSpeedFromAudio = useCallback(() => {
+    const duration = audioRef.current?.duration;
+    if (!duration || !Number.isFinite(duration)) return;
+    const targetMs = Math.max(2600, duration * 920);
+    const nextSpeed = Math.round(targetMs / INTRO_BODY.length);
+    setIntroTypeSpeed(Math.min(56, Math.max(24, nextSpeed)));
+  }, [audioRef]);
+
+  function restartIntroCopy() {
+    setTypingDone(false);
+    setIntroCopyActive(false);
+    setIntroCopyRun((run) => run + 1);
+  }
+
+  useEffect(() => {
+    if (!soundPrefReady) return;
+
+    if (!soundOn || audioState === "muted" || audioState === "unavailable") {
+      setIntroCopyActive(true);
+      return;
+    }
+
+    if (audioState === "playing" || audioState === "ended") {
+      syncTypeSpeedFromAudio();
+      setIntroCopyActive(true);
+    }
+
+    if (audioState === "loading") {
+      const timeout = window.setTimeout(() => {
+        setIntroCopyActive(true);
+      }, 900);
+      return () => window.clearTimeout(timeout);
+    }
+  }, [audioState, soundOn, soundPrefReady, syncTypeSpeedFromAudio]);
+
   function next() {
     pause();
     uiSounds.advance();
@@ -44,16 +82,23 @@ export function IntroScreen() {
     const nextValue = !soundOn;
     setSoundOn(nextValue);
     window.localStorage.setItem("tareeq:sound", nextValue ? "on" : "off");
-    if (!nextValue) pause();
-    else void play(true);
+    if (!nextValue) {
+      pause();
+      setIntroCopyActive(true);
+    } else {
+      restartIntroCopy();
+      void play(true);
+    }
   }
 
   function replayOrUnlock() {
+    restartIntroCopy();
     void play(true);
   }
 
   const isLocked = audioState === "locked";
   const isPlaying = audioState === "playing";
+  const displayedMouthOpen = isPlaying ? Math.max(mouthOpen, 0.12) : mouthOpen;
 
   return (
     <section
@@ -61,7 +106,13 @@ export function IntroScreen() {
       className="anim-screen-enter flex flex-1 flex-col items-center justify-center gap-5 pb-4 text-center"
     >
       {/* Hidden audio element — driven entirely by useKaiNarration */}
-      <audio ref={audioRef} preload="auto" playsInline className="hidden" />
+      <audio
+        ref={audioRef}
+        preload="auto"
+        playsInline
+        className="hidden"
+        onLoadedMetadata={syncTypeSpeedFromAudio}
+      />
 
       {/* Character first — Kai with aurora */}
       <div className="relative flex h-[220px] w-[220px] items-center justify-center">
@@ -75,8 +126,13 @@ export function IntroScreen() {
           style={{ animationDelay: "180ms" }}
         >
           <div className="anim-avatar-bob" style={{ animationDelay: "900ms" }}>
-            {/* mouthOpen drives lip-sync from the narration RMS analyser */}
-            <Kai mood="warm" gesture="wave" mouthOpen={mouthOpen} size={150} />
+            {/* mouthOpen drives lip-sync from the narration RMS analyser. */}
+            <Kai
+              mood={isPlaying ? "encouraging" : "warm"}
+              gesture="wave"
+              mouthOpen={displayedMouthOpen}
+              size={150}
+            />
           </div>
         </div>
       </div>
@@ -100,25 +156,43 @@ export function IntroScreen() {
         .
       </h1>
 
-      {/* Body — typewriter, slow + deliberate so it feels handwritten */}
-      <Typewriter
-        as="p"
-        text={INTRO_BODY}
-        speed={48}
-        startDelay={1300}
-        onComplete={() => setTypingDone(true)}
-        className="max-w-[34ch] text-sand/85 text-center"
-        style={{
-          fontFamily: "var(--font-display)",
-          fontStyle: "italic",
-          fontWeight: 500,
-          fontSize: "clamp(17px, 0.95rem + 1vw, 21px)",
-          lineHeight: 1.4,
-          letterSpacing: "-0.005em",
-          fontVariationSettings: '"SOFT" 60, "opsz" 96',
-          minHeight: "5.6em",
-        }}
-      />
+      {/* Body — synced to Kai's actual voice start, with a muted fallback. */}
+      <div className="min-h-[5.6em] max-w-[34ch] text-center">
+        {introCopyActive ? (
+          <Typewriter
+            key={introCopyRun}
+            as="p"
+            text={INTRO_BODY}
+            speed={introTypeSpeed}
+            onComplete={() => setTypingDone(true)}
+            className="text-sand/85"
+            style={{
+              fontFamily: "var(--font-display)",
+              fontStyle: "italic",
+              fontWeight: 500,
+              fontSize: "clamp(17px, 0.95rem + 1vw, 21px)",
+              lineHeight: 1.4,
+              letterSpacing: "-0.005em",
+              fontVariationSettings: '"SOFT" 60, "opsz" 96',
+              margin: 0,
+            }}
+          />
+        ) : (
+          <p
+            aria-hidden="true"
+            className="m-0 text-sand/50"
+            style={{
+              fontFamily: "var(--font-display)",
+              fontStyle: "italic",
+              fontWeight: 500,
+              fontSize: "clamp(17px, 0.95rem + 1vw, 21px)",
+              lineHeight: 1.4,
+            }}
+          >
+            {isLocked ? "Tap Start voice to meet Kai." : "Kai is getting ready."}
+          </p>
+        )}
+      </div>
 
       {/* Audio controls — mute toggle + replay / unlock-voice button.
        *  On touch devices that block autoplay, the "Start voice" gold

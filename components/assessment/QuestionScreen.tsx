@@ -20,6 +20,7 @@ import {
   type Interstitial,
 } from "@/lib/assessment/interstitials";
 import { getLocalizedText, getQuestionPath } from "@/lib/assessment/questions";
+import { computeKaiMouthLevel } from "@/lib/audio/lip-sync";
 import { computeScore, type Question } from "@/lib/scoring";
 
 type AudioState =
@@ -319,18 +320,27 @@ export function QuestionScreen({
 
   const ensureLipSyncGraph = useCallback((audio: HTMLAudioElement) => {
     if (!audioContextRef.current) {
-      audioContextRef.current = new AudioContext();
+      const Ctor =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext?: typeof AudioContext })
+          .webkitAudioContext;
+      if (!Ctor) return null;
+      audioContextRef.current = new Ctor();
     }
     const context = audioContextRef.current;
     if (!audioSourceRef.current) {
       const analyser = context.createAnalyser();
-      analyser.fftSize = 512;
-      analyser.smoothingTimeConstant = 0.32;
-      const source = context.createMediaElementSource(audio);
-      source.connect(analyser);
-      analyser.connect(context.destination);
-      audioSourceRef.current = source;
-      analyserRef.current = analyser;
+      analyser.fftSize = 1024;
+      analyser.smoothingTimeConstant = 0.18;
+      try {
+        const source = context.createMediaElementSource(audio);
+        source.connect(analyser);
+        analyser.connect(context.destination);
+        audioSourceRef.current = source;
+        analyserRef.current = analyser;
+      } catch {
+        analyserRef.current = null;
+      }
     }
     return context;
   }, []);
@@ -345,17 +355,14 @@ export function QuestionScreen({
     const data = new Uint8Array(analyser.fftSize);
     const tick = () => {
       analyser.getByteTimeDomainData(data);
-      let sum = 0;
-      for (const value of data) {
-        const centered = (value - 128) / 128;
-        sum += centered * centered;
-      }
-      const rms = Math.sqrt(sum / data.length);
-      const rawLevel = Math.min(1, Math.max(0, (rms - 0.018) * 13));
-      const nextLevel = lipSyncLevelRef.current * 0.58 + rawLevel * 0.42;
+      const nextLevel = computeKaiMouthLevel(
+        data,
+        lipSyncLevelRef.current,
+        performance.now(),
+      );
       lipSyncLevelRef.current = nextLevel;
       setMouthOpen((current) =>
-        Math.abs(current - nextLevel) > 0.018 ? nextLevel : current,
+        Math.abs(current - nextLevel) > 0.012 ? nextLevel : current,
       );
       lipSyncFrameRef.current = window.requestAnimationFrame(tick);
     };
@@ -385,16 +392,23 @@ export function QuestionScreen({
       setAudioState("loading");
       audioFallbackIndexRef.current = 0;
       const nextSrc = `/api/kai-tts/${encodeURIComponent(activeNarrationId)}`;
-      if (!audio.getAttribute("src")?.endsWith(nextSrc)) {
+      const needsSourceLoad =
+        !audio.getAttribute("src")?.endsWith(nextSrc) || audio.readyState === 0;
+      if (needsSourceLoad) {
         audio.src = nextSrc;
+        audio.load();
       }
       audio.currentTime = 0;
       audio.playbackRate = speed;
       try {
         const context = ensureLipSyncGraph(audio);
-        if (context.state === "suspended") await context.resume();
-        await audio.play();
+        const playPromise = audio.play();
+        if (context?.state === "suspended") {
+          void context.resume().catch(() => {});
+        }
+        await playPromise;
         setAudioState("playing");
+        startLipSync();
       } catch {
         setAudioState("unavailable");
         stopLipSync();
@@ -406,6 +420,7 @@ export function QuestionScreen({
       ensureLipSyncGraph,
       soundOn,
       speed,
+      startLipSync,
       stopLipSync,
       voiceRequiresGesture,
       voiceUnlocked,
@@ -423,11 +438,15 @@ export function QuestionScreen({
         KAI_AUDIO_FALLBACK_EXTENSIONS[audioFallbackIndexRef.current];
       audioFallbackIndexRef.current += 1;
       audio.src = `/audio/${activeNarrationId}.${extension}`;
+      audio.load();
       audio.currentTime = 0;
       audio.playbackRate = speed;
       void audio
         .play()
-        .then(() => setAudioState("playing"))
+        .then(() => {
+          setAudioState("playing");
+          startLipSync();
+        })
         .catch(() => {
           stopLipSync();
           setAudioState("unavailable");
@@ -436,7 +455,7 @@ export function QuestionScreen({
     }
     stopLipSync();
     setAudioState("unavailable");
-  }, [activeNarrationId, soundOn, speed, stopLipSync]);
+  }, [activeNarrationId, soundOn, speed, startLipSync, stopLipSync]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -512,6 +531,8 @@ export function QuestionScreen({
       : exiting === "back"
         ? "anim-screen-exit-back"
         : "anim-screen-enter";
+  const displayedMouthOpen =
+    audioState === "playing" ? Math.max(mouthOpen, 0.1) : mouthOpen;
 
   return (
     <>
@@ -519,7 +540,7 @@ export function QuestionScreen({
         <DidYouKnow
           interstitial={pendingInterstitial}
           audioState={audioState}
-          mouthOpen={mouthOpen}
+          mouthOpen={displayedMouthOpen}
           soundOn={soundOn}
           onReplay={() => playQuestionAudio("replay", false, true)}
           onToggleSound={toggleSound}
@@ -556,7 +577,7 @@ export function QuestionScreen({
         <div className="flex flex-col items-center gap-2.5">
           <div
             className={`relative flex items-center justify-center ${
-              isDenseChoice ? "h-[132px] w-[132px]" : "h-[156px] w-[156px]"
+              isDenseChoice ? "h-[152px] w-[152px]" : "h-[176px] w-[176px]"
             }`}
           >
             <QuestionKaiScene scene={kaiScene} />
@@ -571,8 +592,10 @@ export function QuestionScreen({
               <div className="anim-avatar-bob">
                 <Kai
                   mood={liveMood}
-                  mouthOpen={mouthOpen}
-                  size={isDenseChoice ? 104 : 120}
+                  mouthOpen={displayedMouthOpen}
+                  size={isDenseChoice ? 118 : 136}
+                  videoVariant="assessment"
+                  videoPlaying={audioState === "playing"}
                 />
               </div>
             </div>

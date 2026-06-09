@@ -3,7 +3,7 @@ import { getKaiNarrationText } from "@/lib/audio/kai-narration";
 export const runtime = "nodejs";
 
 const ELEVENLABS_TTS_ENDPOINT = "https://api.elevenlabs.io/v1/text-to-speech";
-const KAI_VOICE_ID = process.env.ELEVENLABS_VOICE_ID || "XrExE9yKIg1WjnnlVkGX";
+const KAI_VOICE_ID = process.env.ELEVENLABS_VOICE_ID || "ZF6FPAbjXT4488VcRRnw";
 const KAI_MODEL_ID =
   process.env.ELEVENLABS_MODEL_ID || "eleven_multilingual_v2";
 
@@ -45,10 +45,10 @@ export async function GET(request: Request, context: RouteContext) {
         text,
         model_id: KAI_MODEL_ID,
         voice_settings: {
-          stability: 0.4,
-          similarity_boost: 0.75,
-          style: 0.3,
-          speed: 0.95,
+          stability: 0.48,
+          similarity_boost: 0.84,
+          style: 0.28,
+          speed: 1,
         },
       }),
     },

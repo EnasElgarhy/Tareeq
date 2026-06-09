@@ -145,7 +145,13 @@ export function DidYouKnow({
               <KaiAuraV2 size="100%" />
             </div>
             <div className="relative">
-              <Kai mood="encouraging" mouthOpen={mouthOpen} size={44} />
+              <Kai
+                mood="encouraging"
+                mouthOpen={mouthOpen}
+                size={44}
+                videoVariant="assessment"
+                videoPlaying={audioState === "playing"}
+              />
             </div>
           </div>
           <span className="chip chip--violet-on-dark">
