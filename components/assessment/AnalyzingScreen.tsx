@@ -3,7 +3,6 @@
 import { CheckCircle2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Kai } from "@/components/brand/Kai";
 import { readLocalAssessment } from "@/lib/assessment/progress";
 import { buildFallbackReport } from "@/lib/results/framework";
 import {
@@ -37,23 +36,21 @@ const ANALYSIS_STEPS = [
   },
 ] as const;
 
-// Four CORE pillars orbit Kai while the analysis runs. Each token has
-// a delay so they cascade in instead of appearing at once. Positions
-// are radial offsets around the center.
-const ORBIT_TOKENS = [
-  { letter: "C", label: "Curiosities", angle: -90, color: "#FF6B3D", delay: 0 },
-  { letter: "O", label: "Operations",  angle:   0, color: "#FFA53D", delay: 0.15 },
-  { letter: "R", label: "Rewards",     angle:  90, color: "#FF3D83", delay: 0.3 },
-  { letter: "E", label: "Ecosystems",  angle: 180, color: "#9D7FF0", delay: 0.45 },
-] as const;
-
-export function AnalyzingScreen() {
+export function AnalyzingScreen({
+  preview = false,
+}: {
+  /** Hold the loader open (no data read, no fetch, no redirect) for
+   *  reviewing/redesigning the screen. The step cascade loops. */
+  preview?: boolean;
+} = {}) {
   const router = useRouter();
   const startedRef = useRef(false);
   const [activeStep, setActiveStep] = useState(0);
   const [status, setStatus] = useState<AnalysisStatus>("working");
 
   useEffect(() => {
+    if (preview) return;
+
     const progress = readLocalAssessment();
     const registration = readResultRegistration();
     const existingReport = readGeneratedReport();
@@ -124,16 +121,23 @@ export function AnalyzingScreen() {
     }
 
     void generateReport();
-  }, [router]);
+  }, [router, preview]);
 
   useEffect(() => {
     // 4 steps × 820ms ≈ 3.3s — matches the 3s minimum visible time
-    // so every step turns "done" before we redirect.
+    // so every step turns "done" before we redirect. In preview mode
+    // the cascade loops so the animation stays alive for review.
     const interval = window.setInterval(() => {
-      setActiveStep((step) => Math.min(step + 1, ANALYSIS_STEPS.length - 1));
+      setActiveStep((step) =>
+        preview
+          ? step >= ANALYSIS_STEPS.length - 1
+            ? 0
+            : step + 1
+          : Math.min(step + 1, ANALYSIS_STEPS.length - 1),
+      );
     }, 820);
     return () => window.clearInterval(interval);
-  }, []);
+  }, [preview]);
 
   const progress =
     status === "done"
@@ -149,17 +153,12 @@ export function AnalyzingScreen() {
               drawing toward the center, scanning beam sweeping. ─── */}
       <div className="relative mx-auto grid h-[280px] w-full max-w-[320px] place-items-center">
         <AnalysisOrbitField status={status} />
-        <div className="relative z-10 grid size-[126px] place-items-center rounded-full border border-sand/14 bg-night/85 shadow-[0_22px_60px_rgba(0,0,0,0.4)]">
+        {/* Forming compass — the answers converge into a direction. */}
+        <div className="relative z-10 grid size-[132px] place-items-center rounded-full border border-sand/14 bg-night/85 shadow-[0_22px_60px_rgba(0,0,0,0.4)]">
           {/* Pulsing aura ring */}
           <span className="analysis-aura absolute inset-0 rounded-full" aria-hidden />
-          <div className="anim-avatar-bob">
-            <Kai mood={status === "error" ? "thinking" : "encouraging"} size={104} />
-          </div>
+          <CompassCore status={status} />
         </div>
-        {/* CORE pillar tokens orbiting Kai */}
-        {ORBIT_TOKENS.map((token) => (
-          <OrbitToken key={token.letter} {...token} status={status} />
-        ))}
       </div>
 
       {/* ─── Status copy ─── */}
@@ -191,16 +190,16 @@ export function AnalyzingScreen() {
         </p>
       </div>
 
-      {/* ─── Progress meter ─── */}
-      <div className="relative z-10 rounded-[24px] border border-sand/12 bg-sand/[0.055] p-3 shadow-[0_18px_52px_rgba(0,0,0,0.22)]">
-        <div className="mb-3 flex items-center justify-between gap-3 text-[11px] font-bold uppercase tracking-[0.13em] text-sand/52">
+      {/* ─── Progress meter (borderless) ─── */}
+      <div className="relative z-10 grid gap-2">
+        <div className="flex items-center justify-between gap-3 text-[11px] font-bold uppercase tracking-[0.13em] text-sand/52">
           <span className="flex items-center gap-1.5">
             <span className="analysis-spark size-1.5 rounded-full bg-grad-warm" aria-hidden />
             Signal strength
           </span>
           <span className="tabular-nums text-grad-warm">{progress}%</span>
         </div>
-        <div className="relative h-2 overflow-hidden rounded-full bg-night/55">
+        <div className="relative h-2 overflow-hidden rounded-full bg-sand/10">
           <div
             className="analysis-progress h-full rounded-full bg-grad-warm transition-[width] duration-500"
             style={{ width: `${progress}%` }}
@@ -210,31 +209,38 @@ export function AnalyzingScreen() {
         </div>
       </div>
 
-      {/* ─── Steps cascading in ─── */}
-      <ol className="relative z-10 grid w-full gap-2 text-start">
+      {/* ─── Steps — revealed one at a time, borderless ─── */}
+      <ol className="relative z-10 grid w-full gap-1 text-start">
+        <style>{`
+          @keyframes analysis-step-reveal {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+          }
+          .analysis-step-row {
+            animation: analysis-step-reveal 460ms cubic-bezier(0.16, 1, 0.3, 1) both;
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .analysis-step-row { animation: none; }
+          }
+        `}</style>
         {ANALYSIS_STEPS.map((step, index) => {
           const complete = index < activeStep || status === "done";
           const active = index === activeStep && status === "working";
+          // Progressive reveal — only show steps up to the active one.
+          if (status !== "done" && index > activeStep) return null;
 
           return (
             <li
               key={step.title}
-              className={`analysis-step-card grid grid-cols-[40px_1fr_auto] items-center gap-2 rounded-[18px] border px-3 py-2.5 transition-colors ${
-                complete
-                  ? "border-grad-warm/35 bg-grad-warm/8"
-                  : active
-                    ? "border-sand/18 bg-sand/[0.075]"
-                    : "border-sand/8 bg-sand/[0.03]"
+              className={`analysis-step-row flex items-center gap-3 rounded-2xl px-2.5 py-2.5 transition-colors ${
+                active ? "bg-sand/[0.05]" : ""
               }`}
-              style={{ animationDelay: `${index * 120}ms` }}
             >
               <span
-                className={`relative grid size-9 place-items-center rounded-full text-lg ${
+                className={`relative grid size-9 shrink-0 place-items-center rounded-full text-lg ${
                   complete
                     ? "bg-grad-warm text-sand shadow-warm-glow"
-                    : active
-                      ? "analysis-step-active bg-sand/12 text-gold"
-                      : "bg-night/45 text-sand/35"
+                    : "analysis-step-active bg-sand/12 text-gold"
                 }`}
               >
                 {complete ? <CheckCircle2 size={17} /> : step.glyph}
@@ -242,24 +248,20 @@ export function AnalyzingScreen() {
                   <span className="analysis-step-ring absolute inset-0 rounded-full" aria-hidden />
                 ) : null}
               </span>
-              <div className="min-w-0">
-                <p
-                  className={`text-[13px] font-bold leading-tight ${
-                    complete || active ? "text-sand" : "text-sand/45"
-                  }`}
-                >
+              <div className="min-w-0 flex-1">
+                <p className="text-[13px] font-bold leading-tight text-sand">
                   {step.title}
                 </p>
-                <p
-                  className={`mt-0.5 text-[10.5px] leading-snug ${
-                    complete || active ? "text-sand/55" : "text-sand/30"
-                  }`}
-                >
+                <p className="mt-0.5 text-[10.5px] leading-snug text-sand/55">
                   {step.detail}
                 </p>
               </div>
-              <span className="text-[9.5px] font-bold uppercase tracking-[0.12em] text-sand/38">
-                {complete ? "Done" : active ? "Now" : "Next"}
+              <span
+                className={`shrink-0 text-[9.5px] font-bold uppercase tracking-[0.12em] ${
+                  complete ? "text-sand/38" : "text-grad-warm"
+                }`}
+              >
+                {complete ? "Done" : "Now"}
               </span>
             </li>
           );
@@ -273,6 +275,113 @@ export function AnalyzingScreen() {
         </p>
       ) : null}
     </section>
+  );
+}
+
+/**
+ * CompassCore — the central animated illustration that replaces Kai.
+ *
+ * A compass rose sits in the dark well: the cardinal points settle and
+ * breathe while a warm needle sweeps around it, searching for a heading.
+ * It reads as "your answers are converging into a direction" without a
+ * character — pure compass language, on-brand (cream + warm gradient).
+ * All motion is transform/opacity; honours prefers-reduced-motion.
+ */
+function CompassCore({ status }: { status: AnalysisStatus }) {
+  const settled = status === "done";
+  return (
+    <span className="compass-core relative grid size-[100px] place-items-center" aria-hidden>
+      <style>{`
+        @keyframes compass-core-pulse {
+          0%, 100% { transform: scale(1); opacity: 0.92; }
+          50%      { transform: scale(1.05); opacity: 1; }
+        }
+        @keyframes compass-core-sweep {
+          to { transform: rotate(360deg); }
+        }
+        @keyframes compass-core-ring {
+          0%, 100% { opacity: 0.5; }
+          50%      { opacity: 0.9; }
+        }
+        .compass-core__rose {
+          transform-box: fill-box;
+          transform-origin: center;
+          animation: compass-core-pulse 3.2s ease-in-out infinite;
+        }
+        .compass-core__needle {
+          transform-box: fill-box;
+          transform-origin: 60px 60px;
+          animation: compass-core-sweep 3.6s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        }
+        .compass-core--settled .compass-core__needle {
+          animation: none;
+          transform: rotate(0deg);
+        }
+        .compass-core__tick { animation: compass-core-ring 2.4s ease-in-out infinite; }
+        @media (prefers-reduced-motion: reduce) {
+          .compass-core__rose,
+          .compass-core__needle,
+          .compass-core__tick { animation: none; }
+        }
+      `}</style>
+      <svg
+        viewBox="0 0 120 120"
+        className={`size-full ${settled ? "compass-core--settled" : ""}`}
+      >
+        <defs>
+          <linearGradient id="cc-grad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#FF3D83" />
+            <stop offset="55%" stopColor="#FF6B3D" />
+            <stop offset="100%" stopColor="#FFA53D" />
+          </linearGradient>
+          <radialGradient id="cc-core" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#F4C660" stopOpacity="0.5" />
+            <stop offset="70%" stopColor="#F4C660" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+
+        {/* Warm glow behind the rose */}
+        <circle cx="60" cy="60" r="40" fill="url(#cc-core)" />
+
+        {/* Ticked bezel */}
+        <circle
+          className="compass-core__tick"
+          cx="60"
+          cy="60"
+          r="50"
+          fill="none"
+          stroke="#F5EEE6"
+          strokeOpacity="0.22"
+          strokeWidth="5"
+          strokeDasharray="1.5 8"
+        />
+
+        {/* Compass rose — cardinal points; N is warm */}
+        <g className="compass-core__rose">
+          <path d="M60 16 L67 60 L60 64 L53 60 Z" fill="url(#cc-grad)" />
+          <path d="M60 104 L53 60 L60 56 L67 60 Z" fill="#F5EEE6" opacity="0.3" />
+          <path d="M16 60 L60 53 L64 60 L60 67 Z" fill="#F5EEE6" opacity="0.5" />
+          <path d="M104 60 L60 67 L56 60 L60 53 Z" fill="#F5EEE6" opacity="0.3" />
+          {/* diagonal minor spokes */}
+          <g stroke="#F5EEE6" strokeOpacity="0.18" strokeWidth="1.4" strokeLinecap="round">
+            <line x1="60" y1="60" x2="84" y2="36" />
+            <line x1="60" y1="60" x2="84" y2="84" />
+            <line x1="60" y1="60" x2="36" y2="84" />
+            <line x1="60" y1="60" x2="36" y2="36" />
+          </g>
+        </g>
+
+        {/* Searching needle — sweeps until the compass settles */}
+        <g className="compass-core__needle">
+          <line x1="60" y1="60" x2="60" y2="22" stroke="url(#cc-grad)" strokeWidth="2.4" strokeLinecap="round" />
+          <circle cx="60" cy="22" r="3.4" fill="url(#cc-grad)" />
+        </g>
+
+        {/* Center hub */}
+        <circle cx="60" cy="60" r="6.5" fill="#0F0824" />
+        <circle cx="60" cy="60" r="3" fill="#F4C660" />
+      </svg>
+    </span>
   );
 }
 
@@ -308,48 +417,6 @@ function FloatingParticles() {
         />
       ))}
     </div>
-  );
-}
-
-/**
- * A CORE pillar token (C, O, R, E) orbiting Kai. Position is computed
- * from `angle` so the 4 tokens land at the 4 compass directions.
- * Continuous slow orbit motion via CSS.
- */
-function OrbitToken({
-  letter,
-  label: _label,
-  angle,
-  color,
-  delay,
-  status,
-}: {
-  letter: string;
-  label: string;
-  angle: number;
-  color: string;
-  delay: number;
-  status: AnalysisStatus;
-}) {
-  const radius = 108;
-  const rad = (angle * Math.PI) / 180;
-  const x = Math.cos(rad) * radius;
-  const y = Math.sin(rad) * radius;
-  return (
-    <span
-      aria-hidden
-      className="analysis-orbit-token absolute z-20 grid size-9 place-items-center rounded-full text-[12px] font-black text-sand shadow-[0_8px_22px_rgba(0,0,0,0.4)]"
-      style={{
-        left: "50%",
-        top: "50%",
-        transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
-        background: `linear-gradient(135deg, ${color}, color-mix(in srgb, ${color} 50%, #ffffff))`,
-        animationDelay: `${delay}s`,
-        opacity: status === "done" ? 1 : undefined,
-      }}
-    >
-      {letter}
-    </span>
   );
 }
 

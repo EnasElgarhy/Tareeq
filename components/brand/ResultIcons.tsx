@@ -353,6 +353,57 @@ export function ConstellationIcon({ size = 28, ...rest }: IconProps) {
   );
 }
 
+interface AccentIconProps extends IconProps {
+  /** Override the warm-gradient signature with a solid accent color. */
+  accent?: string;
+}
+
+/** CORE Fingerprint — concentric broken arcs around a center node. */
+export function FingerprintIcon({ size = 28, accent, ...rest }: AccentIconProps) {
+  const sig = accent ?? "url(#ric-fp-grad)";
+  return (
+    <svg {...iconProps(size)} {...rest}>
+      <defs>
+        <WarmGradient id="ric-fp-grad" />
+      </defs>
+      <path d="M 7 21 A 9.5 9.5 0 0 1 25 21" fill="none" stroke={SAND} strokeWidth="1.2" strokeLinecap="round" opacity="0.78" />
+      <path d="M 10.5 20.2 A 6 6 0 0 1 21.5 20.2" fill="none" stroke={SAND} strokeWidth="1.2" strokeLinecap="round" opacity="0.55" />
+      <path d="M 13.4 19.4 A 3.1 3.1 0 0 1 18.6 19.4" fill="none" stroke={sig} strokeWidth="1.7" strokeLinecap="round" />
+      <circle cx="16" cy="17.6" r="1.7" fill={sig} />
+    </svg>
+  );
+}
+
+/** Axis slider — two tracks with offset thumbs. */
+export function AxisIcon({ size = 28, accent, ...rest }: AccentIconProps) {
+  const sig = accent ?? "url(#ric-axis-grad)";
+  return (
+    <svg {...iconProps(size)} {...rest}>
+      <defs>
+        <WarmGradient id="ric-axis-grad" />
+      </defs>
+      <line x1="5" y1="11" x2="27" y2="11" stroke={SAND} strokeWidth="1.4" strokeLinecap="round" opacity="0.5" />
+      <line x1="5" y1="21" x2="27" y2="21" stroke={SAND} strokeWidth="1.4" strokeLinecap="round" opacity="0.5" />
+      <circle cx="21" cy="11" r="2.6" fill={sig} />
+      <circle cx="11" cy="21" r="2.6" fill={sig} />
+    </svg>
+  );
+}
+
+/** Strength vs stretch — two unequal stacked bars. */
+export function StrengthIcon({ size = 28, accent, ...rest }: AccentIconProps) {
+  const sig = accent ?? "url(#ric-str-grad)";
+  return (
+    <svg {...iconProps(size)} {...rest}>
+      <defs>
+        <WarmGradient id="ric-str-grad" />
+      </defs>
+      <rect x="6" y="9" width="20" height="4.6" rx="2.3" fill={sig} />
+      <rect x="6" y="18.4" width="11" height="4.6" rx="2.3" fill={SAND} opacity="0.4" />
+    </svg>
+  );
+}
+
 /** Path forward (Route summary) — winding path on a horizon. */
 export function PathForwardIcon({ size = 28, ...rest }: IconProps) {
   return (

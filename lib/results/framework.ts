@@ -397,6 +397,65 @@ const ARCHETYPE_COPY: Record<CompassResult["archetype"], string> = {
     "You shift between structure and flexibility depending on the context, so test environments before committing to one work style.",
 };
 
+/**
+ * Personalization matrix from results_narrative_framework.docx — the kind of
+ * work each operational archetype tends toward WITHIN each cluster. Fed to the
+ * AI fine-tuner as the Section-4 (integration) hint so personalization stays
+ * on-spec instead of being invented.
+ */
+const PERSONALIZATION_MATRIX: Partial<
+  Record<CompassResult["archetype"], Record<ClusterCode, string>>
+> = {
+  Precisionist: {
+    TECH: "backend systems, algorithms, data structures",
+    ENG: "specialized engineering (aerospace, materials), R&D",
+    SCI: "academic research, deep data analysis",
+    ART: "technical illustration, precise design systems",
+    BUS: "financial analysis, operations",
+    LAW: "legal research, contract law",
+    PPL: "clinical psychology, diagnostics",
+    ENV: "field research, taxonomy",
+  },
+  Coordinator: {
+    TECH: "product management, DevOps, system architecture",
+    ENG: "project management, systems integration",
+    SCI: "research coordination, lab management",
+    ART: "creative direction, production management",
+    BUS: "operations, program management",
+    LAW: "policy coordination, diplomacy",
+    PPL: "organizational development, HR",
+    ENV: "conservation program management",
+  },
+  Explorer: {
+    TECH: "troubleshooting, site reliability, prototyping",
+    ENG: "field engineering, rapid prototyping",
+    SCI: "applied research, field science",
+    ART: "experimental art, documentary",
+    BUS: "startup operations, scrappy problem-solving",
+    LAW: "investigative journalism, advocacy",
+    PPL: "community outreach, crisis response",
+    ENV: "field conservation, hands-on ecology",
+  },
+  Catalyst: {
+    TECH: "startup engineering, consulting",
+    ENG: "engineering consulting, innovation roles",
+    SCI: "interdisciplinary research, science communication",
+    ART: "media production, content creation",
+    BUS: "entrepreneurship, strategy consulting",
+    LAW: "diplomacy, negotiation",
+    PPL: "coaching, facilitation",
+    ENV: "climate communication, environmental advocacy",
+  },
+};
+
+/** Archetype×cluster work-style hint (empty for Adaptive / unmapped). */
+export function getArchetypeClusterHint(
+  archetype: CompassResult["archetype"],
+  clusterCode: ClusterCode,
+): string {
+  return PERSONALIZATION_MATRIX[archetype]?.[clusterCode] ?? "";
+}
+
 export function getEcosystemFit(result: CompassResult): EcosystemFitName {
   if (result.ecosystemFit) return result.ecosystemFit;
 
@@ -446,7 +505,14 @@ export function createAnswerDigest(
     });
 }
 
-export function buildFallbackReport({
+/**
+ * The deterministic BASE report — a complete, doc-compliant result built
+ * purely from the scored pillars + cluster templates (no AI). It is the
+ * source of truth for the cluster, the lists, and the score; the AI only
+ * fine-tunes the prose on top of it. Also serves as the fallback when the
+ * AI is unavailable.
+ */
+export function buildBaseReport({
   result,
   name,
   source = "fallback",
@@ -540,3 +606,6 @@ export function buildFallbackReport({
     score: result,
   };
 }
+
+/** @deprecated Use `buildBaseReport`. Kept for existing callers/previews. */
+export const buildFallbackReport = buildBaseReport;

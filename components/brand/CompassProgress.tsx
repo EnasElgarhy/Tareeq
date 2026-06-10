@@ -36,7 +36,10 @@ export function CompassProgress({
   const cx = size / 2;
   const cy = size / 2;
   const outerR = size * 0.46;
-  const innerR = size * 0.28;
+  const innerR = size * 0.33;
+  // Center radius + thickness for the rounded-cap arc segments.
+  const ringR = (outerR + innerR) / 2;
+  const ringW = outerR - innerR;
   const isLight = surface === "light";
   const trackColor = isLight ? "#E8E0D4" : "#F5EEE6";
   const trackOpacity = isLight ? 0.9 : 0.18;
@@ -84,14 +87,14 @@ export function CompassProgress({
           </linearGradient>
         </defs>
 
-        {/* Quadrants */}
+        {/* Quadrants — rounded-cap arc segments, one per CORE pillar */}
         {COMPASS_PILLARS.map((p) => {
           const base = QUADRANT_BASE[p];
-          // Each quadrant sweeps 88° (small gap between segments)
-          const start = base + 2;
-          const end = base + 88;
-          // Filled portion ends at `start + (sweep × progress)`
-          const sweep = 86;
+          // Each quadrant sweeps 64°, leaving a generous, even gap so the
+          // round caps of adjacent segments never collide.
+          const start = base + 13;
+          const end = base + 77;
+          const sweep = end - start;
           const filled = snapshot.byPillar[p];
           const filledEnd = start + sweep * filled;
           const isActive = snapshot.activePillar === p;
@@ -100,28 +103,27 @@ export function CompassProgress({
             <g key={p}>
               {/* Track */}
               <path
-                d={annularSector(cx, cy, innerR, outerR, start, end)}
-                fill={trackColor}
-                fillOpacity={trackOpacity}
+                d={arc(cx, cy, ringR, start, end)}
+                fill="none"
+                stroke={trackColor}
+                strokeOpacity={trackOpacity}
+                strokeWidth={ringW}
+                strokeLinecap="round"
               />
               {/* Fill */}
-              {filled > 0 ? (
+              {filled > 0.01 ? (
                 <path
-                  d={annularSector(
-                    cx,
-                    cy,
-                    innerR,
-                    outerR,
-                    start,
-                    filledEnd,
-                  )}
-                  fill="url(#cmp-fill)"
+                  d={arc(cx, cy, ringR, start, filledEnd)}
+                  fill="none"
+                  stroke="url(#cmp-fill)"
+                  strokeWidth={ringW}
+                  strokeLinecap="round"
                 />
               ) : null}
               {/* Active pulse ring around this quadrant */}
               {isActive ? (
                 <path
-                  d={arc(cx, cy, outerR + 2.5, start, end)}
+                  d={arc(cx, cy, outerR + 3, start, end)}
                   stroke="url(#cmp-fill)"
                   strokeWidth="2"
                   strokeLinecap="round"
@@ -252,28 +254,4 @@ function arc(
   const [x1, y1] = pointOnCircle(cx, cy, r, endDeg);
   const large = endDeg - startDeg > 180 ? 1 : 0;
   return `M ${x0} ${y0} A ${r} ${r} 0 ${large} 1 ${x1} ${y1}`;
-}
-
-/** SVG path for an annular (donut-segment) sector. */
-function annularSector(
-  cx: number,
-  cy: number,
-  rInner: number,
-  rOuter: number,
-  startDeg: number,
-  endDeg: number,
-): string {
-  if (endDeg <= startDeg) return "";
-  const large = endDeg - startDeg > 180 ? 1 : 0;
-  const [xo0, yo0] = pointOnCircle(cx, cy, rOuter, startDeg);
-  const [xo1, yo1] = pointOnCircle(cx, cy, rOuter, endDeg);
-  const [xi0, yi0] = pointOnCircle(cx, cy, rInner, endDeg);
-  const [xi1, yi1] = pointOnCircle(cx, cy, rInner, startDeg);
-  return [
-    `M ${xo0} ${yo0}`,
-    `A ${rOuter} ${rOuter} 0 ${large} 1 ${xo1} ${yo1}`,
-    `L ${xi0} ${yi0}`,
-    `A ${rInner} ${rInner} 0 ${large} 0 ${xi1} ${yi1}`,
-    "Z",
-  ].join(" ");
 }

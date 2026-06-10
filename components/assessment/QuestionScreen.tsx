@@ -33,6 +33,19 @@ type AudioState =
 type ExitDirection = "forward" | "back" | null;
 const KAI_AUDIO_FALLBACK_EXTENSIONS = ["m4a", "mp3"] as const;
 
+/**
+ * Prefer the baked ZF6 clips (served locally), falling back to the live
+ * TTS route only for ids that have no baked file. index 0=m4a, 1=mp3,
+ * 2+=TTS. Keeps narration on the baked voice and avoids a 503 round-trip
+ * to the TTS route on every prompt.
+ */
+function narrationSrcFor(id: string, index: number): string {
+  if (index < KAI_AUDIO_FALLBACK_EXTENSIONS.length) {
+    return `/audio/${id}.${KAI_AUDIO_FALLBACK_EXTENSIONS[index]}`;
+  }
+  return `/api/kai-tts/${encodeURIComponent(id)}`;
+}
+
 interface QuestionScreenProps {
   question: Question;
   questions: Question[];
@@ -391,7 +404,7 @@ export function QuestionScreen({
       }
       setAudioState("loading");
       audioFallbackIndexRef.current = 0;
-      const nextSrc = `/api/kai-tts/${encodeURIComponent(activeNarrationId)}`;
+      const nextSrc = narrationSrcFor(activeNarrationId, 0);
       const needsSourceLoad =
         !audio.getAttribute("src")?.endsWith(nextSrc) || audio.readyState === 0;
       if (needsSourceLoad) {
@@ -429,15 +442,11 @@ export function QuestionScreen({
 
   const handleAudioError = useCallback(() => {
     const audio = audioRef.current;
-    if (
-      audio &&
-      soundOn &&
-      audioFallbackIndexRef.current < KAI_AUDIO_FALLBACK_EXTENSIONS.length
-    ) {
-      const extension =
-        KAI_AUDIO_FALLBACK_EXTENSIONS[audioFallbackIndexRef.current];
-      audioFallbackIndexRef.current += 1;
-      audio.src = `/audio/${activeNarrationId}.${extension}`;
+    const nextIndex = audioFallbackIndexRef.current + 1;
+    // index 0 (m4a) → 1 (mp3) → 2 (TTS route) → give up.
+    if (audio && soundOn && nextIndex <= KAI_AUDIO_FALLBACK_EXTENSIONS.length) {
+      audioFallbackIndexRef.current = nextIndex;
+      audio.src = narrationSrcFor(activeNarrationId, nextIndex);
       audio.load();
       audio.currentTime = 0;
       audio.playbackRate = speed;
@@ -539,6 +548,7 @@ export function QuestionScreen({
       {pendingInterstitial ? (
         <DidYouKnow
           interstitial={pendingInterstitial}
+          totalQuestions={totalQuestions}
           audioState={audioState}
           mouthOpen={displayedMouthOpen}
           soundOn={soundOn}
@@ -573,8 +583,10 @@ export function QuestionScreen({
           onError={handleAudioError}
         />
 
-        {/* Hero — aurora + Kai + question bubble below */}
-        <div className="flex flex-col items-center gap-2.5">
+        {/* Hero — aurora + Kai + question bubble below.
+            pt keeps the compass dial (which overflows the avatar box)
+            clear of the chrome header bar. */}
+        <div className="flex flex-col items-center gap-2.5 pt-16">
           <div
             className={`relative flex items-center justify-center ${
               isDenseChoice ? "h-[152px] w-[152px]" : "h-[176px] w-[176px]"
@@ -784,7 +796,7 @@ export function QuestionScreen({
                 placeholder="Type your reflection…"
                 rows={5}
                 maxLength={600}
-                className="w-full flex-1 resize-none rounded-xl bg-sand/96 px-4 py-3 text-[15px] leading-relaxed text-carbon placeholder:text-carbon/35 shadow-sand-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                className="w-full flex-1 resize-none rounded-xl border border-sand/15 bg-sand/[0.07] px-4 py-3 text-[15px] leading-relaxed text-sand caret-gold placeholder:text-sand/45 shadow-[inset_0_1px_0_rgba(245,238,230,0.06)] transition focus-visible:border-gold/55 focus-visible:bg-sand/[0.1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40 [color-scheme:dark]"
                 autoFocus
               />
               <p className="flex items-center justify-between text-eyebrow text-sand/50">

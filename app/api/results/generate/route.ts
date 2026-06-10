@@ -1,18 +1,27 @@
 import { assessmentQuestions } from "@/lib/assessment/questions";
-import { computeScore } from "@/lib/scoring";
+import { buildBaseReport } from "@/lib/results/framework";
 import {
-  buildFallbackReport,
-  createAnswerDigest,
-  CLUSTER_PROFILES,
-  getEcosystemFit,
-  getMultiCuriousClusters,
-} from "@/lib/results/framework";
+  RESULTS_SYSTEM_PROMPT,
+  buildFineTunePayload,
+  buildUserContent,
+  normalizeProseFields,
+} from "@/lib/results/prompt";
+import { pickProvider } from "@/lib/results/providers";
 import type { PersonalizedCompassReport } from "@/lib/results/types";
+import { computeScore } from "@/lib/scoring";
 
 export const runtime = "nodejs";
 
-const ANTHROPIC_MESSAGES_ENDPOINT = "https://api.anthropic.com/v1/messages";
-const DEFAULT_MODEL = "claude-sonnet-4-20250514";
+const MAX_ANSWERS = 100;
+const MAX_ANSWER_LEN = 500;
+const MAX_NAME_LEN = 80;
+
+// Best-effort per-IP rate limit on the *LLM call* (not the whole endpoint).
+// In-memory + per-instance — fine for a single server / local dev; a
+// production multi-instance deploy should use a shared store (e.g. Upstash).
+const LLM_LIMIT = 12;
+const LLM_WINDOW_MS = 60_000;
+const llmHits = new Map<string, { count: number; resetAt: number }>();
 
 type GenerateResultBody = {
   name?: string;
@@ -21,34 +30,43 @@ type GenerateResultBody = {
 };
 
 function isAnswerRecord(value: unknown): value is Record<string, string> {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    Object.values(value).every((entry) => typeof entry === "string")
-  );
-}
-
-function extractJsonObject(text: string) {
-  try {
-    return JSON.parse(text);
-  } catch {
-    const start = text.indexOf("{");
-    const end = text.lastIndexOf("}");
-    if (start === -1 || end === -1 || end <= start) throw new Error("No JSON");
-    return JSON.parse(text.slice(start, end + 1));
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return false;
   }
-}
-
-function normalizeList(value: unknown, fallback: string[]) {
-  if (!Array.isArray(value)) return fallback;
-  const list = value.filter(
-    (entry): entry is string => typeof entry === "string",
+  const entries = Object.entries(value);
+  if (entries.length === 0 || entries.length > MAX_ANSWERS) return false;
+  return entries.every(
+    ([, entry]) => typeof entry === "string" && entry.length <= MAX_ANSWER_LEN,
   );
-  return list.length > 0 ? list : fallback;
 }
 
-function normalizeString(value: unknown, fallback: string) {
-  return typeof value === "string" && value.trim() ? value.trim() : fallback;
+/** Trim, cap, and strip prompt-injection-ish markers from the learner name. */
+function sanitizeName(raw: unknown): string | undefined {
+  if (typeof raw !== "string") return undefined;
+  const clean = raw.trim().slice(0, MAX_NAME_LEN).replace(/[<>{}[\]]/g, "");
+  return clean || undefined;
+}
+
+function clientIp(request: Request): string {
+  return (
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "local"
+  );
+}
+
+function isLlmRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = llmHits.get(ip);
+  if (!entry || now > entry.resetAt) {
+    llmHits.set(ip, { count: 1, resetAt: now + LLM_WINDOW_MS });
+    if (llmHits.size > 5000) {
+      for (const [key, value] of llmHits) {
+        if (now > value.resetAt) llmHits.delete(key);
+      }
+    }
+    return false;
+  }
+  entry.count += 1;
+  return entry.count > LLM_LIMIT;
 }
 
 export async function POST(request: Request) {
@@ -62,175 +80,73 @@ export async function POST(request: Request) {
 
   if (!isAnswerRecord(body.answers)) {
     return Response.json(
-      { error: "answers must be a string record." },
+      { error: "answers must be a string record (max 100 entries)." },
       { status: 400 },
     );
   }
 
+  const name = sanitizeName(body.name);
+
+  // The deterministic engine is the source of truth: it produces the cluster,
+  // the lists, AND a complete doc-compliant BASE report. The AI only rewrites
+  // the prose on top of this; the lists/cluster/score are never AI-generated.
   const result = computeScore(body.answers, assessmentQuestions);
-  const fallback = buildFallbackReport({
+  const base = buildBaseReport({
     result,
-    name: body.name,
-    fallbackReason: "Claude generation was not available.",
+    name,
+    fallbackReason: "AI fine-tuning was not available.",
   });
 
-  const apiKey = process.env.ANTHROPIC_API_KEY || process.env.CLAUDE_API_KEY;
-  const model = process.env.ANTHROPIC_MODEL || DEFAULT_MODEL;
-
-  if (!apiKey) {
+  // Gate the (paid) LLM call, but still return the real deterministic report.
+  if (isLlmRateLimited(clientIp(request))) {
     return Response.json({
       report: {
-        ...fallback,
-        model,
-        fallbackReason: "ANTHROPIC_API_KEY is not configured.",
+        ...base,
+        fallbackReason:
+          "Showing your compass from the scoring engine (generation rate limit reached).",
       } satisfies PersonalizedCompassReport,
     });
   }
 
-  const ecosystemFit = getEcosystemFit(result);
-  const multiCuriousCodes = getMultiCuriousClusters(result);
-  const answerDigest = createAnswerDigest(body.answers, assessmentQuestions);
-  const topCluster = CLUSTER_PROFILES[result.topCluster];
-
-  const promptPayload = {
-    learner: {
-      name: body.name || "the learner",
-      // Do not send email to Claude. The app collects it for account/contact
-      // continuity; generation only needs the learner's first-person context.
-    },
-    score: {
-      topClusterCode: result.topCluster,
-      topClusterName: topCluster.name,
-      rawClusterScores: result.clusterRaw,
-      modifierBonuses: result.clusterBonus,
-      finalClusterScores: result.clusterFinal,
-      clusterRanked: result.clusterRanked,
-      confidencePercentage: result.confidencePercentage,
-      confidenceLabel: result.confidenceLabel,
-      isMultiCurious: multiCuriousCodes.length >= 3,
-      multiCuriousClusters: multiCuriousCodes.map(
-        (code) => CLUSTER_PROFILES[code].name,
-      ),
-      archetype: result.archetype,
-      primaryDrivers:
-        result.primaryDrivers.length > 0
-          ? result.primaryDrivers.map((code) => result.driverNames[code])
-          : ["Balanced"],
-      secondaryDrivers: result.secondaryDrivers.map(
-        (code) => result.driverNames[code],
-      ),
-      ecosystemFit,
-      axes: result.axes,
-    },
-    answers: answerDigest,
-    requiredOutputShape: {
-      headline: "string",
-      summary: "string",
-      academicPath: "string",
-      careerLandscape: "string",
-      integration: "string",
-      realityCheck: "string",
-      nextSteps: "string",
-      highSchoolSubjects: ["string"],
-      universityMajors: ["string"],
-      careerExamples: ["string"],
-      nonObviousPaths: ["string"],
-    },
-  };
-
-  const response = await fetch(ANTHROPIC_MESSAGES_ENDPOINT, {
-    method: "POST",
-    headers: {
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({
-      model,
-      max_tokens: 2200,
-      temperature: 0.35,
-      system:
-        "You generate CORE Assessment career guidance for Tareeq. Follow these rules exactly: provide guidance, not personality labels; never present the top cluster as a fixed destiny, diagnosis, or prescription; use language like 'your answers point to high curiosity for...' or 'your curiosity compass is pointing toward...'; write in Kai's voice; use direct second-person language; avoid hedge words, corporate speak, and inspirational cliches. Reveal information in this order: career families or job directions first, then university types/majors, then high-school subject choices. Include all guidance as exploration, not a single path. Include concrete school subjects, university majors, career families/job titles, less obvious paths, a reality check, and next steps. In the reality check, recommend watching YouTube searches such as 'day in the life of [role]' before choosing. Use regional school wording such as A-Levels, Tawjihi, Mathematics, Physics, Chemistry. Keep total narrative tight and useful for a 17-year-old in the Middle East. Return only valid JSON with the requested shape.",
-      messages: [
-        {
-          role: "user",
-          content: `Create a personalized CORE Assessment result from this JSON. Use the deterministic score as truth and use the answer digest only to add nuance. Do not describe the learner as a fixed personality type. Return only JSON.\n\n${JSON.stringify(
-            promptPayload,
-          )}`,
-        },
-      ],
-    }),
-  });
-
-  if (!response.ok) {
+  const provider = pickProvider();
+  if (!provider) {
     return Response.json({
       report: {
-        ...fallback,
-        model,
-        fallbackReason: `Claude API returned ${response.status}.`,
+        ...base,
+        fallbackReason:
+          "No results provider is configured (set GEMINI_API_KEY or ANTHROPIC_API_KEY).",
       } satisfies PersonalizedCompassReport,
     });
   }
+
+  const payload = buildFineTunePayload(result, name, base, body.answers);
+  const userContent = buildUserContent(payload);
 
   try {
-    const data = await response.json();
-    const text = data?.content?.find?.(
-      (entry: { type?: string }) => entry.type === "text",
-    )?.text;
-
-    if (typeof text !== "string") throw new Error("Missing text content.");
-
-    const generated = extractJsonObject(
-      text,
-    ) as Partial<PersonalizedCompassReport>;
+    const { generated, model, source } = await provider.generate({
+      system: RESULTS_SYSTEM_PROMPT,
+      userContent,
+    });
 
     const report: PersonalizedCompassReport = {
-      ...fallback,
+      ...base, // deterministic cluster, score, and ALL lists
+      ...normalizeProseFields(generated, base), // AI-polished prose only
       generatedAt: new Date().toISOString(),
-      source: "claude",
+      source,
       model,
       fallbackReason: undefined,
-      headline: normalizeString(generated.headline, fallback.headline),
-      summary: normalizeString(generated.summary, fallback.summary),
-      academicPath: normalizeString(
-        generated.academicPath,
-        fallback.academicPath,
-      ),
-      careerLandscape: normalizeString(
-        generated.careerLandscape,
-        fallback.careerLandscape,
-      ),
-      integration: normalizeString(generated.integration, fallback.integration),
-      realityCheck: normalizeString(
-        generated.realityCheck,
-        fallback.realityCheck,
-      ),
-      nextSteps: normalizeString(generated.nextSteps, fallback.nextSteps),
-      highSchoolSubjects: normalizeList(
-        generated.highSchoolSubjects,
-        fallback.highSchoolSubjects,
-      ),
-      universityMajors: normalizeList(
-        generated.universityMajors,
-        fallback.universityMajors,
-      ),
-      careerExamples: normalizeList(
-        generated.careerExamples,
-        fallback.careerExamples,
-      ),
-      nonObviousPaths: normalizeList(
-        generated.nonObviousPaths,
-        fallback.nonObviousPaths,
-      ),
     };
 
     return Response.json({ report });
-  } catch {
+  } catch (error) {
+    // Full detail to the server log; only a sanitized message to the client.
+    console.error("[results/generate] provider error:", error);
+    const reason =
+      error instanceof Error ? error.message : "Generation failed.";
     return Response.json({
       report: {
-        ...fallback,
-        model,
-        fallbackReason: "Claude response could not be parsed.",
+        ...base,
+        fallbackReason: reason.slice(0, 200),
       } satisfies PersonalizedCompassReport,
     });
   }

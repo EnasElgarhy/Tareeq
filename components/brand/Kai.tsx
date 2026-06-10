@@ -93,6 +93,50 @@ export function Kai({
       <span className="kai-video-avatar__halo" aria-hidden="true" />
       <span className="kai-video-avatar__rim" aria-hidden="true" />
 
+      {/* Compass frame — Kai's face sits at the center of the Career
+          Compass. Tick-ring bezel + cardinal rose points radiate around
+          the portrait, echoing the results-screen ResultCompass. */}
+      <svg
+        className="kai-video-avatar__compass"
+        viewBox="0 0 240 240"
+        aria-hidden="true"
+      >
+        <g className="kai-video-avatar__compass-rose">
+          {/* Faint outer ring */}
+          <circle
+            cx="120"
+            cy="120"
+            r="117"
+            fill="none"
+            stroke="rgba(157,127,240,0.5)"
+            strokeWidth="1.5"
+          />
+          {/* Ticked bezel hugging the round face */}
+          <circle
+            cx="120"
+            cy="120"
+            r="96"
+            fill="none"
+            stroke="rgba(245,238,230,0.4)"
+            strokeWidth="9"
+            strokeDasharray="2 9"
+          />
+          {/* Four bold cardinal ticks (N / E / S / W) */}
+          <g
+            stroke="rgba(245,238,230,0.82)"
+            strokeWidth="3"
+            strokeLinecap="round"
+          >
+            <line x1="120" y1="6" x2="120" y2="42" />
+            <line x1="120" y1="198" x2="120" y2="234" />
+            <line x1="6" y1="120" x2="42" y2="120" />
+            <line x1="198" y1="120" x2="234" y2="120" />
+          </g>
+        </g>
+        {/* North marker — fixed gold pip so the dial reads as a compass. */}
+        <circle cx="120" cy="6" r="5" fill="#f4c660" />
+      </svg>
+
       <video
         ref={videoRef}
         className="kai-video-avatar__media"

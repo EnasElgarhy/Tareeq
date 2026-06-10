@@ -20,12 +20,15 @@ import { computeKaiMouthLevel } from "@/lib/audio/lip-sync";
 const FALLBACK_EXTENSIONS = ["m4a", "mp3"] as const;
 
 function getNarrationSrc(audioId: string, fallbackIndex: number) {
-  if (fallbackIndex === 0) {
-    return `/api/kai-tts/${encodeURIComponent(audioId)}`;
+  // Prefer the baked local clips (Kai's original recorded voice). Only
+  // fall back to the live TTS route for audio ids that have no baked
+  // file (e.g. the between-section encouragements). This keeps the
+  // original intro/results voice instead of the synthesized one.
+  if (fallbackIndex < FALLBACK_EXTENSIONS.length) {
+    return `/audio/${audioId}.${FALLBACK_EXTENSIONS[fallbackIndex]}`;
   }
 
-  const ext = FALLBACK_EXTENSIONS[fallbackIndex - 1] ?? "mp3";
-  return `/audio/${audioId}.${ext}`;
+  return `/api/kai-tts/${encodeURIComponent(audioId)}`;
 }
 
 export type KaiNarrationState =

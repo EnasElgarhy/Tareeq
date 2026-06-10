@@ -13,8 +13,10 @@ import type { SVGProps } from "react";
  *   DualWaysScene         — sun rises, bridging spark draws across the arches
  *   PeakReachedScene      — summit star pulses, walker beats up the path
  *
- * Same `size`/`tone` props as before; `tone` is accepted for API
- * compatibility but unused (these scenes are designed for the night sheet).
+ * `tone` selects the line color so a scene reads on either surface:
+ * `cream` (default) draws light lines for the night sheet; `ink` draws
+ * dark lines for light surfaces (e.g. the Did-You-Know checkpoint). The
+ * warm-gradient accents work on both.
  */
 
 interface SceneProps extends SVGProps<SVGSVGElement> {
@@ -23,6 +25,7 @@ interface SceneProps extends SVGProps<SVGSVGElement> {
 }
 
 const SAND = "#F5EEE6";
+const INK = "#2B2440";
 const VIOLET_SOFT = "#9D7FF0";
 
 function WarmGradient({ id }: { id: string }) {
@@ -142,9 +145,10 @@ const SCENE_STYLES = `
 /** 1 · Pattern emerging — constellation draws itself toward a warm anchor. */
 export function PatternEmergingScene({
   size = 180,
-  tone: _tone,
+  tone = "cream",
   ...rest
 }: SceneProps) {
+  const line = tone === "ink" ? INK : SAND;
   const stars: Array<[number, number, number]> = [
     [55, 80, 3],
     [195, 60, 2.4],
@@ -173,7 +177,7 @@ export function PatternEmergingScene({
 
       {/* Threads — drawn in one by one with a stagger */}
       <g
-        stroke={SAND}
+        stroke={line}
         strokeWidth="1.3"
         strokeLinecap="round"
         strokeDasharray="1 5"
@@ -194,7 +198,7 @@ export function PatternEmergingScene({
           cx={cx}
           cy={cy}
           r={r}
-          fill={SAND}
+          fill={line}
           opacity={0.85 - i * 0.06}
           className="scene-star"
           style={{ animationDelay: `${i * 0.08}s` }}
@@ -242,9 +246,10 @@ export function PatternEmergingScene({
 /** 2 · Crossing paths — three paths draw in, the chosen one is warm. */
 export function CrossingPathsScene({
   size = 180,
-  tone: _tone,
+  tone = "cream",
   ...rest
 }: SceneProps) {
+  const line = tone === "ink" ? INK : SAND;
   return (
     <svg {...sceneProps(size)} {...rest}>
       <defs>
@@ -266,7 +271,7 @@ export function CrossingPathsScene({
       <path
         d="M 35 215 C 60 170, 100 200, 130 150 C 155 110, 100 80, 130 40"
         fill="none"
-        stroke={SAND}
+        stroke={line}
         strokeWidth="1.4"
         strokeLinecap="round"
         strokeDasharray="2 6"
@@ -277,7 +282,7 @@ export function CrossingPathsScene({
       <path
         d="M 35 215 C 55 190, 75 165, 80 130 C 85 85, 60 60, 75 30"
         fill="none"
-        stroke={SAND}
+        stroke={line}
         strokeWidth="1.4"
         strokeLinecap="round"
         strokeDasharray="2 6"
@@ -316,7 +321,7 @@ export function CrossingPathsScene({
         cx="35"
         cy="215"
         r="3.5"
-        fill={SAND}
+        fill={line}
         opacity="0.85"
         className="scene-star"
         style={{ animationDelay: "0.1s" }}
@@ -338,7 +343,7 @@ export function CrossingPathsScene({
           y1={y + 25}
           x2="25"
           y2={y + 25}
-          stroke={SAND}
+          stroke={line}
           strokeWidth="0.8"
           opacity="0.18"
           className="scene-star"
@@ -352,9 +357,10 @@ export function CrossingPathsScene({
 /** 3 · Dual ways — the sun rises and a bridging spark crosses the arches. */
 export function DualWaysScene({
   size = 180,
-  tone: _tone,
+  tone = "cream",
   ...rest
 }: SceneProps) {
+  const line = tone === "ink" ? INK : SAND;
   return (
     <svg {...sceneProps(size)} {...rest}>
       <defs>
@@ -369,7 +375,7 @@ export function DualWaysScene({
         y1="190"
         x2="220"
         y2="190"
-        stroke={SAND}
+        stroke={line}
         strokeWidth="1"
         opacity="0.25"
         className="scene-line"
@@ -390,7 +396,7 @@ export function DualWaysScene({
         <path
           d="M 30 190 L 30 110 A 40 40 0 0 1 110 110 L 110 190"
           fill="none"
-          stroke={SAND}
+          stroke={line}
           strokeWidth="1.6"
           opacity="0.9"
           className="scene-line scene-line--slow"
@@ -399,7 +405,7 @@ export function DualWaysScene({
         <path
           d="M 42 190 L 42 118 A 28 28 0 0 1 98 118 L 98 190"
           fill="none"
-          stroke={SAND}
+          stroke={line}
           strokeWidth="1"
           opacity="0.45"
           className="scene-line"
@@ -409,7 +415,7 @@ export function DualWaysScene({
           cx="70"
           cy="138"
           r="4"
-          fill={SAND}
+          fill={line}
           opacity="0.85"
           className="scene-star"
           style={{ animationDelay: "0.85s" }}
@@ -421,7 +427,7 @@ export function DualWaysScene({
         <path
           d="M 130 190 L 130 110 A 40 40 0 0 1 210 110 L 210 190"
           fill="none"
-          stroke={SAND}
+          stroke={line}
           strokeWidth="1.6"
           opacity="0.9"
           className="scene-line scene-line--slow"
@@ -434,7 +440,7 @@ export function DualWaysScene({
             y1={y}
             x2="200"
             y2={y}
-            stroke={SAND}
+            stroke={line}
             strokeWidth="0.9"
             opacity={0.55 - (y - 126) * 0.005}
             className="scene-line"
@@ -476,9 +482,10 @@ export function DualWaysScene({
 /** 4 · Peak reached — summit star pulses, walker beats up the dashed path. */
 export function PeakReachedScene({
   size = 180,
-  tone: _tone,
+  tone = "cream",
   ...rest
 }: SceneProps) {
+  const line = tone === "ink" ? INK : SAND;
   return (
     <svg {...sceneProps(size)} {...rest}>
       <defs>
@@ -509,7 +516,7 @@ export function PeakReachedScene({
       <path
         d="M 10 215 L 70 150 L 120 90 L 175 155 L 230 215"
         fill="none"
-        stroke={SAND}
+        stroke={line}
         strokeWidth="1.6"
         strokeLinejoin="round"
         opacity="0.85"
@@ -520,7 +527,7 @@ export function PeakReachedScene({
       {/* Mountain face shading */}
       <path
         d="M 120 90 L 175 155 L 145 155 Z"
-        fill={SAND}
+        fill={line}
         opacity="0.08"
         className="scene-star"
         style={{ animationDelay: "1.4s" }}
@@ -530,7 +537,7 @@ export function PeakReachedScene({
       <path
         d="M 35 220 C 65 200, 75 180, 95 165 C 110 154, 110 130, 120 105"
         fill="none"
-        stroke={SAND}
+        stroke={line}
         strokeWidth="1.3"
         strokeLinecap="round"
         strokeDasharray="1 6"
@@ -544,7 +551,7 @@ export function PeakReachedScene({
         cx="35"
         cy="220"
         r="3"
-        fill={SAND}
+        fill={line}
         opacity="0.7"
         className="scene-star"
         style={{ animationDelay: "0.55s" }}

@@ -46,6 +46,10 @@ export function AssessmentChrome({
   // Ceremonial screens — Meet Kai and the Contract — get a larger,
   // centered Tareeq mark with the warm-gradient icon.
   const isCeremony = pathname === "/intro" || pathname === "/contract";
+  // The "analyzing your answers" screen is a chrome-less waiting moment:
+  // no back button, logo, or profile avatar — there's no leaving it.
+  const isWaiting =
+    pathname === "/analyzing" || pathname === "/analyzing-preview";
 
   function goBack() {
     uiSounds.back();
@@ -93,6 +97,7 @@ export function AssessmentChrome({
        *  · everywhere else        — back-button + counter left, Tareeq mark right
        *                              (mark goes centered+warm-gradient on ceremony screens)
        */}
+      {!isWaiting && (
       <header
         className={
           hasQuestion
@@ -162,6 +167,7 @@ export function AssessmentChrome({
           </div>
         )}
       </header>
+      )}
 
       {/* Scrollable content well — the chrome locks to the viewport, but
        *  inner content can overflow vertically on short phones (iPhone SE,
