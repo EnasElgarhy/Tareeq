@@ -2,8 +2,8 @@
 
 import { CheckCircle2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { Kai } from "@/components/brand/Kai";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { KaiChromaVideo } from "@/components/brand/KaiChromaVideo";
 import { readLocalAssessment } from "@/lib/assessment/progress";
 import { buildFallbackReport } from "@/lib/results/framework";
 import {
@@ -149,11 +149,15 @@ export function AnalyzingScreen() {
               drawing toward the center, scanning beam sweeping. ─── */}
       <div className="relative mx-auto grid h-[280px] w-full max-w-[320px] place-items-center">
         <AnalysisOrbitField status={status} />
-        <div className="relative z-10 grid size-[126px] place-items-center rounded-full border border-sand/14 bg-night/85 shadow-[0_22px_60px_rgba(0,0,0,0.4)]">
+        <div className="relative z-10 grid size-[126px] place-items-center overflow-hidden rounded-full border border-sand/14 bg-night/85 shadow-[0_22px_60px_rgba(0,0,0,0.4)]">
           {/* Pulsing aura ring */}
           <span className="analysis-aura absolute inset-0 rounded-full" aria-hidden />
+          {/* New Kai — green screen keyed out, scaled + clipped to the
+              circular plate so she reads as a face while tokens orbit. */}
           <div className="anim-avatar-bob">
-            <Kai mood={status === "error" ? "thinking" : "encouraging"} size={104} />
+            <div style={{ transform: "translateY(12px)" }}>
+              <KaiChromaVideo src="/kai/kai-mentor-green.mp4" size={150} />
+            </div>
           </div>
         </div>
         {/* CORE pillar tokens orbiting Kai */}
@@ -342,11 +346,15 @@ function OrbitToken({
       style={{
         left: "50%",
         top: "50%",
+        // --ox/--oy feed the entrance keyframes so the token settles at
+        // its compass position (not collapsed to center over Kai's face).
+        ["--ox"]: `${x}px`,
+        ["--oy"]: `${y}px`,
         transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
         background: `linear-gradient(135deg, ${color}, color-mix(in srgb, ${color} 50%, #ffffff))`,
         animationDelay: `${delay}s`,
         opacity: status === "done" ? 1 : undefined,
-      }}
+      } as CSSProperties}
     >
       {letter}
     </span>

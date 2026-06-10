@@ -2,8 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { Kai } from "@/components/brand/Kai";
-import { KaiAuraV2 } from "@/components/brand/KaiAuraV2";
+import { KaiChromaVideo } from "@/components/brand/KaiChromaVideo";
 import {
   defaultVoiceOnForAssessmentStart,
   uiSounds,
@@ -125,17 +124,14 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
 
       {/* Hero illustration — compact */}
       <div className="relative mx-auto flex h-[180px] w-[180px] items-center justify-center">
-        <div className="anim-aura-bloom absolute inset-0">
-          <KaiAuraV2 size="100%" />
-        </div>
         <div
           aria-label="Kai, your guide"
           role="img"
-          className="anim-kai-pop relative"
-          style={{ animationDelay: "260ms" }}
+          className="anim-kai-drop relative z-10"
         >
-          <div className="anim-avatar-bob" style={{ animationDelay: "1100ms" }}>
-            <Kai mood="warm" size={130} />
+          <div className="anim-kai-drop-bob">
+            {/* Green screen keyed out — Kai drops onto the page, no frame. */}
+            <KaiChromaVideo src="/kai/kai-waving-green.mp4" size={180} />
           </div>
         </div>
       </div>
