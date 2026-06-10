@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { TareeqArrowLeft } from "@/components/brand/icons";
 import { CompassProgress } from "@/components/brand/CompassProgress";
 import { uiSounds } from "@/lib/audio/ui-sounds";
@@ -160,10 +160,6 @@ export function AssessmentChrome({
                 tareeq
               </span>
             </Link>
-
-            {/* Profile chip — only visible when the user has registered.
-             *  Hidden on /profile itself (no point linking to current). */}
-            <ProfileChip pathname={pathname} />
           </div>
         )}
       </header>
@@ -238,49 +234,3 @@ function QuestionCompassPanel({
 }
 
 
-/**
- * ProfileChip — a small avatar that appears in the chrome's right slot
- * once the user has registered. Click → /profile. Hidden on /profile
- * itself (no self-link) and on screens where the user hasn't yet
- * registered (no profile to show).
- */
-function ProfileChip({ pathname }: { pathname: string }) {
-  const [name, setName] = useState<string | null>(null);
-
-  useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem("tareeq.result.registration.v1");
-      if (!raw) return;
-      const parsed = JSON.parse(raw) as { name?: string; email?: string };
-      if (typeof parsed?.name === "string") setName(parsed.name);
-    } catch {
-      // ignore — no profile chip if storage is unreadable
-    }
-  }, []);
-
-  if (!name || pathname === "/profile") return null;
-  const initials = getProfileInitials(name);
-
-  return (
-    <Link
-      href="/profile"
-      aria-label="Your profile"
-      className="glass-tile inline-flex size-7 items-center justify-center rounded-full text-[10px] font-black text-sand transition hover:text-sand active:scale-95"
-      style={{
-        background:
-          "linear-gradient(135deg, rgba(255,107,61,0.3), rgba(157,127,240,0.2))",
-        boxShadow: "inset 0 0 0 1px rgba(245,238,230,0.18)",
-      }}
-    >
-      {initials}
-    </Link>
-  );
-}
-
-function getProfileInitials(name: string): string {
-  const parts = name.trim().split(/\s+/);
-  if (parts.length === 1) return parts[0]?.charAt(0).toUpperCase() ?? "?";
-  return (
-    (parts[0]?.charAt(0) ?? "") + (parts[parts.length - 1]?.charAt(0) ?? "")
-  ).toUpperCase();
-}
