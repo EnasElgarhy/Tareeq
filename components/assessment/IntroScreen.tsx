@@ -70,6 +70,16 @@ export function IntroScreen() {
       }, 900);
       return () => window.clearTimeout(timeout);
     }
+
+    // Touch devices wait for the first tap before audio can play. Don't make
+    // the user stare at a placeholder — type the intro out anyway; the voice
+    // joins in the moment they touch the screen (auto-start, no button).
+    if (audioState === "locked") {
+      const timeout = window.setTimeout(() => {
+        setIntroCopyActive(true);
+      }, 1200);
+      return () => window.clearTimeout(timeout);
+    }
   }, [audioState, soundOn, soundPrefReady, syncTypeSpeedFromAudio]);
 
   function next() {
@@ -189,7 +199,7 @@ export function IntroScreen() {
               lineHeight: 1.4,
             }}
           >
-            {isLocked ? "Tap Start voice to meet Kai." : "Kai is getting ready."}
+            Kai is getting ready.
           </p>
         )}
       </div>
@@ -229,31 +239,17 @@ export function IntroScreen() {
             )}
           </svg>
         </button>
-        <button
-          type="button"
-          onClick={replayOrUnlock}
-          disabled={!soundOn || isPlaying}
-          className={
-            isLocked
-              ? "inline-flex h-9 items-center gap-1.5 rounded-full bg-gold-gradient px-3.5 text-[12px] font-semibold text-carbon shadow-gold-glow transition active:scale-95"
-              : "glass-tile inline-flex size-9 items-center justify-center rounded-full text-sand/75 transition hover:text-sand active:scale-95 disabled:opacity-40"
-          }
-          aria-label={
-            isLocked
-              ? "Start Kai's voice"
-              : isPlaying
-                ? "Kai is speaking"
-                : "Replay Kai's voice"
-          }
-        >
-          {isLocked ? (
-            <>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                <path d="M7 5.5 L18.5 12 L7 18.5 Z" />
-              </svg>
-              Start voice
-            </>
-          ) : (
+        {/* Replay control only — Kai's voice auto-starts on the first tap
+         *  anywhere (handled by useKaiNarration), so there's no explicit
+         *  "Start voice" button to hunt for. */}
+        {!isLocked && (
+          <button
+            type="button"
+            onClick={replayOrUnlock}
+            disabled={!soundOn || isPlaying}
+            className="glass-tile inline-flex size-9 items-center justify-center rounded-full text-sand/75 transition hover:text-sand active:scale-95 disabled:opacity-40"
+            aria-label={isPlaying ? "Kai is speaking" : "Replay Kai's voice"}
+          >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
               <path
                 d="M3 12 A 9 9 0 0 1 21 12"
@@ -271,8 +267,8 @@ export function IntroScreen() {
                 fill="none"
               />
             </svg>
-          )}
-        </button>
+          </button>
+        )}
       </div>
 
       <div className="flex-1" />
