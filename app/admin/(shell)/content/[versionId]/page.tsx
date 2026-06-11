@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { VersionActions } from "@/components/admin/VersionActions";
 import {
   getContentVersion,
   getVersionContent,
@@ -104,6 +105,15 @@ export default async function VersionDetailPage({
           {questions.length} questions
         </span>
       </header>
+
+      <div className="mb-6 flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3">
+        <p className="text-[13px] text-slate-500">
+          {version.is_active
+            ? "This is the live version. Clone it to make edits safely."
+            : "Draft — edit freely, then publish to make it live."}
+        </p>
+        <VersionActions versionId={version.id} isActive={version.is_active} />
+      </div>
 
       {pillars.map((pillar) => {
         const qs = byPillar.get(pillar)!;
