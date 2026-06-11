@@ -191,6 +191,46 @@
   }
 }
 
+/* ---- Skeleton shimmer (loading states) ------------------------------- */
+.adm .adm-skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--adm-line);
+  border-radius: var(--adm-r-sm);
+}
+.adm .adm-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 253, 249, 0.6),
+    transparent
+  );
+  animation: adm-shimmer 1.4s ease-in-out infinite;
+}
+@keyframes adm-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* ---- Bar draw-in (cluster coverage) ---------------------------------- */
+.adm .adm-grow-x {
+  transform-origin: left;
+  animation: adm-grow-x var(--adm-dur-slow) var(--adm-ease) both;
+}
+@keyframes adm-grow-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
 /* ---- Reduced motion: kill transforms & animations --------------------- */
 @media (prefers-reduced-motion: reduce) {
   .adm *,
