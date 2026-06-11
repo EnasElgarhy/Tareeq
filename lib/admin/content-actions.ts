@@ -17,6 +17,7 @@ const optionInputSchema = z.object({
 });
 
 const saveQuestionSchema = z.object({
+  kind: z.string().trim().min(1),
   title: localizedSchema,
   axis: z.string().nullable(),
   options: z.array(optionInputSchema).max(12),
@@ -38,6 +39,22 @@ async function assertDraft(sb: AdminClient, versionId: string): Promise<void> {
     throw new Error(
       "The active version is read-only — clone it to a draft to edit.",
     );
+}
+
+/** Validate option cluster codes against the cluster table + letter uniqueness. */
+async function validateOptions(
+  sb: AdminClient,
+  options: { letter: string; cluster_code: string | null }[],
+): Promise<void> {
+  const { data: clusters } = await sb.from("clusters").select("code");
+  const valid = new Set((clusters ?? []).map((c) => c.code as string));
+  for (const o of options) {
+    if (o.cluster_code && !valid.has(o.cluster_code))
+      throw new Error(`Unknown cluster code: ${o.cluster_code}`);
+  }
+  const letters = options.map((o) => o.letter);
+  if (new Set(letters).size !== letters.length)
+    throw new Error("Answer keys must be unique within a question");
 }
 
 interface SourceOption {
@@ -223,19 +240,11 @@ export async function saveQuestion(
   }
   const input = parsed.data;
 
-  const { data: clusters } = await sb.from("clusters").select("code");
-  const validCodes = new Set((clusters ?? []).map((c) => c.code as string));
-  for (const o of input.options) {
-    if (o.cluster_code && !validCodes.has(o.cluster_code))
-      throw new Error(`Unknown cluster code: ${o.cluster_code}`);
-  }
-  const letters = input.options.map((o) => o.letter);
-  if (new Set(letters).size !== letters.length)
-    throw new Error("Option letters must be unique within a question");
+  await validateOptions(sb, input.options);
 
   const { error: uq } = await sb
     .from("questions")
-    .update({ title: input.title, axis: input.axis })
+    .update({ kind: input.kind, title: input.title, axis: input.axis })
     .eq("id", questionId);
   if (uq) throw new Error(uq.message);
 
@@ -287,11 +296,12 @@ export async function createBlankVersion(rawLabel: unknown): Promise<string> {
 
 const addQuestionSchema = z.object({
   pillar: z.coerce.number().int().min(0).max(4),
-  title: z.string().trim().min(1),
   kind: z.string().trim().min(1).default("single"),
+  title: z.string().trim().min(1),
+  options: z.array(optionInputSchema).max(12).default([]),
 });
 
-/** Add a question (no options yet) to a draft, at the end of its pillar. */
+/** Add a question (with its answers) to a draft, at the end of its pillar. */
 export async function addQuestion(
   versionId: string,
   rawInput: unknown,
@@ -325,6 +335,22 @@ export async function addQuestion(
     .select("id")
     .single();
   if (error || !data) throw new Error(error?.message ?? "Could not add");
+
+  if (input.options.length > 0) {
+    await validateOptions(sb, input.options);
+    const { error: optErr } = await sb.from("question_options").insert(
+      input.options.map((o, i) => ({
+        question_id: data.id,
+        letter: o.letter,
+        position: i,
+        text: o.text,
+        cluster_code: o.cluster_code,
+        driver_code: o.driver_code,
+        axis_value: o.axis_value,
+      })),
+    );
+    if (optErr) throw new Error(optErr.message);
+  }
 
   revalidatePath(`/admin/content/${versionId}`);
   return data.id;

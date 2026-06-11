@@ -49,6 +49,49 @@ export const PILLAR_NAMES: Record<number, string> = {
   4: "Ecosystems",
 };
 
+export interface QuestionType {
+  kind: string;
+  label: string;
+  hint: string;
+  hasOptions: boolean;
+}
+
+/** Question types the assessment engine can render (see QuestionScreen). */
+export const QUESTION_TYPES: QuestionType[] = [
+  {
+    kind: "single",
+    label: "Multiple choice",
+    hint: "Pick one of several answers",
+    hasOptions: true,
+  },
+  {
+    kind: "binary",
+    label: "Two options",
+    hint: "A or B (two answers)",
+    hasOptions: true,
+  },
+  {
+    kind: "select",
+    label: "Dropdown",
+    hint: "Pick one from a long list",
+    hasOptions: true,
+  },
+  {
+    kind: "text",
+    label: "Free text",
+    hint: "Open written response — no preset answers",
+    hasOptions: false,
+  },
+];
+
+export function questionTypeLabel(kind: string): string {
+  return QUESTION_TYPES.find((t) => t.kind === kind)?.label ?? kind;
+}
+
+export function typeHasOptions(kind: string): boolean {
+  return QUESTION_TYPES.find((t) => t.kind === kind)?.hasOptions ?? true;
+}
+
 export async function listContentVersions(): Promise<ContentVersionRow[]> {
   const sb = createSupabaseAdminClient();
   const { data, error } = await sb

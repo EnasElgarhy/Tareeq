@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { AddQuestionForm } from "@/components/admin/AddQuestionForm";
+import { QuestionBuilder } from "@/components/admin/QuestionBuilder";
 import { QuestionEditor } from "@/components/admin/QuestionEditor";
 import { VersionActions } from "@/components/admin/VersionActions";
 import {
@@ -121,7 +121,7 @@ export default async function VersionDetailPage({
 
       {!version.is_active ? (
         <div className="mb-6">
-          <AddQuestionForm versionId={version.id} />
+          <QuestionBuilder versionId={version.id} clusters={clusters} />
         </div>
       ) : null}
 
