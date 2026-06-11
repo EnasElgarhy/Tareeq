@@ -3,6 +3,8 @@
 import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { typeHasOptions } from "@/lib/admin/content";
+import { normalizeKind, parseCsvRecords } from "@/lib/admin/csv";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
@@ -439,4 +441,194 @@ export async function moveQuestion(
   await sb.from("questions").update({ position: a.position }).eq("id", b.id);
 
   revalidatePath(`/admin/content/${versionId}`);
+}
+
+export interface ImportResult {
+  ok: boolean;
+  questionsImported: number;
+  optionsImported: number;
+  errors: string[];
+}
+
+interface BuiltOption {
+  letter: string;
+  text: Record<string, string>;
+  cluster_code: string | null;
+  driver_code: string | null;
+  axis_value: string | null;
+}
+interface BuiltQuestion {
+  pillar: number;
+  kind: string;
+  title: string;
+  axis: string | null;
+  options: BuiltOption[];
+}
+
+/**
+ * Bulk-import questions into a draft from CSV (one row per answer, grouped by
+ * question_key). Validates everything first — nothing is inserted if any row
+ * is invalid — then reports a clear summary or row-level errors.
+ */
+export async function importQuestionsCsv(
+  versionId: string,
+  csvText: string,
+): Promise<ImportResult> {
+  await requireAdmin();
+  const sb = createSupabaseAdminClient();
+  await assertDraft(sb, versionId);
+
+  const empty = { questionsImported: 0, optionsImported: 0 };
+  const records = parseCsvRecords(csvText);
+  if (records.length === 0)
+    return { ok: false, ...empty, errors: ["The file has no data rows."] };
+
+  const required = ["question_key", "pillar", "type", "title"];
+  const headerKeys = Object.keys(records[0]);
+  const missing = required.filter((h) => !headerKeys.includes(h));
+  if (missing.length > 0)
+    return {
+      ok: false,
+      ...empty,
+      errors: [
+        `Missing column(s): ${missing.join(", ")}. Download the template and keep the header row.`,
+      ],
+    };
+
+  const { data: clustersData } = await sb.from("clusters").select("code");
+  const validClusters = new Set(
+    (clustersData ?? []).map((c) => c.code as string),
+  );
+
+  // Group rows by question_key, preserving first-seen order.
+  const order: string[] = [];
+  const groups = new Map<string, Record<string, string>[]>();
+  records.forEach((r, idx) => {
+    const key = r.question_key || `__row${idx}`;
+    if (!groups.has(key)) {
+      groups.set(key, []);
+      order.push(key);
+    }
+    groups.get(key)?.push(r);
+  });
+
+  const errors: string[] = [];
+  const built: BuiltQuestion[] = [];
+
+  for (const key of order) {
+    const rows = groups.get(key) ?? [];
+    const first = rows[0];
+    const label = `Question "${key}"`;
+
+    const pillar = Number(first.pillar);
+    if (!Number.isInteger(pillar) || pillar < 0 || pillar > 4) {
+      errors.push(`${label}: pillar must be a number 0–4 (got "${first.pillar}").`);
+      continue;
+    }
+    const kind = normalizeKind(first.type);
+    if (!kind) {
+      errors.push(
+        `${label}: unknown type "${first.type}". Use single, binary, select, or text.`,
+      );
+      continue;
+    }
+    const title = first.title.trim();
+    if (!title) {
+      errors.push(`${label}: title is required.`);
+      continue;
+    }
+    const axis = first.axis?.trim() ? first.axis.trim() : null;
+
+    let options: BuiltOption[] = [];
+    if (typeHasOptions(kind)) {
+      options = rows
+        .filter((r) => r.answer_key?.trim() || r.answer_text?.trim())
+        .map((r) => ({
+          letter: r.answer_key?.trim() || "",
+          text: { en: r.answer_text?.trim() || "" },
+          cluster_code: r.cluster?.trim() ? r.cluster.trim().toUpperCase() : null,
+          driver_code: r.driver?.trim() ? r.driver.trim() : null,
+          axis_value: r.axis_value?.trim() ? r.axis_value.trim() : null,
+        }));
+      for (const o of options) {
+        if (!o.letter) errors.push(`${label}: an answer is missing its key (A/B/C…).`);
+        if (o.cluster_code && !validClusters.has(o.cluster_code))
+          errors.push(`${label}: unknown cluster "${o.cluster_code}".`);
+      }
+      const letters = options.map((o) => o.letter);
+      if (new Set(letters).size !== letters.length)
+        errors.push(`${label}: answer keys must be unique.`);
+      if (options.length === 0)
+        errors.push(`${label}: a ${kind} question needs at least one answer.`);
+    }
+
+    built.push({ pillar, kind, title, axis, options });
+  }
+
+  if (errors.length > 0)
+    return { ok: false, ...empty, errors: errors.slice(0, 25) };
+
+  // Next position per pillar, continuing after existing questions.
+  const { data: existing } = await sb
+    .from("questions")
+    .select("pillar,position")
+    .eq("version_id", versionId);
+  const nextPos: Record<number, number> = {};
+  for (const r of existing ?? []) {
+    const p = r.pillar as number;
+    nextPos[p] = Math.max(nextPos[p] ?? 0, (r.position as number) + 1);
+  }
+
+  let questionsImported = 0;
+  let optionsImported = 0;
+  for (const q of built) {
+    const pos = nextPos[q.pillar] ?? 0;
+    nextPos[q.pillar] = pos + 1;
+    const { data: inserted, error } = await sb
+      .from("questions")
+      .insert({
+        version_id: versionId,
+        external_id: `Q-${randomUUID().slice(0, 8)}`,
+        pillar: q.pillar,
+        position: pos,
+        kind: q.kind,
+        title: { en: q.title },
+        axis: q.axis,
+      })
+      .select("id")
+      .single();
+    if (error || !inserted)
+      return {
+        ok: false,
+        questionsImported,
+        optionsImported,
+        errors: [`Insert failed at "${q.title}": ${error?.message}`],
+      };
+    questionsImported++;
+
+    if (q.options.length > 0) {
+      const { error: oe } = await sb.from("question_options").insert(
+        q.options.map((o, i) => ({
+          question_id: inserted.id,
+          letter: o.letter,
+          position: i,
+          text: o.text,
+          cluster_code: o.cluster_code,
+          driver_code: o.driver_code,
+          axis_value: o.axis_value,
+        })),
+      );
+      if (oe)
+        return {
+          ok: false,
+          questionsImported,
+          optionsImported,
+          errors: [`Answers insert failed at "${q.title}": ${oe.message}`],
+        };
+      optionsImported += q.options.length;
+    }
+  }
+
+  revalidatePath(`/admin/content/${versionId}`);
+  return { ok: true, questionsImported, optionsImported, errors: [] };
 }

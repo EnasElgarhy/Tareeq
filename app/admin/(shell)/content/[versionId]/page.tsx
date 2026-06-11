@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CsvImport } from "@/components/admin/CsvImport";
 import { QuestionBuilder } from "@/components/admin/QuestionBuilder";
 import { QuestionEditor } from "@/components/admin/QuestionEditor";
 import { VersionActions } from "@/components/admin/VersionActions";
@@ -120,8 +121,9 @@ export default async function VersionDetailPage({
       </div>
 
       {!version.is_active ? (
-        <div className="mb-6">
+        <div className="mb-6 flex flex-wrap items-start gap-2">
           <QuestionBuilder versionId={version.id} clusters={clusters} />
+          <CsvImport versionId={version.id} />
         </div>
       ) : null}
 

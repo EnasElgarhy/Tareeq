@@ -91,7 +91,7 @@ export function QuestionBuilder({
   const hint = QUESTION_TYPES.find((t) => t.kind === kind)?.hint;
 
   return (
-    <div className="rounded-xl border-2 border-[#6E48E4]/30 bg-white p-4">
+    <div className="w-full rounded-xl border-2 border-[#6E48E4]/30 bg-white p-4">
       <div className="mb-3 flex flex-wrap items-center gap-2">
         <select
           value={kind}
