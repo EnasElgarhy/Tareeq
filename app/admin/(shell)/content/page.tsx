@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { NewAssessmentButton } from "@/components/admin/NewAssessmentButton";
 import {
   countQuestionsByVersion,
   listClusters,
@@ -33,9 +34,12 @@ export default async function ContentPage() {
 
       {/* Content versions */}
       <section className="mb-8">
-        <h2 className="mb-3 text-[13px] font-bold uppercase tracking-wide text-slate-400">
-          Assessment versions
-        </h2>
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-[13px] font-bold uppercase tracking-wide text-slate-400">
+            Assessment versions
+          </h2>
+          <NewAssessmentButton />
+        </div>
         <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
           {versions.length === 0 ? (
             <p className="px-5 py-8 text-center text-[14px] text-slate-500">

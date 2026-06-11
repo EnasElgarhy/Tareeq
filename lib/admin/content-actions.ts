@@ -1,5 +1,6 @@
 "use server";
 
+import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/auth/require-admin";
@@ -258,6 +259,97 @@ export async function saveQuestion(
     );
     if (ins) throw new Error(ins.message);
   }
+
+  revalidatePath(`/admin/content/${versionId}`);
+}
+
+/** Create a new, empty draft assessment version. Returns the new id. */
+export async function createBlankVersion(rawLabel: unknown): Promise<string> {
+  const admin = await requireAdmin();
+  const label = z.string().trim().min(1).max(80).parse(rawLabel);
+  const sb = createSupabaseAdminClient();
+
+  const { data, error } = await sb
+    .from("content_versions")
+    .insert({
+      label,
+      is_active: false,
+      notes: "Created in CMS",
+      created_by: admin.id,
+    })
+    .select("id")
+    .single();
+  if (error || !data) throw new Error(error?.message ?? "Could not create");
+
+  revalidatePath("/admin/content");
+  return data.id;
+}
+
+const addQuestionSchema = z.object({
+  pillar: z.coerce.number().int().min(0).max(4),
+  title: z.string().trim().min(1),
+  kind: z.string().trim().min(1).default("single"),
+});
+
+/** Add a question (no options yet) to a draft, at the end of its pillar. */
+export async function addQuestion(
+  versionId: string,
+  rawInput: unknown,
+): Promise<string> {
+  await requireAdmin();
+  const sb = createSupabaseAdminClient();
+  await assertDraft(sb, versionId);
+
+  const input = addQuestionSchema.parse(rawInput);
+
+  const { data: tail } = await sb
+    .from("questions")
+    .select("position")
+    .eq("version_id", versionId)
+    .eq("pillar", input.pillar)
+    .order("position", { ascending: false })
+    .limit(1);
+  const nextPos = (tail?.[0]?.position ?? -1) + 1;
+
+  const { data, error } = await sb
+    .from("questions")
+    .insert({
+      version_id: versionId,
+      external_id: `Q-${randomUUID().slice(0, 8)}`,
+      pillar: input.pillar,
+      position: nextPos,
+      kind: input.kind,
+      title: { en: input.title },
+      axis: null,
+    })
+    .select("id")
+    .single();
+  if (error || !data) throw new Error(error?.message ?? "Could not add");
+
+  revalidatePath(`/admin/content/${versionId}`);
+  return data.id;
+}
+
+/** Delete a question (draft only; cascades its options). */
+export async function deleteQuestion(
+  versionId: string,
+  questionId: string,
+): Promise<void> {
+  await requireAdmin();
+  const sb = createSupabaseAdminClient();
+  await assertDraft(sb, versionId);
+
+  const { data: q, error: qe } = await sb
+    .from("questions")
+    .select("version_id")
+    .eq("id", questionId)
+    .single();
+  if (qe || !q) throw new Error("Question not found");
+  if (q.version_id !== versionId)
+    throw new Error("Question does not belong to this version");
+
+  const { error } = await sb.from("questions").delete().eq("id", questionId);
+  if (error) throw new Error(error.message);
 
   revalidatePath(`/admin/content/${versionId}`);
 }

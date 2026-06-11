@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { AddQuestionForm } from "@/components/admin/AddQuestionForm";
 import { QuestionEditor } from "@/components/admin/QuestionEditor";
 import { VersionActions } from "@/components/admin/VersionActions";
 import {
@@ -117,6 +118,21 @@ export default async function VersionDetailPage({
         </p>
         <VersionActions versionId={version.id} isActive={version.is_active} />
       </div>
+
+      {!version.is_active ? (
+        <div className="mb-6">
+          <AddQuestionForm versionId={version.id} />
+        </div>
+      ) : null}
+
+      {questions.length === 0 ? (
+        <p className="rounded-xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center text-[13px] text-slate-500">
+          No questions yet
+          {version.is_active
+            ? "."
+            : " — use “Add question” above to start building this assessment."}
+        </p>
+      ) : null}
 
       {pillars.map((pillar) => {
         const qs = byPillar.get(pillar)!;

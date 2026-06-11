@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
 import type { ClusterRow, QuestionRow } from "@/lib/admin/content";
-import { saveQuestion } from "@/lib/admin/content-actions";
+import { deleteQuestion, saveQuestion } from "@/lib/admin/content-actions";
 
 interface EditOption {
   key: string;
@@ -118,6 +118,18 @@ export function QuestionEditor({
         router.refresh();
       } catch (e) {
         setError(e instanceof Error ? e.message : "Save failed");
+      }
+    });
+  }
+
+  function del() {
+    setError(null);
+    startTransition(async () => {
+      try {
+        await deleteQuestion(versionId, question.id);
+        router.refresh();
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Delete failed");
       }
     });
   }
@@ -282,6 +294,17 @@ export function QuestionEditor({
         {error ? (
           <span className="text-[12px] text-red-600">{error}</span>
         ) : null}
+        <button
+          type="button"
+          disabled={pending}
+          onClick={() => {
+            if (window.confirm("Delete this question? This can't be undone."))
+              del();
+          }}
+          className="ml-auto text-[12px] font-semibold text-red-600 hover:underline disabled:opacity-60"
+        >
+          Delete question
+        </button>
       </div>
     </div>
   );
