@@ -17,6 +17,8 @@ interface DidYouKnowProps {
     | "unavailable";
   mouthOpen?: number;
   soundOn?: boolean;
+  /** Narration <audio> element — drives Kai's mouth in frame-accurate sync. */
+  audioRef?: React.RefObject<HTMLAudioElement | null>;
   onReplay?(): void;
   onToggleSound?(): void;
   onDismiss(): void;
@@ -142,13 +144,13 @@ export function DidYouKnow({
             {/* Green screen keyed out, then scaled up + clipped to a circle
                 so the new Kai reads as a clean face avatar at chip size. */}
             <div style={{ transform: "translateY(6px)" }}>
+              {/* Mentor clip on a gentle loop — Kai is just "doing some
+                  moves" here, NOT lip-syncing the fact narration. */}
               <KaiChromaVideo
-                src="/kai/kai-question-green.mp4"
+                src="/kai/kai-mentor-green.mp4"
                 size={62}
-                playing={audioState === "loading" || audioState === "playing"}
-                playStart={1.3}
-                playEnd={3.2}
-                restTime={0}
+                playing
+                loop
               />
             </div>
           </div>

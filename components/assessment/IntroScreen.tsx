@@ -121,7 +121,15 @@ export function IntroScreen() {
           className="anim-kai-drop"
         >
           <div className="anim-kai-drop-bob">
-            <KaiChromaVideo size={232} />
+            {/* New Kai intro clip — plays in sync with the narration
+                (same line), freezes on her closed-mouth smile when done. */}
+            <KaiChromaVideo
+              size={232}
+              src="/kai/kai-intro-green.mp4"
+              audioRef={audioRef}
+              playStart={0}
+              restTime={0}
+            />
           </div>
         </div>
       </div>

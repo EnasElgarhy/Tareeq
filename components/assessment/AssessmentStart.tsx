@@ -130,8 +130,15 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
           className="anim-kai-drop relative z-10"
         >
           <div className="anim-kai-drop-bob">
-            {/* Green screen keyed out — Kai drops onto the page, no frame. */}
-            <KaiChromaVideo src="/kai/kai-waving-green.mp4" size={180} />
+            {/* No narration on this screen, so Kai rests on a closed-mouth
+                frame (she won't "murmur" silently); the CSS float keeps her
+                subtly alive. */}
+            <KaiChromaVideo
+              src="/kai/kai-intro-green.mp4"
+              size={180}
+              playing={false}
+              restTime={0}
+            />
           </div>
         </div>
       </div>

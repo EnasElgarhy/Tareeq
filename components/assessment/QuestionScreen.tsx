@@ -525,6 +525,7 @@ export function QuestionScreen({
           audioState={audioState}
           mouthOpen={displayedMouthOpen}
           soundOn={soundOn}
+          audioRef={audioRef}
           onReplay={() => playQuestionAudio("replay", false, true)}
           onToggleSound={toggleSound}
           onDismiss={dismissInterstitial}
@@ -579,7 +580,7 @@ export function QuestionScreen({
                 <KaiChromaVideo
                   src="/kai/kai-question-green.mp4"
                   size={isDenseChoice ? 176 : 200}
-                  playing={audioState === "loading" || audioState === "playing"}
+                  audioRef={audioRef}
                   playStart={1.3}
                   playEnd={3.2}
                   restTime={0}

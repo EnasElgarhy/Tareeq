@@ -156,7 +156,14 @@ export function AnalyzingScreen() {
               circular plate so she reads as a face while tokens orbit. */}
           <div className="anim-avatar-bob">
             <div style={{ transform: "translateY(12px)" }}>
-              <KaiChromaVideo src="/kai/kai-mentor-green.mp4" size={150} />
+              {/* No narration on the loader — rest on a closed-mouth frame
+                  so Kai doesn't murmur silently. */}
+              <KaiChromaVideo
+                src="/kai/kai-mentor-green.mp4"
+                size={150}
+                playing={false}
+                restTime={2.3}
+              />
             </div>
           </div>
         </div>

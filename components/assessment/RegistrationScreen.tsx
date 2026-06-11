@@ -126,9 +126,14 @@ export function RegistrationScreen() {
           className="anim-kai-drop relative z-10"
         >
           <div className="anim-kai-drop-bob">
-            {/* Mentor clip — green screen keyed out so Kai drops onto the
-                page transparently, no frame. */}
-            <KaiChromaVideo src="/kai/kai-mentor-green.mp4" size={168} />
+            {/* No narration here — Kai rests on a closed-mouth frame so she
+                doesn't murmur silently; the CSS float keeps her alive. */}
+            <KaiChromaVideo
+              src="/kai/kai-mentor-green.mp4"
+              size={168}
+              playing={false}
+              restTime={2.3}
+            />
           </div>
         </div>
       </div>

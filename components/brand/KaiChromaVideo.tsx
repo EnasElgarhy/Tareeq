@@ -5,6 +5,7 @@ import {
   useRef,
   type CSSProperties,
   type HTMLAttributes,
+  type RefObject,
 } from "react";
 
 interface KaiChromaVideoProps extends HTMLAttributes<HTMLDivElement> {
@@ -13,10 +14,17 @@ interface KaiChromaVideoProps extends HTMLAttributes<HTMLDivElement> {
   /** Green-screen source clip. */
   src?: string;
   /**
-   * Whether Kai should be animating. When `true` the clip plays/loops;
-   * when `false` it pauses on `restTime` (a mouth-closed "done talking"
-   * frame). Drive this from narration state so Kai stops talking — with
-   * her mouth closed — the moment the audio ends. Defaults to `true`.
+   * Frame-accurate audio sync. When provided, the clip plays only while
+   * this <audio> element is actually playing, and freezes on `restTime`
+   * (a mouth-closed frame) the instant the audio pauses or ends — driven
+   * directly off the element's media events (no React-state lag). Takes
+   * precedence over `playing`.
+   */
+  audioRef?: RefObject<HTMLAudioElement | null>;
+  /**
+   * Fallback play control for screens with no narration. When `true` the
+   * clip plays/loops; when `false` it rests on `restTime`. Ignored if
+   * `audioRef` is given. Defaults to `true`.
    */
   playing?: boolean;
   /** Seconds to freeze on when not playing — a mouth-closed frame. */
@@ -31,6 +39,12 @@ interface KaiChromaVideoProps extends HTMLAttributes<HTMLDivElement> {
    * clip — keeps Kai in her "talking" window while narration plays.
    */
   playEnd?: number;
+  /**
+   * When `true`, the clip loops continuously (for idle "doing some moves"
+   * usage like the Did-you-know chip). When `false` (default) it plays
+   * through once and holds its last frame.
+   */
+  loop?: boolean;
 }
 
 /**
@@ -46,21 +60,26 @@ interface KaiChromaVideoProps extends HTMLAttributes<HTMLDivElement> {
  */
 export function KaiChromaVideo({
   size = 240,
-  src = "/kai/kai-waving-green.mp4",
+  src = "/kai/kai-intro-green.mp4",
+  audioRef,
   playing = true,
   restTime = 0,
   playStart = 0,
   playEnd,
+  loop = false,
   className,
   style,
   ...rest
 }: KaiChromaVideoProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const playingRef = useRef(playing);
-  // Loop window + rest frame, read by the rAF loop without re-running setup.
-  const cfgRef = useRef({ playStart, playEnd, restTime });
-  cfgRef.current = { playStart, playEnd, restTime };
+  // Whether the clip should currently be animating. For audio-driven
+  // screens this starts false (waits for the audio to play); otherwise it
+  // tracks the `playing` prop.
+  const playingRef = useRef(audioRef ? false : playing);
+  // Loop window + rest frame + flags, read by the rAF without re-running setup.
+  const cfgRef = useRef({ playStart, playEnd, restTime, loop });
+  cfgRef.current = { playStart, playEnd, restTime, loop };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -71,7 +90,9 @@ export function KaiChromaVideo({
       premultipliedAlpha: false,
       alpha: true,
       antialias: true,
-      preserveDrawingBuffer: false,
+      // Readable buffer (lets us scan the keyed output for fringes; the
+      // cost is negligible for a small avatar canvas).
+      preserveDrawingBuffer: true,
     });
 
     // Graceful fallback: if WebGL is unavailable, just reveal the raw
@@ -106,12 +127,20 @@ export function KaiChromaVideo({
         vec4 c = texture2D(u_tex, v_uv);
         float greenness = c.g - max(c.r, c.b);
         float alpha = 1.0 - smoothstep(u_t0, u_t1, greenness);
-        // Suppress green spill on the kept pixels / edges.
-        float spill = c.g - max(c.r, c.b);
-        if (spill > 0.0) {
-          c.g -= spill * u_spill;
-        }
-        if (alpha <= 0.003) discard;
+        // Aggressively suppress green spill across the whole figure: clamp
+        // the green channel so it can never exceed the brighter of R/B by
+        // more than a hair. This kills green AND yellow-green fringes
+        // (yellow = high R+G, low B → clamping G removes the green half).
+        float ceilG = max(c.r, c.b) + 0.02;
+        c.g = min(c.g, ceilG);
+        // Edge despill: at soft anti-aliased edges, pull any residual warm/
+        // green cast toward neutral luma so motion-blurred fringes never
+        // read as a colored glow. Solid interior (alpha ~ 1) is untouched.
+        float warmth = max(max(c.g, c.r) - c.b, 0.0);
+        float deCast = clamp(warmth * (1.0 - alpha) * 3.0, 0.0, 0.85);
+        float luma = dot(c.rgb, vec3(0.299, 0.587, 0.114));
+        c.rgb = mix(c.rgb, vec3(luma), deCast);
+        if (alpha <= 0.02) discard;
         gl_FragColor = vec4(c.rgb, alpha);
       }
     `;
@@ -146,9 +175,9 @@ export function KaiChromaVideo({
 
     // Tunable key. These defaults are matched to Kai's bright-green
     // backdrop while preserving the polka-dot blouse and skin tones.
-    gl.uniform1f(gl.getUniformLocation(program, "u_t0"), 0.07);
-    gl.uniform1f(gl.getUniformLocation(program, "u_t1"), 0.22);
-    gl.uniform1f(gl.getUniformLocation(program, "u_spill"), 0.85);
+    gl.uniform1f(gl.getUniformLocation(program, "u_t0"), 0.06);
+    gl.uniform1f(gl.getUniformLocation(program, "u_t1"), 0.20);
+    gl.uniform1f(gl.getUniformLocation(program, "u_spill"), 1.0);
 
     const texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -167,18 +196,15 @@ export function KaiChromaVideo({
     let raf = 0;
     let disposed = false;
     let pausedFrames = 0;
+    // Start as "true" so the first frame with want=false fires a falling
+    // edge → seek to the rest frame and pause (clean initial rest state).
+    let prevWant = true;
 
     const tryPlay = () => {
       if (disposed || !playingRef.current) return;
       const p = video!.play();
       if (p && typeof p.catch === "function") p.catch(() => {});
     };
-    // Autoplay can be deferred/blocked on client-side navigation; retry on
-    // the relevant media events and on the first user gesture as a fallback.
-    video.addEventListener("loadeddata", tryPlay);
-    video.addEventListener("canplay", tryPlay);
-    const onGesture = () => tryPlay();
-    window.addEventListener("pointerdown", onGesture, { once: true });
 
     function sizeCanvas() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -206,30 +232,91 @@ export function KaiChromaVideo({
         );
         gl!.drawArrays(gl!.TRIANGLES, 0, 6);
       }
-      // Loop within the talking window so Kai keeps speaking (and never
-      // drifts into the silent/closed intro) while narration plays.
-      const { playStart: ps, playEnd: pe } = cfgRef.current;
-      if (playingRef.current && pe != null && video!.currentTime >= pe) {
-        video!.currentTime = ps;
-      }
-      // Self-heal only while we WANT playback (deferred/blocked autoplay).
-      if (playingRef.current && video!.paused && video!.readyState >= 2) {
-        if (pausedFrames++ % 30 === 0) tryPlay();
-      } else {
+      // ── Deterministic playback reconciliation ──────────────────────
+      // Events only flip playingRef (the "want playing" flag); ALL video
+      // play/pause/seek happens here, edge-detected, so there are no
+      // event-race conflicts between seeking and play().
+      const { playStart: ps, playEnd: pe, restTime: rt, loop: lp } =
+        cfgRef.current;
+      // Slaved to the audio element's play/pause state (frame-accurate;
+      // freezes within ~1 frame of the audio stopping).
+      const want = playingRef.current;
+      // A play-once clip that has finished → hold its last (smiling) frame.
+      const holding = !lp && pe == null && video!.ended;
+
+      if (want && !prevWant) {
+        // Rising edge. Fresh start → jump to playStart; resume after a brief
+        // quiet gap → keep the current position (don't restart the sentence).
+        const fresh =
+          video!.ended ||
+          video!.currentTime <= ps + 0.05 ||
+          (pe != null && video!.currentTime >= pe);
+        if (fresh) {
+          try {
+            video!.currentTime = ps;
+          } catch {
+            /* metadata not ready yet */
+          }
+        }
+        tryPlay();
         pausedFrames = 0;
+      } else if (!want && prevWant) {
+        // Falling edge: stop the mouth. Snap to the closed-mouth rest frame
+        // ONLY when the audio has truly stopped; if we paused merely because
+        // the voice went quiet (audio still running), hold the current frame
+        // so a resume continues smoothly.
+        video!.pause();
+        if (!playingRef.current) {
+          try {
+            video!.currentTime = rt;
+          } catch {
+            /* metadata not ready yet */
+          }
+        }
+      } else if (want) {
+        // Sustained playing: loop the talking window, loop the whole clip if
+        // `loop`, otherwise play once and hold the final frame.
+        if (pe != null && video!.currentTime >= pe) {
+          try {
+            video!.currentTime = ps;
+          } catch {
+            /* ignore */
+          }
+        } else if (lp && video!.ended) {
+          try {
+            video!.currentTime = ps;
+          } catch {
+            /* ignore */
+          }
+        }
+        if (video!.paused && video!.readyState >= 2 && !holding) {
+          if (pausedFrames++ % 20 === 0) tryPlay();
+        } else {
+          pausedFrames = 0;
+        }
+      } else if (video!.readyState >= 2) {
+        // Sustained rest: keep her frozen. Kill any stray playback that would
+        // make her mouth move after she's "done talking".
+        if (!video!.paused) {
+          video!.pause();
+          if (!playingRef.current) {
+            try {
+              video!.currentTime = rt;
+            } catch {
+              /* ignore */
+            }
+          }
+        }
       }
+      prevWant = want;
       raf = requestAnimationFrame(frame);
     }
 
-    tryPlay();
     raf = requestAnimationFrame(frame);
 
     return () => {
       disposed = true;
       cancelAnimationFrame(raf);
-      video.removeEventListener("loadeddata", tryPlay);
-      video.removeEventListener("canplay", tryPlay);
-      window.removeEventListener("pointerdown", onGesture);
       video.pause();
       gl.deleteTexture(texture);
       gl.deleteBuffer(buffer);
@@ -237,45 +324,38 @@ export function KaiChromaVideo({
     };
   }, [src]);
 
-  // Play while `playing`; otherwise pause on the mouth-closed rest frame
-  // so Kai looks like she has finished her sentence (not frozen mid-word).
+  // Playback control = just maintain the "want playing" flag. The rAF loop
+  // (above) reconciles the actual video play/pause/seek with edge detection,
+  // which avoids all the seek-vs-play() race conditions of doing it here.
+  //
+  //  · audio mode: want = the <audio> is actually playing (frame-accurate
+  //    start on play, freeze on pause/ended).
+  //  · static mode: want = the `playing` prop.
   useEffect(() => {
-    playingRef.current = playing;
-    const video = videoRef.current;
-    if (!video) return;
+    const audio = audioRef?.current ?? null;
 
-    if (playing) {
-      // Jump straight to the talking window so her mouth is moving the
-      // moment the voice starts (skips the clip's closed-mouth intro).
-      const enter = () => {
-        try {
-          if (video.currentTime < playStart || (playEnd != null && video.currentTime >= playEnd)) {
-            video.currentTime = playStart;
-          }
-        } catch {
-          /* metadata not ready yet — will retry on loadeddata */
-        }
-        const p = video.play();
-        if (p && typeof p.catch === "function") p.catch(() => {});
+    if (audio) {
+      const setTrue = () => {
+        playingRef.current = true;
       };
-      enter();
-      video.addEventListener("loadeddata", enter);
-      return () => video.removeEventListener("loadeddata", enter);
+      const setFalse = () => {
+        playingRef.current = false;
+      };
+      playingRef.current = !audio.paused && !audio.ended;
+      audio.addEventListener("play", setTrue);
+      audio.addEventListener("playing", setTrue);
+      audio.addEventListener("pause", setFalse);
+      audio.addEventListener("ended", setFalse);
+      return () => {
+        audio.removeEventListener("play", setTrue);
+        audio.removeEventListener("playing", setTrue);
+        audio.removeEventListener("pause", setFalse);
+        audio.removeEventListener("ended", setFalse);
+      };
     }
 
-    const settle = () => {
-      try {
-        video.pause();
-        video.currentTime = restTime;
-      } catch {
-        /* seeking before metadata is ready — retry on load below */
-      }
-    };
-    settle();
-    // If metadata wasn't ready yet, land on the rest frame once it loads.
-    video.addEventListener("loadeddata", settle);
-    return () => video.removeEventListener("loadeddata", settle);
-  }, [playing, restTime, playStart, playEnd]);
+    playingRef.current = playing;
+  }, [audioRef, playing, restTime, playStart, playEnd]);
 
   const visualSize = typeof size === "number" ? `${size}px` : size;
 
@@ -291,7 +371,6 @@ export function KaiChromaVideo({
         className="kai-chroma__source"
         src={src}
         muted
-        loop
         playsInline
         preload="auto"
         crossOrigin="anonymous"

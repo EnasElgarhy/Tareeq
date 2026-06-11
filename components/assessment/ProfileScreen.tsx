@@ -68,10 +68,15 @@ export function ProfileScreen() {
               floating as a soft caption underneath. */}
           <div className="relative">
             <div className="grid size-16 place-items-center overflow-hidden rounded-2xl bg-night/70 ring-1 ring-sand/16 shadow-[0_10px_24px_rgba(0,0,0,0.4)]">
-              {/* Mentor clip — green screen keyed out, scaled + face-centered
-                  so her whole face sits inside the avatar tile. */}
+              {/* No narration — rest on a closed-mouth frame so the avatar
+                  doesn't murmur silently. */}
               <div style={{ transform: "translateY(8px)" }}>
-                <KaiChromaVideo src="/kai/kai-mentor-green.mp4" size={80} />
+                <KaiChromaVideo
+                  src="/kai/kai-mentor-green.mp4"
+                  size={80}
+                  playing={false}
+                  restTime={2.3}
+                />
               </div>
             </div>
             <span
