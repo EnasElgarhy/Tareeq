@@ -163,8 +163,8 @@ export default async function VersionDetailPage({
       )}
 
       {editable && (
-        <div className="mt-8 flex flex-wrap items-start gap-2">
-          <QuestionBuilder versionId={version.id} clusters={clusters} />
+        <div className="mt-8 space-y-4">
+          <QuestionBuilder versionId={version.id} />
           <CsvImport versionId={version.id} />
         </div>
       )}
