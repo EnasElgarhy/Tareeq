@@ -3,7 +3,11 @@
 import { useRouter } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
 import type { ClusterRow, QuestionRow } from "@/lib/admin/content";
-import { deleteQuestion, saveQuestion } from "@/lib/admin/content-actions";
+import {
+  deleteQuestion,
+  moveQuestion,
+  saveQuestion,
+} from "@/lib/admin/content-actions";
 
 interface EditOption {
   key: string;
@@ -34,10 +38,14 @@ export function QuestionEditor({
   versionId,
   question,
   clusters,
+  canMoveUp = false,
+  canMoveDown = false,
 }: {
   versionId: string;
   question: QuestionRow;
   clusters: ClusterRow[];
+  canMoveUp?: boolean;
+  canMoveDown?: boolean;
 }) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
@@ -134,6 +142,18 @@ export function QuestionEditor({
     });
   }
 
+  function move(dir: "up" | "down") {
+    setError(null);
+    startTransition(async () => {
+      try {
+        await moveQuestion(versionId, question.id, dir);
+        router.refresh();
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Move failed");
+      }
+    });
+  }
+
   if (!editing) {
     return (
       <div className="rounded-xl border border-slate-200 bg-white p-4">
@@ -146,13 +166,33 @@ export function QuestionEditor({
               axis: {question.axis}
             </span>
           ) : null}
-          <button
-            type="button"
-            onClick={startEdit}
-            className="ml-auto rounded-lg border border-slate-200 px-2.5 py-1 text-[12px] font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
-          >
-            Edit
-          </button>
+          <div className="ml-auto flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => move("up")}
+              disabled={!canMoveUp || pending}
+              title="Move up"
+              className="grid size-7 place-items-center rounded-lg border border-slate-200 text-slate-500 transition hover:bg-slate-50 hover:text-slate-900 disabled:opacity-30"
+            >
+              ↑
+            </button>
+            <button
+              type="button"
+              onClick={() => move("down")}
+              disabled={!canMoveDown || pending}
+              title="Move down"
+              className="grid size-7 place-items-center rounded-lg border border-slate-200 text-slate-500 transition hover:bg-slate-50 hover:text-slate-900 disabled:opacity-30"
+            >
+              ↓
+            </button>
+            <button
+              type="button"
+              onClick={startEdit}
+              className="rounded-lg border border-slate-200 px-2.5 py-1 text-[12px] font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+            >
+              Edit
+            </button>
+          </div>
         </div>
         <p className="text-[14px] font-semibold text-slate-900">
           {loc(question.title)}

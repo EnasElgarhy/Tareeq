@@ -353,3 +353,64 @@ export async function deleteQuestion(
 
   revalidatePath(`/admin/content/${versionId}`);
 }
+
+const clusterSchema = z.object({
+  name: z.string().trim().min(1).max(120),
+  description: z.string().trim().max(600),
+});
+
+/** Update a cluster's name + description (global reference data). */
+export async function updateCluster(
+  code: string,
+  rawInput: unknown,
+): Promise<void> {
+  await requireAdmin();
+  const input = clusterSchema.parse(rawInput);
+  const sb = createSupabaseAdminClient();
+
+  const { error } = await sb
+    .from("clusters")
+    .update({ name: input.name, description: input.description })
+    .eq("code", code);
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/admin/content");
+}
+
+/** Move a question up/down within its pillar (draft only), swapping positions. */
+export async function moveQuestion(
+  versionId: string,
+  questionId: string,
+  dir: "up" | "down",
+): Promise<void> {
+  await requireAdmin();
+  const sb = createSupabaseAdminClient();
+  await assertDraft(sb, versionId);
+
+  const { data: q, error: qe } = await sb
+    .from("questions")
+    .select("id,pillar,version_id")
+    .eq("id", questionId)
+    .single();
+  if (qe || !q) throw new Error("Question not found");
+  if (q.version_id !== versionId)
+    throw new Error("Question does not belong to this version");
+
+  const { data: list } = await sb
+    .from("questions")
+    .select("id,position")
+    .eq("version_id", versionId)
+    .eq("pillar", q.pillar)
+    .order("position", { ascending: true });
+  const items = list ?? [];
+  const idx = items.findIndex((x) => x.id === questionId);
+  const swapIdx = dir === "up" ? idx - 1 : idx + 1;
+  if (idx < 0 || swapIdx < 0 || swapIdx >= items.length) return;
+
+  const a = items[idx];
+  const b = items[swapIdx];
+  await sb.from("questions").update({ position: b.position }).eq("id", a.id);
+  await sb.from("questions").update({ position: a.position }).eq("id", b.id);
+
+  revalidatePath(`/admin/content/${versionId}`);
+}

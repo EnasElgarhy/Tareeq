@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ClusterCard } from "@/components/admin/ClusterCard";
 import { NewAssessmentButton } from "@/components/admin/NewAssessmentButton";
 import {
   countQuestionsByVersion,
@@ -96,17 +97,7 @@ export default async function ContentPage() {
         </h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {clusters.map((c) => (
-            <div
-              key={c.code}
-              className="rounded-xl border border-slate-200 bg-white p-3"
-            >
-              <p className="text-[11px] font-bold uppercase tracking-wide text-[#6E48E4]">
-                {c.code}
-              </p>
-              <p className="mt-0.5 text-[13.5px] font-semibold text-slate-900">
-                {c.name}
-              </p>
-            </div>
+            <ClusterCard key={c.code} cluster={c} />
           ))}
         </div>
       </section>

@@ -142,7 +142,7 @@ export default async function VersionDetailPage({
               Pillar {pillar} · {PILLAR_NAMES[pillar] ?? "Other"} ({qs.length})
             </h2>
             <div className="grid gap-3">
-              {qs.map((q) =>
+              {qs.map((q, i) =>
                 version.is_active ? (
                   <QuestionCard key={q.id} q={q} />
                 ) : (
@@ -151,6 +151,8 @@ export default async function VersionDetailPage({
                     versionId={version.id}
                     question={q}
                     clusters={clusters}
+                    canMoveUp={i > 0}
+                    canMoveDown={i < qs.length - 1}
                   />
                 ),
               )}
