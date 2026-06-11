@@ -1,9 +1,14 @@
 import Link from "next/link";
 import { ClusterCard } from "@/components/admin/ClusterCard";
 import { NewAssessmentButton } from "@/components/admin/NewAssessmentButton";
+import PageHeader from "@/components/admin/PageHeader";
+import { StatusBadge } from "@/components/admin/ui/Badge";
+import { EmptyState } from "@/components/admin/ui/EmptyState";
+import { Table, Td, Th, Tr } from "@/components/admin/ui/Table";
+import { CLUSTERS } from "@/lib/admin/clusters";
 import {
   countQuestionsByVersion,
-  listClusters,
+  getVersionContent,
   listContentVersions,
 } from "@/lib/admin/content";
 
@@ -18,89 +23,93 @@ function fmtDate(iso: string) {
 }
 
 export default async function ContentPage() {
-  const [versions, counts, clusters] = await Promise.all([
+  const [versions, counts] = await Promise.all([
     listContentVersions(),
     countQuestionsByVersion(),
-    listClusters(),
   ]);
 
-  return (
-    <div>
-      <header className="mb-6">
-        <h1 className="text-[24px] font-bold text-slate-900">Content</h1>
-        <p className="mt-1 text-[14px] text-slate-500">
-          Assessment versions, questions, and the 8 career clusters.
-        </p>
-      </header>
+  const active = versions.find((v) => v.is_active) ?? null;
+  const liveQuestions = active ? await getVersionContent(active.id) : [];
+  const countFor = (code: string) =>
+    liveQuestions.filter((q) => q.options.some((o) => o.cluster_code === code))
+      .length;
 
-      {/* Content versions */}
-      <section className="mb-8">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-[13px] font-bold uppercase tracking-wide text-slate-400">
-            Assessment versions
-          </h2>
-          <NewAssessmentButton />
-        </div>
-        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-          {versions.length === 0 ? (
-            <p className="px-5 py-8 text-center text-[14px] text-slate-500">
-              No content versions yet.
-            </p>
-          ) : (
-            <ul className="divide-y divide-slate-100">
-              {versions.map((v) => (
-                <li key={v.id}>
+  return (
+    <>
+      <PageHeader
+        kicker="Admin · Content"
+        title="Assessment versions"
+        description="Draft, review, and publish the question sets behind the compass. One version is live at a time."
+        actions={<NewAssessmentButton />}
+      />
+
+      {versions.length === 0 ? (
+        <EmptyState
+          title="No assessments yet"
+          description="Every compass starts with a question. Create your first assessment version to get going."
+          action={<NewAssessmentButton />}
+        />
+      ) : (
+        <Table>
+          <thead>
+            <tr>
+              <Th>Version</Th>
+              <Th className="w-28">Status</Th>
+              <Th className="w-28">Questions</Th>
+              <Th className="w-32">Created</Th>
+              <Th className="w-20">
+                <span className="sr-only">Open</span>
+              </Th>
+            </tr>
+          </thead>
+          <tbody>
+            {versions.map((v) => (
+              <Tr key={v.id}>
+                <Td>
                   <Link
                     href={`/admin/content/${v.id}`}
-                    className="flex items-center gap-4 px-5 py-4 transition hover:bg-slate-50"
+                    className="font-bold text-adm-ink underline-offset-2 hover:text-adm-violet hover:underline"
                   >
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-[15px] font-semibold text-slate-900">
-                          {v.label}
-                        </span>
-                        {v.is_active ? (
-                          <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-bold text-emerald-700">
-                            Active
-                          </span>
-                        ) : (
-                          <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-500">
-                            Draft
-                          </span>
-                        )}
-                      </div>
-                      {v.notes ? (
-                        <p className="mt-0.5 truncate text-[12.5px] text-slate-500">
-                          {v.notes}
-                        </p>
-                      ) : null}
-                    </div>
-                    <div className="text-right text-[12.5px] text-slate-500">
-                      <p className="font-semibold text-slate-700">
-                        {counts[v.id] ?? 0} questions
-                      </p>
-                      <p>{fmtDate(v.created_at)}</p>
-                    </div>
-                    <span className="text-slate-300">›</span>
+                    {v.label}
                   </Link>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </section>
+                </Td>
+                <Td>
+                  <StatusBadge status={v.is_active ? "published" : "draft"} />
+                </Td>
+                <Td>{counts[v.id] ?? 0}</Td>
+                <Td className="text-adm-ink-muted">{fmtDate(v.created_at)}</Td>
+                <Td>
+                  <Link
+                    href={`/admin/content/${v.id}`}
+                    className="text-[13px] font-semibold text-adm-violet hover:text-adm-deep"
+                  >
+                    Open →
+                  </Link>
+                </Td>
+              </Tr>
+            ))}
+          </tbody>
+        </Table>
+      )}
 
-      {/* Clusters */}
-      <section>
-        <h2 className="mb-3 text-[13px] font-bold uppercase tracking-wide text-slate-400">
-          Career clusters ({clusters.length})
-        </h2>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {clusters.map((c) => (
-            <ClusterCard key={c.code} cluster={c} />
+      {/* Cluster coverage */}
+      <section aria-label="Cluster coverage" className="mt-10">
+        <div className="mb-3 flex items-baseline justify-between">
+          <h2 className="text-base font-bold text-adm-ink">Cluster coverage</h2>
+          <p className="text-xs text-adm-ink-muted">
+            Questions touching each cluster · live version
+          </p>
+        </div>
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          {CLUSTERS.map((c) => (
+            <ClusterCard
+              key={c.code}
+              cluster={c}
+              questionCount={countFor(c.code)}
+            />
           ))}
         </div>
       </section>
-    </div>
+    </>
   );
 }

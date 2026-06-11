@@ -296,6 +296,23 @@ export async function createBlankVersion(rawLabel: unknown): Promise<string> {
   return data.id;
 }
 
+/** Rename a version's label (cosmetic metadata — allowed on any version). */
+export async function renameVersion(
+  versionId: string,
+  rawLabel: unknown,
+): Promise<void> {
+  await requireAdmin();
+  const label = z.string().trim().min(1).max(80).parse(rawLabel);
+  const sb = createSupabaseAdminClient();
+  const { error } = await sb
+    .from("content_versions")
+    .update({ label })
+    .eq("id", versionId);
+  if (error) throw new Error(error.message);
+  revalidatePath("/admin/content");
+  revalidatePath(`/admin/content/${versionId}`);
+}
+
 const addQuestionSchema = z.object({
   pillar: z.coerce.number().int().min(0).max(4),
   kind: z.string().trim().min(1).default("single"),

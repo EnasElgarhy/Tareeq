@@ -121,16 +121,16 @@ export function QuestionEditor({
 
   if (!editing) {
     return (
-      <div className="rounded-xl border border-slate-200 bg-white p-4">
+      <div className="rounded-adm-lg border border-adm-line bg-adm-card p-4">
         <div className="mb-2 flex items-center gap-2">
-          <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[11px] font-bold text-slate-500">
+          <span className="rounded bg-adm-sand px-1.5 py-0.5 text-[11px] font-bold text-adm-ink-muted">
             {question.external_id}
           </span>
-          <span className="rounded bg-[#6E48E4]/10 px-1.5 py-0.5 text-[11px] font-semibold text-[#6E48E4]">
+          <span className="rounded bg-adm-violet/10 px-1.5 py-0.5 text-[11px] font-semibold text-adm-violet">
             {questionTypeLabel(question.kind)}
           </span>
           {question.axis ? (
-            <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[11px] font-semibold text-slate-500">
+            <span className="rounded bg-adm-sand px-1.5 py-0.5 text-[11px] font-semibold text-adm-ink-muted">
               axis: {question.axis}
             </span>
           ) : null}
@@ -140,7 +140,7 @@ export function QuestionEditor({
               onClick={() => move("up")}
               disabled={!canMoveUp || pending}
               title="Move up"
-              className="grid size-7 place-items-center rounded-lg border border-slate-200 text-slate-500 transition hover:bg-slate-50 hover:text-slate-900 disabled:opacity-30"
+              className="grid size-7 place-items-center rounded-adm-md border border-adm-line text-adm-ink-muted transition hover:bg-adm-sand hover:text-adm-ink disabled:opacity-30"
             >
               ↑
             </button>
@@ -149,20 +149,20 @@ export function QuestionEditor({
               onClick={() => move("down")}
               disabled={!canMoveDown || pending}
               title="Move down"
-              className="grid size-7 place-items-center rounded-lg border border-slate-200 text-slate-500 transition hover:bg-slate-50 hover:text-slate-900 disabled:opacity-30"
+              className="grid size-7 place-items-center rounded-adm-md border border-adm-line text-adm-ink-muted transition hover:bg-adm-sand hover:text-adm-ink disabled:opacity-30"
             >
               ↓
             </button>
             <button
               type="button"
               onClick={startEdit}
-              className="rounded-lg border border-slate-200 px-2.5 py-1 text-[12px] font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+              className="rounded-adm-md border border-adm-line px-2.5 py-1 text-[12px] font-semibold text-adm-ink-soft transition hover:bg-adm-sand hover:text-adm-ink"
             >
               Edit
             </button>
           </div>
         </div>
-        <p className="text-[14px] font-semibold text-slate-900">
+        <p className="text-[14px] font-semibold text-adm-ink">
           {loc(question.title)}
         </p>
         {question.options.length > 0 ? (
@@ -172,16 +172,16 @@ export function QuestionEditor({
               return (
                 <li
                   key={o.id}
-                  className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-1.5"
+                  className="flex items-center gap-2 rounded-adm-md bg-adm-sand px-3 py-1.5"
                 >
-                  <span className="grid size-5 shrink-0 place-items-center rounded bg-white text-[11px] font-bold text-slate-600">
+                  <span className="grid size-5 shrink-0 place-items-center rounded bg-adm-card text-[11px] font-bold text-adm-ink-soft">
                     {o.letter}
                   </span>
-                  <span className="text-[13px] text-slate-700">
+                  <span className="text-[13px] text-adm-ink-soft">
                     {loc(o.text)}
                   </span>
                   {tag ? (
-                    <span className="ml-auto shrink-0 rounded-full bg-[#6E48E4]/10 px-2 py-0.5 text-[11px] font-bold text-[#6E48E4]">
+                    <span className="ml-auto shrink-0 rounded-full bg-adm-violet/10 px-2 py-0.5 text-[11px] font-bold text-adm-violet">
                       {tag}
                     </span>
                   ) : null}
@@ -195,9 +195,9 @@ export function QuestionEditor({
   }
 
   return (
-    <div className="rounded-xl border-2 border-[#6E48E4]/30 bg-white p-4">
+    <div className="rounded-adm-lg border-2 border-adm-violet/30 bg-adm-card p-4">
       <div className="mb-3 flex flex-wrap items-center gap-2">
-        <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[11px] font-bold text-slate-500">
+        <span className="rounded bg-adm-sand px-1.5 py-0.5 text-[11px] font-bold text-adm-ink-muted">
           {question.external_id}
         </span>
         <select
@@ -212,7 +212,7 @@ export function QuestionEditor({
             </option>
           ))}
         </select>
-        <label className="ml-auto flex items-center gap-1.5 text-[11px] font-semibold text-slate-400">
+        <label className="ml-auto flex items-center gap-1.5 text-[11px] font-semibold text-adm-ink-muted">
           axis
           <input
             value={axis}
@@ -239,18 +239,18 @@ export function QuestionEditor({
           />
         </div>
       ) : (
-        <p className="mt-3 rounded-lg bg-slate-50 px-3 py-2 text-[12.5px] text-slate-500">
+        <p className="mt-3 rounded-adm-md bg-adm-sand px-3 py-2 text-[12.5px] text-adm-ink-muted">
           Free-text questions have no preset answers — the respondent types their
           own.
         </p>
       )}
 
-      <div className="mt-4 flex items-center gap-2 border-t border-slate-100 pt-3">
+      <div className="mt-4 flex items-center gap-2 border-t border-adm-line pt-3">
         <button
           type="button"
           disabled={pending}
           onClick={save}
-          className="rounded-lg bg-[#6E48E4] px-4 py-1.5 text-[13px] font-semibold text-white transition hover:bg-[#5b39c9] disabled:opacity-60"
+          className="rounded-adm-md bg-adm-violet px-4 py-1.5 text-[13px] font-semibold text-white transition hover:bg-adm-deep disabled:opacity-60"
         >
           {pending ? "Saving…" : "Save"}
         </button>
@@ -258,12 +258,12 @@ export function QuestionEditor({
           type="button"
           disabled={pending}
           onClick={() => setEditing(false)}
-          className="rounded-lg px-3 py-1.5 text-[13px] font-semibold text-slate-500 transition hover:text-slate-900"
+          className="rounded-adm-md px-3 py-1.5 text-[13px] font-semibold text-adm-ink-muted transition hover:text-adm-ink"
         >
           Cancel
         </button>
         {error ? (
-          <span className="text-[12px] text-red-600">{error}</span>
+          <span className="text-[12px] text-adm-error-ink">{error}</span>
         ) : null}
         <button
           type="button"
@@ -272,7 +272,7 @@ export function QuestionEditor({
             if (window.confirm("Delete this question? This can't be undone."))
               del();
           }}
-          className="ml-auto text-[12px] font-semibold text-red-600 hover:underline disabled:opacity-60"
+          className="ml-auto text-[12px] font-semibold text-adm-error-ink hover:underline disabled:opacity-60"
         >
           Delete question
         </button>

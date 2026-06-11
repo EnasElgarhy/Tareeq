@@ -1,8 +1,42 @@
 "use client";
 
-import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { type FormEvent, Suspense, useState } from "react";
+import { Button } from "@/components/admin/ui/Button";
+import { Field, Input } from "@/components/admin/ui/Field";
+import { InlineStatus } from "@/components/admin/ui/Toast";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+
+/** Night backdrop with a faint, static compass-ring motif. */
+function Shell({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="adm-on-dark adm-night-glow relative flex min-h-screen items-center justify-center overflow-hidden px-4">
+      <svg
+        viewBox="0 0 600 600"
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-40 -top-40 h-[560px] w-[560px] opacity-[0.16]"
+        fill="none"
+      >
+        <circle cx="300" cy="300" r="280" stroke="#9D7FF0" strokeWidth="1" />
+        <circle cx="300" cy="300" r="210" stroke="#9D7FF0" strokeWidth="1" strokeDasharray="4 8" />
+        <circle cx="300" cy="300" r="140" stroke="#C8B6F0" strokeWidth="1" />
+        <path d="M300 80 L320 300 L300 520 L280 300 Z" fill="#6E48E4" />
+      </svg>
+      <div className="adm-fade-up relative w-full max-w-sm">{children}</div>
+    </div>
+  );
+}
+
+function Wordmark({ caption }: { caption: string }) {
+  return (
+    <div className="mb-6 text-center">
+      <p className="adm-display text-3xl text-adm-paper">Tareeq</p>
+      <p className="mt-1 text-[11px] font-bold uppercase tracking-[0.28em] text-adm-violet-soft">
+        {caption}
+      </p>
+    </div>
+  );
+}
 
 function LoginForm() {
   const router = useRouter();
@@ -11,13 +45,18 @@ function LoginForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  async function onSubmit(event: React.FormEvent) {
-    event.preventDefault();
-    setLoading(true);
+  const configured = Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  );
+
+  async function onSubmit(e: FormEvent) {
+    e.preventDefault();
     setError(null);
+    setLoading(true);
     const supabase = createSupabaseBrowserClient();
     const { error: signInError } = await supabase.auth.signInWithPassword({
       email: email.trim(),
@@ -32,103 +71,87 @@ function LoginForm() {
     router.refresh();
   }
 
-  const configured = Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL &&
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-  );
-
   if (!configured) {
     return (
-      <div className="flex min-h-dvh items-center justify-center bg-slate-50 px-4 [color-scheme:light]">
-        <div className="w-full max-w-md rounded-2xl border border-amber-200 bg-amber-50 p-6 text-center">
-          <h1 className="text-[17px] font-bold text-amber-900">
+      <Shell>
+        <Wordmark caption="Admin console" />
+        <div className="rounded-adm-xl border border-adm-line bg-adm-card p-7 shadow-adm-lg">
+          <h1 className="text-lg font-bold text-adm-ink">
             Supabase isn&apos;t configured
           </h1>
-          <p className="mt-2 text-[13px] leading-relaxed text-amber-800">
-            Add{" "}
-            <code className="rounded bg-amber-100 px-1">
-              NEXT_PUBLIC_SUPABASE_URL
-            </code>
-            ,{" "}
-            <code className="rounded bg-amber-100 px-1">
-              NEXT_PUBLIC_SUPABASE_ANON_KEY
-            </code>{" "}
+          <p className="mt-2 text-sm leading-relaxed text-adm-ink-muted">
+            Add <code className="rounded bg-adm-sand px-1">NEXT_PUBLIC_SUPABASE_URL</code>,{" "}
+            <code className="rounded bg-adm-sand px-1">NEXT_PUBLIC_SUPABASE_ANON_KEY</code>{" "}
             and{" "}
-            <code className="rounded bg-amber-100 px-1">
-              SUPABASE_SERVICE_ROLE_KEY
-            </code>{" "}
-            to <code className="rounded bg-amber-100 px-1">.env.local</code>,
-            then restart. See{" "}
-            <code className="rounded bg-amber-100 px-1">docs/ADMIN_SETUP.md</code>
-            .
+            <code className="rounded bg-adm-sand px-1">SUPABASE_SERVICE_ROLE_KEY</code>{" "}
+            to <code className="rounded bg-adm-sand px-1">.env.local</code>, then
+            restart. See{" "}
+            <code className="rounded bg-adm-sand px-1">docs/ADMIN_SETUP.md</code>.
           </p>
         </div>
-      </div>
+      </Shell>
     );
   }
 
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-slate-50 px-4 [color-scheme:light]">
-      <div className="w-full max-w-sm">
-        <div className="mb-6 text-center">
-          <div className="mx-auto mb-3 grid size-11 place-items-center rounded-2xl bg-[#6E48E4] text-[15px] font-black text-white">
-            T
-          </div>
-          <h1 className="text-[20px] font-bold text-slate-900">Tareeq Admin</h1>
-          <p className="mt-1 text-[13px] text-slate-500">
-            Sign in to manage content, users, and insights.
-          </p>
+    <Shell>
+      <Wordmark caption="Admin console" />
+      <form
+        onSubmit={onSubmit}
+        className="rounded-adm-xl border border-adm-line bg-adm-card p-7 shadow-adm-lg"
+        aria-label="Sign in"
+      >
+        <h1 className="text-lg font-bold text-adm-ink">Welcome back</h1>
+        <p className="mb-6 mt-1 text-sm text-adm-ink-muted">
+          Sign in to manage the compass.
+        </p>
+
+        <div className="space-y-4">
+          {notAdmin && (
+            <InlineStatus kind="error">
+              That account isn&apos;t an admin. Ask an existing admin for access.
+            </InlineStatus>
+          )}
+
+          <Field label="Work email">
+            {(p) => (
+              <Input
+                {...p}
+                type="email"
+                autoComplete="email"
+                placeholder="you@tareeq.app"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            )}
+          </Field>
+          <Field label="Password">
+            {(p) => (
+              <Input
+                {...p}
+                type="password"
+                autoComplete="current-password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            )}
+          </Field>
+
+          {error && <InlineStatus kind="error">{error}</InlineStatus>}
+
+          <Button type="submit" loading={loading} className="w-full">
+            {loading ? "Signing in…" : "Sign in"}
+          </Button>
         </div>
 
-        <form
-          onSubmit={onSubmit}
-          className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
-        >
-          {notAdmin ? (
-            <p className="mb-4 rounded-lg bg-amber-50 px-3 py-2 text-[12.5px] text-amber-700">
-              That account isn&apos;t an admin. Ask an existing admin to grant
-              access.
-            </p>
-          ) : null}
-
-          <label className="block text-[12px] font-semibold text-slate-700">
-            Email
-          </label>
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            autoComplete="email"
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-[14px] text-slate-900 outline-none focus:border-[#6E48E4] focus:ring-2 focus:ring-[#6E48E4]/20"
-          />
-
-          <label className="mt-4 block text-[12px] font-semibold text-slate-700">
-            Password
-          </label>
-          <input
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="current-password"
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-[14px] text-slate-900 outline-none focus:border-[#6E48E4] focus:ring-2 focus:ring-[#6E48E4]/20"
-          />
-
-          {error ? (
-            <p className="mt-3 text-[12.5px] text-red-600">{error}</p>
-          ) : null}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="mt-5 w-full rounded-lg bg-[#6E48E4] py-2.5 text-[14px] font-semibold text-white transition hover:bg-[#5b39c9] disabled:opacity-60"
-          >
-            {loading ? "Signing in…" : "Sign in"}
-          </button>
-        </form>
-      </div>
-    </div>
+        <p className="mt-5 border-t border-adm-line pt-4 text-center text-xs text-adm-ink-muted">
+          Access is invite-only. Ask your team lead for an account.
+        </p>
+      </form>
+    </Shell>
   );
 }
 

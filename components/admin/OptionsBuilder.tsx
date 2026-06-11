@@ -1,5 +1,7 @@
 "use client";
 
+import { ClusterChip } from "@/components/admin/ui/Badge";
+import type { ClusterCode } from "@/lib/admin/clusters";
 import type { ClusterRow } from "@/lib/admin/content";
 
 export interface EditOption {
@@ -32,8 +34,23 @@ export function makeOption(letter: string): EditOption {
   };
 }
 
+/** Dense admin control — used by the option rows and the editor's own fields. */
 export const OPT_INPUT =
-  "rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-[13px] text-slate-900 outline-none focus:border-[#6E48E4] focus:ring-2 focus:ring-[#6E48E4]/20";
+  "w-full rounded-adm-sm border border-adm-line-strong bg-adm-card px-2.5 py-1.5 " +
+  "text-[13px] text-adm-ink placeholder:text-adm-ink-faint outline-none " +
+  "transition-colors duration-adm-fast hover:border-adm-ink-faint " +
+  "focus:border-adm-violet focus:ring-2 focus:ring-adm-violet/25";
+
+const KNOWN_CODES = new Set([
+  "TECH",
+  "ENG",
+  "SCI",
+  "ART",
+  "BUS",
+  "LAW",
+  "PPL",
+  "ENV",
+]);
 
 /**
  * Controlled answer builder — the parent holds the options array and passes
@@ -67,12 +84,20 @@ export function OptionsBuilder({
     onChange(options.filter((o) => o.key !== key));
   }
 
+  const usedClusters = [
+    ...new Set(
+      options
+        .map((o) => o.cluster_code)
+        .filter((c): c is string => !!c && KNOWN_CODES.has(c)),
+    ),
+  ] as ClusterCode[];
+
   return (
     <div>
-      <div className="mb-1 flex items-center gap-1.5 px-1 text-[10.5px] font-bold uppercase tracking-wide text-slate-400">
+      <div className="mb-1 flex items-center gap-1.5 px-1 text-[10.5px] font-bold uppercase tracking-wide text-adm-ink-muted">
         <span className="w-10 text-center">Key</span>
         <span className="flex-1">Answer</span>
-        <span className="w-20 text-center">Cluster</span>
+        <span className="w-24 text-center">Cluster</span>
         <span className="w-20 text-center">Driver</span>
         <span className="w-16 text-center">Axis</span>
         <span className="w-7" />
@@ -97,7 +122,7 @@ export function OptionsBuilder({
               onChange={(e) =>
                 patch(o.key, { cluster_code: e.target.value || null })
               }
-              className={`${OPT_INPUT} w-20`}
+              className={`${OPT_INPUT} w-24`}
               title="Cluster this answer points to"
             >
               <option value="">—</option>
@@ -128,21 +153,39 @@ export function OptionsBuilder({
             <button
               type="button"
               onClick={() => remove(o.key)}
-              className="grid size-7 shrink-0 place-items-center rounded-lg text-slate-400 transition hover:bg-red-50 hover:text-red-600"
-              title="Remove answer"
+              aria-label="Remove answer"
+              className="flex h-8 w-7 shrink-0 items-center justify-center rounded-adm-sm text-adm-ink-muted transition-colors duration-adm-fast hover:bg-adm-error/10 hover:text-adm-error-ink"
             >
-              ×
+              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden="true">
+                <path
+                  d="M5 7h14M9 7V5h6v2m-8 0 1 13h8l1-13"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
             </button>
           </div>
         ))}
       </div>
-      <button
-        type="button"
-        onClick={add}
-        className="mt-2 rounded-lg border border-dashed border-slate-300 px-3 py-1.5 text-[12.5px] font-semibold text-slate-500 transition hover:border-[#6E48E4] hover:text-[#6E48E4]"
-      >
-        + Add answer
-      </button>
+
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+        <button
+          type="button"
+          onClick={add}
+          className="rounded-adm-md border border-dashed border-adm-line-strong px-3 py-1.5 text-[12.5px] font-semibold text-adm-ink-muted transition-colors duration-adm-fast hover:border-adm-violet hover:text-adm-violet"
+        >
+          + Add answer
+        </button>
+        {usedClusters.length > 0 && (
+          <div className="hidden flex-wrap gap-1 sm:flex" aria-hidden="true">
+            {usedClusters.map((code) => (
+              <ClusterChip key={code} code={code} />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

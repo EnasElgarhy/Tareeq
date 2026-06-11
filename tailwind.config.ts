@@ -64,6 +64,35 @@ const config: Config = {
         success: "#6FE0C0",
         warning: "#F4C660",
         error: "#E07A6F",
+
+        /* Admin design system — aliases the `.adm`-scoped CSS vars in
+           app/admin/admin.css. Utilities like bg-adm-paper / bg-adm-violet/10
+           only resolve inside the admin surface. */
+        adm: {
+          violet: "rgb(var(--adm-violet-rgb) / <alpha-value>)",
+          "violet-soft": "rgb(var(--adm-violet-soft-rgb) / <alpha-value>)",
+          lilac: "rgb(var(--adm-lilac-rgb) / <alpha-value>)",
+          deep: "rgb(var(--adm-deep-rgb) / <alpha-value>)",
+          night: "rgb(var(--adm-night-rgb) / <alpha-value>)",
+          midnight: "rgb(var(--adm-midnight-rgb) / <alpha-value>)",
+          dusk: "rgb(var(--adm-dusk-rgb) / <alpha-value>)",
+          paper: "rgb(var(--adm-paper-rgb) / <alpha-value>)",
+          sand: "rgb(var(--adm-sand-rgb) / <alpha-value>)",
+          card: "rgb(var(--adm-card-rgb) / <alpha-value>)",
+          ink: "rgb(var(--adm-ink-rgb) / <alpha-value>)",
+          "ink-soft": "rgb(var(--adm-ink-soft-rgb) / <alpha-value>)",
+          "ink-muted": "rgb(var(--adm-ink-muted-rgb) / <alpha-value>)",
+          "ink-faint": "rgb(var(--adm-ink-faint-rgb) / <alpha-value>)",
+          line: "rgb(var(--adm-line-rgb) / <alpha-value>)",
+          "line-strong": "rgb(var(--adm-line-strong-rgb) / <alpha-value>)",
+          gold: "rgb(var(--adm-gold-rgb) / <alpha-value>)",
+          "gold-ink": "rgb(var(--adm-gold-ink-rgb) / <alpha-value>)",
+          blush: "rgb(var(--adm-blush-rgb) / <alpha-value>)",
+          mint: "rgb(var(--adm-mint-rgb) / <alpha-value>)",
+          "mint-ink": "rgb(var(--adm-mint-ink-rgb) / <alpha-value>)",
+          error: "rgb(var(--adm-error-rgb) / <alpha-value>)",
+          "error-ink": "rgb(var(--adm-error-ink-rgb) / <alpha-value>)",
+        },
       },
       backgroundImage: {
         "night-gradient":
@@ -116,6 +145,8 @@ const config: Config = {
           "Times New Roman",
           "serif",
         ],
+        /* Admin body font (same Plus Jakarta as `sans`, named for clarity). */
+        jakarta: ["var(--font-jakarta)", "system-ui", "sans-serif"],
       },
       borderRadius: {
         sm: "8px",
@@ -124,6 +155,12 @@ const config: Config = {
         xl: "28px",
         "2xl": "36px",
         pill: "9999px",
+        /* Admin radii */
+        "adm-sm": "8px",
+        "adm-md": "12px",
+        "adm-lg": "20px",
+        "adm-xl": "28px",
+        "adm-2xl": "36px",
       },
       boxShadow: {
         "sand-sm":
@@ -138,17 +175,26 @@ const config: Config = {
           "0 12px 28px rgba(110, 72, 228, 0.35), 0 4px 10px rgba(110, 72, 228, 0.15)",
         "warm-glow":
           "0 14px 32px rgba(255, 61, 131, 0.38), 0 6px 14px rgba(255, 107, 61, 0.22)",
+        /* Admin elevation (warm-tinted) */
+        "adm-xs": "var(--adm-shadow-xs)",
+        "adm-sm": "var(--adm-shadow-sm)",
+        "adm-md": "var(--adm-shadow-md)",
+        "adm-lg": "var(--adm-shadow-lg)",
       },
       transitionTimingFunction: {
         standard: "cubic-bezier(0.2, 0, 0, 1)",
         emphasis: "cubic-bezier(0.3, 0, 0, 1)",
         spring: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        adm: "var(--adm-ease)",
       },
       transitionDuration: {
         fast: "120ms",
         base: "200ms",
         slow: "320ms",
         reveal: "480ms",
+        "adm-fast": "150ms",
+        "adm-base": "220ms",
+        "adm-slow": "360ms",
       },
     },
   },

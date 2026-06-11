@@ -1,0 +1,206 @@
+/* ==================================================================== */
+/*  TAREEQ ADMIN DESIGN TOKENS                                          */
+/*  Scoped to `.adm` — imported ONLY by app/admin/layout.tsx.           */
+/*  Never leak these into consumer surfaces.                            */
+/* ==================================================================== */
+
+.adm {
+  color-scheme: light;
+
+  /* ---- Brand violet ------------------------------------------------ */
+  --adm-violet: #6e48e4;
+  --adm-violet-soft: #9d7ff0;
+  --adm-lilac: #c8b6f0;
+  --adm-deep: #3a2480;
+
+  /* ---- Night surfaces (sidebar, login backdrop) -------------------- */
+  --adm-night: #08051a;
+  --adm-midnight: #100a24;
+  --adm-dusk: #221248;
+
+  /* ---- Warm light canvas ------------------------------------------- */
+  --adm-paper: #f9f4ec;
+  --adm-sand: #f5eee6;
+  --adm-card: #fffdf9;
+
+  /* ---- Ink ---------------------------------------------------------- */
+  --adm-ink: #14101f;
+  --adm-ink-soft: #2b2440;
+  --adm-ink-muted: #5d5670; /* 4.9:1 on paper — AA body */
+  --adm-ink-faint: #8a8496; /* large text / decorative only */
+  --adm-line: #e7ddd0;
+  --adm-line-strong: #d4c8b8;
+
+  /* ---- Accents ------------------------------------------------------ */
+  --adm-gold: #f4c660;
+  --adm-gold-ink: #6b4d00; /* text on gold tints */
+  --adm-blush: #f2a8b3;
+  --adm-mint: #6fe0c0;
+  --adm-mint-ink: #0e5a48; /* text on mint tints */
+  --adm-error: #e07a6f;
+  --adm-error-ink: #9c2f23; /* AA error text on paper */
+
+  /* ---- RGB triplets — enable Tailwind alpha modifiers (bg-adm-x/10) -- */
+  --adm-violet-rgb: 110 72 228;
+  --adm-violet-soft-rgb: 157 127 240;
+  --adm-lilac-rgb: 200 182 240;
+  --adm-deep-rgb: 58 36 128;
+  --adm-night-rgb: 8 5 26;
+  --adm-midnight-rgb: 16 10 36;
+  --adm-dusk-rgb: 34 18 72;
+  --adm-paper-rgb: 249 244 236;
+  --adm-sand-rgb: 245 238 230;
+  --adm-card-rgb: 255 253 249;
+  --adm-ink-rgb: 20 16 31;
+  --adm-ink-soft-rgb: 43 36 64;
+  --adm-ink-muted-rgb: 93 86 112;
+  --adm-ink-faint-rgb: 138 132 150;
+  --adm-line-rgb: 231 221 208;
+  --adm-line-strong-rgb: 212 200 184;
+  --adm-gold-rgb: 244 198 96;
+  --adm-gold-ink-rgb: 107 77 0;
+  --adm-blush-rgb: 242 168 179;
+  --adm-mint-rgb: 111 224 192;
+  --adm-mint-ink-rgb: 14 90 72;
+  --adm-error-rgb: 224 122 111;
+  --adm-error-ink-rgb: 156 47 35;
+
+  /* ---- Career clusters (data-viz / category — keep meaning) --------- */
+  --adm-cl-tech: #1d63d2;
+  --adm-cl-eng: #c2410c;
+  --adm-cl-sci: #5040d9;
+  --adm-cl-art: #a521c4;
+  --adm-cl-bus: #6b4d00;
+  --adm-cl-law: #0e7a6e;
+  --adm-cl-ppl: #c01f55;
+  --adm-cl-env: #1f7a3d;
+
+  /* ---- Signature gradients ------------------------------------------ */
+  --adm-grad-violet: linear-gradient(135deg, #6e48e4, #9d7ff0);
+  --adm-grad-warm: linear-gradient(95deg, #ff3d83, #ff6b3d, #ffa53d);
+
+  /* ---- Type scale ---------------------------------------------------- */
+  --adm-text-xs: 0.75rem;   /* 12 — table meta, badges   */
+  --adm-text-sm: 0.8125rem; /* 13 — dense table body     */
+  --adm-text-base: 0.875rem;/* 14 — UI default           */
+  --adm-text-md: 1rem;      /* 16 — form inputs, leads   */
+  --adm-text-lg: 1.25rem;   /* 20 — card titles          */
+  --adm-text-xl: 1.75rem;   /* 28 — page titles (display)*/
+  --adm-text-2xl: 2.5rem;   /* 40 — signature numbers    */
+
+  /* ---- Radii / spacing (8 12 20 28 36 · 4-base scale) ---------------- */
+  --adm-r-sm: 8px;
+  --adm-r-md: 12px;
+  --adm-r-lg: 20px;
+  --adm-r-xl: 28px;
+  --adm-r-2xl: 36px;
+
+  /* ---- Elevation (warm-tinted, never gray) --------------------------- */
+  --adm-shadow-xs: 0 1px 2px rgba(20, 16, 31, 0.05);
+  --adm-shadow-sm: 0 1px 3px rgba(20, 16, 31, 0.07), 0 4px 14px rgba(110, 72, 228, 0.05);
+  --adm-shadow-md: 0 2px 6px rgba(20, 16, 31, 0.08), 0 10px 28px rgba(110, 72, 228, 0.09);
+  --adm-shadow-lg: 0 4px 12px rgba(20, 16, 31, 0.1), 0 20px 48px rgba(110, 72, 228, 0.14);
+
+  /* ---- Motion --------------------------------------------------------- */
+  --adm-dur-fast: 150ms;
+  --adm-dur-base: 220ms;
+  --adm-dur-slow: 360ms;
+  --adm-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* base text */
+  background-color: var(--adm-paper);
+  color: var(--adm-ink);
+  font-family: var(--font-jakarta), system-ui, sans-serif;
+  font-size: var(--adm-text-base);
+}
+
+/* ---- Focus: one visible, branded ring everywhere -------------------- */
+.adm :focus-visible {
+  outline: 2px solid var(--adm-violet);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.adm .adm-on-dark :focus-visible {
+  outline-color: var(--adm-violet-soft);
+}
+
+/* ---- Selection ------------------------------------------------------- */
+.adm ::selection {
+  background: var(--adm-lilac);
+  color: var(--adm-ink);
+}
+
+/* ---- Editorial page header ------------------------------------------- */
+.adm .adm-kicker {
+  font-size: var(--adm-text-xs);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--adm-violet);
+}
+.adm .adm-display {
+  font-family: var(--font-display), Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--adm-ink);
+}
+
+/* ---- Scrollbars (admin only, warm) ----------------------------------- */
+.adm ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.adm ::-webkit-scrollbar-thumb {
+  background: var(--adm-line-strong);
+  border-radius: 8px;
+  border: 2px solid var(--adm-paper);
+}
+.adm ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ---- Sidebar night texture: static radial glow, no animation --------- */
+.adm .adm-night-glow {
+  background:
+    radial-gradient(640px 320px at 0% 0%, rgba(110, 72, 228, 0.28), transparent 65%),
+    radial-gradient(480px 420px at 100% 100%, rgba(34, 18, 72, 0.85), transparent 70%),
+    var(--adm-midnight);
+}
+
+/* ---- Compositor-only micro-interactions ------------------------------ */
+.adm .adm-lift {
+  transition:
+    transform var(--adm-dur-fast) var(--adm-ease),
+    box-shadow var(--adm-dur-base) var(--adm-ease);
+}
+.adm .adm-lift:hover {
+  transform: translateY(-2px);
+}
+.adm .adm-fade-up {
+  animation: adm-fade-up var(--adm-dur-slow) var(--adm-ease) both;
+}
+@keyframes adm-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---- Reduced motion: kill transforms & animations --------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .adm *,
+  .adm *::before,
+  .adm *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .adm .adm-lift:hover {
+    transform: none;
+  }
+}

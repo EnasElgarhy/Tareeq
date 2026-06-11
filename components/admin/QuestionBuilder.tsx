@@ -81,7 +81,7 @@ export function QuestionBuilder({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="rounded-lg border border-dashed border-slate-300 px-3 py-1.5 text-[13px] font-semibold text-slate-500 transition hover:border-[#6E48E4] hover:text-[#6E48E4]"
+        className="rounded-adm-md border border-dashed border-adm-line-strong px-3 py-1.5 text-[13px] font-semibold text-adm-ink-muted transition hover:border-adm-violet hover:text-adm-violet"
       >
         + Add question
       </button>
@@ -91,7 +91,7 @@ export function QuestionBuilder({
   const hint = QUESTION_TYPES.find((t) => t.kind === kind)?.hint;
 
   return (
-    <div className="w-full rounded-xl border-2 border-[#6E48E4]/30 bg-white p-4">
+    <div className="w-full rounded-adm-lg border-2 border-adm-violet/30 bg-adm-card p-4">
       <div className="mb-3 flex flex-wrap items-center gap-2">
         <select
           value={kind}
@@ -118,7 +118,7 @@ export function QuestionBuilder({
           ))}
         </select>
         {hint ? (
-          <span className="text-[11.5px] text-slate-400">{hint}</span>
+          <span className="text-[11.5px] text-adm-ink-muted">{hint}</span>
         ) : null}
       </div>
 
@@ -139,18 +139,18 @@ export function QuestionBuilder({
           />
         </div>
       ) : (
-        <p className="mt-3 rounded-lg bg-slate-50 px-3 py-2 text-[12.5px] text-slate-500">
+        <p className="mt-3 rounded-adm-md bg-adm-sand px-3 py-2 text-[12.5px] text-adm-ink-muted">
           Free-text questions have no preset answers — the respondent types
           their own.
         </p>
       )}
 
-      <div className="mt-4 flex items-center gap-2 border-t border-slate-100 pt-3">
+      <div className="mt-4 flex items-center gap-2 border-t border-adm-line pt-3">
         <button
           type="button"
           disabled={pending || !title.trim()}
           onClick={save}
-          className="rounded-lg bg-[#6E48E4] px-4 py-1.5 text-[13px] font-semibold text-white transition hover:bg-[#5b39c9] disabled:opacity-60"
+          className="rounded-adm-md bg-adm-violet px-4 py-1.5 text-[13px] font-semibold text-white transition hover:bg-adm-deep disabled:opacity-60"
         >
           {pending ? "Adding…" : "Add question"}
         </button>
@@ -158,12 +158,12 @@ export function QuestionBuilder({
           type="button"
           disabled={pending}
           onClick={close}
-          className="rounded-lg px-3 py-1.5 text-[13px] font-semibold text-slate-500 transition hover:text-slate-900"
+          className="rounded-adm-md px-3 py-1.5 text-[13px] font-semibold text-adm-ink-muted transition hover:text-adm-ink"
         >
           Cancel
         </button>
         {error ? (
-          <span className="text-[12px] text-red-600">{error}</span>
+          <span className="text-[12px] text-adm-error-ink">{error}</span>
         ) : null}
       </div>
     </div>

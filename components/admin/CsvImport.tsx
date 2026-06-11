@@ -59,7 +59,7 @@ export function CsvImport({ versionId }: { versionId: string }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="rounded-lg border border-dashed border-slate-300 px-3 py-1.5 text-[13px] font-semibold text-slate-500 transition hover:border-[#6E48E4] hover:text-[#6E48E4]"
+        className="rounded-adm-md border border-dashed border-adm-line-strong px-3 py-1.5 text-[13px] font-semibold text-adm-ink-muted transition hover:border-adm-violet hover:text-adm-violet"
       >
         ⇪ Import CSV
       </button>
@@ -67,9 +67,9 @@ export function CsvImport({ versionId }: { versionId: string }) {
   }
 
   return (
-    <div className="w-full rounded-xl border border-slate-200 bg-white p-4">
+    <div className="w-full rounded-adm-lg border border-adm-line bg-adm-card p-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-[13px] font-bold text-slate-900">
+        <h3 className="text-[13px] font-bold text-adm-ink">
           Import questions from CSV
         </h3>
         <button
@@ -78,17 +78,17 @@ export function CsvImport({ versionId }: { versionId: string }) {
             setOpen(false);
             setResult(null);
           }}
-          className="text-[12px] font-semibold text-slate-400 transition hover:text-slate-700"
+          className="text-[12px] font-semibold text-adm-ink-muted transition hover:text-adm-ink-soft"
         >
           Close
         </button>
       </div>
 
-      <p className="mt-1.5 text-[12.5px] leading-relaxed text-slate-500">
+      <p className="mt-1.5 text-[12.5px] leading-relaxed text-adm-ink-muted">
         One row per answer — rows that share a{" "}
-        <code className="rounded bg-slate-100 px-1">question_key</code> become one
+        <code className="rounded bg-adm-sand px-1">question_key</code> become one
         question. Columns:{" "}
-        <code className="rounded bg-slate-100 px-1">
+        <code className="rounded bg-adm-sand px-1">
           question_key, pillar (0–4), type (single/binary/select/text), title,
           axis, answer_key, answer_text, cluster, driver, axis_value
         </code>
@@ -98,12 +98,12 @@ export function CsvImport({ versionId }: { versionId: string }) {
       <button
         type="button"
         onClick={downloadTemplate}
-        className="mt-2.5 rounded-lg border border-slate-300 px-3 py-1.5 text-[12.5px] font-semibold text-slate-600 transition hover:bg-slate-50"
+        className="mt-2.5 rounded-adm-md border border-adm-line-strong px-3 py-1.5 text-[12.5px] font-semibold text-adm-ink-soft transition hover:bg-adm-sand"
       >
         ↓ Download template
       </button>
 
-      <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3">
+      <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-adm-line pt-3">
         <input
           ref={inputRef}
           type="file"
@@ -112,13 +112,13 @@ export function CsvImport({ versionId }: { versionId: string }) {
             setFile(e.target.files?.[0] ?? null);
             setResult(null);
           }}
-          className="text-[12.5px] text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-100 file:px-3 file:py-1.5 file:text-[12.5px] file:font-semibold file:text-slate-700 hover:file:bg-slate-200"
+          className="text-[12.5px] text-adm-ink-soft file:mr-3 file:rounded-adm-md file:border-0 file:bg-adm-sand file:px-3 file:py-1.5 file:text-[12.5px] file:font-semibold file:text-adm-ink-soft hover:file:bg-adm-line-strong"
         />
         <button
           type="button"
           disabled={!file || pending}
           onClick={runImport}
-          className="rounded-lg bg-[#6E48E4] px-4 py-1.5 text-[13px] font-semibold text-white transition hover:bg-[#5b39c9] disabled:opacity-60"
+          className="rounded-adm-md bg-adm-violet px-4 py-1.5 text-[13px] font-semibold text-white transition hover:bg-adm-deep disabled:opacity-60"
         >
           {pending ? "Importing…" : "Import"}
         </button>
@@ -126,14 +126,14 @@ export function CsvImport({ versionId }: { versionId: string }) {
 
       {result ? (
         result.ok ? (
-          <p className="mt-3 rounded-lg bg-emerald-50 px-3 py-2 text-[12.5px] font-semibold text-emerald-700">
+          <p className="mt-3 rounded-adm-md bg-adm-mint/15 px-3 py-2 text-[12.5px] font-semibold text-adm-mint-ink">
             Imported {result.questionsImported} question
             {result.questionsImported === 1 ? "" : "s"} and{" "}
             {result.optionsImported} answer
             {result.optionsImported === 1 ? "" : "s"} ✓
           </p>
         ) : (
-          <div className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-[12.5px] text-red-700">
+          <div className="mt-3 rounded-adm-md bg-adm-error/10 px-3 py-2 text-[12.5px] text-adm-error-ink">
             <p className="font-semibold">Import stopped — nothing was added:</p>
             <ul className="mt-1 list-disc space-y-0.5 pl-4">
               {result.errors.map((e, i) => (

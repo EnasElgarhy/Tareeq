@@ -1,64 +1,66 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CsvImport } from "@/components/admin/CsvImport";
+import PageHeader from "@/components/admin/PageHeader";
 import { QuestionBuilder } from "@/components/admin/QuestionBuilder";
 import { QuestionEditor } from "@/components/admin/QuestionEditor";
 import { VersionActions } from "@/components/admin/VersionActions";
+import { VersionRename } from "@/components/admin/VersionRename";
+import { EmptyState } from "@/components/admin/ui/EmptyState";
 import {
   getContentVersion,
   getVersionContent,
   listClusters,
   PILLAR_NAMES,
-  type OptionRow,
   type QuestionRow,
 } from "@/lib/admin/content";
 
 export const dynamic = "force-dynamic";
 
-function loc(text: Record<string, string>): string {
-  return text?.en ?? Object.values(text ?? {})[0] ?? "";
+function loc(t: Record<string, string>): string {
+  return t?.en ?? Object.values(t ?? {})[0] ?? "";
 }
 
-/** The scoring metadata an option carries (cluster / driver / axis). */
-function OptionMeta({ option }: { option: OptionRow }) {
-  const tag =
-    option.cluster_code ?? option.driver_code ?? option.axis_value ?? null;
-  if (!tag) return null;
+/** Read-only question card (active/published versions). */
+function ReadonlyQuestion({ q }: { q: QuestionRow }) {
   return (
-    <span className="ml-auto shrink-0 rounded-full bg-[#6E48E4]/10 px-2 py-0.5 text-[11px] font-bold text-[#6E48E4]">
-      {tag}
-    </span>
-  );
-}
-
-function QuestionCard({ q }: { q: QuestionRow }) {
-  return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4">
+    <div className="rounded-adm-lg border border-adm-line bg-adm-card p-4">
       <div className="mb-2 flex items-center gap-2">
-        <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[11px] font-bold text-slate-500">
+        <span className="rounded bg-adm-sand px-1.5 py-0.5 text-[11px] font-bold text-adm-ink-muted">
           {q.external_id}
         </span>
         {q.axis ? (
-          <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[11px] font-semibold text-slate-500">
+          <span className="rounded bg-adm-sand px-1.5 py-0.5 text-[11px] font-semibold text-adm-ink-muted">
             axis: {q.axis}
           </span>
         ) : null}
       </div>
-      <p className="text-[14px] font-semibold text-slate-900">{loc(q.title)}</p>
-      <ul className="mt-2.5 grid gap-1.5">
-        {q.options.map((o) => (
-          <li
-            key={o.id}
-            className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-1.5"
-          >
-            <span className="grid size-5 shrink-0 place-items-center rounded bg-white text-[11px] font-bold text-slate-600">
-              {o.letter}
-            </span>
-            <span className="text-[13px] text-slate-700">{loc(o.text)}</span>
-            <OptionMeta option={o} />
-          </li>
-        ))}
-      </ul>
+      <p className="text-[14px] font-semibold text-adm-ink">{loc(q.title)}</p>
+      {q.options.length > 0 ? (
+        <ul className="mt-2.5 grid gap-1.5">
+          {q.options.map((o) => {
+            const tag = o.cluster_code ?? o.driver_code ?? o.axis_value;
+            return (
+              <li
+                key={o.id}
+                className="flex items-center gap-2 rounded-adm-md bg-adm-sand px-3 py-1.5"
+              >
+                <span className="grid size-5 shrink-0 place-items-center rounded bg-adm-card text-[11px] font-bold text-adm-ink-soft">
+                  {o.letter}
+                </span>
+                <span className="text-[13px] text-adm-ink-soft">
+                  {loc(o.text)}
+                </span>
+                {tag ? (
+                  <span className="ml-auto shrink-0 rounded-full bg-adm-violet/10 px-2 py-0.5 text-[11px] font-bold text-adm-violet">
+                    {tag}
+                  </span>
+                ) : null}
+              </li>
+            );
+          })}
+        </ul>
+      ) : null}
     </div>
   );
 }
@@ -76,8 +78,8 @@ export default async function VersionDetailPage({
   ]);
 
   if (!version) notFound();
+  const editable = !version.is_active;
 
-  // Group questions by pillar (already ordered by pillar, position).
   const byPillar = new Map<number, QuestionRow[]>();
   for (const q of questions) {
     const list = byPillar.get(q.pillar) ?? [];
@@ -87,81 +89,85 @@ export default async function VersionDetailPage({
   const pillars = [...byPillar.keys()].sort((a, b) => a - b);
 
   return (
-    <div>
-      <Link
-        href="/admin/content"
-        className="text-[13px] font-medium text-slate-500 hover:text-slate-900"
+    <>
+      <nav
+        aria-label="Breadcrumb"
+        className="mb-4 text-[13px] text-adm-ink-muted"
       >
-        ← Content
-      </Link>
-
-      <header className="mb-6 mt-2 flex items-center gap-2">
-        <h1 className="text-[24px] font-bold text-slate-900">{version.label}</h1>
-        {version.is_active ? (
-          <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-bold text-emerald-700">
-            Active
-          </span>
-        ) : (
-          <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-500">
-            Draft
-          </span>
-        )}
-        <span className="ml-auto text-[13px] text-slate-500">
-          {questions.length} questions
+        <Link
+          href="/admin/content"
+          className="font-semibold text-adm-violet hover:text-adm-deep"
+        >
+          Content
+        </Link>
+        <span aria-hidden="true" className="mx-2">
+          /
         </span>
-      </header>
+        <span className="text-adm-ink-soft">{version.label}</span>
+      </nav>
 
-      <div className="mb-6 flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3">
-        <p className="text-[13px] text-slate-500">
-          {version.is_active
-            ? "This is the live version. Clone it to make edits safely."
-            : "Draft — edit freely, then publish to make it live."}
+      <PageHeader
+        kicker={`Assessment · ${questions.length} questions`}
+        title={
+          <VersionRename
+            versionId={version.id}
+            label={version.label}
+            isActive={version.is_active}
+            editable={editable}
+          />
+        }
+        actions={
+          <VersionActions versionId={version.id} isActive={version.is_active} />
+        }
+      />
+
+      {!editable && (
+        <p className="mb-6 rounded-adm-md border border-adm-gold/50 bg-adm-gold/15 px-4 py-3 text-[13px] font-medium text-adm-gold-ink">
+          This version is live and read-only. Clone it to a draft to make
+          changes.
         </p>
-        <VersionActions versionId={version.id} isActive={version.is_active} />
-      </div>
+      )}
 
-      {!version.is_active ? (
-        <div className="mb-6 flex flex-wrap items-start gap-2">
+      {questions.length === 0 ? (
+        <EmptyState
+          title="No questions yet"
+          description="Add your first question below, or import a batch from CSV."
+        />
+      ) : (
+        pillars.map((pillar) => {
+          const qs = byPillar.get(pillar) ?? [];
+          return (
+            <section key={pillar} className="mb-8">
+              <h2 className="mb-3 text-[13px] font-bold uppercase tracking-wide text-adm-ink-muted">
+                Pillar {pillar} · {PILLAR_NAMES[pillar] ?? "Other"} ({qs.length})
+              </h2>
+              <div className="grid gap-3">
+                {qs.map((q, i) =>
+                  editable ? (
+                    <QuestionEditor
+                      key={q.id}
+                      versionId={version.id}
+                      question={q}
+                      clusters={clusters}
+                      canMoveUp={i > 0}
+                      canMoveDown={i < qs.length - 1}
+                    />
+                  ) : (
+                    <ReadonlyQuestion key={q.id} q={q} />
+                  ),
+                )}
+              </div>
+            </section>
+          );
+        })
+      )}
+
+      {editable && (
+        <div className="mt-8 flex flex-wrap items-start gap-2">
           <QuestionBuilder versionId={version.id} clusters={clusters} />
           <CsvImport versionId={version.id} />
         </div>
-      ) : null}
-
-      {questions.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center text-[13px] text-slate-500">
-          No questions yet
-          {version.is_active
-            ? "."
-            : " — use “Add question” above to start building this assessment."}
-        </p>
-      ) : null}
-
-      {pillars.map((pillar) => {
-        const qs = byPillar.get(pillar)!;
-        return (
-          <section key={pillar} className="mb-8">
-            <h2 className="mb-3 text-[13px] font-bold uppercase tracking-wide text-slate-400">
-              Pillar {pillar} · {PILLAR_NAMES[pillar] ?? "Other"} ({qs.length})
-            </h2>
-            <div className="grid gap-3">
-              {qs.map((q, i) =>
-                version.is_active ? (
-                  <QuestionCard key={q.id} q={q} />
-                ) : (
-                  <QuestionEditor
-                    key={q.id}
-                    versionId={version.id}
-                    question={q}
-                    clusters={clusters}
-                    canMoveUp={i > 0}
-                    canMoveDown={i < qs.length - 1}
-                  />
-                ),
-              )}
-            </div>
-          </section>
-        );
-      })}
-    </div>
+      )}
+    </>
   );
 }

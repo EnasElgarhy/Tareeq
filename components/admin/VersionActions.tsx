@@ -1,16 +1,16 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useState } from "react";
+import { Button } from "@/components/admin/ui/Button";
+import { useToast } from "@/components/admin/ui/Toast";
 import {
   createDraftFromVersion,
   deleteDraftVersion,
   publishVersion,
 } from "@/lib/admin/content-actions";
 
-const BTN =
-  "rounded-lg px-3 py-1.5 text-[13px] font-semibold transition disabled:opacity-60";
-
+/** Clone / publish / delete controls for a version header. */
 export function VersionActions({
   versionId,
   isActive,
@@ -19,72 +19,98 @@ export function VersionActions({
   isActive: boolean;
 }) {
   const router = useRouter();
-  const [pending, startTransition] = useTransition();
-  const [error, setError] = useState<string | null>(null);
+  const toast = useToast();
+  const [busy, setBusy] = useState<"clone" | "publish" | "delete" | null>(null);
+  const [confirmPublish, setConfirmPublish] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
-  function run(action: () => Promise<unknown>, onDone?: (r: unknown) => void) {
-    setError(null);
-    startTransition(async () => {
+  async function onClone() {
+    setBusy("clone");
+    try {
+      const id = await createDraftFromVersion(versionId);
+      toast("success", "Cloned into a new draft.");
+      router.push(`/admin/content/${id}`);
+    } catch (e) {
+      toast("error", e instanceof Error ? e.message : "Clone failed");
+      setBusy(null);
+    }
+  }
+
+  function onPublish() {
+    if (!confirmPublish) {
+      setConfirmPublish(true);
+      return;
+    }
+    setConfirmPublish(false);
+    setBusy("publish");
+    void (async () => {
       try {
-        const result = await action();
-        onDone?.(result);
+        await publishVersion(versionId);
+        toast("success", "Published — this version is now live for students.");
         router.refresh();
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Something went wrong");
+        toast("error", e instanceof Error ? e.message : "Publish failed");
       }
-    });
+      setBusy(null);
+    })();
+  }
+
+  function onDelete() {
+    if (!confirmDelete) {
+      setConfirmDelete(true);
+      return;
+    }
+    setConfirmDelete(false);
+    setBusy("delete");
+    void (async () => {
+      try {
+        await deleteDraftVersion(versionId);
+        toast("info", "Draft deleted.");
+        router.push("/admin/content");
+      } catch (e) {
+        toast("error", e instanceof Error ? e.message : "Delete failed");
+        setBusy(null);
+      }
+    })();
   }
 
   return (
     <div className="flex items-center gap-2">
-      {isActive ? (
-        <button
-          type="button"
-          disabled={pending}
-          onClick={() =>
-            run(
-              () => createDraftFromVersion(versionId),
-              (id) => router.push(`/admin/content/${id as string}`),
-            )
-          }
-          className={`${BTN} bg-slate-900 text-white hover:bg-slate-700`}
-        >
-          {pending ? "Cloning…" : "Clone to draft"}
-        </button>
-      ) : (
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={onClone}
+        loading={busy === "clone"}
+      >
+        Clone to draft
+      </Button>
+
+      {!isActive && (
         <>
-          <button
-            type="button"
-            disabled={pending}
-            onClick={() => run(() => publishVersion(versionId))}
-            className={`${BTN} bg-emerald-600 text-white hover:bg-emerald-500`}
+          {confirmPublish && (
+            <span className="text-xs font-semibold text-adm-gold-ink">
+              Replaces the live version —
+            </span>
+          )}
+          <Button
+            size="sm"
+            onClick={onPublish}
+            loading={busy === "publish"}
+            onBlur={() => setConfirmPublish(false)}
           >
-            {pending ? "Working…" : "Publish"}
-          </button>
-          <button
-            type="button"
-            disabled={pending}
-            onClick={() => {
-              if (
-                window.confirm(
-                  "Delete this draft? Its questions and options are removed. This can't be undone.",
-                )
-              ) {
-                run(
-                  () => deleteDraftVersion(versionId),
-                  () => router.push("/admin/content"),
-                );
-              }
-            }}
-            className={`${BTN} border border-red-200 text-red-600 hover:bg-red-50`}
+            {confirmPublish ? "Confirm publish" : "Publish"}
+          </Button>
+          <Button
+            variant="danger"
+            size="sm"
+            onClick={onDelete}
+            loading={busy === "delete"}
+            onBlur={() => setConfirmDelete(false)}
           >
-            Delete
-          </button>
+            {confirmDelete ? "Confirm delete" : "Delete"}
+          </Button>
         </>
       )}
-      {error ? (
-        <span className="text-[12px] text-red-600">{error}</span>
-      ) : null}
     </div>
   );
 }

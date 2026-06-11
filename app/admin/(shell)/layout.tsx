@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { ToastProvider } from "@/components/admin/ui/Toast";
 import { requireAdmin } from "@/lib/auth/require-admin";
 
 /**
@@ -14,11 +15,19 @@ export default async function AdminShellLayout({
   const admin = await requireAdmin();
 
   return (
-    <div className="flex min-h-dvh bg-slate-50 text-slate-900 [color-scheme:light]">
-      <AdminSidebar email={admin.email} />
-      <main className="flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-6xl px-8 py-8">{children}</div>
-      </main>
-    </div>
+    <ToastProvider>
+      <a
+        href="#adm-main"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-adm-sm focus:bg-adm-violet focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+      >
+        Skip to content
+      </a>
+      <div className="flex min-h-screen bg-adm-paper">
+        <AdminSidebar email={admin.email} />
+        <main id="adm-main" className="min-w-0 flex-1">
+          <div className="mx-auto max-w-6xl px-8 py-8">{children}</div>
+        </main>
+      </div>
+    </ToastProvider>
   );
 }
