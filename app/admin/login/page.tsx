@@ -39,7 +39,7 @@ function LoginForm() {
 
   if (!configured) {
     return (
-      <div className="flex min-h-dvh items-center justify-center bg-slate-50 px-4">
+      <div className="flex min-h-dvh items-center justify-center bg-slate-50 px-4 [color-scheme:light]">
         <div className="w-full max-w-md rounded-2xl border border-amber-200 bg-amber-50 p-6 text-center">
           <h1 className="text-[17px] font-bold text-amber-900">
             Supabase isn&apos;t configured
@@ -68,7 +68,7 @@ function LoginForm() {
   }
 
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-slate-50 px-4">
+    <div className="flex min-h-dvh items-center justify-center bg-slate-50 px-4 [color-scheme:light]">
       <div className="w-full max-w-sm">
         <div className="mb-6 text-center">
           <div className="mx-auto mb-3 grid size-11 place-items-center rounded-2xl bg-[#6E48E4] text-[15px] font-black text-white">

@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { QuestionEditor } from "@/components/admin/QuestionEditor";
 import { VersionActions } from "@/components/admin/VersionActions";
 import {
   getContentVersion,
   getVersionContent,
+  listClusters,
   PILLAR_NAMES,
   type OptionRow,
   type QuestionRow,
@@ -65,9 +67,10 @@ export default async function VersionDetailPage({
   params: Promise<{ versionId: string }>;
 }) {
   const { versionId } = await params;
-  const [version, questions] = await Promise.all([
+  const [version, questions, clusters] = await Promise.all([
     getContentVersion(versionId),
     getVersionContent(versionId),
+    listClusters(),
   ]);
 
   if (!version) notFound();
@@ -123,9 +126,18 @@ export default async function VersionDetailPage({
               Pillar {pillar} · {PILLAR_NAMES[pillar] ?? "Other"} ({qs.length})
             </h2>
             <div className="grid gap-3">
-              {qs.map((q) => (
-                <QuestionCard key={q.id} q={q} />
-              ))}
+              {qs.map((q) =>
+                version.is_active ? (
+                  <QuestionCard key={q.id} q={q} />
+                ) : (
+                  <QuestionEditor
+                    key={q.id}
+                    versionId={version.id}
+                    question={q}
+                    clusters={clusters}
+                  />
+                ),
+              )}
             </div>
           </section>
         );

@@ -14,7 +14,7 @@ export default async function AdminShellLayout({
   const admin = await requireAdmin();
 
   return (
-    <div className="flex min-h-dvh bg-slate-50 text-slate-900">
+    <div className="flex min-h-dvh bg-slate-50 text-slate-900 [color-scheme:light]">
       <AdminSidebar email={admin.email} />
       <main className="flex-1 overflow-y-auto">
         <div className="mx-auto max-w-6xl px-8 py-8">{children}</div>

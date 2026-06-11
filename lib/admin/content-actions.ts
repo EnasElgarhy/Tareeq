@@ -1,8 +1,43 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+
+const localizedSchema = z.record(z.string(), z.string());
+
+const optionInputSchema = z.object({
+  letter: z.string().trim().min(1).max(4),
+  text: localizedSchema,
+  cluster_code: z.string().nullable(),
+  driver_code: z.string().nullable(),
+  axis_value: z.string().nullable(),
+});
+
+const saveQuestionSchema = z.object({
+  title: localizedSchema,
+  axis: z.string().nullable(),
+  options: z.array(optionInputSchema).max(12),
+});
+
+export type SaveQuestionInput = z.infer<typeof saveQuestionSchema>;
+
+type AdminClient = ReturnType<typeof createSupabaseAdminClient>;
+
+/** Throws unless the version exists and is a draft (active versions are read-only). */
+async function assertDraft(sb: AdminClient, versionId: string): Promise<void> {
+  const { data, error } = await sb
+    .from("content_versions")
+    .select("is_active")
+    .eq("id", versionId)
+    .single();
+  if (error || !data) throw new Error("Version not found");
+  if (data.is_active)
+    throw new Error(
+      "The active version is read-only — clone it to a draft to edit.",
+    );
+}
 
 interface SourceOption {
   letter: string;
@@ -154,4 +189,75 @@ export async function deleteDraftVersion(versionId: string): Promise<void> {
   if (e2) throw new Error(e2.message);
 
   revalidatePath("/admin/content");
+}
+
+/**
+ * Save a question's title + options (draft only). Options are replaced
+ * wholesale — safe because a draft is never referenced by an assessment.
+ */
+export async function saveQuestion(
+  versionId: string,
+  questionId: string,
+  rawInput: unknown,
+): Promise<void> {
+  await requireAdmin();
+  const sb = createSupabaseAdminClient();
+  await assertDraft(sb, versionId);
+
+  const { data: q, error: qe } = await sb
+    .from("questions")
+    .select("id,version_id")
+    .eq("id", questionId)
+    .single();
+  if (qe || !q) throw new Error("Question not found");
+  if (q.version_id !== versionId)
+    throw new Error("Question does not belong to this version");
+
+  const parsed = saveQuestionSchema.safeParse(rawInput);
+  if (!parsed.success) {
+    throw new Error(
+      "Invalid question data: " +
+        parsed.error.issues.map((i) => i.message).join(", "),
+    );
+  }
+  const input = parsed.data;
+
+  const { data: clusters } = await sb.from("clusters").select("code");
+  const validCodes = new Set((clusters ?? []).map((c) => c.code as string));
+  for (const o of input.options) {
+    if (o.cluster_code && !validCodes.has(o.cluster_code))
+      throw new Error(`Unknown cluster code: ${o.cluster_code}`);
+  }
+  const letters = input.options.map((o) => o.letter);
+  if (new Set(letters).size !== letters.length)
+    throw new Error("Option letters must be unique within a question");
+
+  const { error: uq } = await sb
+    .from("questions")
+    .update({ title: input.title, axis: input.axis })
+    .eq("id", questionId);
+  if (uq) throw new Error(uq.message);
+
+  const { error: del } = await sb
+    .from("question_options")
+    .delete()
+    .eq("question_id", questionId);
+  if (del) throw new Error(del.message);
+
+  if (input.options.length > 0) {
+    const { error: ins } = await sb.from("question_options").insert(
+      input.options.map((o, i) => ({
+        question_id: questionId,
+        letter: o.letter,
+        position: i,
+        text: o.text,
+        cluster_code: o.cluster_code,
+        driver_code: o.driver_code,
+        axis_value: o.axis_value,
+      })),
+    );
+    if (ins) throw new Error(ins.message);
+  }
+
+  revalidatePath(`/admin/content/${versionId}`);
 }
