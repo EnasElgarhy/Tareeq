@@ -202,20 +202,10 @@ export function DidYouKnow({
               type="button"
               onClick={onReplay}
               disabled={!soundOn}
-              className={[
-                "inline-flex h-8 items-center justify-center rounded-full transition active:scale-95 disabled:opacity-40",
-                audioState === "locked"
-                  ? "bg-gold-gradient px-3 text-[11px] font-semibold text-carbon shadow-gold-glow"
-                  : "glass-tile size-8 text-sand/75 hover:text-sand",
-              ].join(" ")}
-              aria-label={
-                audioState === "locked" ? "Start Kai voice" : "Replay narration"
-              }
+              className="glass-tile inline-flex size-8 items-center justify-center rounded-full text-sand/75 transition hover:text-sand active:scale-95 disabled:opacity-40"
+              aria-label="Replay narration"
             >
-              {audioState === "locked" ? (
-                "Start voice"
-              ) : (
-                <svg
+              <svg
                   width="14"
                   height="14"
                   viewBox="0 0 24 24"
@@ -236,7 +226,6 @@ export function DidYouKnow({
                     strokeLinejoin="round"
                   />
                 </svg>
-              )}
             </button>
           ) : null}
         </div>

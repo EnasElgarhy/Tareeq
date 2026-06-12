@@ -675,23 +675,12 @@ export function QuestionScreen({
             type="button"
             onClick={() => playQuestionAudio("toggle", false, true)}
             disabled={!soundOn}
-            className={[
-              "inline-flex items-center justify-center rounded-full transition hover:text-sand active:scale-95 disabled:opacity-40",
-              audioState === "locked"
-                ? "h-8 bg-gold-gradient px-3 text-[11px] font-semibold text-carbon shadow-gold-glow"
-                : "glass-tile size-8 text-sand/75",
-            ].join(" ")}
+            className="glass-tile inline-flex size-8 items-center justify-center rounded-full text-sand/75 transition hover:text-sand active:scale-95 disabled:opacity-40"
             aria-label={
-              audioState === "locked"
-                ? "Start Kai voice"
-                : audioState === "playing"
-                  ? "Pause narration"
-                  : "Replay question"
+              audioState === "playing" ? "Pause narration" : "Replay question"
             }
           >
-            {audioState === "locked" ? (
-              "Start voice"
-            ) : audioState === "playing" ? (
+            {audioState === "playing" ? (
               <svg
                 width="14"
                 height="14"

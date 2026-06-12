@@ -95,7 +95,6 @@ export function IntroScreen() {
     void play(true);
   }
 
-  const isLocked = audioState === "locked";
   const isPlaying = audioState === "playing";
 
   return (
@@ -186,14 +185,14 @@ export function IntroScreen() {
               lineHeight: 1.4,
             }}
           >
-            {isLocked ? "Tap Start voice to meet Kai." : "Kai is getting ready."}
+            Kai is getting ready.
           </p>
         )}
       </div>
 
-      {/* Audio controls — mute toggle + replay / unlock-voice button.
-       *  On touch devices that block autoplay, the "Start voice" gold
-       *  pill prompts the first user gesture so Kai can speak. */}
+      {/* Audio controls — mute toggle + replay button. Kai's voice
+       *  auto-starts on load; on touch devices the first interaction
+       *  anywhere on the page unlocks it (no dedicated button needed). */}
       <div className="flex items-center justify-center gap-2">
         <button
           type="button"
@@ -230,45 +229,26 @@ export function IntroScreen() {
           type="button"
           onClick={replayOrUnlock}
           disabled={!soundOn || isPlaying}
-          className={
-            isLocked
-              ? "inline-flex h-9 items-center gap-1.5 rounded-full bg-gold-gradient px-3.5 text-[12px] font-semibold text-carbon shadow-gold-glow transition active:scale-95"
-              : "glass-tile inline-flex size-9 items-center justify-center rounded-full text-sand/75 transition hover:text-sand active:scale-95 disabled:opacity-40"
-          }
-          aria-label={
-            isLocked
-              ? "Start Kai's voice"
-              : isPlaying
-                ? "Kai is speaking"
-                : "Replay Kai's voice"
-          }
+          className="glass-tile inline-flex size-9 items-center justify-center rounded-full text-sand/75 transition hover:text-sand active:scale-95 disabled:opacity-40"
+          aria-label={isPlaying ? "Kai is speaking" : "Replay Kai's voice"}
         >
-          {isLocked ? (
-            <>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                <path d="M7 5.5 L18.5 12 L7 18.5 Z" />
-              </svg>
-              Start voice
-            </>
-          ) : (
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
-              <path
-                d="M3 12 A 9 9 0 0 1 21 12"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                fill="none"
-              />
-              <path
-                d="M17 6 L 21 12 L 17 18"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                fill="none"
-              />
-            </svg>
-          )}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+            <path
+              d="M3 12 A 9 9 0 0 1 21 12"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              fill="none"
+            />
+            <path
+              d="M17 6 L 21 12 L 17 18"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+            />
+          </svg>
         </button>
       </div>
 
