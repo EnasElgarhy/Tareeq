@@ -151,6 +151,21 @@ body {
   font-family: var(--font-arabic-stack);
 }
 
+/* ---- Arabic locale: IBM Plex Sans Arabic everywhere ----------------------
+   When Arabic is chosen, LocaleProvider sets `html.locale-ar`. Force the
+   IBM Plex Sans Arabic stack across the whole assessment — overriding the
+   Latin display serif (Fraunces, no Arabic glyphs) and inline font styles.
+   Scoped to .locale-ar, so other surfaces are untouched. */
+html.locale-ar * {
+  font-family: var(--font-arabic-stack) !important;
+}
+html.locale-ar .text-hero,
+html.locale-ar .text-display-2,
+html.locale-ar .text-display,
+html.locale-ar .adm-display {
+  font-style: normal !important;
+}
+
 a {
   color: var(--violet-soft);
   text-decoration: none;
