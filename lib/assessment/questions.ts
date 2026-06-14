@@ -3,16 +3,25 @@ import {
   countriesRest,
   seedQuestions,
 } from "@/lib/content/seed";
+import { AR_CONTENT } from "@/lib/content/translations-ar";
 import type { LocalizedText, Question } from "@/lib/scoring/types";
 
-export const assessmentQuestions = seedQuestions.map((question) => ({
-  ...question,
-  title: { ...question.title },
-  options: question.options.map((option) => ({
-    ...option,
-    text: { ...option.text },
-  })),
-})) as unknown as Question[];
+export const assessmentQuestions = seedQuestions.map((question) => {
+  const ar = AR_CONTENT[question.externalId];
+  return {
+    ...question,
+    title: ar?.title
+      ? { ...question.title, ar: ar.title }
+      : { ...question.title },
+    options: question.options.map((option) => {
+      const arText = ar?.options?.[option.letter];
+      return {
+        ...option,
+        text: arText ? { ...option.text, ar: arText } : { ...option.text },
+      };
+    }),
+  };
+}) as unknown as Question[];
 
 export const totalAssessmentQuestions = assessmentQuestions.length;
 
