@@ -2,9 +2,9 @@ import type { Metadata, Viewport } from "next";
 import {
   DM_Serif_Display,
   Fraunces,
-  IBM_Plex_Sans_Arabic,
   Plus_Jakarta_Sans,
 } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -14,11 +14,17 @@ const jakarta = Plus_Jakarta_Sans({
   display: "swap",
 });
 
-const arabic = IBM_Plex_Sans_Arabic({
+// IBM Plex Sans Arabic — self-hosted so the Arabic UI renders reliably
+// offline and in any build environment (no Google Fonts dependency).
+const arabic = localFont({
   variable: "--font-arabic",
-  subsets: ["arabic", "latin"],
-  weight: ["400", "500", "600", "700"],
   display: "swap",
+  src: [
+    { path: "./fonts/ibm-plex-arabic-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/ibm-plex-arabic-500.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/ibm-plex-arabic-600.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/ibm-plex-arabic-700.woff2", weight: "700", style: "normal" },
+  ],
 });
 
 const question = DM_Serif_Display({
