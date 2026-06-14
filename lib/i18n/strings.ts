@@ -33,10 +33,20 @@ export const STRINGS = {
   "nav.skip": { en: "Skip", ar: "تخطّي" },
   "nav.done": { en: "Done", ar: "تم" },
   "common.of": { en: "of", ar: "من" },
+  "question.reflect_placeholder": {
+    en: "Type your reflection…",
+    ar: "اكتب تأمّلك هنا…",
+  },
 
   // ---- Intro / Kai ----
   "intro.getting_ready": { en: "Kai is getting ready.", ar: "كاي يستعد." },
   "intro.meet": { en: "Meet Kai", ar: "تعرّف على كاي" },
+  "intro.meet_prefix": { en: "Meet ", ar: "تعرّف على " },
+  "intro.kai_name": { en: "Kai", ar: "كاي" },
+  "intro.body": {
+    en: "Think of me as a filter for all the noise. We’re looking for your Energy Flows — the stuff that makes you lose track of time. Pick what you’d actually do.",
+    ar: "اعتبرني فلتراً يُبعد عنك كل الضجيج. نحن نبحث عن مساراتك التي تتدفّق فيها طاقتك — الأشياء التي تُنسيك الوقت. اختر ما ستفعله فعلاً.",
+  },
 
   // ---- Section encouragements (also narration) ----
   "kai.intro": {

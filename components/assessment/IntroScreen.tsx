@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { KaiChromaVideo } from "@/components/brand/KaiChromaVideo";
 import { Typewriter } from "@/components/primitives/Typewriter";
 import { uiSounds } from "@/lib/audio/ui-sounds";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import { useKaiNarration } from "@/lib/audio/use-kai-narration";
 
 const INTRO_BODY =
@@ -12,6 +13,8 @@ const INTRO_BODY =
 
 export function IntroScreen() {
   const router = useRouter();
+  const { t } = useLocale();
+  const introBody = t("intro.body");
   const [typingDone, setTypingDone] = useState(false);
   const [soundOn, setSoundOn] = useState(true);
   const [soundPrefReady, setSoundPrefReady] = useState(false);
@@ -139,7 +142,7 @@ export function IntroScreen() {
         className="text-hero text-sand anim-fade-up"
         style={{ animationDelay: "700ms" }}
       >
-        Meet{" "}
+        {t("intro.meet_prefix")}
         <span
           className="text-grad-warm"
           style={{
@@ -147,7 +150,7 @@ export function IntroScreen() {
             fontVariationSettings: '"SOFT" 100, "opsz" 144',
           }}
         >
-          Kai
+          {t("intro.kai_name")}
         </span>
         .
       </h1>
@@ -156,9 +159,9 @@ export function IntroScreen() {
       <div className="min-h-[5.6em] max-w-[34ch] text-center">
         {introCopyActive ? (
           <Typewriter
-            key={introCopyRun}
+            key={`${introCopyRun}-${introBody}`}
             as="p"
-            text={INTRO_BODY}
+            text={introBody}
             speed={introTypeSpeed}
             onComplete={() => setTypingDone(true)}
             className="text-sand/85"
@@ -185,7 +188,7 @@ export function IntroScreen() {
               lineHeight: 1.4,
             }}
           >
-            Kai is getting ready.
+            {t("intro.getting_ready")}
           </p>
         )}
       </div>
@@ -262,7 +265,7 @@ export function IntroScreen() {
             className="btn-v2 btn-v2--primary w-full"
             data-size="lg"
           >
-            Continue
+            {t("nav.continue")}
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
               <path
                 d="M5 12h14M13 6l6 6-6 6"

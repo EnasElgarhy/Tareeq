@@ -112,7 +112,7 @@ export function QuestionScreen({
   const [speed, setSpeed] = useState(1);
   const [mouthOpen, setMouthOpen] = useState(0);
 
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
 
   const isLastQuestion = index === totalQuestions - 1;
   const isSelect = question.kind === "select";
@@ -761,7 +761,7 @@ export function QuestionScreen({
               <textarea
                 value={selected}
                 onChange={(e) => setSelected(e.target.value)}
-                placeholder="Type your reflection…"
+                placeholder={t("question.reflect_placeholder")}
                 rows={5}
                 maxLength={600}
                 className="glass-card w-full flex-1 resize-none !rounded-xl !px-4 !py-3 text-[15px] leading-relaxed text-sand placeholder:text-sand/50 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
