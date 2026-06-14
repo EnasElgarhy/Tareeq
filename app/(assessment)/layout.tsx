@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import { AssessmentChrome } from "@/components/assessment/AssessmentChrome";
+import { LanguageGate } from "@/components/i18n/LanguageGate";
+import { LocaleProvider } from "@/components/i18n/LocaleProvider";
 import { totalAssessmentQuestions } from "@/lib/assessment/questions";
 
 export default function AssessmentLayout({
@@ -8,8 +10,12 @@ export default function AssessmentLayout({
   children: ReactNode;
 }>) {
   return (
-    <AssessmentChrome totalQuestions={totalAssessmentQuestions}>
-      {children}
-    </AssessmentChrome>
+    <LocaleProvider>
+      <LanguageGate>
+        <AssessmentChrome totalQuestions={totalAssessmentQuestions}>
+          {children}
+        </AssessmentChrome>
+      </LanguageGate>
+    </LocaleProvider>
   );
 }

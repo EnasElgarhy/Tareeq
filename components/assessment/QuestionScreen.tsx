@@ -18,6 +18,7 @@ import {
   markInterstitialSeen,
   type Interstitial,
 } from "@/lib/assessment/interstitials";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import { getLocalizedText, getQuestionPath } from "@/lib/assessment/questions";
 import { computeKaiMouthLevel } from "@/lib/audio/lip-sync";
 import { computeScore, type Question } from "@/lib/scoring";
@@ -111,6 +112,8 @@ export function QuestionScreen({
   const [speed, setSpeed] = useState(1);
   const [mouthOpen, setMouthOpen] = useState(0);
 
+  const { locale } = useLocale();
+
   const isLastQuestion = index === totalQuestions - 1;
   const isSelect = question.kind === "select";
   const isText = question.kind === "text";
@@ -121,7 +124,7 @@ export function QuestionScreen({
     optionCount > 0
       ? `A-${question.options[optionCount - 1]?.letter ?? optionCount}`
       : "";
-  const title = getLocalizedText(question.title);
+  const title = getLocalizedText(question.title, locale);
   const activeNarrationId = pendingInterstitial?.audioId ?? question.externalId;
   const activeNarrationKind = pendingInterstitial ? "section" : "question";
 
@@ -840,7 +843,7 @@ export function QuestionScreen({
                       {option.letter}
                     </span>
                     <span className="flex-1 text-[13.5px] leading-snug">
-                      {getLocalizedText(option.text)}
+                      {getLocalizedText(option.text, locale)}
                     </span>
                     <span
                       aria-hidden="true"
