@@ -3,8 +3,7 @@
 import { ArrowRight, Mail, ShieldCheck, UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { Kai } from "@/components/brand/Kai";
-import { KaiAuraV2 } from "@/components/brand/KaiAuraV2";
+import { KaiChromaVideo } from "@/components/brand/KaiChromaVideo";
 import { uiSounds } from "@/lib/audio/ui-sounds";
 import { readLocalAssessment } from "@/lib/assessment/progress";
 import {
@@ -121,11 +120,16 @@ export function RegistrationScreen() {
   return (
     <section className="anim-screen-enter flex flex-1 flex-col gap-4">
       <div className="relative mx-auto flex h-[150px] w-[150px] items-center justify-center">
-        <div className="anim-aura-bloom absolute inset-0">
-          <KaiAuraV2 size="100%" />
-        </div>
-        <div className="anim-avatar-bob relative">
-          <Kai mood="encouraging" size={116} />
+        <div
+          aria-label="Kai, your guide"
+          role="img"
+          className="anim-kai-drop relative z-10"
+        >
+          <div className="anim-kai-drop-bob">
+            {/* Mentor clip — green screen keyed out so Kai drops onto the
+                page transparently, no frame. */}
+            <KaiChromaVideo src="/kai/kai-mentor-green.mp4" size={168} />
+          </div>
         </div>
       </div>
 

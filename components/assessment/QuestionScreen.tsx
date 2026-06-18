@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { TareeqArrowLeft } from "@/components/brand/icons";
-import { Kai, type KaiMood } from "@/components/brand/Kai";
-import { KaiAuraV2 } from "@/components/brand/KaiAuraV2";
+import { type KaiMood } from "@/components/brand/Kai";
+import { KaiChromaVideo } from "@/components/brand/KaiChromaVideo";
 import { DidYouKnow } from "@/components/onboarding/DidYouKnow";
 import { prefersReducedMotion, uiSounds } from "@/lib/audio/ui-sounds";
 import {
@@ -15,7 +15,6 @@ import {
 } from "@/lib/assessment/progress";
 import {
   findInterstitialFor,
-  hasSeenInterstitial,
   markInterstitialSeen,
   type Interstitial,
 } from "@/lib/assessment/interstitials";
@@ -126,24 +125,6 @@ export function QuestionScreen({
   const activeNarrationId = pendingInterstitial?.audioId ?? question.externalId;
   const activeNarrationKind = pendingInterstitial ? "section" : "question";
 
-  const restingMood: KaiMood = useMemo(() => {
-    const cycle: KaiMood[] = ["curious", "warm", "thinking", "encouraging"];
-    return cycle[index % cycle.length] ?? "curious";
-  }, [index]);
-
-  const liveMood: KaiMood = useMemo(() => {
-    if (confirming) {
-      const idx = question.options.findIndex((o) => o.letter === confirming);
-      return OPTION_PALETTE[idx % OPTION_PALETTE.length]?.mood ?? "encouraging";
-    }
-    if (hoveredIdx != null) {
-      return (
-        OPTION_PALETTE[hoveredIdx % OPTION_PALETTE.length]?.mood ?? restingMood
-      );
-    }
-    return restingMood;
-  }, [confirming, hoveredIdx, question.options, restingMood]);
-
   const kaiScene = useMemo(
     () =>
       KAI_QUESTION_SCENES[index % KAI_QUESTION_SCENES.length] ??
@@ -202,15 +183,17 @@ export function QuestionScreen({
       const confirmDelay = reduced ? 90 : 380;
       const exitDelay = reduced ? 60 : 240;
 
-      const milestone = !isLastQuestion ? findInterstitialFor(index) : null;
-      const shouldShow = milestone && !hasSeenInterstitial(milestone.key);
+      // Always show at milestones (ignore the per-key "seen" flag) so the
+      // "Did you know?" beats are reliably testable on any run/server.
+      // findInterstitialFor still prefers unseen variants for variety.
+      const shouldShow = !isLastQuestion ? findInterstitialFor(index) : null;
 
       window.setTimeout(() => {
         if (shouldShow) {
           audioRef.current?.pause();
-          markInterstitialSeen(milestone.key);
+          markInterstitialSeen(shouldShow.key);
           setConfirming(null);
-          setPendingInterstitial(milestone);
+          setPendingInterstitial(shouldShow);
           return;
         }
         if (isLastQuestion) uiSounds.complete();
@@ -581,21 +564,25 @@ export function QuestionScreen({
             }`}
           >
             <QuestionKaiScene scene={kaiScene} />
-            <div className="anim-aura-bloom absolute inset-0">
-              <KaiAuraV2 size="100%" />
-            </div>
             <div
               aria-label="Kai, your guide"
               role="img"
-              className="anim-kai-pop relative"
+              className="anim-kai-drop relative z-10"
             >
-              <div className="anim-avatar-bob">
-                <Kai
-                  mood={liveMood}
-                  mouthOpen={displayedMouthOpen}
-                  size={isDenseChoice ? 118 : 136}
-                  videoVariant="assessment"
-                  videoPlaying={audioState === "playing"}
+              <div className="anim-kai-drop-bob">
+                {/* Green screen keyed out on the GPU so Kai drops onto
+                    the page transparently — no frame, halo, or card. */}
+                {/* Jumps straight to Kai's talking window the moment
+                    narration starts (the clip opens with a ~1.3s closed-
+                    mouth beat), loops within it while she speaks, then
+                    freezes on the closed frame when the audio finishes. */}
+                <KaiChromaVideo
+                  src="/kai/kai-question-green.mp4"
+                  size={isDenseChoice ? 176 : 200}
+                  playing={audioState === "loading" || audioState === "playing"}
+                  playStart={1.3}
+                  playEnd={3.2}
+                  restTime={0}
                 />
               </div>
             </div>
@@ -784,7 +771,7 @@ export function QuestionScreen({
                 placeholder="Type your reflection…"
                 rows={5}
                 maxLength={600}
-                className="w-full flex-1 resize-none rounded-xl bg-sand/96 px-4 py-3 text-[15px] leading-relaxed text-carbon placeholder:text-carbon/35 shadow-sand-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                className="glass-card w-full flex-1 resize-none !rounded-xl !px-4 !py-3 text-[15px] leading-relaxed text-sand placeholder:text-sand/50 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
                 autoFocus
               />
               <p className="flex items-center justify-between text-eyebrow text-sand/50">

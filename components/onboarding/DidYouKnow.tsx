@@ -2,8 +2,7 @@
 
 import { useEffect, useId, useState } from "react";
 import { createPortal } from "react-dom";
-import { Kai } from "@/components/brand/Kai";
-import { KaiAuraV2 } from "@/components/brand/KaiAuraV2";
+import { KaiChromaVideo } from "@/components/brand/KaiChromaVideo";
 import type { Interstitial } from "@/lib/assessment/interstitials";
 import { uiSounds } from "@/lib/audio/ui-sounds";
 
@@ -42,7 +41,6 @@ interface DidYouKnowProps {
 export function DidYouKnow({
   interstitial,
   audioState = "idle",
-  mouthOpen = 0,
   soundOn = true,
   onReplay,
   onToggleSound,
@@ -140,17 +138,17 @@ export function DidYouKnow({
         {/* Kai-narrated eyebrow — small animated Kai + "Did you know?" chip.
          *  Signals that the fact is voiced by Kai rather than the brand. */}
         <div className="anim-bubble-in relative flex items-center justify-center gap-3">
-          <div className="relative flex size-12 items-center justify-center">
-            <div className="absolute inset-0">
-              <KaiAuraV2 size="100%" />
-            </div>
-            <div className="relative">
-              <Kai
-                mood="encouraging"
-                mouthOpen={mouthOpen}
-                size={44}
-                videoVariant="assessment"
-                videoPlaying={audioState === "playing"}
+          <div className="relative flex size-12 items-center justify-center overflow-hidden rounded-full ring-1 ring-sand/15">
+            {/* Green screen keyed out, then scaled up + clipped to a circle
+                so the new Kai reads as a clean face avatar at chip size. */}
+            <div style={{ transform: "translateY(6px)" }}>
+              <KaiChromaVideo
+                src="/kai/kai-question-green.mp4"
+                size={62}
+                playing={audioState === "loading" || audioState === "playing"}
+                playStart={1.3}
+                playEnd={3.2}
+                restTime={0}
               />
             </div>
           </div>

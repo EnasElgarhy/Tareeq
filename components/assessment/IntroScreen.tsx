@@ -2,8 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Kai } from "@/components/brand/Kai";
-import { KaiAuraV2 } from "@/components/brand/KaiAuraV2";
+import { KaiChromaVideo } from "@/components/brand/KaiChromaVideo";
 import { Typewriter } from "@/components/primitives/Typewriter";
 import { uiSounds } from "@/lib/audio/ui-sounds";
 import { useKaiNarration } from "@/lib/audio/use-kai-narration";
@@ -31,7 +30,7 @@ export function IntroScreen() {
 
   // Shared Kai narration pipeline — auto-plays the kai_intro clip on
   // desktop, waits for a tap on touch devices (sets state to "locked").
-  const { audioRef, mouthOpen, audioState, play, pause } = useKaiNarration({
+  const { audioRef, audioState, play, pause } = useKaiNarration({
     audioId: "kai_intro",
     autoPlay: soundPrefReady && soundOn,
     soundOn,
@@ -70,6 +69,16 @@ export function IntroScreen() {
       }, 900);
       return () => window.clearTimeout(timeout);
     }
+
+    // Touch devices wait for the first tap before audio can play. Don't make
+    // the user stare at a placeholder — type the intro out anyway; the voice
+    // joins in the moment they touch the screen (auto-start, no button).
+    if (audioState === "locked") {
+      const timeout = window.setTimeout(() => {
+        setIntroCopyActive(true);
+      }, 1200);
+      return () => window.clearTimeout(timeout);
+    }
   }, [audioState, soundOn, soundPrefReady, syncTypeSpeedFromAudio]);
 
   function next() {
@@ -98,7 +107,6 @@ export function IntroScreen() {
 
   const isLocked = audioState === "locked";
   const isPlaying = audioState === "playing";
-  const displayedMouthOpen = isPlaying ? Math.max(mouthOpen, 0.12) : mouthOpen;
 
   return (
     <section
@@ -114,25 +122,16 @@ export function IntroScreen() {
         onLoadedMetadata={syncTypeSpeedFromAudio}
       />
 
-      {/* Character first — Kai with aurora */}
-      <div className="relative flex h-[220px] w-[220px] items-center justify-center">
-        <div className="anim-aura-bloom absolute inset-0">
-          <KaiAuraV2 size="100%" />
-        </div>
+      {/* Character first — Kai drops in, green screen keyed out so she
+          floats transparently over the app (no frame, halo, or card). */}
+      <div className="relative flex h-[240px] w-[240px] items-center justify-center">
         <div
           aria-label="Kai, your guide"
           role="img"
-          className="anim-kai-pop relative"
-          style={{ animationDelay: "180ms" }}
+          className="anim-kai-drop"
         >
-          <div className="anim-avatar-bob" style={{ animationDelay: "900ms" }}>
-            {/* mouthOpen drives lip-sync from the narration RMS analyser. */}
-            <Kai
-              mood={isPlaying ? "encouraging" : "warm"}
-              gesture="wave"
-              mouthOpen={displayedMouthOpen}
-              size={150}
-            />
+          <div className="anim-kai-drop-bob">
+            <KaiChromaVideo size={232} />
           </div>
         </div>
       </div>
@@ -189,7 +188,7 @@ export function IntroScreen() {
               lineHeight: 1.4,
             }}
           >
-            {isLocked ? "Tap Start voice to meet Kai." : "Kai is getting ready."}
+            Kai is getting ready.
           </p>
         )}
       </div>
@@ -229,31 +228,17 @@ export function IntroScreen() {
             )}
           </svg>
         </button>
-        <button
-          type="button"
-          onClick={replayOrUnlock}
-          disabled={!soundOn || isPlaying}
-          className={
-            isLocked
-              ? "inline-flex h-9 items-center gap-1.5 rounded-full bg-gold-gradient px-3.5 text-[12px] font-semibold text-carbon shadow-gold-glow transition active:scale-95"
-              : "glass-tile inline-flex size-9 items-center justify-center rounded-full text-sand/75 transition hover:text-sand active:scale-95 disabled:opacity-40"
-          }
-          aria-label={
-            isLocked
-              ? "Start Kai's voice"
-              : isPlaying
-                ? "Kai is speaking"
-                : "Replay Kai's voice"
-          }
-        >
-          {isLocked ? (
-            <>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                <path d="M7 5.5 L18.5 12 L7 18.5 Z" />
-              </svg>
-              Start voice
-            </>
-          ) : (
+        {/* Replay control only — Kai's voice auto-starts on the first tap
+         *  anywhere (handled by useKaiNarration), so there's no explicit
+         *  "Start voice" button to hunt for. */}
+        {!isLocked && (
+          <button
+            type="button"
+            onClick={replayOrUnlock}
+            disabled={!soundOn || isPlaying}
+            className="glass-tile inline-flex size-9 items-center justify-center rounded-full text-sand/75 transition hover:text-sand active:scale-95 disabled:opacity-40"
+            aria-label={isPlaying ? "Kai is speaking" : "Replay Kai's voice"}
+          >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
               <path
                 d="M3 12 A 9 9 0 0 1 21 12"
@@ -271,8 +256,8 @@ export function IntroScreen() {
                 fill="none"
               />
             </svg>
-          )}
-        </button>
+          </button>
+        )}
       </div>
 
       <div className="flex-1" />
