@@ -4,6 +4,8 @@ import { ArrowRight, Mail, ShieldCheck, UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { KaiChromaVideo } from "@/components/brand/KaiChromaVideo";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { sendEmailOtp, verifyEmailOtp } from "@/lib/auth/otp";
 import { uiSounds } from "@/lib/audio/ui-sounds";
 import { readLocalAssessment } from "@/lib/assessment/progress";
 import {
@@ -13,25 +15,43 @@ import {
 } from "@/lib/results/storage";
 import type { ConsentAgeGate } from "@/lib/results/types";
 
-function createVerificationCode() {
-  const values = new Uint32Array(1);
-  window.crypto.getRandomValues(values);
-  return String(100000 + (values[0] % 900000));
-}
-
 function isValidEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
+/** Persist the completed assessment to the signed-in account. Fail-open: a DB
+ *  hiccup must never block the user from seeing their result. */
+async function persistAssessment(name: string, locale: string) {
+  try {
+    const progress = readLocalAssessment();
+    if (!progress?.result) return;
+    await fetch("/api/assessments/persist", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        answers: progress.answers,
+        result: progress.result,
+        locale,
+        name,
+        startedAt: progress.startedAt,
+      }),
+    });
+  } catch {
+    // fail-open — the result still shows from local state.
+  }
+}
+
 export function RegistrationScreen() {
   const router = useRouter();
+  const { locale } = useLocale();
   const existingRegistration = useMemo(() => readResultRegistration(), []);
   const [name, setName] = useState(existingRegistration?.name ?? "");
   const [email, setEmail] = useState(existingRegistration?.email ?? "");
-  const [verificationCode, setVerificationCode] = useState("");
   const [enteredCode, setEnteredCode] = useState("");
   const [error, setError] = useState("");
   const [codeSent, setCodeSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [verifying, setVerifying] = useState(false);
   const [ageGate, setAgeGate] = useState<ConsentAgeGate>("unknown");
   const [generalResearch, setGeneralResearch] = useState(
     existingRegistration?.consent.generalResearch ?? false,
@@ -67,7 +87,7 @@ export function RegistrationScreen() {
     }
   }, [router]);
 
-  function handleSendCode(event: FormEvent<HTMLFormElement>) {
+  async function handleSendCode(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const trimmedName = name.trim();
     const trimmedEmail = email.trim().toLowerCase();
@@ -82,28 +102,60 @@ export function RegistrationScreen() {
       return;
     }
 
+    setError("");
+    setSending(true);
+    const { ok, error: otpError } = await sendEmailOtp(trimmedEmail, trimmedName);
+    setSending(false);
+    if (!ok) {
+      setError(otpError ?? "Couldn't send the code. Please try again.");
+      return;
+    }
+
     uiSounds.advance();
     setName(trimmedName);
     setEmail(trimmedEmail);
-    setVerificationCode(createVerificationCode());
     setEnteredCode("");
     setCodeSent(true);
-    setError("");
   }
 
-  function handleVerify(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function handleResend() {
+    if (sending) return;
+    setError("");
+    setSending(true);
+    const { ok, error: otpError } = await sendEmailOtp(
+      email.trim().toLowerCase(),
+      name.trim(),
+    );
+    setSending(false);
+    if (!ok) setError(otpError ?? "Couldn't resend the code.");
+    else uiSounds.advance();
+  }
 
-    if (enteredCode.trim() !== verificationCode) {
-      setError("That code does not match yet.");
+  async function handleVerify(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const code = enteredCode.trim();
+
+    if (code.length < 6) {
+      setError("Enter the 6-digit code from your email.");
+      return;
+    }
+
+    setError("");
+    setVerifying(true);
+    const trimmedEmail = email.trim().toLowerCase();
+    const { ok, error: otpError } = await verifyEmailOtp(trimmedEmail, code);
+    if (!ok) {
+      setVerifying(false);
+      setError(otpError ?? "That code is invalid or has expired.");
       return;
     }
 
     uiSounds.confirm();
     const canOptIn = ageGate !== "minor";
+    const trimmedName = name.trim();
     writeResultRegistration({
-      name: name.trim(),
-      email: email.trim().toLowerCase(),
+      name: trimmedName,
+      email: trimmedEmail,
       verifiedAt: new Date().toISOString(),
       consent: {
         ...createEmptyResultConsent(ageGate),
@@ -112,6 +164,10 @@ export function RegistrationScreen() {
         universitySharing: canOptIn && universitySharing,
       },
     });
+
+    // Save the result to their account (non-blocking).
+    void persistAssessment(trimmedName, locale);
+
     router.push("/analyzing");
   }
 
@@ -238,8 +294,9 @@ export function RegistrationScreen() {
             type="submit"
             className="btn-v2 btn-v2--primary w-full"
             data-size="lg"
+            disabled={sending}
           >
-            Send verification code
+            {sending ? "Sending…" : "Send verification code"}
             <ArrowRight size={18} />
           </button>
         </form>
@@ -250,15 +307,12 @@ export function RegistrationScreen() {
               Verification code
             </p>
             <p className="mt-1 text-body-sm text-sand/70">
-              Enter the 6-digit code for{" "}
-              <span className="font-semibold text-sand">{email}</span>.
-            </p>
-            <p className="mt-2 rounded-xl bg-night/45 px-3 py-2 text-center text-[22px] font-bold tracking-[0.22em] text-gold">
-              {verificationCode}
+              We emailed a 6-digit code to{" "}
+              <span className="font-semibold text-sand">{email}</span>. Enter it
+              below to continue.
             </p>
             <p className="mt-2 text-[11px] leading-snug text-sand/45">
-              Prototype mode shows the code here. In production this connects to
-              an email provider.
+              Can&apos;t find it? Check your spam folder, or resend the code.
             </p>
           </div>
 
@@ -281,22 +335,34 @@ export function RegistrationScreen() {
             type="submit"
             className="btn-v2 btn-v2--primary w-full"
             data-size="lg"
+            disabled={verifying}
           >
-            Verify and analyze
+            {verifying ? "Verifying…" : "Verify and analyze"}
             <ArrowRight size={18} />
           </button>
 
-          <button
-            type="button"
-            onClick={() => {
-              setCodeSent(false);
-              setError("");
-            }}
-            className="btn-v2 btn-v2--ghost-on-dark w-full"
-            data-size="md"
-          >
-            Edit details
-          </button>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                setCodeSent(false);
+                setError("");
+              }}
+              className="btn-v2 btn-v2--ghost-on-dark w-full"
+              data-size="md"
+            >
+              Edit details
+            </button>
+            <button
+              type="button"
+              onClick={handleResend}
+              disabled={sending}
+              className="btn-v2 btn-v2--ghost-on-dark w-full"
+              data-size="md"
+            >
+              {sending ? "Sending…" : "Resend code"}
+            </button>
+          </div>
         </form>
       )}
     </section>

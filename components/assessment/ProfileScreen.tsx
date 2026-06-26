@@ -4,14 +4,15 @@ import {
   ChevronRight,
   Headphones,
   Lock,
+  LogOut,
   Mail,
   Sparkles,
   TrendingUp,
   Wrench,
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { type ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useState } from "react";
+import { OtpSignIn } from "@/components/auth/OtpSignIn";
 import { KaiChromaVideo } from "@/components/brand/KaiChromaVideo";
 import {
   ArchetypeIcon,
@@ -19,7 +20,9 @@ import {
   DriverIcon,
   EcosystemIcon,
 } from "@/components/brand/ResultIcons";
+import { signOut } from "@/lib/auth/otp";
 import { readProfileSnapshot, type ProfileSnapshot } from "@/lib/profile/journey";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 const MODULE_ICONS: Record<string, ReactNode> = {
   compass: <CompassResultIcon size={22} />,
@@ -28,24 +31,65 @@ const MODULE_ICONS: Record<string, ReactNode> = {
   pulse: <TrendingUp size={20} />,
 };
 
+type AuthState = "loading" | "signed-out" | "signed-in";
+
 export function ProfileScreen() {
-  const router = useRouter();
+  const [authState, setAuthState] = useState<AuthState>("loading");
+  const [displayName, setDisplayName] = useState("");
+  const [email, setEmail] = useState("");
   const [snapshot, setSnapshot] = useState<ProfileSnapshot | null>(null);
 
-  useEffect(() => {
-    const next = readProfileSnapshot();
-    // Soft gate — if there's no registration the user shouldn't be
-    // here yet. Send them to /start so they can either resume or begin.
-    if (!next.registration) {
-      router.replace("/start");
+  const loadProfile = useCallback(async () => {
+    const supabase = createSupabaseBrowserClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      setAuthState("signed-out");
       return;
     }
-    setSnapshot(next);
-  }, [router]);
 
-  if (!snapshot || !snapshot.registration) return null;
+    // Resolve the display name: their profile row → auth metadata → any local
+    // registration → the email's local part.
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("display_name")
+      .eq("id", user.id)
+      .maybeSingle();
+    const local = readProfileSnapshot();
+    const metadataName =
+      typeof user.user_metadata?.display_name === "string"
+        ? user.user_metadata.display_name
+        : undefined;
 
-  const initials = getInitials(snapshot.registration.name);
+    setDisplayName(
+      (profile?.display_name as string | null)?.trim() ||
+        metadataName?.trim() ||
+        local.registration?.name?.trim() ||
+        (user.email ? user.email.split("@")[0] : "You"),
+    );
+    setEmail(user.email ?? local.registration?.email ?? "");
+    setSnapshot(local);
+    setAuthState("signed-in");
+  }, []);
+
+  useEffect(() => {
+    void loadProfile();
+  }, [loadProfile]);
+
+  async function handleSignOut() {
+    await signOut();
+    setSnapshot(null);
+    setAuthState("signed-out");
+  }
+
+  if (authState === "loading") return null;
+  if (authState === "signed-out" || !snapshot) {
+    return <SignedOutProfile onSignedIn={loadProfile} />;
+  }
+
+  const initials = getInitials(displayName);
   const coreModule = snapshot.modules.find((m) => m.id === "core-compass");
   const coreCompleted = coreModule?.status === "completed";
 
@@ -91,11 +135,11 @@ export function ProfileScreen() {
               Your profile
             </p>
             <h1 className="mt-0.5 truncate text-[22px] font-black leading-tight text-sand">
-              {snapshot.registration.name}
+              {displayName}
             </h1>
             <p className="mt-0.5 flex items-center gap-1.5 truncate text-[12px] text-sand/55">
               <Mail size={11} />
-              {snapshot.registration.email}
+              {email}
             </p>
           </div>
         </div>
@@ -195,8 +239,44 @@ export function ProfileScreen() {
         </Link>
       </section>
 
+      <button
+        type="button"
+        onClick={handleSignOut}
+        className="mx-auto flex items-center gap-1.5 text-[12px] font-semibold text-sand/50 transition-colors hover:text-sand/80"
+      >
+        <LogOut size={13} />
+        Sign out
+      </button>
+
       <p className="text-center text-[11px] leading-snug text-sand/40">
         More assessments unlock as Tareeq grows. Your profile grows with you.
+      </p>
+    </section>
+  );
+}
+
+function SignedOutProfile({ onSignedIn }: { onSignedIn: () => void }) {
+  return (
+    <section className="anim-screen-enter flex flex-1 flex-col gap-4">
+      <div className="grid gap-2">
+        <span className="chip chip--violet-on-dark w-fit">Your profile</span>
+        <h1 className="text-display-2 max-w-[14ch] text-sand">
+          Sign in to your Compass.
+        </h1>
+        <p className="text-body-sm max-w-[34ch] text-sand/70">
+          Enter your email and we&apos;ll send a 6-digit code. Your saved
+          assessments and profile live with your account.
+        </p>
+      </div>
+
+      <OtpSignIn onSignedIn={onSignedIn} />
+
+      <p className="text-center text-[11px] leading-snug text-sand/40">
+        New here?{" "}
+        <Link href="/start" className="font-semibold text-sand/70 underline">
+          Take the CORE Compass
+        </Link>{" "}
+        to create your profile.
       </p>
     </section>
   );
