@@ -53,6 +53,15 @@ const NAV: NavEntry[] = [
     ),
   },
   {
+    href: "/admin/responses",
+    label: "Responses",
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" aria-hidden="true">
+        <path d="M5 4h14v16l-3-2-2 2-2-2-2 2-2-2-3 2V4Zm3 5h8M8 13h6" {...stroke} />
+      </svg>
+    ),
+  },
+  {
     href: "/admin/users",
     label: "Users",
     icon: (
