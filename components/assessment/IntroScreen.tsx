@@ -2,8 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Kai } from "@/components/brand/Kai";
-import { KaiAuraV2 } from "@/components/brand/KaiAuraV2";
+import { KaiChromaVideo } from "@/components/brand/KaiChromaVideo";
 import { Typewriter } from "@/components/primitives/Typewriter";
 import { uiSounds } from "@/lib/audio/ui-sounds";
 import { useKaiNarration } from "@/lib/audio/use-kai-narration";
@@ -31,7 +30,7 @@ export function IntroScreen() {
 
   // Shared Kai narration pipeline — auto-plays the kai_intro clip on
   // desktop, waits for a tap on touch devices (sets state to "locked").
-  const { audioRef, mouthOpen, audioState, play, pause } = useKaiNarration({
+  const { audioRef, audioState, play, pause } = useKaiNarration({
     audioId: "kai_intro",
     autoPlay: soundPrefReady && soundOn,
     soundOn,
@@ -108,7 +107,6 @@ export function IntroScreen() {
 
   const isLocked = audioState === "locked";
   const isPlaying = audioState === "playing";
-  const displayedMouthOpen = isPlaying ? Math.max(mouthOpen, 0.12) : mouthOpen;
 
   return (
     <section
@@ -124,11 +122,9 @@ export function IntroScreen() {
         onLoadedMetadata={syncTypeSpeedFromAudio}
       />
 
-      {/* Character first — Kai with aurora */}
-      <div className="relative flex h-[220px] w-[220px] items-center justify-center">
-        <div className="anim-aura-bloom absolute inset-0">
-          <KaiAuraV2 size="100%" />
-        </div>
+      {/* Character first — new Kai, green screen keyed out on the GPU so she
+          floats transparently over the app (no aurora, frame, or card). */}
+      <div className="relative flex h-[240px] w-[240px] items-center justify-center">
         <div
           aria-label="Kai, your guide"
           role="img"
@@ -136,12 +132,12 @@ export function IntroScreen() {
           style={{ animationDelay: "180ms" }}
         >
           <div className="anim-avatar-bob" style={{ animationDelay: "900ms" }}>
-            {/* mouthOpen drives lip-sync from the narration RMS analyser. */}
-            <Kai
-              mood={isPlaying ? "encouraging" : "warm"}
-              gesture="wave"
-              mouthOpen={displayedMouthOpen}
-              size={150}
+            {/* Intro clip loops continuously so Kai is always alive/moving
+                (the narration voice plays via the separate <audio>). */}
+            <KaiChromaVideo
+              size={232}
+              src="/kai/kai-intro-green.mp4"
+              loop
             />
           </div>
         </div>

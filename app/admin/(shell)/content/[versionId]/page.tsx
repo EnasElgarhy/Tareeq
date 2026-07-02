@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { getAssessmentForVersion } from "@/lib/admin/catalog";
 import { CsvImport } from "@/components/admin/CsvImport";
 import PageHeader from "@/components/admin/PageHeader";
 import { QuestionBuilder } from "@/components/admin/QuestionBuilder";
@@ -78,6 +79,13 @@ export default async function VersionDetailPage({
   ]);
 
   if (!version) notFound();
+
+  // Custom assessments use the dedicated bilingual editor; CORE versions stay here.
+  const assessment = await getAssessmentForVersion(versionId);
+  if (assessment?.assessment_type === "custom") {
+    redirect(`/admin/content/${versionId}/custom`);
+  }
+
   const editable = !version.is_active;
 
   const byPillar = new Map<number, QuestionRow[]>();

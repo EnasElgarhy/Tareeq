@@ -178,6 +178,12 @@ export function useKaiNarration({
         return;
       }
 
+      // A fresh user-initiated play restarts the source chain from the preferred
+      // baked clip. Otherwise autoplay-blocked attempts advance the fallback
+      // index (m4a → mp3 → TTS), stranding us on the live TTS route — which 503s
+      // when no TTS key is configured — even though the baked files play fine.
+      if (userGesture) fallbackIdxRef.current = 0;
+
       try {
         const nextSrc = getNarrationSrc(audioId, fallbackIdxRef.current);
         const needsSourceLoad =
@@ -288,16 +294,18 @@ export function useKaiNarration({
     // by also arming the gesture listener below regardless.
     void play();
 
-    // Always arm a one-shot first-interaction listener so the second
-    // a touch / scroll / key happens anywhere on the page, narration
-    // starts without the user having to tap the explicit button.
-    if (!voiceRequiresGesture) return;
-
+    // Arm a one-shot first-interaction listener on EVERY device. Desktop
+    // browsers also block audible autoplay until the user interacts, so the
+    // optimistic play() above usually can't make sound on its own — the first
+    // click / scroll / key anywhere unlocks the voice (no explicit button).
     let fired = false;
     const trigger = () => {
       if (fired) return;
       fired = true;
       cleanup();
+      // If the optimistic autoplay already succeeded, don't restart narration.
+      const a = audioRef.current;
+      if (a && !a.paused && !a.ended) return;
       void play(true);
     };
     const opts = { capture: true, passive: true } as const;

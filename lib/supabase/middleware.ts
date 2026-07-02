@@ -46,15 +46,11 @@ export async function updateSession(request: NextRequest) {
   const isLogin = pathname === LOGIN_PATH;
 
   if (!user && !isLogin) {
-    const url = request.nextUrl.clone();
-    url.pathname = LOGIN_PATH;
-    return NextResponse.redirect(url);
+    return NextResponse.redirect(new URL(LOGIN_PATH, request.url));
   }
 
   if (user && isLogin) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/admin";
-    return NextResponse.redirect(url);
+    return NextResponse.redirect(new URL("/admin/content", request.url));
   }
 
   return response;

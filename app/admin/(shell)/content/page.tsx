@@ -5,6 +5,10 @@ import PageHeader from "@/components/admin/PageHeader";
 import { StatusBadge } from "@/components/admin/ui/Badge";
 import { EmptyState } from "@/components/admin/ui/EmptyState";
 import { Table, Td, Th, Tr } from "@/components/admin/ui/Table";
+import {
+  getDraftVersionForCatalog,
+  listCatalogAssessments,
+} from "@/lib/admin/catalog";
 import { CLUSTERS } from "@/lib/admin/clusters";
 import {
   countQuestionsByVersion,
@@ -23,10 +27,26 @@ function fmtDate(iso: string) {
 }
 
 export default async function ContentPage() {
-  const [versions, counts] = await Promise.all([
+  const [versions, counts, catalogs] = await Promise.all([
     listContentVersions(),
     countQuestionsByVersion(),
+    listCatalogAssessments(),
   ]);
+
+  // Catalog (custom / AI-import) assessments own a content_version. Show them in
+  // their own section and exclude their versions from the legacy CORE list.
+  const catalogList = await Promise.all(
+    catalogs.map(async (c) => ({
+      ...c,
+      versionId: await getDraftVersionForCatalog(c.id),
+    })),
+  );
+  const catalogVersionIds = new Set(
+    catalogList
+      .map((c) => c.versionId)
+      .filter((id): id is string => Boolean(id)),
+  );
+  const legacyVersions = versions.filter((v) => !catalogVersionIds.has(v.id));
 
   const active = versions.find((v) => v.is_active) ?? null;
   const liveQuestions = active ? await getVersionContent(active.id) : [];
@@ -43,53 +63,131 @@ export default async function ContentPage() {
         actions={<NewAssessmentButton />}
       />
 
-      {versions.length === 0 ? (
+      {legacyVersions.length === 0 && catalogList.length === 0 ? (
         <EmptyState
           title="No assessments yet"
-          description="Every compass starts with a question. Create your first assessment version to get going."
+          description="Every compass starts with a question. Create your first assessment to get going."
           action={<NewAssessmentButton />}
         />
       ) : (
-        <Table>
-          <thead>
-            <tr>
-              <Th>Version</Th>
-              <Th className="w-28">Status</Th>
-              <Th className="w-28">Questions</Th>
-              <Th className="w-32">Created</Th>
-              <Th className="w-20">
-                <span className="sr-only">Open</span>
-              </Th>
-            </tr>
-          </thead>
-          <tbody>
-            {versions.map((v) => (
-              <Tr key={v.id}>
-                <Td>
-                  <Link
-                    href={`/admin/content/${v.id}`}
-                    className="font-bold text-adm-ink underline-offset-2 hover:text-adm-violet hover:underline"
-                  >
-                    {v.label}
-                  </Link>
-                </Td>
-                <Td>
-                  <StatusBadge status={v.is_active ? "published" : "draft"} />
-                </Td>
-                <Td>{counts[v.id] ?? 0}</Td>
-                <Td className="text-adm-ink-muted">{fmtDate(v.created_at)}</Td>
-                <Td>
-                  <Link
-                    href={`/admin/content/${v.id}`}
-                    className="text-[13px] font-semibold text-adm-violet hover:text-adm-deep"
-                  >
-                    Open →
-                  </Link>
-                </Td>
-              </Tr>
-            ))}
-          </tbody>
-        </Table>
+        <>
+          {catalogList.length > 0 ? (
+            <section className="mb-8">
+              <h2 className="mb-3 text-base font-bold text-adm-ink">
+                Custom assessments
+              </h2>
+              <Table>
+                <thead>
+                  <tr>
+                    <Th>Assessment</Th>
+                    <Th className="w-24">Type</Th>
+                    <Th className="w-28">Status</Th>
+                    <Th className="w-28">Source</Th>
+                    <Th className="w-20">
+                      <span className="sr-only">Open</span>
+                    </Th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {catalogList.map((c) => {
+                    const href = c.versionId
+                      ? c.creation_method === "ai_import"
+                        ? `/admin/content/${c.versionId}/import`
+                        : `/admin/content/${c.versionId}/custom`
+                      : null;
+                    return (
+                      <Tr key={c.id}>
+                        <Td>
+                          {href ? (
+                            <Link
+                              href={href}
+                              className="font-bold text-adm-ink underline-offset-2 hover:text-adm-violet hover:underline"
+                            >
+                              {c.name.en ?? "Untitled"}
+                            </Link>
+                          ) : (
+                            <span className="font-bold text-adm-ink">
+                              {c.name.en ?? "Untitled"}
+                            </span>
+                          )}
+                        </Td>
+                        <Td className="capitalize text-adm-ink-muted">
+                          {c.assessment_type}
+                        </Td>
+                        <Td>
+                          <StatusBadge
+                            status={c.status === "published" ? "published" : "draft"}
+                          />
+                        </Td>
+                        <Td className="text-adm-ink-muted">
+                          {c.creation_method === "ai_import" ? "AI import" : "Manual"}
+                        </Td>
+                        <Td>
+                          {href ? (
+                            <Link
+                              href={href}
+                              className="text-[13px] font-semibold text-adm-violet hover:text-adm-deep"
+                            >
+                              Open →
+                            </Link>
+                          ) : null}
+                        </Td>
+                      </Tr>
+                    );
+                  })}
+                </tbody>
+              </Table>
+            </section>
+          ) : null}
+
+          {legacyVersions.length > 0 ? (
+            <section>
+              <h2 className="mb-3 text-base font-bold text-adm-ink">
+                Core versions
+              </h2>
+              <Table>
+                <thead>
+                  <tr>
+                    <Th>Version</Th>
+                    <Th className="w-28">Status</Th>
+                    <Th className="w-28">Questions</Th>
+                    <Th className="w-32">Created</Th>
+                    <Th className="w-20">
+                      <span className="sr-only">Open</span>
+                    </Th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {legacyVersions.map((v) => (
+                    <Tr key={v.id}>
+                      <Td>
+                        <Link
+                          href={`/admin/content/${v.id}`}
+                          className="font-bold text-adm-ink underline-offset-2 hover:text-adm-violet hover:underline"
+                        >
+                          {v.label}
+                        </Link>
+                      </Td>
+                      <Td>
+                        <StatusBadge status={v.is_active ? "published" : "draft"} />
+                      </Td>
+                      <Td>{counts[v.id] ?? 0}</Td>
+                      <Td className="text-adm-ink-muted">{fmtDate(v.created_at)}</Td>
+                      <Td>
+                        <Link
+                          href={`/admin/content/${v.id}`}
+                          className="text-[13px] font-semibold text-adm-violet hover:text-adm-deep"
+                        >
+                          Open →
+                        </Link>
+                      </Td>
+                    </Tr>
+                  ))}
+                </tbody>
+              </Table>
+            </section>
+          ) : null}
+        </>
       )}
 
       {/* Cluster coverage */}

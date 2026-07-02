@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/admin/ui/Button";
+import { ConfirmDialog } from "@/components/admin/ui/ConfirmDialog";
 import { useToast } from "@/components/admin/ui/Toast";
 import {
   createDraftFromVersion,
@@ -36,81 +37,83 @@ export function VersionActions({
     }
   }
 
-  function onPublish() {
-    if (!confirmPublish) {
-      setConfirmPublish(true);
-      return;
-    }
+  async function doPublish() {
     setConfirmPublish(false);
     setBusy("publish");
-    void (async () => {
-      try {
-        await publishVersion(versionId);
-        toast("success", "Published — this version is now live for students.");
-        router.refresh();
-      } catch (e) {
-        toast("error", e instanceof Error ? e.message : "Publish failed");
-      }
-      setBusy(null);
-    })();
+    try {
+      await publishVersion(versionId);
+      toast("success", "Published — this version is now live for students.");
+      router.refresh();
+    } catch (e) {
+      toast("error", e instanceof Error ? e.message : "Publish failed");
+    }
+    setBusy(null);
   }
 
-  function onDelete() {
-    if (!confirmDelete) {
-      setConfirmDelete(true);
-      return;
-    }
+  async function doDelete() {
     setConfirmDelete(false);
     setBusy("delete");
-    void (async () => {
-      try {
-        await deleteDraftVersion(versionId);
-        toast("info", "Draft deleted.");
-        router.push("/admin/content");
-      } catch (e) {
-        toast("error", e instanceof Error ? e.message : "Delete failed");
-        setBusy(null);
-      }
-    })();
+    try {
+      await deleteDraftVersion(versionId);
+      toast("info", "Draft deleted.");
+      router.push("/admin/content");
+    } catch (e) {
+      toast("error", e instanceof Error ? e.message : "Delete failed");
+      setBusy(null);
+    }
   }
 
   return (
-    <div className="flex items-center gap-2">
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={onClone}
-        loading={busy === "clone"}
-      >
-        Clone to draft
-      </Button>
+    <>
+      <div className="flex items-center gap-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onClone}
+          loading={busy === "clone"}
+        >
+          Clone to draft
+        </Button>
 
-      {!isActive && (
-        <>
-          {confirmPublish && (
-            <span className="text-xs font-semibold text-adm-gold-ink">
-              Replaces the live version —
-            </span>
-          )}
-          <Button
-            size="sm"
-            onClick={onPublish}
-            loading={busy === "publish"}
-            onBlur={() => setConfirmPublish(false)}
-          >
-            {confirmPublish ? "Confirm publish" : "Publish"}
-          </Button>
-          <Button
-            variant="danger"
-            size="sm"
-            onClick={onDelete}
-            loading={busy === "delete"}
-            onBlur={() => setConfirmDelete(false)}
-          >
-            {confirmDelete ? "Confirm delete" : "Delete"}
-          </Button>
-        </>
-      )}
-    </div>
+        {!isActive && (
+          <>
+            <Button
+              size="sm"
+              onClick={() => setConfirmPublish(true)}
+              loading={busy === "publish"}
+            >
+              Publish
+            </Button>
+            <Button
+              variant="danger"
+              size="sm"
+              onClick={() => setConfirmDelete(true)}
+              loading={busy === "delete"}
+            >
+              Delete
+            </Button>
+          </>
+        )}
+      </div>
+
+      <ConfirmDialog
+        open={confirmPublish}
+        title="Publish this version?"
+        description="This will replace the current live version. Students will see the new content immediately."
+        confirmLabel="Publish"
+        onConfirm={doPublish}
+        onCancel={() => setConfirmPublish(false)}
+      />
+
+      <ConfirmDialog
+        open={confirmDelete}
+        title="Delete this draft?"
+        description="This permanently removes all questions and options in this draft. It can't be undone."
+        confirmLabel="Delete"
+        variant="danger"
+        onConfirm={doDelete}
+        onCancel={() => setConfirmDelete(false)}
+      />
+    </>
   );
 }

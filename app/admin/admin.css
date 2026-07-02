@@ -231,6 +231,55 @@
   }
 }
 
+/* ---- Dialog / modal — jakubantalik/transitions-dev pattern ------------ */
+/* Backdrop */
+.adm-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(20, 16, 31, 0.55);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  transition: opacity 150ms var(--adm-ease);
+}
+.adm-dialog-backdrop[data-open="true"] {
+  opacity: 1;
+}
+.adm-dialog-backdrop[data-closing="true"] {
+  opacity: 0;
+  transition-duration: 150ms;
+}
+
+/* Panel */
+.adm-dialog-panel {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  background: var(--adm-card);
+  border-radius: var(--adm-r-xl);
+  border: 1px solid var(--adm-line);
+  box-shadow: var(--adm-shadow-lg);
+  padding: 1.5rem;
+  opacity: 0;
+  transform: scale(0.96);
+  transition:
+    opacity 250ms var(--adm-ease),
+    transform 250ms var(--adm-ease);
+}
+.adm-dialog-backdrop[data-open="true"] .adm-dialog-panel {
+  opacity: 1;
+  transform: scale(1);
+}
+.adm-dialog-backdrop[data-closing="true"] .adm-dialog-panel {
+  opacity: 0;
+  transform: scale(0.96);
+  transition-duration: 150ms;
+}
+
 /* ---- Reduced motion: kill transforms & animations --------------------- */
 @media (prefers-reduced-motion: reduce) {
   .adm *,

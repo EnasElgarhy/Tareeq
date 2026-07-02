@@ -67,7 +67,7 @@ function LoginForm() {
       setLoading(false);
       return;
     }
-    router.replace("/admin");
+    router.replace("/admin/content");
     router.refresh();
   }
 

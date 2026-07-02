@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { TareeqArrowLeft } from "@/components/brand/icons";
-import { Kai, type KaiMood } from "@/components/brand/Kai";
-import { KaiAuraV2 } from "@/components/brand/KaiAuraV2";
+import { type KaiMood } from "@/components/brand/Kai";
+import { KaiChromaVideo } from "@/components/brand/KaiChromaVideo";
 import { DidYouKnow } from "@/components/onboarding/DidYouKnow";
 import { prefersReducedMotion, uiSounds } from "@/lib/audio/ui-sounds";
 import {
@@ -593,21 +593,21 @@ export function QuestionScreen({
             }`}
           >
             <QuestionKaiScene scene={kaiScene} />
-            <div className="anim-aura-bloom absolute inset-0">
-              <KaiAuraV2 size="100%" />
-            </div>
             <div
               aria-label="Kai, your guide"
               role="img"
               className="anim-kai-pop relative"
             >
               <div className="anim-avatar-bob">
-                <Kai
-                  mood={liveMood}
-                  mouthOpen={displayedMouthOpen}
-                  size={isDenseChoice ? 118 : 136}
-                  videoVariant="assessment"
-                  videoPlaying={audioState === "playing"}
+                {/* New Kai — green screen keyed out (transparent), lip-synced
+                    to the question narration; freezes closed when it ends. */}
+                <KaiChromaVideo
+                  src="/kai/kai-mentor-green.mp4"
+                  size={isDenseChoice ? 132 : 152}
+                  audioRef={audioRef}
+                  playStart={0}
+                  playEnd={2.3}
+                  restTime={2.3}
                 />
               </div>
             </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { type ButtonHTMLAttributes } from "react";
+import { forwardRef, type ButtonHTMLAttributes } from "react";
 
 type Variant = "primary" | "ghost" | "danger";
 type Size = "sm" | "md";
@@ -47,17 +47,21 @@ function Spinner() {
   );
 }
 
-export function Button({
-  variant = "primary",
-  size = "md",
-  loading = false,
-  disabled,
-  className = "",
-  children,
-  ...rest
-}: ButtonProps) {
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+  {
+    variant = "primary",
+    size = "md",
+    loading = false,
+    disabled,
+    className = "",
+    children,
+    ...rest
+  },
+  ref,
+) {
   return (
     <button
+      ref={ref}
       className={`${base} ${variants[variant]} ${sizes[size]} ${className}`}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
@@ -67,4 +71,4 @@ export function Button({
       {children}
     </button>
   );
-}
+});

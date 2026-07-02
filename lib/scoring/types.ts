@@ -44,6 +44,20 @@ export type QuestionOption = {
   clusterCode?: ClusterCode;
   driverCode?: DriverCode;
   axisValue?: AxisValue;
+  /**
+   * Custom-assessment scoring category (open string, e.g. "LEAD"). Set on
+   * Custom-assessment options; backed by `question_options.category_code`. The
+   * Custom executor reads `categoryCode ?? clusterCode`, keeping CORE (which
+   * uses `clusterCode`) untouched. Validated app-side against the assessment's
+   * `assessment_categories`.
+   */
+  categoryCode?: string;
+  /**
+   * Points this option contributes to its category/cluster when selected.
+   * Defaults to 1 when absent (preserving Core-engine behaviour, which counts
+   * each pick as one). Backed by the `question_options.weight` column.
+   */
+  weight?: number;
 };
 
 export type Question = {
