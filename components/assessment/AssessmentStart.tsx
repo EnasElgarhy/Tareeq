@@ -17,6 +17,7 @@ import {
   writeLocalAssessment,
 } from "@/lib/assessment/progress";
 import { getQuestionPath } from "@/lib/assessment/questions";
+import { trackEvent } from "@/lib/analytics/track";
 import {
   readGeneratedReport,
   readPlatformConsent,
@@ -67,11 +68,15 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
       return;
     }
 
+    const isRetake = Boolean(progress?.completedAt);
     defaultVoiceOnForAssessmentStart();
     uiSounds.advance();
     if (!readPlatformConsent()) writePlatformConsent();
     resetLocalAssessment();
-    writeLocalAssessment(createLocalAssessment());
+    const fresh = createLocalAssessment();
+    writeLocalAssessment(fresh);
+    trackEvent("assessment_started", { assessmentId: fresh.assessmentId });
+    if (isRetake) trackEvent("assessment_retaken", { assessmentId: fresh.assessmentId });
     router.push("/intro");
   }
 
@@ -79,6 +84,7 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
     defaultVoiceOnForAssessmentStart();
     uiSounds.advance();
     setStartError("");
+    if (progress) trackEvent("assessment_resumed", { assessmentId: progress.assessmentId });
     router.push(
       getQuestionPath(getResumeQuestionIndex(progress, totalQuestions)),
     );

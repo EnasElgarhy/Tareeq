@@ -24,7 +24,8 @@ import {
   RealityIcon,
   UniversityIcon,
 } from "@/components/brand/ResultIcons";
-import { resetLocalAssessment } from "@/lib/assessment/progress";
+import { trackEvent } from "@/lib/analytics/track";
+import { readLocalAssessment, resetLocalAssessment } from "@/lib/assessment/progress";
 import {
   clearResultStorage,
   readGeneratedReport,
@@ -99,6 +100,9 @@ export function ResultsScreen() {
     }
 
     setReport(storedReport);
+    trackEvent("results_viewed", {
+      assessmentId: readLocalAssessment()?.assessmentId,
+    });
   }, [router]);
 
   function handleStartOver() {
@@ -111,6 +115,7 @@ export function ResultsScreen() {
     if (!report) return;
 
     const shareText = `My Tareeq answers point to high curiosity for ${report.clusterName}. Work style: ${report.archetype}. Motivation: ${report.primaryDriver}.`;
+    const assessmentId = readLocalAssessment()?.assessmentId;
 
     try {
       if (navigator.share) {
@@ -120,17 +125,23 @@ export function ResultsScreen() {
           url: window.location.href,
         });
         setShareStatus("Shared.");
+        trackEvent("results_shared", { assessmentId, method: "native_share" });
         return;
       }
 
       await navigator.clipboard.writeText(shareText);
       setShareStatus("Summary copied.");
+      trackEvent("results_shared", { assessmentId, method: "clipboard" });
     } catch {
       setShareStatus("Share cancelled.");
     }
   }
 
   function handleDownloadView() {
+    trackEvent("results_downloaded", {
+      assessmentId: readLocalAssessment()?.assessmentId,
+      method: "print",
+    });
     window.print();
   }
 

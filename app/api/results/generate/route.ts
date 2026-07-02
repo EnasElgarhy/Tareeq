@@ -1,4 +1,5 @@
 import { assessmentQuestions } from "@/lib/assessment/questions";
+import { trackEvent } from "@/lib/analytics/track";
 import { computeScore } from "@/lib/scoring";
 import {
   buildFallbackReport,
@@ -78,6 +79,7 @@ export async function POST(request: Request) {
   const model = process.env.ANTHROPIC_MODEL || DEFAULT_MODEL;
 
   if (!apiKey) {
+    trackEvent("results_generated", { source: "fallback", reason: "missing_api_key" });
     return Response.json({
       report: {
         ...fallback,
@@ -138,6 +140,8 @@ export async function POST(request: Request) {
     },
   };
 
+  trackEvent("ai_generation_started", { kind: "results_narrative", model });
+
   const response = await fetch(ANTHROPIC_MESSAGES_ENDPOINT, {
     method: "POST",
     headers: {
@@ -163,6 +167,12 @@ export async function POST(request: Request) {
   });
 
   if (!response.ok) {
+    trackEvent("ai_generation_failed", {
+      kind: "results_narrative",
+      model,
+      status: response.status,
+    });
+    trackEvent("results_generated", { source: "fallback", reason: "claude_error" });
     return Response.json({
       report: {
         ...fallback,
@@ -224,8 +234,16 @@ export async function POST(request: Request) {
       ),
     };
 
+    trackEvent("ai_generation_completed", { kind: "results_narrative", model });
+    trackEvent("results_generated", { source: "claude" });
     return Response.json({ report });
   } catch {
+    trackEvent("ai_generation_failed", {
+      kind: "results_narrative",
+      model,
+      reason: "unparseable_response",
+    });
+    trackEvent("results_generated", { source: "fallback", reason: "parse_error" });
     return Response.json({
       report: {
         ...fallback,

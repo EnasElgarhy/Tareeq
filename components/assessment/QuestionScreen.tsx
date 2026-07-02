@@ -13,6 +13,7 @@ import {
   readLocalAssessment,
   saveLocalAnswer,
 } from "@/lib/assessment/progress";
+import { bumpQuestionAttempt } from "@/lib/assessment/question-attempts";
 import {
   findInterstitialFor,
   markInterstitialSeen,
@@ -22,6 +23,8 @@ import { useLocale } from "@/components/i18n/LocaleProvider";
 import { getLocalizedText, getQuestionPath } from "@/lib/assessment/questions";
 import { computeKaiMouthLevel } from "@/lib/audio/lip-sync";
 import { computeScore, type Question } from "@/lib/scoring";
+import { trackEvent } from "@/lib/analytics/track";
+import { contentVersion } from "@/lib/content/seed";
 
 type AudioState =
   | "idle"
@@ -97,6 +100,19 @@ export function QuestionScreen({
   const autoPlaybackQuestionRef = useRef<string | null>(null);
   const audioFallbackIndexRef = useRef(0);
 
+  // ---------- Analytics (Phase 3 — question intelligence) ----------
+  /** When this question was mounted — the baseline for time_spent_ms. */
+  const questionViewStartRef = useRef<number>(Date.now());
+  /** The answer this question had *before* the current interaction — the
+   * baseline `recordAnswer` diffs against to tell "answered" from
+   * "changed" from "re-saved the same value" (e.g. clicking Next right
+   * after a dropdown selection already saved it). */
+  const initialAnswerRef = useRef<string>("");
+  /** Guards against double-firing question_time_spent/question_abandoned
+   * for the same question instance (e.g. a real departure racing the
+   * pagehide listener). */
+  const hasLeftQuestionRef = useRef(false);
+
   const [selected, setSelected] = useState("");
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
   const [confirming, setConfirming] = useState<string | null>(null);
@@ -128,6 +144,59 @@ export function QuestionScreen({
   const activeNarrationId = pendingInterstitial?.audioId ?? question.externalId;
   const activeNarrationKind = pendingInterstitial ? "section" : "question";
 
+  /**
+   * Shared per-event context for every question_* analytics call.
+   * `questionId` is `externalId` (e.g. "Q5"), not a DB uuid — the consumer
+   * app renders from a static seed with no uuid available at all; see the
+   * `question_id` doc comment on AnalyticsEvent in lib/analytics/types.ts.
+   */
+  const questionContext = useCallback(
+    (extra: Record<string, unknown> = {}) => ({
+      assessmentId: readLocalAssessment()?.assessmentId ?? null,
+      assessmentVersion: contentVersion.label,
+      questionId: question.externalId,
+      questionPosition: question.position,
+      pillar: question.pillar,
+      ...extra,
+    }),
+    [question.externalId, question.pillar, question.position],
+  );
+
+  /** Fires question_answered / question_answer_changed, but only when the
+   * value genuinely differs from what this question already had —
+   * multiple UI paths (auto-advance, dropdown select, explicit Next) can
+   * all end up "saving" the same already-current value. */
+  const recordAnswer = useCallback(
+    (value: string) => {
+      const previous = initialAnswerRef.current;
+      if (previous === value) return;
+      trackEvent(previous ? "question_answer_changed" : "question_answered", {
+        ...questionContext({
+          selectedAnswer: value,
+          previousAnswer: previous || null,
+        }),
+      });
+      initialAnswerRef.current = value;
+    },
+    [questionContext],
+  );
+
+  /** Fires once, at the moment this question is actually left (forward or
+   * back) — question_time_spent always; question_completed only when
+   * leaving forward with a real answer recorded. */
+  const leaveQuestion = useCallback(
+    (direction: "forward" | "back") => {
+      if (hasLeftQuestionRef.current) return;
+      hasLeftQuestionRef.current = true;
+      const timeSpentMs = Date.now() - questionViewStartRef.current;
+      trackEvent("question_time_spent", questionContext({ timeSpentMs, direction }));
+      if (direction === "forward" && initialAnswerRef.current) {
+        trackEvent("question_completed", questionContext({ timeSpentMs }));
+      }
+    },
+    [questionContext],
+  );
+
   const kaiScene = useMemo(
     () =>
       KAI_QUESTION_SCENES[index % KAI_QUESTION_SCENES.length] ??
@@ -138,7 +207,10 @@ export function QuestionScreen({
   useEffect(() => {
     ensureLocalAssessment();
     const progress = readLocalAssessment();
-    setSelected(progress?.answers[question.externalId] ?? "");
+    const previousAnswer = progress?.answers[question.externalId] ?? "";
+    const isRevisit = previousAnswer !== "";
+
+    setSelected(previousAnswer);
     setConfirming(null);
     setExiting(null);
     setHoveredIdx(null);
@@ -146,7 +218,39 @@ export function QuestionScreen({
     if (progress && Object.keys(progress.answers).length > 0) {
       uiSounds.transition();
     }
-  }, [question.externalId]);
+
+    initialAnswerRef.current = previousAnswer;
+    questionViewStartRef.current = Date.now();
+    hasLeftQuestionRef.current = false;
+    const attemptNumber = bumpQuestionAttempt(question.externalId);
+    trackEvent(
+      isRevisit ? "question_revisited" : "question_viewed",
+      questionContext({ isFirstVisit: !isRevisit, attemptNumber }),
+    );
+    // question_skipped is intentionally not fired here — this consumer app
+    // has no UI concept of skipping a required question (every kind must
+    // be answered to advance; see QUESTION_ANALYTICS_ARCHITECTURE.md).
+  }, [question.externalId, questionContext]);
+
+  // Best-effort question_abandoned: fires only on a true page
+  // unload/close/navigate-away (pagehide), not on ordinary tab-switching
+  // (visibilitychange was considered and rejected — it fires on every tab
+  // blur, which would massively over-count abandonment). This means
+  // abandonment on browsers with unreliable pagehide (some older mobile
+  // Safari versions) will under-count rather than over-count, which is the
+  // safer failure direction for a metric admins will act on.
+  useEffect(() => {
+    function handlePageHide() {
+      if (hasLeftQuestionRef.current) return;
+      hasLeftQuestionRef.current = true;
+      trackEvent(
+        "question_abandoned",
+        questionContext({ timeSpentMs: Date.now() - questionViewStartRef.current }),
+      );
+    }
+    window.addEventListener("pagehide", handlePageHide);
+    return () => window.removeEventListener("pagehide", handlePageHide);
+  }, [question.externalId, questionContext]);
 
   useEffect(() => {
     setSoundOn(window.localStorage.getItem("tareeq:sound") !== "off");
@@ -181,6 +285,9 @@ export function QuestionScreen({
       setConfirming(letter);
       uiSounds.confirm();
 
+      recordAnswer(letter);
+      trackEvent("question_auto_advanced", questionContext({ selectedAnswer: letter }));
+
       const progress = saveLocalAnswer(question.externalId, letter, index);
       const reduced = prefersReducedMotion();
       const confirmDelay = reduced ? 90 : 380;
@@ -203,6 +310,7 @@ export function QuestionScreen({
         else uiSounds.advance();
         setExiting("forward");
         window.setTimeout(() => {
+          leaveQuestion("forward");
           if (!isLastQuestion) {
             router.push(getQuestionPath(index + 1));
             return;
@@ -218,9 +326,12 @@ export function QuestionScreen({
       exiting,
       index,
       isLastQuestion,
+      leaveQuestion,
       pendingInterstitial,
       question.externalId,
+      questionContext,
       questions,
+      recordAnswer,
       router,
     ],
   );
@@ -230,7 +341,10 @@ export function QuestionScreen({
     setPendingInterstitial(null);
     setExiting("forward");
     window.setTimeout(
-      () => router.push(getQuestionPath(index + 1)),
+      () => {
+        leaveQuestion("forward");
+        router.push(getQuestionPath(index + 1));
+      },
       prefersReducedMotion() ? 60 : 220,
     );
   }
@@ -240,7 +354,10 @@ export function QuestionScreen({
     uiSounds.back();
     setExiting("back");
     window.setTimeout(
-      () => router.push(index > 0 ? getQuestionPath(index - 1) : "/contract"),
+      () => {
+        leaveQuestion("back");
+        router.push(index > 0 ? getQuestionPath(index - 1) : "/contract");
+      },
       prefersReducedMotion() ? 60 : 220,
     );
   }
@@ -248,10 +365,12 @@ export function QuestionScreen({
   function goNextExplicit() {
     if (!selected.trim() || exiting) return;
     uiSounds.advance();
+    recordAnswer(selected);
     const progress = saveLocalAnswer(question.externalId, selected, index);
     setExiting("forward");
     window.setTimeout(
       () => {
+        leaveQuestion("forward");
         if (!isLastQuestion) {
           router.push(getQuestionPath(index + 1));
           return;
@@ -267,6 +386,7 @@ export function QuestionScreen({
   function chooseFromSelect(value: string) {
     setSelected(value);
     uiSounds.select();
+    recordAnswer(value);
     saveLocalAnswer(question.externalId, value, index);
   }
 
@@ -377,7 +497,7 @@ export function QuestionScreen({
       }
       setAudioState("loading");
       audioFallbackIndexRef.current = 0;
-      const nextSrc = `/api/kai-tts/${encodeURIComponent(activeNarrationId)}`;
+      const nextSrc = `/api/kai-tts/${encodeURIComponent(activeNarrationId)}?locale=${encodeURIComponent(locale)}`;
       const needsSourceLoad =
         !audio.getAttribute("src")?.endsWith(nextSrc) || audio.readyState === 0;
       if (needsSourceLoad) {
@@ -404,6 +524,7 @@ export function QuestionScreen({
       audioState,
       activeNarrationId,
       ensureLipSyncGraph,
+      locale,
       soundOn,
       speed,
       startLipSync,

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { trackEvent } from "@/lib/analytics/track";
 import { contentVersion } from "@/lib/content/seed";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -99,20 +100,32 @@ export async function POST(request: Request) {
     .eq("user_id", user.id)
     .eq("version_id", versionId);
 
-  const { error } = await admin.from("assessments").insert({
-    user_id: user.id,
-    version_id: versionId,
-    locale: body.locale,
-    started_at: body.startedAt ?? new Date().toISOString(),
-    completed_at: new Date().toISOString(),
-    answers: body.answers,
-    result: body.result ?? null,
-    respondent_name: body.name ?? null,
-    respondent_email: user.email ?? null,
-  });
+  const { data: inserted, error } = await admin
+    .from("assessments")
+    .insert({
+      user_id: user.id,
+      version_id: versionId,
+      locale: body.locale,
+      started_at: body.startedAt ?? new Date().toISOString(),
+      completed_at: new Date().toISOString(),
+      answers: body.answers,
+      result: body.result ?? null,
+      respondent_name: body.name ?? null,
+      respondent_email: user.email ?? null,
+    })
+    .select("id")
+    .single();
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  trackEvent("assessment_completed", {
+    assessmentId: inserted?.id as string | undefined,
+    assessmentVersion: contentVersion.label,
+    userId: user.id,
+    locale: body.locale,
+    questionCount: Object.keys(body.answers).length,
+  });
 
   return NextResponse.json({ ok: true });
 }
