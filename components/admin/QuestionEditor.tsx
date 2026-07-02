@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import {
@@ -11,8 +12,10 @@ import {
 } from "@/lib/admin/content";
 import {
   deleteQuestion,
+  duplicateQuestion,
   moveQuestion,
   saveQuestion,
+  setQuestionArchived,
 } from "@/lib/admin/content-actions";
 import {
   type EditOption,
@@ -107,6 +110,30 @@ export function QuestionEditor({
     });
   }
 
+  function duplicate() {
+    setError(null);
+    startTransition(async () => {
+      try {
+        await duplicateQuestion(versionId, question.id);
+        router.refresh();
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Duplicate failed");
+      }
+    });
+  }
+
+  function toggleArchived() {
+    setError(null);
+    startTransition(async () => {
+      try {
+        await setQuestionArchived(versionId, question.id, !question.is_archived);
+        router.refresh();
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Archive failed");
+      }
+    });
+  }
+
   function move(dir: "up" | "down") {
     setError(null);
     startTransition(async () => {
@@ -134,7 +161,12 @@ export function QuestionEditor({
               axis: {question.axis}
             </span>
           ) : null}
-          <div className="ml-auto flex items-center gap-1">
+          {question.is_archived ? (
+            <span className="rounded bg-adm-sand px-1.5 py-0.5 text-[11px] font-semibold text-adm-ink-muted">
+              Archived
+            </span>
+          ) : null}
+          <div className="ml-auto flex flex-wrap items-center gap-1">
             <button
               type="button"
               onClick={() => move("up")}
@@ -152,6 +184,34 @@ export function QuestionEditor({
               className="grid size-7 place-items-center rounded-adm-md border border-adm-line text-adm-ink-muted transition hover:bg-adm-sand hover:text-adm-ink disabled:opacity-30"
             >
               ↓
+            </button>
+            <Link
+              href={`/admin/questions/${question.id}/analytics`}
+              className="rounded-adm-md border border-adm-line px-2.5 py-1 text-[12px] font-semibold text-adm-ink-soft transition hover:bg-adm-sand hover:text-adm-ink"
+            >
+              Analytics
+            </Link>
+            <Link
+              href={`/admin/questions/${question.id}/analytics#version-history`}
+              className="rounded-adm-md border border-adm-line px-2.5 py-1 text-[12px] font-semibold text-adm-ink-soft transition hover:bg-adm-sand hover:text-adm-ink"
+            >
+              Compare versions
+            </Link>
+            <button
+              type="button"
+              onClick={duplicate}
+              disabled={pending}
+              className="rounded-adm-md border border-adm-line px-2.5 py-1 text-[12px] font-semibold text-adm-ink-soft transition hover:bg-adm-sand hover:text-adm-ink disabled:opacity-30"
+            >
+              Duplicate
+            </button>
+            <button
+              type="button"
+              onClick={toggleArchived}
+              disabled={pending}
+              className="rounded-adm-md border border-adm-line px-2.5 py-1 text-[12px] font-semibold text-adm-ink-soft transition hover:bg-adm-sand hover:text-adm-ink disabled:opacity-30"
+            >
+              {question.is_archived ? "Unarchive" : "Archive"}
             </button>
             <button
               type="button"

@@ -38,6 +38,7 @@ export interface QuestionRow {
   kind: string;
   title: Record<string, string>;
   axis: string | null;
+  is_archived: boolean;
   options: OptionRow[];
 }
 
@@ -148,7 +149,7 @@ export async function getVersionContent(
   const { data, error } = await sb
     .from("questions")
     .select(
-      "id,external_id,pillar,position,kind,title,axis,question_options(id,letter,position,text,cluster_code,driver_code,axis_value)",
+      "id,external_id,pillar,position,kind,title,axis,is_archived,question_options(id,letter,position,text,cluster_code,driver_code,axis_value)",
     )
     .eq("version_id", versionId)
     .order("pillar")
@@ -167,6 +168,7 @@ export async function getVersionContent(
       kind: row.kind,
       title: row.title,
       axis: row.axis,
+      is_archived: row.is_archived,
       options: (row.question_options ?? []).sort(
         (a, b) => a.position - b.position,
       ),

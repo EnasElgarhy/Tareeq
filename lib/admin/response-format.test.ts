@@ -72,6 +72,7 @@ describe("decodeAnswers", () => {
       kind: "single",
       title: { en: "What pulls you in?" },
       axis: null,
+      is_archived: false,
       options: [
         {
           id: "o1",
@@ -101,6 +102,7 @@ describe("decodeAnswers", () => {
       kind: "text",
       title: { en: "Anything else?" },
       axis: null,
+      is_archived: false,
       options: [],
     },
   ];

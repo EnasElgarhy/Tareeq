@@ -399,6 +399,114 @@ export async function deleteQuestion(
   revalidatePath(`/admin/content/${versionId}`);
 }
 
+/**
+ * Copy a question (with its options) into a new row in the same draft
+ * version, appended after the last question in its pillar — a fresh
+ * `external_id` so it doesn't collide with the original (and is treated as
+ * a genuinely new question for analytics purposes, not a continuation of
+ * the original's history).
+ */
+export async function duplicateQuestion(
+  versionId: string,
+  questionId: string,
+): Promise<string> {
+  await requireAdmin();
+  const sb = createSupabaseAdminClient();
+  await assertDraft(sb, versionId);
+
+  const { data: original, error: oe } = await sb
+    .from("questions")
+    .select(
+      "version_id,external_id,pillar,kind,title,axis,question_options(letter,text,cluster_code,driver_code,axis_value)",
+    )
+    .eq("id", questionId)
+    .single();
+  if (oe || !original) throw new Error("Question not found");
+  if (original.version_id !== versionId)
+    throw new Error("Question does not belong to this version");
+
+  const { data: tail } = await sb
+    .from("questions")
+    .select("position")
+    .eq("version_id", versionId)
+    .eq("pillar", original.pillar)
+    .order("position", { ascending: false })
+    .limit(1);
+  const nextPos = (tail?.[0]?.position ?? -1) + 1;
+
+  const { data: inserted, error: ie } = await sb
+    .from("questions")
+    .insert({
+      version_id: versionId,
+      external_id: `${original.external_id}-copy-${randomUUID().slice(0, 6)}`,
+      pillar: original.pillar,
+      position: nextPos,
+      kind: original.kind,
+      title: original.title,
+      axis: original.axis,
+    })
+    .select("id")
+    .single();
+  if (ie || !inserted) throw new Error(ie?.message ?? "Duplicate failed");
+
+  const options = (original.question_options ?? []) as Array<{
+    letter: string;
+    text: Record<string, string>;
+    cluster_code: string | null;
+    driver_code: string | null;
+    axis_value: string | null;
+  }>;
+  if (options.length > 0) {
+    const { error: optErr } = await sb.from("question_options").insert(
+      options.map((o, i) => ({
+        question_id: inserted.id,
+        letter: o.letter,
+        position: i,
+        text: o.text,
+        cluster_code: o.cluster_code,
+        driver_code: o.driver_code,
+        axis_value: o.axis_value,
+      })),
+    );
+    if (optErr) throw new Error(optErr.message);
+  }
+
+  revalidatePath(`/admin/content/${versionId}`);
+  return inserted.id;
+}
+
+/**
+ * Soft-hide a question (draft only) — keeps its row, history, and metrics
+ * intact, just drops it out of the live editor's default list. Takes the
+ * target state explicitly so the same action archives and un-archives.
+ */
+export async function setQuestionArchived(
+  versionId: string,
+  questionId: string,
+  archived: boolean,
+): Promise<void> {
+  await requireAdmin();
+  const sb = createSupabaseAdminClient();
+  await assertDraft(sb, versionId);
+
+  const { data: q, error: qe } = await sb
+    .from("questions")
+    .select("version_id")
+    .eq("id", questionId)
+    .single();
+  if (qe || !q) throw new Error("Question not found");
+  if (q.version_id !== versionId)
+    throw new Error("Question does not belong to this version");
+
+  const { error } = await sb
+    .from("questions")
+    .update({ is_archived: archived })
+    .eq("id", questionId);
+  if (error) throw new Error(error.message);
+
+  revalidatePath(`/admin/content/${versionId}`);
+}
+
 const clusterSchema = z.object({
   name: z.string().trim().min(1).max(120),
   description: z.string().trim().max(600),
