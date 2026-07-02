@@ -19,9 +19,14 @@ import { computeKaiMouthLevel } from "@/lib/audio/lip-sync";
 
 const FALLBACK_EXTENSIONS = ["m4a", "mp3"] as const;
 
-function getNarrationSrc(audioId: string, fallbackIndex: number) {
+function getNarrationSrc(
+  audioId: string,
+  fallbackIndex: number,
+  locale?: string,
+) {
   if (fallbackIndex === 0) {
-    return `/api/kai-tts/${encodeURIComponent(audioId)}`;
+    const query = locale ? `?locale=${encodeURIComponent(locale)}` : "";
+    return `/api/kai-tts/${encodeURIComponent(audioId)}${query}`;
   }
 
   const ext = FALLBACK_EXTENSIONS[fallbackIndex - 1] ?? "mp3";
@@ -44,6 +49,8 @@ interface UseKaiNarrationOptions {
   autoPlay?: boolean;
   /** Persisted sound preference. When false, narration never plays. */
   soundOn?: boolean;
+  /** Active locale — selects the localized text + voice for live TTS. */
+  locale?: string;
   /** Called once the clip ends naturally (not on pause/stop). */
   onEnded?: () => void;
 }
@@ -71,6 +78,7 @@ export function useKaiNarration({
   audioId,
   autoPlay = true,
   soundOn = true,
+  locale,
   onEnded,
 }: UseKaiNarrationOptions): UseKaiNarrationResult {
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -176,7 +184,11 @@ export function useKaiNarration({
       }
 
       try {
-        const nextSrc = getNarrationSrc(audioId, fallbackIdxRef.current);
+        const nextSrc = getNarrationSrc(
+          audioId,
+          fallbackIdxRef.current,
+          locale,
+        );
         const needsSourceLoad =
           !audio.getAttribute("src")?.endsWith(nextSrc) ||
           audio.readyState === 0;
@@ -205,7 +217,7 @@ export function useKaiNarration({
         stopLipSync();
       }
     },
-    [audioId, ensureLipSyncGraph, soundOn, startLipSync, stopLipSync, voiceRequiresGesture, voiceUnlocked],
+    [audioId, ensureLipSyncGraph, locale, soundOn, startLipSync, stopLipSync, voiceRequiresGesture, voiceUnlocked],
   );
 
   const pause = useCallback(() => {

@@ -3,9 +3,18 @@ import { getKaiNarrationText } from "@/lib/audio/kai-narration";
 export const runtime = "nodejs";
 
 const ELEVENLABS_TTS_ENDPOINT = "https://api.elevenlabs.io/v1/text-to-speech";
-const KAI_VOICE_ID = process.env.ELEVENLABS_VOICE_ID || "ZF6FPAbjXT4488VcRRnw";
+const KAI_VOICE_ID_EN =
+  process.env.ELEVENLABS_VOICE_ID || "ZF6FPAbjXT4488VcRRnw";
+// Dedicated Arabic voice — overridable via ELEVENLABS_VOICE_ID_AR.
+const KAI_VOICE_ID_AR =
+  process.env.ELEVENLABS_VOICE_ID_AR || "KxMRrXEjbJ6kZ93yT3fq";
 const KAI_MODEL_ID =
   process.env.ELEVENLABS_MODEL_ID || "eleven_multilingual_v2";
+
+function resolveVoiceId(locale: string): string {
+  const shortLocale = locale.split("-", 1)[0]?.toLowerCase() ?? locale;
+  return shortLocale === "ar" ? KAI_VOICE_ID_AR : KAI_VOICE_ID_EN;
+}
 
 type RouteContext = {
   params: Promise<{ audioId: string }>;
@@ -32,8 +41,9 @@ export async function GET(request: Request, context: RouteContext) {
     );
   }
 
+  const voiceId = resolveVoiceId(locale);
   const response = await fetch(
-    `${ELEVENLABS_TTS_ENDPOINT}/${KAI_VOICE_ID}?output_format=mp3_44100_128`,
+    `${ELEVENLABS_TTS_ENDPOINT}/${voiceId}?output_format=mp3_44100_128`,
     {
       method: "POST",
       headers: {

@@ -13,7 +13,7 @@ const INTRO_BODY =
 
 export function IntroScreen() {
   const router = useRouter();
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
   const introBody = t("intro.body");
   const [typingDone, setTypingDone] = useState(false);
   const [soundOn, setSoundOn] = useState(true);
@@ -37,6 +37,7 @@ export function IntroScreen() {
     audioId: "kai_intro",
     autoPlay: soundPrefReady && soundOn,
     soundOn,
+    locale,
   });
 
   const syncTypeSpeedFromAudio = useCallback(() => {
