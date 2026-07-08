@@ -14,6 +14,7 @@ import {
   PeakReachedScene,
 } from "@/components/brand/InterstitialScenes";
 import { KAI_SECTION_ENCOURAGEMENTS } from "@/lib/audio/kai-narration";
+import type { LocalizedText } from "@/lib/scoring/types";
 
 export type InterstitialIllustration = ComponentType<
   SVGProps<SVGSVGElement> & {
@@ -32,11 +33,17 @@ export interface Interstitial {
   /** Optional accent for the soft glow behind the illustration */
   glow: "coral" | "cyan" | "lavender";
   audioId: string;
-  title: string;
-  body: string;
-  source?: string;
-  ctaLabel: string;
+  title: LocalizedText;
+  body: LocalizedText;
+  source?: LocalizedText;
+  ctaLabel: LocalizedText;
 }
+
+const DID_YOU_KNOW_TITLE: LocalizedText = { en: "Did you know?", ar: "هل تعلم؟" };
+const CTA_GOT_IT: LocalizedText = { en: "Got it", ar: "فهمت" };
+const CTA_KEEP_GOING: LocalizedText = { en: "Keep going", ar: "أكمل" };
+const CTA_MAKES_SENSE: LocalizedText = { en: "Makes sense", ar: "منطقي" };
+const CTA_FINISH_STRONG: LocalizedText = { en: "Finish strong", ar: "أنهِ بقوة" };
 
 export const INTERSTITIALS: ReadonlyArray<Interstitial> = [
   {
@@ -45,10 +52,13 @@ export const INTERSTITIALS: ReadonlyArray<Interstitial> = [
     illustration: PatternEmergingScene,
     glow: "coral",
     audioId: KAI_SECTION_ENCOURAGEMENTS[0].audioId,
-    title: "Did you know?",
-    body: "55% of GCC youth plan to start their own business in the next 5 years. The Middle East has the highest entrepreneurship ambition globally.",
-    source: "2020 Arab Youth Survey",
-    ctaLabel: "Got it",
+    title: DID_YOU_KNOW_TITLE,
+    body: {
+      en: "55% of GCC youth plan to start their own business in the next 5 years. The Middle East has the highest entrepreneurship ambition globally.",
+      ar: "55% من شباب دول الخليج يخططون لبدء مشروعهم الخاص خلال السنوات الخمس القادمة. الشرق الأوسط لديه أعلى طموح ريادي في العالم.",
+    },
+    source: { en: "2020 Arab Youth Survey", ar: "استطلاع الشباب العربي 2020" },
+    ctaLabel: CTA_GOT_IT,
   },
   {
     key: "after-10-mena-workforce",
@@ -56,10 +66,13 @@ export const INTERSTITIALS: ReadonlyArray<Interstitial> = [
     illustration: PatternEmergingScene,
     glow: "coral",
     audioId: KAI_SECTION_ENCOURAGEMENTS[0].audioId,
-    title: "Did you know?",
-    body: "The MENA region will add 127 million new workers by 2035. Your generation is literally shaping the future of work in the region.",
-    source: "World Bank 2024",
-    ctaLabel: "Got it",
+    title: DID_YOU_KNOW_TITLE,
+    body: {
+      en: "The MENA region will add 127 million new workers by 2035. Your generation is literally shaping the future of work in the region.",
+      ar: "ستضيف منطقة الشرق الأوسط وشمال أفريقيا 127 مليون عامل جديد بحلول عام 2035. جيلك يُشكّل فعلياً مستقبل العمل في المنطقة.",
+    },
+    source: { en: "World Bank 2024", ar: "البنك الدولي 2024" },
+    ctaLabel: CTA_GOT_IT,
   },
   {
     key: "after-10-major-pivots",
@@ -67,10 +80,13 @@ export const INTERSTITIALS: ReadonlyArray<Interstitial> = [
     illustration: PatternEmergingScene,
     glow: "coral",
     audioId: KAI_SECTION_ENCOURAGEMENTS[0].audioId,
-    title: "Did you know?",
-    body: "Only 27% of college graduates end up working in a field directly related to their major. Your first job does not define your whole career.",
-    source: "Federal Reserve Bank of New York",
-    ctaLabel: "Got it",
+    title: DID_YOU_KNOW_TITLE,
+    body: {
+      en: "Only 27% of college graduates end up working in a field directly related to their major. Your first job does not define your whole career.",
+      ar: "27% فقط من خريجي الجامعات ينتهي بهم المطاف بالعمل في مجال مرتبط مباشرة بتخصصهم. وظيفتك الأولى لا تُحدد مسيرتك المهنية بأكملها.",
+    },
+    source: { en: "Federal Reserve Bank of New York", ar: "بنك الاحتياطي الفيدرالي في نيويورك" },
+    ctaLabel: CTA_GOT_IT,
   },
   {
     key: "after-20-art-history",
@@ -78,10 +94,16 @@ export const INTERSTITIALS: ReadonlyArray<Interstitial> = [
     illustration: CrossingPathsScene,
     glow: "lavender",
     audioId: KAI_SECTION_ENCOURAGEMENTS[1].audioId,
-    title: "Did you know?",
-    body: "Art History majors have a lower unemployment rate than Computer Science majors in one major dataset. The job market is not always what people expect.",
-    source: "Federal Reserve Bank of New York, 2023",
-    ctaLabel: "Keep going",
+    title: DID_YOU_KNOW_TITLE,
+    body: {
+      en: "Art History majors have a lower unemployment rate than Computer Science majors in one major dataset. The job market is not always what people expect.",
+      ar: "خريجو تاريخ الفن لديهم معدل بطالة أقل من خريجي علوم الحاسوب في إحدى مجموعات البيانات الكبرى. سوق العمل ليس دائماً كما يتوقعه الناس.",
+    },
+    source: {
+      en: "Federal Reserve Bank of New York, 2023",
+      ar: "بنك الاحتياطي الفيدرالي في نيويورك، 2023",
+    },
+    ctaLabel: CTA_KEEP_GOING,
   },
   {
     key: "after-20-automation",
@@ -89,10 +111,13 @@ export const INTERSTITIALS: ReadonlyArray<Interstitial> = [
     illustration: CrossingPathsScene,
     glow: "lavender",
     audioId: KAI_SECTION_ENCOURAGEMENTS[1].audioId,
-    title: "Did you know?",
-    body: "Automation will remove many routine jobs, but it is also creating new work for people who can use data, tools, and AI well.",
-    source: "McKinsey Global Institute",
-    ctaLabel: "Keep going",
+    title: DID_YOU_KNOW_TITLE,
+    body: {
+      en: "Automation will remove many routine jobs, but it is also creating new work for people who can use data, tools, and AI well.",
+      ar: "ستُزيل الأتمتة كثيراً من الوظائف الروتينية، لكنها أيضاً تخلق عملاً جديداً لمن يُتقن استخدام البيانات والأدوات والذكاء الاصطناعي.",
+    },
+    source: { en: "McKinsey Global Institute", ar: "معهد ماكنزي العالمي" },
+    ctaLabel: CTA_KEEP_GOING,
   },
   {
     key: "after-20-nursing",
@@ -100,10 +125,13 @@ export const INTERSTITIALS: ReadonlyArray<Interstitial> = [
     illustration: CrossingPathsScene,
     glow: "lavender",
     audioId: KAI_SECTION_ENCOURAGEMENTS[1].audioId,
-    title: "Did you know?",
-    body: "Nursing has one of the lowest unemployment rates of any major. Healthcare careers can stay resilient even when the economy shifts.",
-    source: "Federal Reserve Bank of New York",
-    ctaLabel: "Keep going",
+    title: DID_YOU_KNOW_TITLE,
+    body: {
+      en: "Nursing has one of the lowest unemployment rates of any major. Healthcare careers can stay resilient even when the economy shifts.",
+      ar: "التمريض لديه واحد من أدنى معدلات البطالة بين جميع التخصصات. المهن الصحية يمكن أن تبقى صامدة حتى عندما يتغيّر الاقتصاد.",
+    },
+    source: { en: "Federal Reserve Bank of New York", ar: "بنك الاحتياطي الفيدرالي في نيويورك" },
+    ctaLabel: CTA_KEEP_GOING,
   },
   {
     key: "after-30-gen-z-leadership",
@@ -111,10 +139,16 @@ export const INTERSTITIALS: ReadonlyArray<Interstitial> = [
     illustration: DualWaysScene,
     glow: "cyan",
     audioId: KAI_SECTION_ENCOURAGEMENTS[2].audioId,
-    title: "Did you know?",
-    body: "Only 6% of Gen Z say reaching senior leadership is their top career goal. Learning, balance, and purpose are becoming serious career priorities.",
-    source: "Deloitte Middle East Gen Z Study 2025",
-    ctaLabel: "Makes sense",
+    title: DID_YOU_KNOW_TITLE,
+    body: {
+      en: "Only 6% of Gen Z say reaching senior leadership is their top career goal. Learning, balance, and purpose are becoming serious career priorities.",
+      ar: "6% فقط من جيل Z يقولون إن الوصول إلى القيادة العليا هو هدفهم المهني الأول. التعلّم والتوازن والمعنى أصبحوا أولويات مهنية جادة.",
+    },
+    source: {
+      en: "Deloitte Middle East Gen Z Study 2025",
+      ar: "دراسة ديلويت للشرق الأوسط عن جيل Z 2025",
+    },
+    ctaLabel: CTA_MAKES_SENSE,
   },
   {
     key: "after-30-career-changes",
@@ -122,10 +156,13 @@ export const INTERSTITIALS: ReadonlyArray<Interstitial> = [
     illustration: DualWaysScene,
     glow: "cyan",
     audioId: KAI_SECTION_ENCOURAGEMENTS[2].audioId,
-    title: "Did you know?",
-    body: "The average person changes careers several times in their lifetime. Choosing your first path does not lock you in forever.",
-    source: "Bureau of Labor Statistics",
-    ctaLabel: "Makes sense",
+    title: DID_YOU_KNOW_TITLE,
+    body: {
+      en: "The average person changes careers several times in their lifetime. Choosing your first path does not lock you in forever.",
+      ar: "يُغيّر الشخص العادي مساره المهني عدة مرات خلال حياته. اختيار مسارك الأول لا يُقيّدك إلى الأبد.",
+    },
+    source: { en: "Bureau of Labor Statistics", ar: "مكتب إحصاءات العمل الأمريكي" },
+    ctaLabel: CTA_MAKES_SENSE,
   },
   {
     key: "after-30-soft-skills",
@@ -133,10 +170,16 @@ export const INTERSTITIALS: ReadonlyArray<Interstitial> = [
     illustration: DualWaysScene,
     glow: "cyan",
     audioId: KAI_SECTION_ENCOURAGEMENTS[2].audioId,
-    title: "Did you know?",
-    body: "Many Gen Z and Millennial workers say soft skills matter more in the age of AI. Being human is still a competitive advantage.",
-    source: "Deloitte Global Gen Z Survey 2025",
-    ctaLabel: "Makes sense",
+    title: DID_YOU_KNOW_TITLE,
+    body: {
+      en: "Many Gen Z and Millennial workers say soft skills matter more in the age of AI. Being human is still a competitive advantage.",
+      ar: "يقول كثير من موظفي جيل Z والألفية إن المهارات الشخصية أصبحت أكثر أهمية في عصر الذكاء الاصطناعي. أن تكون إنساناً لا يزال ميزة تنافسية.",
+    },
+    source: {
+      en: "Deloitte Global Gen Z Survey 2025",
+      ar: "استطلاع ديلويت العالمي لجيل Z 2025",
+    },
+    ctaLabel: CTA_MAKES_SENSE,
   },
   {
     key: "after-40-future-jobs",
@@ -144,10 +187,16 @@ export const INTERSTITIALS: ReadonlyArray<Interstitial> = [
     illustration: PeakReachedScene,
     glow: "coral",
     audioId: KAI_SECTION_ENCOURAGEMENTS[3].audioId,
-    title: "Did you know?",
-    body: "By 2030, millions of jobs will be displaced, but even more new roles are expected to emerge. Change creates risk, but it also creates openings.",
-    source: "World Economic Forum Future of Jobs Report",
-    ctaLabel: "Finish strong",
+    title: DID_YOU_KNOW_TITLE,
+    body: {
+      en: "By 2030, millions of jobs will be displaced, but even more new roles are expected to emerge. Change creates risk, but it also creates openings.",
+      ar: "بحلول عام 2030، ستختفي ملايين الوظائف، لكن يُتوقع ظهور عدد أكبر من الأدوار الجديدة. التغيير يخلق مخاطر، لكنه أيضاً يخلق فرصاً.",
+    },
+    source: {
+      en: "World Economic Forum Future of Jobs Report",
+      ar: "تقرير مستقبل الوظائف - المنتدى الاقتصادي العالمي",
+    },
+    ctaLabel: CTA_FINISH_STRONG,
   },
 ];
 

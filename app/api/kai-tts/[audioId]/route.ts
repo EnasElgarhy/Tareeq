@@ -7,7 +7,7 @@ const KAI_VOICE_ID_EN =
   process.env.ELEVENLABS_VOICE_ID || "ZF6FPAbjXT4488VcRRnw";
 // Dedicated Arabic voice — overridable via ELEVENLABS_VOICE_ID_AR.
 const KAI_VOICE_ID_AR =
-  process.env.ELEVENLABS_VOICE_ID_AR || "KxMRrXEjbJ6kZ93yT3fq";
+  process.env.ELEVENLABS_VOICE_ID_AR || "TnMRj7MvjNftqf5An7lL";
 const KAI_MODEL_ID =
   process.env.ELEVENLABS_MODEL_ID || "eleven_multilingual_v2";
 

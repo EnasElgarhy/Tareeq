@@ -31,20 +31,32 @@ interface LocaleContextValue {
 
 const LocaleContext = createContext<LocaleContextValue | null>(null);
 
-export function LocaleProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(DEFAULT_LOCALE);
-  const [ready, setReady] = useState(false);
-  const [chosen, setChosen] = useState(false);
+interface LocaleProviderProps {
+  children: ReactNode;
+  /** Force a specific locale instead of reading the visitor's stored
+   *  preference — for standalone pages (e.g. a public /share/[token] link)
+   *  whose content was generated in a fixed locale, where the chrome must
+   *  match that locale rather than whatever the visitor happens to prefer. */
+  initialLocale?: Locale;
+}
 
-  // Hydrate from storage on mount (avoids SSR mismatch).
+export function LocaleProvider({ children, initialLocale }: LocaleProviderProps) {
+  const [locale, setLocaleState] = useState<Locale>(initialLocale ?? DEFAULT_LOCALE);
+  const [ready, setReady] = useState(Boolean(initialLocale));
+  const [chosen, setChosen] = useState(Boolean(initialLocale));
+
+  // Hydrate from storage on mount (avoids SSR mismatch) — skipped entirely
+  // when a locale is forced, so the visitor's own unrelated stored
+  // preference never overrides it.
   useEffect(() => {
+    if (initialLocale) return;
     const stored = getStoredLocale();
     if (stored) {
       setLocaleState(stored);
       setChosen(true);
     }
     setReady(true);
-  }, []);
+  }, [initialLocale]);
 
   const setLocale = useCallback((next: Locale) => {
     setLocaleState(next);

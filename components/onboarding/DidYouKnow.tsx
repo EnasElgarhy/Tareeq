@@ -3,7 +3,9 @@
 import { useEffect, useId, useState } from "react";
 import { createPortal } from "react-dom";
 import { KaiChromaVideo } from "@/components/brand/KaiChromaVideo";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import type { Interstitial } from "@/lib/assessment/interstitials";
+import { getLocalizedText } from "@/lib/assessment/questions";
 import { uiSounds } from "@/lib/audio/ui-sounds";
 
 interface DidYouKnowProps {
@@ -48,10 +50,15 @@ export function DidYouKnow({
   onToggleSound,
   onDismiss,
 }: DidYouKnowProps) {
+  const { t, locale } = useLocale();
   const Illustration = interstitial.illustration;
   const titleId = useId();
   const bodyId = useId();
   const [mounted, setMounted] = useState(false);
+  const title = getLocalizedText(interstitial.title, locale);
+  const body = getLocalizedText(interstitial.body, locale);
+  const source = interstitial.source ? getLocalizedText(interstitial.source, locale) : null;
+  const ctaLabel = getLocalizedText(interstitial.ctaLabel, locale);
 
   useEffect(() => {
     setMounted(true);
@@ -77,17 +84,17 @@ export function DidYouKnow({
 
   // First two words of the title get the warm-gradient italic accent.
   // Falls back gracefully if the title is one word.
-  const titleParts = splitTitle(interstitial.title);
+  const titleParts = splitTitle(title);
 
   const overlay = (
     <div
-      className="fixed inset-0 z-[100] flex items-end justify-center"
+      className="fixed inset-0 z-[100] flex items-end justify-center md:items-center"
       aria-hidden={false}
     >
       {/* Dim + blur backdrop over the question screen */}
       <button
         type="button"
-        aria-label="Dismiss"
+        aria-label={t("interstitial.dismiss_aria")}
         onClick={dismiss}
         className="anim-backdrop-fade absolute inset-0 cursor-default"
         style={{
@@ -97,13 +104,17 @@ export function DidYouKnow({
         }}
       />
 
-      {/* Sheet — slides up from the bottom, capped at mobile width */}
+      {/* Sheet — bottom sheet on phone/tablet; a centered, fully-rounded
+       *  modal card from md: up, since anchoring a phone-width sheet to the
+       *  bottom edge of a desktop viewport just reads as a mobile popup
+       *  stranded in a lot of empty space. Same content, same entrance
+       *  animation — only the anchor/width/corners change by breakpoint. */}
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
         aria-describedby={bodyId}
-        className="anim-sheet-up relative mx-auto flex w-full max-w-[480px] flex-col overflow-hidden rounded-t-[28px] px-5 pb-7 pt-3 text-sand"
+        className="anim-sheet-up relative mx-auto flex w-full max-w-[480px] flex-col overflow-hidden rounded-t-[28px] px-5 pb-7 pt-3 text-sand md:max-w-[560px] md:rounded-[28px] md:px-7 md:pb-8 md:pt-6"
         style={{
           maxHeight: "calc(100dvh - 56px)",
           background:
@@ -131,10 +142,11 @@ export function DidYouKnow({
           }}
         />
 
-        {/* Drag indicator */}
+        {/* Drag indicator — a bottom-sheet affordance, so it's meaningless
+         *  once this becomes a centered modal card at md:. */}
         <span
           aria-hidden="true"
-          className="relative mx-auto mb-3 block h-1.5 w-10 rounded-full bg-sand/20"
+          className="relative mx-auto mb-3 block h-1.5 w-10 rounded-full bg-sand/20 md:hidden"
         />
 
         {/* Kai-narrated eyebrow — small animated Kai + "Did you know?" chip.
@@ -156,14 +168,14 @@ export function DidYouKnow({
           </div>
           <span className="chip chip--violet-on-dark">
             <span className="size-1.5 rounded-full bg-gold" />
-            Kai · did you know?
+            {t("interstitial.chip")}
           </span>
           {onToggleSound ? (
             <button
               type="button"
               onClick={onToggleSound}
               className="glass-tile inline-flex size-8 items-center justify-center rounded-full text-sand/80 transition hover:text-sand"
-              aria-label={soundOn ? "Mute narration" : "Unmute narration"}
+              aria-label={soundOn ? t("audio.mute") : t("audio.unmute")}
             >
               <svg
                 width="14"
@@ -203,7 +215,7 @@ export function DidYouKnow({
               onClick={onReplay}
               disabled={!soundOn}
               className="glass-tile inline-flex size-8 items-center justify-center rounded-full text-sand/75 transition hover:text-sand active:scale-95 disabled:opacity-40"
-              aria-label="Replay narration"
+              aria-label={t("audio.replay")}
             >
               <svg
                   width="14"
@@ -277,14 +289,14 @@ export function DidYouKnow({
             className="anim-option-in text-body text-sand/70 max-w-[36ch]"
             style={{ animationDelay: "320ms" }}
           >
-            {interstitial.body}
+            {body}
           </p>
-          {interstitial.source ? (
+          {source ? (
             <p
               className="anim-option-in text-[11px] font-semibold uppercase tracking-[0.14em] text-sand/38"
               style={{ animationDelay: "360ms" }}
             >
-              Source: {interstitial.source}
+              {t("interstitial.source_prefix").replace("{source}", source)}
             </p>
           ) : null}
         </div>
@@ -301,7 +313,7 @@ export function DidYouKnow({
             data-size="lg"
             autoFocus
           >
-            {interstitial.ctaLabel}
+            {ctaLabel}
             <svg
               width="20"
               height="20"

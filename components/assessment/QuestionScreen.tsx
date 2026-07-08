@@ -265,15 +265,15 @@ export function QuestionScreen({
   const countryOptions = useMemo(
     () => [
       {
-        groupLabel: "Middle East & North Africa",
+        groupLabel: t("question.select_country_group_mena"),
         options: menaCountries.map((c) => ({ value: c, label: c })),
       },
       {
-        groupLabel: "Other",
+        groupLabel: t("question.select_country_group_other"),
         options: restOfWorldCountries.map((c) => ({ value: c, label: c })),
       },
     ],
-    [menaCountries, restOfWorldCountries],
+    [menaCountries, restOfWorldCountries, t],
   );
 
   // ---------- Navigation ----------
@@ -641,6 +641,105 @@ export function QuestionScreen({
   const displayedMouthOpen =
     audioState === "playing" ? Math.max(mouthOpen, 0.1) : mouthOpen;
 
+  // Shared between the mobile audio-controls row and the desktop right
+  // column below — same buttons, same state, just rendered in two
+  // different places at different breakpoints (never both at once).
+  const audioControlsButtons = (
+    <>
+      <button
+        type="button"
+        onClick={toggleSound}
+        className={[
+          "inline-flex size-9 items-center justify-center rounded-full transition active:scale-95",
+          soundOn
+            ? "bg-gold-gradient text-carbon shadow-gold-glow"
+            : "glass-tile text-sand/80 hover:text-sand",
+        ].join(" ")}
+        aria-label={soundOn ? t("audio.mute") : t("audio.unmute")}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+          {soundOn ? (
+            <>
+              <path
+                d="M4 9.5 H7.5 L12 6 V18 L7.5 14.5 H4 Z"
+                fill="currentColor"
+                fillOpacity="0.12"
+                stroke="currentColor"
+                strokeWidth="1.75"
+              />
+              <path
+                d="M15 9.5 a3.8 3.8 0 0 1 0 5"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                strokeLinecap="round"
+              />
+            </>
+          ) : (
+            <>
+              <path
+                d="M4 9.5 H7.5 L12 6 V18 L7.5 14.5 H4 Z"
+                fill="currentColor"
+                fillOpacity="0.12"
+                stroke="currentColor"
+                strokeWidth="1.75"
+              />
+              <path
+                d="M15.5 9.5 L20.5 14.5 M20.5 9.5 L15.5 14.5"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                strokeLinecap="round"
+              />
+            </>
+          )}
+        </svg>
+      </button>
+      <button
+        type="button"
+        onClick={() => playQuestionAudio("toggle", false, true)}
+        disabled={!soundOn}
+        className="glass-tile inline-flex size-8 items-center justify-center rounded-full text-sand/75 transition hover:text-sand active:scale-95 disabled:opacity-40"
+        aria-label={audioState === "playing" ? t("audio.pause") : t("audio.replay")}
+      >
+        {audioState === "playing" ? (
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+            <rect x="6.5" y="5" width="3.5" height="14" rx="1.4" />
+            <rect x="14" y="5" width="3.5" height="14" rx="1.4" />
+          </svg>
+        ) : (
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+            <path
+              d="M17.5 7.1 C15.9 5.8 13.9 5 11.8 5 C7.5 5 4 8.5 4 12.8 C4 17.1 7.5 20.6 11.8 20.6 C15.5 20.6 18.6 18 19.4 14.6"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+            <path
+              d="M18.2 3.8 V7.8 H14.2"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        )}
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          const cycle = [1, 1.25, 1.5, 0.75];
+          const next = cycle[(cycle.indexOf(speed) + 1) % cycle.length];
+          if (next != null) setSpeed(next);
+        }}
+        className="glass-tile inline-flex h-8 items-center justify-center rounded-full px-2.5 text-[11px] font-semibold text-sand/80 transition hover:text-sand"
+        aria-label={t("audio.speed_control").replace("{speed}", String(speed))}
+      >
+        {speed}×
+      </button>
+    </>
+  );
+
   return (
     <>
       {pendingInterstitial ? (
@@ -681,191 +780,94 @@ export function QuestionScreen({
           onError={handleAudioError}
         />
 
-        {/* Hero — aurora + Kai + question bubble below */}
-        <div className="flex flex-col items-center gap-2.5">
-          <div
-            className={`relative flex items-center justify-center ${
-              isDenseChoice ? "h-[152px] w-[152px]" : "h-[176px] w-[176px]"
-            }`}
-          >
-            <QuestionKaiScene scene={kaiScene} />
+        {/* Desktop (lg:) layout — Kai on top, question stretched wider
+         *  now that there's real width to use, answers below. `lg:flex-1`
+         *  makes this whole block grow to fill the section's available
+         *  height instead of sizing to its own short content; centering
+         *  it (rather than top-packing it) is what keeps the page from
+         *  reading as "everything crammed in the top quarter" — the
+         *  footer then just follows naturally near the bottom since this
+         *  block has already claimed most of the height. Below lg: this
+         *  is the original single column, unchanged. */}
+        <div className="flex flex-1 flex-col gap-3 lg:mx-auto lg:w-full lg:max-w-[760px] lg:justify-center lg:gap-5">
+          {/* Kai + question bubble — centered, bubble free to use more
+           *  width at lg: instead of staying capped at its phone size. */}
+          <div className="flex flex-col items-center gap-2.5">
             <div
-              aria-label="Kai, your guide"
-              role="img"
-              className="anim-kai-drop relative z-10"
+              className={`relative flex items-center justify-center ${
+                isDenseChoice ? "h-[152px] w-[152px]" : "h-[176px] w-[176px]"
+              }`}
             >
-              <div className="anim-kai-drop-bob">
-                {/* Green screen keyed out on the GPU so Kai drops onto
-                    the page transparently — no frame, halo, or card. */}
-                {/* Jumps straight to Kai's talking window the moment
-                    narration starts (the clip opens with a ~1.3s closed-
-                    mouth beat), loops within it while she speaks, then
-                    freezes on the closed frame when the audio finishes. */}
-                <KaiChromaVideo
-                  src="/kai/kai-question-green.mp4"
-                  size={isDenseChoice ? 176 : 200}
-                  audioRef={audioRef}
-                  playStart={1.3}
-                  playEnd={3.2}
-                  restTime={0}
-                />
+              <QuestionKaiScene scene={kaiScene} />
+              <div
+                aria-label={t("kai.guide_aria")}
+                role="img"
+                className="anim-kai-drop relative z-10"
+              >
+                <div className="anim-kai-drop-bob">
+                  {/* Green screen keyed out on the GPU so Kai drops onto
+                      the page transparently — no frame, halo, or card. */}
+                  {/* Jumps straight to Kai's talking window the moment
+                      narration starts (the clip opens with a ~1.3s closed-
+                      mouth beat), loops within it while she speaks, then
+                      freezes on the closed frame when the audio finishes. */}
+                  <KaiChromaVideo
+                    src="/kai/kai-question-green.mp4"
+                    size={isDenseChoice ? 176 : 200}
+                    audioRef={audioRef}
+                    playStart={1.3}
+                    playEnd={3.2}
+                    restTime={0}
+                  />
+                </div>
               </div>
+            </div>
+
+            {/* Question bubble */}
+            <div
+              className={`bubble anim-bubble-in w-full max-w-[420px] !px-4 lg:max-w-[640px] lg:!px-6 ${
+                isDenseChoice ? "!py-2.5" : "!py-3"
+              }`}
+              data-surface="night"
+              data-tail-edge="top"
+              data-tail-position="center"
+            >
+              <span className="bubble__tail" aria-hidden="true" />
+              <p
+                id="question-text"
+                className="text-carbon m-0 italic"
+                style={{
+                  fontFamily: "var(--font-question-stack)",
+                  fontSize: isDenseChoice
+                    ? "clamp(15px, 0.92rem + 0.9vw, 20px)"
+                    : "clamp(16px, 0.95rem + 1.1vw, 22px)",
+                  lineHeight: 1.28,
+                  letterSpacing: "-0.005em",
+                }}
+              >
+                {title}
+              </p>
+            </div>
+
+            {/* Audio controls */}
+            <div className="flex items-center justify-center gap-1.5">
+              {audioControlsButtons}
             </div>
           </div>
 
-          {/* Question bubble */}
-          <div
-            className={`bubble anim-bubble-in w-full max-w-[420px] !px-4 ${
-              isDenseChoice ? "!py-2.5" : "!py-3"
-            }`}
-            data-surface="night"
-            data-tail-edge="top"
-            data-tail-position="center"
-          >
-            <span className="bubble__tail" aria-hidden="true" />
-            <p
-              id="question-text"
-              className="text-carbon m-0 italic"
-              style={{
-                fontFamily: "var(--font-question-stack)",
-                fontSize: isDenseChoice
-                  ? "clamp(15px, 0.92rem + 0.9vw, 20px)"
-                  : "clamp(16px, 0.95rem + 1.1vw, 22px)",
-                lineHeight: 1.28,
-                letterSpacing: "-0.005em",
-              }}
-            >
-              {title}
-            </p>
-          </div>
-        </div>
-
-        {/* Audio controls — compact */}
-        <div className="flex items-center justify-center gap-1.5">
-          <button
-            type="button"
-            onClick={toggleSound}
-            className={[
-              "inline-flex size-9 items-center justify-center rounded-full transition active:scale-95",
-              soundOn
-                ? "bg-gold-gradient text-carbon shadow-gold-glow"
-                : "glass-tile text-sand/80 hover:text-sand",
-            ].join(" ")}
-            aria-label={soundOn ? "Mute narration" : "Unmute narration"}
-          >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden
-            >
-              {soundOn ? (
-                <>
-                  <path
-                    d="M4 9.5 H7.5 L12 6 V18 L7.5 14.5 H4 Z"
-                    fill="currentColor"
-                    fillOpacity="0.12"
-                    stroke="currentColor"
-                    strokeWidth="1.75"
-                  />
-                  <path
-                    d="M15 9.5 a3.8 3.8 0 0 1 0 5"
-                    stroke="currentColor"
-                    strokeWidth="1.75"
-                    strokeLinecap="round"
-                  />
-                </>
-              ) : (
-                <>
-                  <path
-                    d="M4 9.5 H7.5 L12 6 V18 L7.5 14.5 H4 Z"
-                    fill="currentColor"
-                    fillOpacity="0.12"
-                    stroke="currentColor"
-                    strokeWidth="1.75"
-                  />
-                  <path
-                    d="M15.5 9.5 L20.5 14.5 M20.5 9.5 L15.5 14.5"
-                    stroke="currentColor"
-                    strokeWidth="1.75"
-                    strokeLinecap="round"
-                  />
-                </>
-              )}
-            </svg>
-          </button>
-          <button
-            type="button"
-            onClick={() => playQuestionAudio("toggle", false, true)}
-            disabled={!soundOn}
-            className="glass-tile inline-flex size-8 items-center justify-center rounded-full text-sand/75 transition hover:text-sand active:scale-95 disabled:opacity-40"
-            aria-label={
-              audioState === "playing" ? "Pause narration" : "Replay question"
-            }
-          >
-            {audioState === "playing" ? (
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden
-              >
-                <rect x="6.5" y="5" width="3.5" height="14" rx="1.4" />
-                <rect x="14" y="5" width="3.5" height="14" rx="1.4" />
-              </svg>
-            ) : (
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden
-              >
-                <path
-                  d="M17.5 7.1 C15.9 5.8 13.9 5 11.8 5 C7.5 5 4 8.5 4 12.8 C4 17.1 7.5 20.6 11.8 20.6 C15.5 20.6 18.6 18 19.4 14.6"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M18.2 3.8 V7.8 H14.2"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            )}
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              const cycle = [1, 1.25, 1.5, 0.75];
-              const next = cycle[(cycle.indexOf(speed) + 1) % cycle.length];
-              if (next != null) setSpeed(next);
-            }}
-            className="glass-tile inline-flex h-8 items-center justify-center rounded-full px-2.5 text-[11px] font-semibold text-sand/80 transition hover:text-sand"
-            aria-label={`Playback speed ${speed}× — tap to change`}
-          >
-            {speed}×
-          </button>
-        </div>
-
-        {/* Answers */}
-        <div className="flex flex-1 flex-col gap-1.5 min-h-0">
+          {/* Answers — flex-1 lets a short option list still push the
+           *  footer to the bottom of a phone screen; off at lg: since the
+           *  outer block already centers within the section's height. */}
+          <div className="flex flex-1 flex-col gap-1.5 min-h-0 lg:flex-none lg:gap-3">
           {isSelect ? (
             <select
               value={selected}
               onChange={(e) => chooseFromSelect(e.target.value)}
               className="h-14 w-full rounded-pill bg-sand px-5 text-carbon font-semibold text-[15px] shadow-sand-md focus:outline-none focus-visible:ring-2 focus-visible:ring-gold"
-              aria-label="Select your country"
+              aria-label={t("question.select_country_aria")}
             >
               <option value="" disabled>
-                Select your country…
+                {t("question.select_country_placeholder")}
               </option>
               {countryOptions.map((group) => (
                 <optgroup key={group.groupLabel} label={group.groupLabel}>
@@ -889,16 +891,16 @@ export function QuestionScreen({
                 autoFocus
               />
               <p className="flex items-center justify-between text-eyebrow text-sand/50">
-                <span>No wrong answers — write what comes to mind.</span>
+                <span>{t("question.text_helper")}</span>
                 <span className="tabular-nums">{selected.length}/600</span>
               </p>
             </div>
           ) : (
-            <div className="grid gap-1.5">
-              <p className="flex items-center justify-between px-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-sand/45">
-                <span>Choose 1 of {optionCount}</span>
+            <div className="grid gap-1.5 lg:grid-cols-2 lg:gap-4">
+              <p className="flex items-center justify-between px-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-sand/45 lg:col-span-2">
+                <span>{t("question.choose_n_of").replace("{n}", String(optionCount))}</span>
                 <span>
-                  {optionCount === 2 ? "Two paths" : optionRangeLabel}
+                  {optionCount === 2 ? t("question.two_paths") : optionRangeLabel}
                 </span>
               </p>
               {question.options.map((option, optionIdx) => {
@@ -934,10 +936,10 @@ export function QuestionScreen({
                             : `inset 0 0 0 1px rgba(245,238,230,0.10)`,
                     }}
                     className={[
-                      `anim-option-in group relative flex items-center gap-2.5 rounded-xl px-3 text-start transition ${
+                      `anim-option-in group relative flex items-center gap-2.5 rounded-xl px-3 text-start transition lg:px-4 ${
                         isDenseChoice
-                          ? "min-h-[42px] py-1.5"
-                          : "min-h-[44px] py-2"
+                          ? "min-h-[42px] py-1.5 lg:min-h-[54px] lg:py-2.5"
+                          : "min-h-[44px] py-2 lg:min-h-[58px] lg:py-3"
                       }`,
                       "disabled:opacity-45 disabled:pointer-events-none active:scale-[0.99]",
                       isConfirming
@@ -998,6 +1000,7 @@ export function QuestionScreen({
               })}
             </div>
           )}
+          </div>
         </div>
 
         {/* Footer */}
@@ -1006,7 +1009,7 @@ export function QuestionScreen({
             <button
               type="button"
               onClick={goPrevious}
-              aria-label="Previous question"
+              aria-label={t("question.previous_aria")}
               disabled={Boolean(exiting)}
               className="glass-tile inline-flex size-11 shrink-0 items-center justify-center rounded-full text-sand transition hover:text-sand active:scale-95 disabled:opacity-40"
             >
@@ -1019,7 +1022,7 @@ export function QuestionScreen({
               className="btn-v2 btn-v2--primary flex-1"
               data-size="lg"
             >
-              {isLastQuestion ? "Finish" : "Next"}
+              {isLastQuestion ? t("nav.finish") : t("nav.next")}
               <svg
                 width="18"
                 height="18"
@@ -1040,7 +1043,7 @@ export function QuestionScreen({
         ) : (
           <p className="flex items-center justify-between gap-2 text-eyebrow text-sand/45">
             <span className="truncate">
-              {confirming ? "Saving…" : "Tap to continue"}
+              {confirming ? t("question.saving") : t("question.tap_to_continue")}
             </span>
             <button
               type="button"
@@ -1053,7 +1056,7 @@ export function QuestionScreen({
                 className="flip-rtl"
                 showAccent={false}
               />
-              Previous
+              {t("nav.previous")}
             </button>
           </p>
         )}

@@ -1,3 +1,4 @@
+import type { StringKey } from "@/lib/i18n/strings";
 import {
   readGeneratedReport,
   readResultRegistration,
@@ -65,6 +66,21 @@ export const ASSESSMENT_MODULES = [
 ] as const;
 
 export type AssessmentModuleId = (typeof ASSESSMENT_MODULES)[number]["id"];
+
+/** The 4 module names are a small, fixed set (unlike career/major names,
+ * which come from the deterministic report and stay English by existing
+ * precedent) — worth translating. `mod.name` above stays the English
+ * fallback/internal value; UI call sites should render `t(getModuleNameKey(id))`. */
+const MODULE_NAME_KEYS: Record<AssessmentModuleId, StringKey> = {
+  "core-compass": "journey.module.core_compass",
+  "deep-dive": "journey.module.deep_dive",
+  "skills-audit": "journey.module.skills_audit",
+  "pulse-check": "journey.module.career_pulse",
+};
+
+export function getModuleNameKey(id: AssessmentModuleId): StringKey {
+  return MODULE_NAME_KEYS[id];
+}
 
 /** A computed snapshot of the user's progress across all modules. */
 export interface ProfileSnapshot {

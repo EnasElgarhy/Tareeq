@@ -4,11 +4,12 @@ import { computeScore } from "@/lib/scoring";
 import {
   buildFallbackReport,
   createAnswerDigest,
-  CLUSTER_PROFILES,
+  getClusterProfile,
   getEcosystemFit,
   getMultiCuriousClusters,
 } from "@/lib/results/framework";
 import type { PersonalizedCompassReport } from "@/lib/results/types";
+import { isLocale, type Locale } from "@/lib/i18n/locale";
 
 export const runtime = "nodejs";
 
@@ -19,6 +20,7 @@ type GenerateResultBody = {
   name?: string;
   email?: string;
   answers?: Record<string, string>;
+  locale?: string;
 };
 
 function isAnswerRecord(value: unknown): value is Record<string, string> {
@@ -68,11 +70,13 @@ export async function POST(request: Request) {
     );
   }
 
+  const locale: Locale = isLocale(body.locale) ? body.locale : "en";
   const result = computeScore(body.answers, assessmentQuestions);
   const fallback = buildFallbackReport({
     result,
     name: body.name,
     fallbackReason: "Claude generation was not available.",
+    locale,
   });
 
   const apiKey = process.env.ANTHROPIC_API_KEY || process.env.CLAUDE_API_KEY;
@@ -92,7 +96,10 @@ export async function POST(request: Request) {
   const ecosystemFit = getEcosystemFit(result);
   const multiCuriousCodes = getMultiCuriousClusters(result);
   const answerDigest = createAnswerDigest(body.answers, assessmentQuestions);
-  const topCluster = CLUSTER_PROFILES[result.topCluster];
+  // Cluster context sent to Claude stays in English regardless of the
+  // target output language — it's reasoning input, not user-facing text;
+  // the system prompt below separately instructs the output language.
+  const topCluster = getClusterProfile(result.topCluster, "en");
 
   const promptPayload = {
     learner: {
@@ -100,6 +107,7 @@ export async function POST(request: Request) {
       // Do not send email to Claude. The app collects it for account/contact
       // continuity; generation only needs the learner's first-person context.
     },
+    outputLanguage: locale === "ar" ? "Arabic" : "English",
     score: {
       topClusterCode: result.topCluster,
       topClusterName: topCluster.name,
@@ -111,7 +119,7 @@ export async function POST(request: Request) {
       confidenceLabel: result.confidenceLabel,
       isMultiCurious: multiCuriousCodes.length >= 3,
       multiCuriousClusters: multiCuriousCodes.map(
-        (code) => CLUSTER_PROFILES[code].name,
+        (code) => getClusterProfile(code, "en").name,
       ),
       archetype: result.archetype,
       primaryDrivers:
@@ -154,7 +162,7 @@ export async function POST(request: Request) {
       max_tokens: 2200,
       temperature: 0.35,
       system:
-        "You generate CORE Assessment career guidance for Tareeq. Follow these rules exactly: provide guidance, not personality labels; never present the top cluster as a fixed destiny, diagnosis, or prescription; use language like 'your answers point to high curiosity for...' or 'your curiosity compass is pointing toward...'; write in Kai's voice; use direct second-person language; avoid hedge words, corporate speak, and inspirational cliches. Reveal information in this order: career families or job directions first, then university types/majors, then high-school subject choices. Include all guidance as exploration, not a single path. Include concrete school subjects, university majors, career families/job titles, less obvious paths, a reality check, and next steps. In the reality check, recommend watching YouTube searches such as 'day in the life of [role]' before choosing. Use regional school wording such as A-Levels, Tawjihi, Mathematics, Physics, Chemistry. Keep total narrative tight and useful for a 17-year-old in the Middle East. Return only valid JSON with the requested shape.",
+        `You generate CORE Assessment career guidance for Tareeq. Follow these rules exactly: provide guidance, not personality labels; never present the top cluster as a fixed destiny, diagnosis, or prescription; use language like 'your answers point to high curiosity for...' or 'your curiosity compass is pointing toward...'; write in Kai's voice; use direct second-person language; avoid hedge words, corporate speak, and inspirational cliches. Reveal information in this order: career families or job directions first, then university types/majors, then high-school subject choices. Include all guidance as exploration, not a single path. Include concrete school subjects, university majors, career families/job titles, less obvious paths, a reality check, and next steps. In the reality check, recommend watching YouTube searches such as 'day in the life of [role]' before choosing. Use regional school wording such as A-Levels, Tawjihi, Mathematics, Physics, Chemistry. Keep total narrative tight and useful for a 17-year-old in the Middle East. Write every field in the requested JSON shape — including every item in the school-subject, university-major, career, and less-obvious-path arrays — entirely in ${promptPayload.outputLanguage}${locale === "ar" ? ", using natural Modern Standard Arabic career and academic terminology (school-subject and regional-exam names like Tawjihi or A-Levels may stay as commonly written)" : ""}. Return only valid JSON with the requested shape.`,
       messages: [
         {
           role: "user",

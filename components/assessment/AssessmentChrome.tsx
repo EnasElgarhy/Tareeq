@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import { TareeqArrowLeft } from "@/components/brand/icons";
 import { CompassProgress } from "@/components/brand/CompassProgress";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import { uiSounds } from "@/lib/audio/ui-sounds";
 import {
   assessmentQuestions,
@@ -46,6 +47,19 @@ export function AssessmentChrome({
   // Ceremonial screens — Meet Kai and the Contract — get a larger,
   // centered Tareeq mark with the warm-gradient icon.
   const isCeremony = pathname === "/intro" || pathname === "/contract";
+  // Hero screens (ceremony + /start) get a genuine two-column desktop
+  // layout (illustration + copy), which needs real width to breathe —
+  // question/register screens stay Duolingo-narrow.
+  const isHero = isCeremony || pathname === "/start";
+  // Results is a long-form report, not a form or a lesson — it just
+  // needs more reading width than the 640px form-screen bucket without
+  // going as wide as the hero/question layouts.
+  const isResults = pathname === "/results";
+  // The Kai conversation is a deliberate light "you've landed" surface —
+  // the rest of the flow (assessment + Results) stays on the dark night
+  // theme. (/profile used to be a second light surface here; it now
+  // redirects to /you, outside this chrome entirely.)
+  const isLightSurface = pathname === "/kai-chat";
 
   function goBack() {
     uiSounds.back();
@@ -55,6 +69,18 @@ export function AssessmentChrome({
     }
     if (pathname === "/intro") {
       router.push("/start");
+      return;
+    }
+    if (pathname === "/kai-chat") {
+      router.push("/profile?tab=kai");
+      return;
+    }
+    if (pathname === "/results") {
+      // "/" unconditionally redirects to "/intro" (the first-time-visitor
+      // ceremony) — fine for a fresh visitor landing on the root, but wrong
+      // here: a user backing out of a completed report should land on their
+      // dashboard, not restart the Meet Kai intro.
+      router.push("/home");
       return;
     }
     if (!hasQuestion) {
@@ -78,97 +104,115 @@ export function AssessmentChrome({
 
   return (
     <main
-      className={`surface-night relative mx-auto flex h-dvh w-full max-w-[480px] flex-col overflow-hidden px-5 text-sand ${
-        hasQuestion
-          ? "gap-2 pb-3 pt-[max(env(safe-area-inset-top),0.625rem)]"
-          : "gap-3 pb-4 pt-[max(env(safe-area-inset-top),0.875rem)]"
+      className={`relative flex h-dvh w-full flex-col overflow-hidden ${
+        isLightSurface ? "surface-sand text-carbon" : "surface-night text-sand"
       }`}
     >
-      <div className="absolute inset-0 bg-night-stars opacity-80 pointer-events-none" />
+      {isLightSurface ? null : (
+        <div className="absolute inset-0 bg-night-stars opacity-80 pointer-events-none" />
+      )}
 
-      {/* Header
-       *
-       * Two layouts:
-       *  · question screens (/q/*) — back-button left, readable compass panel
-       *  · everywhere else        — back-button + counter left, Tareeq mark right
-       *                              (mark goes centered+warm-gradient on ceremony screens)
-       */}
-      <header
-        className={
+      <div
+        className={`relative z-10 mx-auto flex h-full w-full max-w-[480px] flex-1 flex-col px-5 md:max-w-[560px] ${
+          isHero
+            ? "lg:max-w-[960px]"
+            : hasQuestion
+              ? "lg:max-w-[1040px]"
+              : isResults
+                ? "lg:max-w-[860px]"
+                : "lg:max-w-[640px]"
+        } ${
           hasQuestion
-            ? "relative z-10 grid grid-cols-[2rem_minmax(0,1fr)] items-center gap-1.5"
-            : "relative z-10 flex h-10 items-center justify-between gap-2"
-        }
+            ? "gap-2 pb-3 pt-[max(env(safe-area-inset-top),0.625rem)]"
+            : "gap-3 pb-4 pt-[max(env(safe-area-inset-top),0.875rem)]"
+        }`}
       >
-        <button
-          type="button"
-          onClick={goBack}
-          aria-label="Go back"
-          className={`glass-tile inline-flex shrink-0 items-center justify-center rounded-full text-sand transition hover:text-sand active:scale-95 ${
-            hasQuestion ? "size-8" : "size-9"
-          }`}
+        {/* Header
+         *
+         * Two layouts:
+         *  · question screens (/q/*) — back-button left, readable compass panel
+         *  · everywhere else        — back-button + counter left, Tareeq mark right
+         *                              (mark goes centered+warm-gradient on ceremony screens)
+         */}
+        <header
+          className={
+            hasQuestion
+              ? "relative z-10 grid grid-cols-[2rem_minmax(0,1fr)] items-center gap-1.5"
+              : "relative z-10 flex h-10 items-center justify-between gap-2"
+          }
         >
-          <TareeqArrowLeft size={15} className="flip-rtl" />
-        </button>
-
-        {hasQuestion ? (
-          <QuestionCompassPanel
-            snapshot={snapshot}
-            questionIndex={questionIndex}
-            totalQuestions={totalQuestions}
-          />
-        ) : (
-          <div
-            className={
-              isCeremony
-                ? "absolute left-1/2 top-1/2 inline-flex -translate-x-1/2 -translate-y-1/2 items-center gap-2"
-                : "inline-flex items-center gap-2"
-            }
+          <button
+            type="button"
+            onClick={goBack}
+            aria-label="Go back"
+            className={`inline-flex shrink-0 items-center justify-center rounded-full transition active:scale-95 ${
+              isLightSurface
+                ? "border border-carbon/10 bg-carbon/[0.04] text-carbon hover:bg-carbon/[0.08]"
+                : "glass-tile text-sand hover:text-sand"
+            } ${hasQuestion ? "size-8" : "size-9"}`}
           >
-            {/* Tareeq mark — centered + warm-gradient on ceremony screens, right on others */}
-            <Link
-              href="/"
-              aria-label="Tareeq home"
-              className="inline-flex items-center gap-1.5"
+            <TareeqArrowLeft size={15} className="flip-rtl" />
+          </button>
+
+          {hasQuestion ? (
+            <QuestionCompassPanel
+              snapshot={snapshot}
+              questionIndex={questionIndex}
+              totalQuestions={totalQuestions}
+            />
+          ) : (
+            <div
+              className={
+                isCeremony
+                  ? "absolute left-1/2 top-1/2 inline-flex -translate-x-1/2 -translate-y-1/2 items-center gap-2"
+                  : "inline-flex items-center gap-2"
+              }
             >
-              <span
-                aria-hidden="true"
-                className={`inline-block ${
-                  isCeremony ? "size-8 bg-grad-warm" : "size-6 bg-aurora"
-                }`}
-                style={{
-                  WebkitMaskImage: "url('/logo/tareeq-mark.svg')",
-                  maskImage: "url('/logo/tareeq-mark.svg')",
-                  WebkitMaskRepeat: "no-repeat",
-                  maskRepeat: "no-repeat",
-                  WebkitMaskPosition: "center",
-                  maskPosition: "center",
-                  WebkitMaskSize: "contain",
-                  maskSize: "contain",
-                }}
-              />
-              <span
-                className={`font-bold leading-none tracking-[-0.025em] text-sand lowercase ${
-                  isCeremony ? "text-[20px]" : "text-[16px]"
-                }`}
+              {/* Tareeq mark — centered + warm-gradient on ceremony screens, right on others */}
+              <Link
+                href="/"
+                aria-label="Tareeq home"
+                className="inline-flex items-center gap-1.5"
               >
-                tareeq
-              </span>
-            </Link>
+                <span
+                  aria-hidden="true"
+                  className={`inline-block ${
+                    isCeremony ? "size-8 bg-grad-warm" : "size-6 bg-aurora"
+                  }`}
+                  style={{
+                    WebkitMaskImage: "url('/logo/tareeq-mark.svg')",
+                    maskImage: "url('/logo/tareeq-mark.svg')",
+                    WebkitMaskRepeat: "no-repeat",
+                    maskRepeat: "no-repeat",
+                    WebkitMaskPosition: "center",
+                    maskPosition: "center",
+                    WebkitMaskSize: "contain",
+                    maskSize: "contain",
+                  }}
+                />
+                <span
+                  className={`font-bold leading-none tracking-[-0.025em] lowercase ${
+                    isLightSurface ? "text-carbon" : "text-sand"
+                  } ${isCeremony ? "text-[20px]" : "text-[16px]"}`}
+                >
+                  tareeq
+                </span>
+              </Link>
 
-            {/* Profile chip — only visible when the user has registered.
-             *  Hidden on /profile itself (no point linking to current). */}
-            <ProfileChip pathname={pathname} />
-          </div>
-        )}
-      </header>
+              {/* Profile chip — only visible when the user has registered.
+               *  Hidden on /profile itself (no point linking to current). */}
+              <ProfileChip pathname={pathname} />
+            </div>
+          )}
+        </header>
 
-      {/* Scrollable content well — the chrome locks to the viewport, but
-       *  inner content can overflow vertically on short phones (iPhone SE,
-       *  landscape, etc.) and scroll. `overscroll-contain` keeps the rubber
-       *  band inside the well so the body never bounces. */}
-      <div className="relative z-10 flex flex-1 flex-col min-h-0 -mx-5 overflow-y-auto overscroll-contain px-5 pb-1">
-        {children}
+        {/* Scrollable content well — the chrome locks to the viewport, but
+         *  inner content can overflow vertically on short phones (iPhone SE,
+         *  landscape, etc.) and scroll. `overscroll-contain` keeps the rubber
+         *  band inside the well so the body never bounces. */}
+        <div className="flex flex-1 flex-col min-h-0 -mx-5 overflow-y-auto overscroll-contain px-5 pb-1">
+          {children}
+        </div>
       </div>
     </main>
   );
@@ -185,6 +229,7 @@ function QuestionCompassPanel({
   questionIndex,
   totalQuestions,
 }: QuestionCompassPanelProps) {
+  const { t } = useLocale();
   const activeMeta = snapshot.activePillar
     ? PILLAR_META[snapshot.activePillar]
     : null;
@@ -209,13 +254,16 @@ function QuestionCompassPanel({
           <div className="flex min-w-0 items-center justify-between gap-2">
             <div className="min-w-0">
               <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-sand/42">
-                Compass
+                {t("chrome.compass_label")}
               </p>
               <p className="truncate text-[13px] font-semibold leading-tight text-sand">
-                {activeMeta ? activeMeta.name : "About you"}
+                {activeMeta ? activeMeta.name : t("chrome.about_you")}
               </p>
             </div>
-            <p className="shrink-0 rounded-full border border-sand/10 bg-night/25 px-2 py-1 text-[10px] font-semibold tabular-nums text-sand/64">
+            <p
+              dir="ltr"
+              className="shrink-0 rounded-full border border-sand/10 bg-night/25 px-2 py-1 text-[10px] font-semibold tabular-nums text-sand/64"
+            >
               {String(questionIndex + 1).padStart(2, "0")} / {totalQuestions}
             </p>
           </div>
@@ -252,12 +300,12 @@ function ProfileChip({ pathname }: { pathname: string }) {
     }
   }, []);
 
-  if (!name || pathname === "/profile") return null;
+  if (!name || pathname === "/you") return null;
   const initials = getProfileInitials(name);
 
   return (
     <Link
-      href="/profile"
+      href="/you"
       aria-label="Your profile"
       className="glass-tile inline-flex size-7 items-center justify-center rounded-full text-[10px] font-black text-sand transition hover:text-sand active:scale-95"
       style={{

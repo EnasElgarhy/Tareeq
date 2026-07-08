@@ -2,6 +2,7 @@
 
 import { ArrowRight, Mail } from "lucide-react";
 import { type FormEvent, useState } from "react";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import { sendEmailOtp, verifyEmailOtp } from "@/lib/auth/otp";
 
 function isValidEmail(value: string) {
@@ -14,6 +15,7 @@ function isValidEmail(value: string) {
  * session is established.
  */
 export function OtpSignIn({ onSignedIn }: { onSignedIn: () => void }) {
+  const { t } = useLocale();
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [sent, setSent] = useState(false);
@@ -25,7 +27,7 @@ export function OtpSignIn({ onSignedIn }: { onSignedIn: () => void }) {
     event.preventDefault();
     const trimmed = email.trim().toLowerCase();
     if (!isValidEmail(trimmed)) {
-      setError("Enter a valid email address.");
+      setError(t("auth.otp.invalid_email"));
       return;
     }
     setError("");
@@ -33,7 +35,7 @@ export function OtpSignIn({ onSignedIn }: { onSignedIn: () => void }) {
     const { ok, error: otpError } = await sendEmailOtp(trimmed);
     setSending(false);
     if (!ok) {
-      setError(otpError ?? "Couldn't send the code. Please try again.");
+      setError(otpError ?? t("auth.otp.send_failed"));
       return;
     }
     setEmail(trimmed);
@@ -44,7 +46,7 @@ export function OtpSignIn({ onSignedIn }: { onSignedIn: () => void }) {
   async function handleVerify(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (code.trim().length < 6) {
-      setError("Enter the 6-digit code from your email.");
+      setError(t("auth.otp.invalid_code_length"));
       return;
     }
     setError("");
@@ -55,7 +57,7 @@ export function OtpSignIn({ onSignedIn }: { onSignedIn: () => void }) {
     );
     if (!ok) {
       setVerifying(false);
-      setError(otpError ?? "That code is invalid or has expired.");
+      setError(otpError ?? t("auth.otp.verify_failed"));
       return;
     }
     onSignedIn();
@@ -66,7 +68,7 @@ export function OtpSignIn({ onSignedIn }: { onSignedIn: () => void }) {
       <form onSubmit={handleSend} className="glass-card grid gap-3 !p-4">
         <label className="grid gap-1.5">
           <span className="text-[12px] font-semibold text-sand/70">
-            Email address
+            {t("auth.otp.email_label")}
           </span>
           <span className="relative">
             <Mail
@@ -96,7 +98,7 @@ export function OtpSignIn({ onSignedIn }: { onSignedIn: () => void }) {
           data-size="lg"
           disabled={sending}
         >
-          {sending ? "Sending…" : "Email me a code"}
+          {sending ? t("auth.otp.sending") : t("auth.otp.send_cta")}
           <ArrowRight size={18} />
         </button>
       </form>
@@ -107,11 +109,19 @@ export function OtpSignIn({ onSignedIn }: { onSignedIn: () => void }) {
     <form onSubmit={handleVerify} className="glass-card grid gap-3 !p-4">
       <div className="rounded-2xl border border-sand/12 bg-sand/[0.06] p-3">
         <p className="text-[12px] font-semibold uppercase tracking-[0.12em] text-sand/45">
-          Verification code
+          {t("auth.otp.code_label")}
         </p>
         <p className="mt-1 text-body-sm text-sand/70">
-          We emailed a 6-digit code to{" "}
-          <span className="font-semibold text-sand">{email}</span>.
+          {(() => {
+            const [before, after] = t("auth.otp.code_sent_to").split("{email}");
+            return (
+              <>
+                {before}
+                <span className="font-semibold text-sand">{email}</span>
+                {after}
+              </>
+            );
+          })()}
         </p>
       </div>
 
@@ -136,7 +146,7 @@ export function OtpSignIn({ onSignedIn }: { onSignedIn: () => void }) {
         data-size="lg"
         disabled={verifying}
       >
-        {verifying ? "Verifying…" : "Sign in"}
+        {verifying ? t("auth.otp.verifying") : t("auth.otp.signin_cta")}
         <ArrowRight size={18} />
       </button>
 
@@ -149,7 +159,7 @@ export function OtpSignIn({ onSignedIn }: { onSignedIn: () => void }) {
         className="btn-v2 btn-v2--ghost-on-dark w-full"
         data-size="md"
       >
-        Use a different email
+        {t("auth.otp.use_different_email")}
       </button>
     </form>
   );

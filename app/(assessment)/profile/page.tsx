@@ -1,12 +1,10 @@
-import type { Metadata } from "next";
-import { ProfileScreen } from "@/components/assessment/ProfileScreen";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Your profile · Tareeq",
-  description:
-    "Your AI career profile, your completed assessments, and the next modules waiting to unlock as your path widens.",
-};
-
+/**
+ * /profile is the pre-Home-tab-redesign route — superseded by /you (see
+ * app/(app)/layout.tsx). Kept as a redirect rather than deleted outright
+ * so old links/bookmarks still land somewhere real.
+ */
 export default function ProfilePage() {
-  return <ProfileScreen />;
+  redirect("/you");
 }

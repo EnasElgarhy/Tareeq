@@ -55,12 +55,72 @@ export const SESSION_EVENT_NAMES = [
   "navigation",
 ] as const;
 
+/**
+ * Kai Landing (Profile > Kai) — Phase 1: greeting/insight/actions/
+ * grounding/locked tools.
+ */
+export const KAI_EVENT_NAMES = [
+  "kai_opened",
+  "kai_action_clicked",
+  "kai_grounding_opened",
+  "kai_locked_tool_clicked",
+] as const;
+
+/** Kai Conversation — Phase 2. */
+export const KAI_CHAT_EVENT_NAMES = [
+  "kai_chat_started",
+  "kai_message_sent",
+  "kai_message_received",
+  "kai_quick_reply_clicked",
+  "kai_recommendation_clicked",
+  "kai_conversation_finished",
+] as const;
+
+/** Kai Memory & Personalization — Phase 3. */
+export const KAI_MEMORY_EVENT_NAMES = [
+  "kai_memory_created",
+  "kai_memory_updated",
+  "kai_memory_deleted",
+  "kai_resume_clicked",
+  "kai_goal_saved",
+] as const;
+
+/** Kai Learning Resources. */
+export const KAI_RESOURCE_EVENT_NAMES = [
+  "kai_resource_saved",
+  "kai_resource_added_to_plan",
+  "kai_resource_search_opened",
+] as const;
+
+/** Kai Proactive Layer — Phase E. */
+export const KAI_PROACTIVE_EVENT_NAMES = [
+  "kai_proactive_shown",
+  "kai_proactive_clicked",
+  "kai_goal_chip_clicked",
+] as const;
+
+/** Kai Response Engine v2 — coaching framework, intent detection, and
+ * saved/trackable action plans. */
+export const KAI_COACHING_EVENT_NAMES = [
+  "kai_intent_detected",
+  "kai_block_rendered",
+  "kai_plan_saved",
+  "kai_task_completed",
+  "kai_family_script_generated",
+] as const;
+
 export const EVENT_NAMES = [
   ...ASSESSMENT_EVENT_NAMES,
   ...RESULTS_EVENT_NAMES,
   ...AI_EVENT_NAMES,
   ...ADMIN_EVENT_NAMES,
   ...SESSION_EVENT_NAMES,
+  ...KAI_EVENT_NAMES,
+  ...KAI_CHAT_EVENT_NAMES,
+  ...KAI_MEMORY_EVENT_NAMES,
+  ...KAI_RESOURCE_EVENT_NAMES,
+  ...KAI_PROACTIVE_EVENT_NAMES,
+  ...KAI_COACHING_EVENT_NAMES,
 ] as const;
 
 export type EventName = (typeof EVENT_NAMES)[number];

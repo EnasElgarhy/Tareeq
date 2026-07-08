@@ -4,7 +4,9 @@ import { CheckCircle2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { KaiChromaVideo } from "@/components/brand/KaiChromaVideo";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import { readLocalAssessment } from "@/lib/assessment/progress";
+import type { StringKey } from "@/lib/i18n/strings";
 import { buildFallbackReport } from "@/lib/results/framework";
 import {
   readGeneratedReport,
@@ -14,28 +16,16 @@ import {
 
 type AnalysisStatus = "working" | "done" | "error";
 
-const ANALYSIS_STEPS = [
-  {
-    title: "Reading answer patterns",
-    detail: "Listening to the rhythm of your choices.",
-    glyph: "📡",
-  },
-  {
-    title: "Balancing the four pillars",
-    detail: "Curiosities, Operations, Rewards, Ecosystems.",
-    glyph: "🧭",
-  },
-  {
-    title: "Mapping your compass",
-    detail: "Pulling the lines that point your direction.",
-    glyph: "🪡",
-  },
-  {
-    title: "Writing Kai’s guidance",
-    detail: "Translating the score into a path you can walk.",
-    glyph: "✍️",
-  },
-] as const;
+const ANALYSIS_STEPS: ReadonlyArray<{
+  titleKey: StringKey;
+  detailKey: StringKey;
+  glyph: string;
+}> = [
+  { titleKey: "analyzing.step1.title", detailKey: "analyzing.step1.detail", glyph: "📡" },
+  { titleKey: "analyzing.step2.title", detailKey: "analyzing.step2.detail", glyph: "🧭" },
+  { titleKey: "analyzing.step3.title", detailKey: "analyzing.step3.detail", glyph: "🪡" },
+  { titleKey: "analyzing.step4.title", detailKey: "analyzing.step4.detail", glyph: "✍️" },
+];
 
 // Four CORE pillars orbit Kai while the analysis runs. Each token has
 // a delay so they cascade in instead of appearing at once. Positions
@@ -49,6 +39,7 @@ const ORBIT_TOKENS = [
 
 export function AnalyzingScreen() {
   const router = useRouter();
+  const { t, locale } = useLocale();
   const startedRef = useRef(false);
   const [activeStep, setActiveStep] = useState(0);
   const [status, setStatus] = useState<AnalysisStatus>("working");
@@ -92,6 +83,7 @@ export function AnalyzingScreen() {
             name: registration?.name,
             email: registration?.email,
             answers: progress?.answers,
+            locale,
           }),
         });
         if (!response.ok) throw new Error("Generation request failed.");
@@ -105,7 +97,8 @@ export function AnalyzingScreen() {
             buildFallbackReport({
               result: progress.result,
               name: registration?.name,
-              fallbackReason: "Claude generation was interrupted.",
+              fallbackReason: t("analyzing.fallback_reason"),
+              locale,
             }),
           );
         }
@@ -124,7 +117,7 @@ export function AnalyzingScreen() {
     }
 
     void generateReport();
-  }, [router]);
+  }, [router, locale, t]);
 
   useEffect(() => {
     // 4 steps × 820ms ≈ 3.3s — matches the 3s minimum visible time
@@ -181,10 +174,10 @@ export function AnalyzingScreen() {
           ) : (
             <span className="analysis-spark size-1.5 rounded-full bg-gold" aria-hidden />
           )}
-          {status === "done" ? "Compass ready" : "Analyzing answers"}
+          {status === "done" ? t("analyzing.status_ready") : t("analyzing.status_working")}
         </span>
         <h1 className="text-display-2 mx-auto max-w-[14ch] text-sand">
-          Kai is{" "}
+          {t("analyzing.headline_before")}{" "}
           <span
             className="text-grad-warm"
             style={{
@@ -192,13 +185,12 @@ export function AnalyzingScreen() {
               fontVariationSettings: '"SOFT" 100, "opsz" 144',
             }}
           >
-            shaping
+            {t("analyzing.headline_emphasis")}
           </span>{" "}
-          your Compass.
+          {t("analyzing.headline_after")}
         </h1>
         <p className="text-body-sm mx-auto max-w-[34ch] text-sand/65">
-          Your answers are being scored, then translated into guidance you can
-          actually walk with.
+          {t("analyzing.subtitle")}
         </p>
       </div>
 
@@ -207,7 +199,7 @@ export function AnalyzingScreen() {
         <div className="mb-3 flex items-center justify-between gap-3 text-[11px] font-bold uppercase tracking-[0.13em] text-sand/52">
           <span className="flex items-center gap-1.5">
             <span className="analysis-spark size-1.5 rounded-full bg-grad-warm" aria-hidden />
-            Signal strength
+            {t("analyzing.signal_strength")}
           </span>
           <span className="tabular-nums text-grad-warm">{progress}%</span>
         </div>
@@ -229,7 +221,7 @@ export function AnalyzingScreen() {
 
           return (
             <li
-              key={step.title}
+              key={step.titleKey}
               className={`analysis-step-card grid grid-cols-[40px_1fr_auto] items-center gap-2 rounded-[18px] border px-3 py-2.5 transition-colors ${
                 complete
                   ? "border-grad-warm/35 bg-grad-warm/8"
@@ -259,18 +251,22 @@ export function AnalyzingScreen() {
                     complete || active ? "text-sand" : "text-sand/45"
                   }`}
                 >
-                  {step.title}
+                  {t(step.titleKey)}
                 </p>
                 <p
                   className={`mt-0.5 text-[10.5px] leading-snug ${
                     complete || active ? "text-sand/55" : "text-sand/30"
                   }`}
                 >
-                  {step.detail}
+                  {t(step.detailKey)}
                 </p>
               </div>
               <span className="text-[9.5px] font-bold uppercase tracking-[0.12em] text-sand/38">
-                {complete ? "Done" : active ? "Now" : "Next"}
+                {complete
+                  ? t("analyzing.step_status_done")
+                  : active
+                    ? t("analyzing.step_status_now")
+                    : t("analyzing.step_status_next")}
               </span>
             </li>
           );
@@ -279,8 +275,7 @@ export function AnalyzingScreen() {
 
       {status === "error" ? (
         <p className="relative z-10 text-[12px] leading-snug text-sand/50">
-          Claude was not available, so Tareeq will use the built-in guidance
-          framework for this result.
+          {t("analyzing.error_message")}
         </p>
       ) : null}
     </section>

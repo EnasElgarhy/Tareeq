@@ -12,7 +12,11 @@ export type KaiMood =
   | "warm"
   | "thinking"
   | "encouraging"
-  | "listening";
+  | "listening"
+  | "greeting"
+  | "celebrating"
+  | "waiting"
+  | "success";
 
 interface KaiProps extends HTMLAttributes<HTMLDivElement> {
   mood?: KaiMood;

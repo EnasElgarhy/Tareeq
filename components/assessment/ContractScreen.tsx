@@ -11,11 +11,13 @@ import {
   PulseIcon,
   VibeIcon,
 } from "@/components/brand/ContractIcons";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import {
   defaultVoiceOnForAssessmentStart,
   uiSounds,
 } from "@/lib/audio/ui-sounds";
 import { getQuestionPath } from "@/lib/assessment/questions";
+import type { StringKey } from "@/lib/i18n/strings";
 
 interface ContractIconProps extends SVGProps<SVGSVGElement> {
   size?: number | string;
@@ -23,8 +25,8 @@ interface ContractIconProps extends SVGProps<SVGSVGElement> {
 
 interface ContractItem {
   Icon: ComponentType<ContractIconProps>;
-  title: string;
-  body: string;
+  titleKey: StringKey;
+  bodyKey: StringKey;
 }
 
 /**
@@ -33,36 +35,12 @@ interface ContractItem {
  * single intention — what this assessment is, and what it isn't.
  */
 const ITEMS: ReadonlyArray<ContractItem> = [
-  {
-    Icon: VibeIcon,
-    title: "Energy over achievement",
-    body: "Not what you’re good at in school — what makes time disappear.",
-  },
-  {
-    Icon: LensIcon,
-    title: "Curiosity, not distraction",
-    body: "Pick what ignites a question, not what steals an hour of scrolling.",
-  },
-  {
-    Icon: HeartIcon,
-    title: "No wrong answers",
-    body: "Choosing “gaming” over “studying” tells us how your mind solves.",
-  },
-  {
-    Icon: PulseIcon,
-    title: "Intent beneath the habit",
-    body: "We listen to the why behind your scroll, not the scroll itself.",
-  },
-  {
-    Icon: ClusterIcon,
-    title: "A cluster, not a job title",
-    body: "You won’t get “Accountant.” You’ll get a world where people like you thrive.",
-  },
-  {
-    Icon: PathIcon,
-    title: "A compass, not a GPS",
-    body: "We point the direction. The destination stays yours.",
-  },
+  { Icon: VibeIcon, titleKey: "contract.item1.title", bodyKey: "contract.item1.body" },
+  { Icon: LensIcon, titleKey: "contract.item2.title", bodyKey: "contract.item2.body" },
+  { Icon: HeartIcon, titleKey: "contract.item3.title", bodyKey: "contract.item3.body" },
+  { Icon: PulseIcon, titleKey: "contract.item4.title", bodyKey: "contract.item4.body" },
+  { Icon: ClusterIcon, titleKey: "contract.item5.title", bodyKey: "contract.item5.body" },
+  { Icon: PathIcon, titleKey: "contract.item6.title", bodyKey: "contract.item6.body" },
 ];
 
 // Stagger choreography (ms)
@@ -75,6 +53,7 @@ const CTA_REVEAL_DELAY =
 
 export function ContractScreen() {
   const router = useRouter();
+  const { t } = useLocale();
   const [ctaReady, setCtaReady] = useState(false);
 
   useEffect(() => {
@@ -92,15 +71,15 @@ export function ContractScreen() {
   return (
     <section
       aria-labelledby="contract-heading"
-      className="anim-screen-enter flex flex-1 flex-col gap-3"
+      className="anim-screen-enter flex flex-1 flex-col gap-3 lg:justify-center lg:gap-6"
     >
       <span className="anim-eyebrow-fade-up chip chip--violet-on-dark w-fit">
         <span className="size-1.5 rounded-full bg-gold" />
-        Before we begin
+        {t("contract.eyebrow")}
       </span>
 
-      <h1 id="contract-heading" className="text-display-2 text-sand max-w-[14ch]">
-        A quiet{" "}
+      <h1 id="contract-heading" className="text-display-2 text-sand max-w-[14ch] lg:max-w-none">
+        {t("contract.headline_before")}{" "}
         <span
           className="text-grad-warm"
           style={{
@@ -108,21 +87,23 @@ export function ContractScreen() {
             fontVariationSettings: '"SOFT" 100, "opsz" 144',
           }}
         >
-          contract
+          {t("contract.headline_emphasis")}
         </span>
-        .
+        {t("contract.headline_after")}
       </h1>
 
       <p className="text-body-sm text-sand/65 leading-snug max-w-[34ch]">
-        Six small promises between us before the first question.
+        {t("contract.subtitle")}
       </p>
 
-      <ol className="mt-1 flex flex-col gap-2.5">
+      {/* Desktop: two columns — six single-line-ish promises read better
+       *  as a 3x2 grid than one long stretched-wide column. */}
+      <ol className="mt-1 flex flex-col gap-2.5 lg:grid lg:grid-cols-2 lg:gap-3">
         {ITEMS.map((item, i) => {
           const Icon = item.Icon;
           return (
             <li
-              key={item.title}
+              key={item.titleKey}
               className="anim-contract-item glass-card relative flex items-center gap-3.5 !p-3 !pe-4 !rounded-2xl"
               style={{ animationDelay: `${ITEM_START_DELAY + i * ITEM_STEP}ms` }}
             >
@@ -146,11 +127,11 @@ export function ContractScreen() {
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <h3 className="text-[15px] font-semibold text-sand leading-tight">
-                    {item.title}
+                    {t(item.titleKey)}
                   </h3>
                 </div>
                 <p className="mt-1 text-[13.5px] leading-snug text-sand/65">
-                  {item.body}
+                  {t(item.bodyKey)}
                 </p>
               </div>
             </li>
@@ -158,14 +139,14 @@ export function ContractScreen() {
         })}
       </ol>
 
-      <div className="flex-1" />
+      <div className="flex-1 lg:hidden" />
 
       <button
         type="button"
         onClick={start}
         disabled={!ctaReady}
         aria-hidden={!ctaReady}
-        className="btn-v2 btn-v2--primary w-full transition-[opacity,transform] duration-500 ease-out"
+        className="btn-v2 btn-v2--primary w-full transition-[opacity,transform] duration-500 ease-out lg:mx-auto lg:w-fit lg:px-10"
         data-size="lg"
         style={{
           opacity: ctaReady ? 1 : 0,
@@ -173,7 +154,7 @@ export function ContractScreen() {
           pointerEvents: ctaReady ? "auto" : "none",
         }}
       >
-        I agree, begin
+        {t("contract.cta")}
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
           <path
             d="M5 12h14M13 6l6 6-6 6"

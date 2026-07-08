@@ -3,6 +3,7 @@ import { trackEvent } from "@/lib/analytics/track";
 import { contentVersion } from "@/lib/content/seed";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { resolveContentVersionId } from "@/lib/supabase/content-version";
 
 export const runtime = "nodejs";
 
@@ -61,25 +62,7 @@ export async function POST(request: Request) {
   }
 
   const admin = createSupabaseAdminClient();
-
-  // Resolve the DB content version the seed maps to (e.g. "v4"); fall back to
-  // the active version. The consumer renders from the seed, so this is the link.
-  let versionId: string | null = null;
-  const byLabel = await admin
-    .from("content_versions")
-    .select("id")
-    .eq("label", contentVersion.label)
-    .order("created_at", { ascending: true })
-    .limit(1);
-  versionId = byLabel.data?.[0]?.id ?? null;
-  if (!versionId) {
-    const active = await admin
-      .from("content_versions")
-      .select("id")
-      .eq("is_active", true)
-      .limit(1);
-    versionId = active.data?.[0]?.id ?? null;
-  }
+  const versionId = await resolveContentVersionId(admin);
   if (!versionId) {
     return NextResponse.json(
       { error: "No content version available." },

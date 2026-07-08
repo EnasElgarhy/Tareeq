@@ -6,6 +6,10 @@ import {
   ASSESSMENT_EVENT_NAMES,
   EVENT_NAMES,
   isEventName,
+  KAI_CHAT_EVENT_NAMES,
+  KAI_EVENT_NAMES,
+  KAI_MEMORY_EVENT_NAMES,
+  KAI_RESOURCE_EVENT_NAMES,
   partitionValidEvents,
   RESULTS_EVENT_NAMES,
   SESSION_EVENT_NAMES,
@@ -40,7 +44,59 @@ describe("EVENT_NAMES taxonomy", () => {
       ...AI_EVENT_NAMES,
       ...ADMIN_EVENT_NAMES,
       ...SESSION_EVENT_NAMES,
+      ...KAI_EVENT_NAMES,
+      ...KAI_CHAT_EVENT_NAMES,
+      ...KAI_MEMORY_EVENT_NAMES,
+      ...KAI_RESOURCE_EVENT_NAMES,
     ]) {
+      expect(EVENT_NAMES).toContain(name);
+    }
+  });
+
+  it("includes every Kai Landing event name", () => {
+    for (const name of [
+      "kai_opened",
+      "kai_action_clicked",
+      "kai_grounding_opened",
+      "kai_locked_tool_clicked",
+    ]) {
+      expect(EVENT_NAMES).toContain(name);
+    }
+  });
+
+  it("includes every Kai Conversation event name", () => {
+    for (const name of [
+      "kai_chat_started",
+      "kai_message_sent",
+      "kai_message_received",
+      "kai_quick_reply_clicked",
+      "kai_recommendation_clicked",
+      "kai_conversation_finished",
+    ]) {
+      expect(EVENT_NAMES).toContain(name);
+    }
+  });
+
+  it("includes every Kai Memory event name", () => {
+    for (const name of [
+      "kai_memory_created",
+      "kai_memory_updated",
+      "kai_memory_deleted",
+      "kai_resume_clicked",
+      "kai_goal_saved",
+    ]) {
+      expect(EVENT_NAMES).toContain(name);
+    }
+  });
+
+  it("includes every Kai Learning Resources event name", () => {
+    for (const name of ["kai_resource_saved", "kai_resource_added_to_plan", "kai_resource_search_opened"]) {
+      expect(EVENT_NAMES).toContain(name);
+    }
+  });
+
+  it("includes every Kai Proactive Layer event name", () => {
+    for (const name of ["kai_proactive_shown", "kai_proactive_clicked", "kai_goal_chip_clicked"]) {
       expect(EVENT_NAMES).toContain(name);
     }
   });
@@ -97,6 +153,57 @@ describe("analyticsEventSchema", () => {
       validEvent({ metadata: { questionPosition: 12, custom: "anything" } }),
     );
     expect(result.success).toBe(true);
+  });
+
+  it("accepts realistic Kai Conversation event payloads", () => {
+    const events = [
+      validEvent({ event_name: "kai_chat_started", metadata: { goal: "find_majors" } }),
+      validEvent({ event_name: "kai_message_sent", metadata: { length: 42 } }),
+      validEvent({ event_name: "kai_message_received", metadata: { source: "gemini", hasBlocks: true } }),
+      validEvent({ event_name: "kai_quick_reply_clicked", metadata: { length: 12 } }),
+      validEvent({ event_name: "kai_recommendation_clicked", metadata: { title: "UX Designer" } }),
+      validEvent({ event_name: "kai_conversation_finished", metadata: {} }),
+    ];
+    for (const event of events) {
+      expect(analyticsEventSchema.safeParse(event).success).toBe(true);
+    }
+  });
+
+  it("accepts realistic Kai Memory event payloads — no PII in metadata", () => {
+    const events = [
+      validEvent({ event_name: "kai_memory_created", metadata: { count: 2 } }),
+      validEvent({ event_name: "kai_memory_updated", metadata: { count: 1 } }),
+      validEvent({ event_name: "kai_memory_deleted", metadata: { scope: "single" } }),
+      validEvent({ event_name: "kai_memory_deleted", metadata: { scope: "all" } }),
+      validEvent({ event_name: "kai_resume_clicked", metadata: {} }),
+      validEvent({ event_name: "kai_goal_saved", metadata: {} }),
+    ];
+    for (const event of events) {
+      expect(analyticsEventSchema.safeParse(event).success).toBe(true);
+      expect(JSON.stringify(event.metadata)).not.toMatch(/@/);
+    }
+  });
+
+  it("accepts realistic Kai Learning Resources event payloads", () => {
+    const events = [
+      validEvent({ event_name: "kai_resource_saved", metadata: { type: "book" } }),
+      validEvent({ event_name: "kai_resource_added_to_plan", metadata: { type: "course" } }),
+      validEvent({ event_name: "kai_resource_search_opened", metadata: { type: "youtube_video" } }),
+    ];
+    for (const event of events) {
+      expect(analyticsEventSchema.safeParse(event).success).toBe(true);
+    }
+  });
+
+  it("accepts realistic Kai Proactive Layer event payloads — no PII in metadata", () => {
+    const events = [
+      validEvent({ event_name: "kai_proactive_shown", metadata: { kind: "resume_topic" } }),
+      validEvent({ event_name: "kai_proactive_clicked", metadata: { kind: "next_step" } }),
+      validEvent({ event_name: "kai_goal_chip_clicked", metadata: { goal: "find_majors" } }),
+    ];
+    for (const event of events) {
+      expect(analyticsEventSchema.safeParse(event).success).toBe(true);
+    }
   });
 
   it("accepts a question-scoped event with a question_id", () => {

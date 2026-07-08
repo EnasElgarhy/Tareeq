@@ -1068,6 +1068,69 @@ button {
 .anim-contract-item {
   animation: contract-item-in 720ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
+/* Share-link intro reveal — countdown bar filling over the wait. Duration is
+   set inline per use (reduced-motion visitors get a much shorter wait). */
+.anim-reveal-progress {
+  animation-name: reveal-progress-fill;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+@keyframes reveal-progress-fill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+/* Share-reveal illustration (components/brand/ShareRevealIllustration.tsx) —
+   a bespoke compass-star burst, no Kai. Three independent layers: outward
+   light rays breathing, the center star pulsing, and eight sparkle tokens
+   twinkling on a stagger. */
+.share-reveal-burst {
+  animation: share-reveal-burst-pulse 4.2s ease-in-out infinite;
+  transform-origin: center;
+}
+@keyframes share-reveal-burst-pulse {
+  0%,
+  100% {
+    opacity: 0.22;
+    transform: scale(0.97);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.03);
+  }
+}
+.share-reveal-star {
+  animation: share-reveal-star-breathe 3.2s var(--ease-standard, ease-in-out) infinite;
+  transform-origin: center;
+}
+@keyframes share-reveal-star-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.07);
+  }
+}
+.share-reveal-sparkle {
+  animation: share-reveal-sparkle-twinkle 2.6s ease-in-out infinite;
+  transform-origin: center;
+}
+@keyframes share-reveal-sparkle-twinkle {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
 @keyframes sheet-up {
   from {
     opacity: 0;
@@ -1547,6 +1610,251 @@ button {
   }
 }
 
+/* ============================================================
+ * Kai Signal — abstract mood-mark for secondary/small Kai
+ * mentions (badges, empty states, locked cards) where mounting
+ * the real chroma-key video is overkill. Shares KaiMood with
+ * components/brand/Kai.tsx so both speak the same mood language.
+ * See components/kai/KaiSignal.tsx.
+ * ============================================================ */
+.kai-signal {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 46% 54% 58% 42% / 50% 46% 54% 50%;
+  background: linear-gradient(150deg, var(--violet-soft), var(--gold));
+  box-shadow: 0 6px 16px rgba(110, 72, 228, 0.28);
+}
+.kai-signal[data-mood="celebrating"] {
+  background: var(--grad-warm);
+  box-shadow: 0 6px 18px rgba(255, 61, 131, 0.35);
+  animation: kai-signal-bounce 0.9s ease-out infinite;
+}
+.kai-signal[data-mood="success"] {
+  background: linear-gradient(150deg, var(--gold), var(--gold-soft));
+  box-shadow: 0 6px 16px rgba(244, 198, 96, 0.4);
+}
+.kai-signal[data-mood="waiting"] {
+  filter: saturate(0.45);
+  box-shadow: none;
+  animation: kai-signal-rotate-slow 6s linear infinite;
+}
+.kai-signal[data-mood="greeting"] {
+  animation: kai-signal-bob 1.8s ease-in-out infinite;
+}
+.kai-signal[data-mood="curious"] {
+  animation: kai-signal-tilt 2.4s ease-in-out infinite;
+}
+.kai-signal[data-mood="listening"] {
+  animation: kai-signal-breathe 2.6s ease-in-out infinite;
+}
+
+.kai-signal__ring {
+  position: absolute;
+  inset: -18%;
+  border-radius: 50%;
+  border: 1.5px solid var(--gold);
+  opacity: 0;
+}
+.kai-signal[data-mood="encouraging"] .kai-signal__ring {
+  opacity: 1;
+  animation: kai-signal-pulse-ring 1.6s ease-out infinite;
+}
+
+.kai-signal__satellite {
+  position: absolute;
+  inset: 0;
+}
+.kai-signal[data-mood="thinking"] .kai-signal__satellite {
+  animation: kai-signal-rotate-slow 3.2s linear infinite;
+}
+.kai-signal__satellite span {
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  border-radius: 50%;
+  background: var(--violet);
+  transform: translateX(-50%);
+}
+
+.kai-signal__check {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  animation: kai-signal-check-draw 0.6s var(--ease-standard) 0.2s forwards;
+}
+
+@keyframes kai-signal-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12%);
+  }
+}
+@keyframes kai-signal-bounce {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.18);
+  }
+  55% {
+    transform: scale(0.94);
+  }
+  75% {
+    transform: scale(1.05);
+  }
+}
+@keyframes kai-signal-pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+@keyframes kai-signal-tilt {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  50% {
+    transform: rotate(-8deg);
+  }
+}
+@keyframes kai-signal-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+@keyframes kai-signal-rotate-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes kai-signal-check-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ============================================================
+ * Kai writing/thinking avatar — components/kai/chat/LoadingMessage.tsx.
+ * Scaled-up, two-particle sibling of .kai-signal above: same organic
+ * blob + warm gradient + orbiting satellite language, sized up because
+ * this is the one moment a fresh, short conversation has almost nothing
+ * else on screen to look at.
+ * ============================================================ */
+.kai-writing-avatar {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+}
+.kai-writing-avatar__core {
+  width: 22px;
+  height: 22px;
+  border-radius: 46% 54% 58% 42% / 50% 46% 54% 50%;
+  background: linear-gradient(150deg, var(--violet-soft), var(--gold));
+  box-shadow: 0 4px 14px rgba(110, 72, 228, 0.32);
+  animation: kai-writing-breathe 2.2s ease-in-out infinite;
+}
+.kai-writing-avatar__ring {
+  position: absolute;
+  inset: 1px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gold);
+  opacity: 0;
+  animation: kai-signal-pulse-ring 1.8s ease-out infinite;
+}
+.kai-writing-avatar__satellite {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+}
+.kai-writing-avatar__satellite--a {
+  width: 5px;
+  height: 5px;
+  margin: -2.5px;
+  background: var(--violet);
+  animation: kai-writing-orbit-a 2.4s linear infinite;
+}
+.kai-writing-avatar__satellite--b {
+  width: 4px;
+  height: 4px;
+  margin: -2px;
+  background: var(--gold);
+  animation: kai-writing-orbit-b 3.6s linear infinite;
+}
+@keyframes kai-writing-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+@keyframes kai-writing-orbit-a {
+  from {
+    transform: rotate(0deg) translateX(15px) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(15px) rotate(-360deg);
+  }
+}
+@keyframes kai-writing-orbit-b {
+  from {
+    transform: rotate(120deg) translateX(12px) rotate(-120deg);
+  }
+  to {
+    transform: rotate(-240deg) translateX(12px) rotate(240deg);
+  }
+}
+
+/* ============================================================
+ * Celebration burst — module/milestone completion. No prior
+ * pattern existed for this; see components/kai/CelebrationBurst.tsx.
+ * ============================================================ */
+@keyframes celebration-badge-pop {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes celebration-particle-fly {
+  0% {
+    transform: translate(0, 0) scale(0);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--px), var(--py)) scale(1);
+    opacity: 0;
+  }
+}
+
 /* RTL helpers */
 [dir="rtl"] .flip-rtl {
   transform: scaleX(-1);
@@ -1591,7 +1899,103 @@ button {
   .analysis-step-ring,
   .kai-video-avatar__speech i,
   .kai-video-avatar[data-gesture="wave"] .kai-video-avatar__rim,
-  .result-compass-spin {
+  .result-compass-spin,
+  .share-reveal-burst,
+  .share-reveal-star,
+  .share-reveal-sparkle,
+  .kai-signal[data-mood="celebrating"],
+  .kai-signal[data-mood="waiting"],
+  .kai-signal[data-mood="greeting"],
+  .kai-signal[data-mood="curious"],
+  .kai-signal[data-mood="listening"],
+  .kai-signal__ring,
+  .kai-signal__satellite,
+  .kai-writing-avatar__core,
+  .kai-writing-avatar__ring,
+  .kai-writing-avatar__satellite--a,
+  .kai-writing-avatar__satellite--b {
     animation: none !important;
   }
+}
+
+/* Inside the light "warm paper" app surface, links inherit the surrounding
+ * ink color by default instead of the global brand-violet link color, so
+ * card and structural links never leak violet (e.g. the hero eyebrow).
+ * Components opt into a specific link color explicitly where they need one. */
+.surface-day a,
+.surface-day a:hover {
+  color: inherit;
+}
+
+/* ------------------------------------------------------------
+ * Light "Warm Paper" surface — brought over from wip/session-home-
+ * gemini-docs, adopted for the bottom-tab-bar app surface (Home /
+ * Explore / Kai / You) replacing /profile's pill tabs. The assessment
+ * flow and Results stay on the dark night theme; arriving here is a
+ * deliberate light "you've landed" moment.
+ *
+ * Design tokens are exposed as --day-* vars so the home components
+ * stay coherent and easy to tune in one place.
+ * ------------------------------------------------------------ */
+.surface-day {
+  --day-bg: #f4eee3;
+  --day-card: #fffcf6;
+  --day-elevated: #ffffff;
+  --day-inset: #efe7da;
+  --day-line: rgba(43, 36, 28, 0.1);
+  --day-line-strong: rgba(43, 36, 28, 0.2);
+  --day-ink: #2a2118;
+  --day-ink-2: #5c5142;
+  --day-ink-3: #675d4e;
+  --day-shadow-card: 0 1px 2px rgba(43, 36, 28, 0.04),
+    0 10px 26px rgba(43, 36, 28, 0.07);
+  --day-shadow-hero: 0 2px 4px rgba(43, 36, 28, 0.05),
+    0 22px 54px rgba(43, 36, 28, 0.11);
+  background: var(--day-bg);
+  color: var(--day-ink);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+/* Warm gold bloom, top-right */
+.surface-day::before {
+  content: "";
+  position: absolute;
+  top: -16%;
+  right: -22%;
+  width: 92%;
+  aspect-ratio: 1.2;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(244, 198, 96, 0.32) 0%,
+    rgba(244, 198, 96, 0.1) 32%,
+    transparent 62%
+  );
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(30px);
+}
+/* Soft violet bloom, lower-left */
+.surface-day::after {
+  content: "";
+  position: absolute;
+  bottom: -18%;
+  left: -26%;
+  width: 82%;
+  aspect-ratio: 1;
+  background: radial-gradient(circle, rgba(157, 127, 240, 0.2), transparent 64%);
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(38px);
+}
+
+/* Faint paper grain — the light counterpart to the night star-field.
+ * Adds tooth without reading as visual noise. */
+.bg-day-wash {
+  background-image:
+    radial-gradient(1px 1px at 18% 22%, rgba(43, 36, 28, 0.05), transparent 2px),
+    radial-gradient(1px 1px at 72% 36%, rgba(43, 36, 28, 0.045), transparent 2px),
+    radial-gradient(1px 1px at 46% 72%, rgba(43, 36, 28, 0.04), transparent 2px),
+    radial-gradient(1px 1px at 88% 84%, rgba(43, 36, 28, 0.035), transparent 2px);
+  background-size: 240px 240px, 200px 200px, 280px 280px, 220px 220px;
 }

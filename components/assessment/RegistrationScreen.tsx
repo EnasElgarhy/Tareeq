@@ -43,7 +43,7 @@ async function persistAssessment(name: string, locale: string) {
 
 export function RegistrationScreen() {
   const router = useRouter();
-  const { locale } = useLocale();
+  const { t, locale } = useLocale();
   const existingRegistration = useMemo(() => readResultRegistration(), []);
   const [name, setName] = useState(existingRegistration?.name ?? "");
   const [email, setEmail] = useState(existingRegistration?.email ?? "");
@@ -93,12 +93,12 @@ export function RegistrationScreen() {
     const trimmedEmail = email.trim().toLowerCase();
 
     if (trimmedName.length < 2) {
-      setError("Enter the name you want on your Compass.");
+      setError(t("register.name_error"));
       return;
     }
 
     if (!isValidEmail(trimmedEmail)) {
-      setError("Enter a valid email address.");
+      setError(t("register.email_error"));
       return;
     }
 
@@ -107,7 +107,7 @@ export function RegistrationScreen() {
     const { ok, error: otpError } = await sendEmailOtp(trimmedEmail, trimmedName);
     setSending(false);
     if (!ok) {
-      setError(otpError ?? "Couldn't send the code. Please try again.");
+      setError(otpError ?? t("register.send_error_fallback"));
       return;
     }
 
@@ -127,7 +127,7 @@ export function RegistrationScreen() {
       name.trim(),
     );
     setSending(false);
-    if (!ok) setError(otpError ?? "Couldn't resend the code.");
+    if (!ok) setError(otpError ?? t("register.resend_error_fallback"));
     else uiSounds.advance();
   }
 
@@ -136,7 +136,7 @@ export function RegistrationScreen() {
     const code = enteredCode.trim();
 
     if (code.length < 6) {
-      setError("Enter the 6-digit code from your email.");
+      setError(t("register.code_length_error"));
       return;
     }
 
@@ -146,7 +146,7 @@ export function RegistrationScreen() {
     const { ok, error: otpError } = await verifyEmailOtp(trimmedEmail, code);
     if (!ok) {
       setVerifying(false);
-      setError(otpError ?? "That code is invalid or has expired.");
+      setError(otpError ?? t("register.verify_error_fallback"));
       return;
     }
 
@@ -177,7 +177,7 @@ export function RegistrationScreen() {
     <section className="anim-screen-enter flex flex-1 flex-col gap-4">
       <div className="relative mx-auto flex h-[150px] w-[150px] items-center justify-center">
         <div
-          aria-label="Kai, your guide"
+          aria-label={t("kai.guide_aria")}
           role="img"
           className="anim-kai-drop relative z-10"
         >
@@ -197,21 +197,22 @@ export function RegistrationScreen() {
       <div className="grid gap-2">
         <span className="chip chip--violet-on-dark w-fit">
           <ShieldCheck size={13} />
-          One more step
+          {t("register.eyebrow")}
         </span>
         <h1 className="text-display-2 max-w-[12ch] text-sand">
-          Save your Compass.
+          {t("register.headline")}
         </h1>
         <p className="text-body-sm max-w-[34ch] text-sand/70">
-          Kai needs a verified contact before building the final report. Your
-          email is kept out of the AI prompt.
+          {t("register.subtitle")}
         </p>
       </div>
 
       {!codeSent ? (
         <form onSubmit={handleSendCode} className="glass-card grid gap-3 !p-4">
           <label className="grid gap-1.5">
-            <span className="text-[12px] font-semibold text-sand/70">Name</span>
+            <span className="text-[12px] font-semibold text-sand/70">
+              {t("register.name_label")}
+            </span>
             <span className="relative">
               <UserRound
                 size={17}
@@ -221,7 +222,7 @@ export function RegistrationScreen() {
                 value={name}
                 onChange={(event) => setName(event.target.value)}
                 className="h-[52px] w-full rounded-2xl bg-sand py-3 pl-11 pr-4 text-[16px] font-semibold text-carbon outline-none shadow-sand-sm focus-visible:ring-2 focus-visible:ring-gold"
-                placeholder="Your name"
+                placeholder={t("register.name_placeholder")}
                 autoComplete="name"
               />
             </span>
@@ -229,7 +230,7 @@ export function RegistrationScreen() {
 
           <label className="grid gap-1.5">
             <span className="text-[12px] font-semibold text-sand/70">
-              Email address
+              {t("register.email_label")}
             </span>
             <span className="relative">
               <Mail
@@ -243,6 +244,7 @@ export function RegistrationScreen() {
                 placeholder="you@example.com"
                 autoComplete="email"
                 inputMode="email"
+                dir="ltr"
               />
             </span>
           </label>
@@ -250,16 +252,14 @@ export function RegistrationScreen() {
           <div className="grid gap-2 rounded-2xl border border-sand/10 bg-sand/[0.045] p-3">
             <div className="grid gap-1">
               <p className="text-[12px] font-bold text-sand">
-                Optional research consent
+                {t("register.consent_title")}
               </p>
               <p className="text-[11px] leading-snug text-sand/55">
-                These are opt-in and unchecked by default. Declining will not
-                change your result.
+                {t("register.consent_body")}
               </p>
               {!canOptIntoResearch ? (
                 <p className="rounded-xl bg-night/35 px-3 py-2 text-[11px] leading-snug text-sand/58">
-                  Research opt-in is off because this response is marked under
-                  18. You can still receive your Compass.
+                  {t("register.consent_minor_notice")}
                 </p>
               ) : null}
             </div>
@@ -267,19 +267,19 @@ export function RegistrationScreen() {
             <ConsentToggle
               checked={generalResearch}
               disabled={!canOptIntoResearch}
-              label="Use my anonymized answers for CORE research."
+              label={t("register.consent_general")}
               onChange={setGeneralResearch}
             />
             <ConsentToggle
               checked={longitudinalFollowup}
               disabled={!canOptIntoResearch}
-              label="Contact me later to learn how my path is going."
+              label={t("register.consent_followup")}
               onChange={setLongitudinalFollowup}
             />
             <ConsentToggle
               checked={universitySharing}
               disabled={!canOptIntoResearch}
-              label="Share anonymized insights with university partners."
+              label={t("register.consent_university")}
               onChange={setUniversitySharing}
             />
           </div>
@@ -296,7 +296,7 @@ export function RegistrationScreen() {
             data-size="lg"
             disabled={sending}
           >
-            {sending ? "Sending…" : "Send verification code"}
+            {sending ? t("register.sending") : t("register.send_code_cta")}
             <ArrowRight size={18} />
           </button>
         </form>
@@ -304,15 +304,15 @@ export function RegistrationScreen() {
         <form onSubmit={handleVerify} className="glass-card grid gap-3 !p-4">
           <div className="rounded-2xl border border-sand/12 bg-sand/[0.06] p-3">
             <p className="text-[12px] font-semibold uppercase tracking-[0.12em] text-sand/45">
-              Verification code
+              {t("register.code_label")}
             </p>
             <p className="mt-1 text-body-sm text-sand/70">
-              We emailed a 6-digit code to{" "}
-              <span className="font-semibold text-sand">{email}</span>. Enter it
-              below to continue.
+              {t("register.code_sent_before")}{" "}
+              <span className="font-semibold text-sand" dir="ltr">{email}</span>
+              {t("register.code_sent_after")}
             </p>
             <p className="mt-2 text-[11px] leading-snug text-sand/45">
-              Can&apos;t find it? Check your spam folder, or resend the code.
+              {t("register.code_help")}
             </p>
           </div>
 
@@ -337,7 +337,7 @@ export function RegistrationScreen() {
             data-size="lg"
             disabled={verifying}
           >
-            {verifying ? "Verifying…" : "Verify and analyze"}
+            {verifying ? t("register.verifying") : t("register.verify_cta")}
             <ArrowRight size={18} />
           </button>
 
@@ -351,7 +351,7 @@ export function RegistrationScreen() {
               className="btn-v2 btn-v2--ghost-on-dark w-full"
               data-size="md"
             >
-              Edit details
+              {t("register.edit_details_cta")}
             </button>
             <button
               type="button"
@@ -360,7 +360,7 @@ export function RegistrationScreen() {
               className="btn-v2 btn-v2--ghost-on-dark w-full"
               data-size="md"
             >
-              {sending ? "Sending…" : "Resend code"}
+              {sending ? t("register.sending") : t("register.resend_cta")}
             </button>
           </div>
         </form>
