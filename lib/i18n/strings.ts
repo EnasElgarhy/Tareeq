@@ -758,7 +758,7 @@ export const STRINGS = {
   "kai.chat.action_plan_saved": { en: "Saved to your plans", ar: "تم الحفظ في خططك" },
   "kai.chat.empty_conversation": {
     en: "Getting things ready — say hello, or ask Kai anything about your future.",
-    ar: "نجهّز كل شيء — قل مرحبًا، أو اسأل كاي عن أي شيء يخص مستقبلك.",
+    ar: "نجهّز كل شيء — قل مرحباً، أو اسأل كاي عن أي شيء يخص مستقبلك.",
   },
 
   // ---- Kai plans screens (app/(app)/kai/plans/*) ----
@@ -1088,6 +1088,37 @@ export const STRINGS = {
   "analyzing.error_message": {
     en: "Claude was not available, so Tareeq will use the built-in guidance framework for this result.",
     ar: "لم يكن Claude متاحاً، لذا ستستخدم طريق إطار الإرشاد المدمج لهذه النتيجة.",
+  },
+
+  // Compass Constellation share card (components/results/CompassCard.tsx)
+  "share_card.header_label": { en: "PATH REVEALED", ar: "تكشّف المسار" },
+  "share_card.pillar.curiosity": { en: "CURIOSITY", ar: "الفضول" },
+  "share_card.pillar.operations": { en: "OPERATIONS", ar: "العمل" },
+  "share_card.pillar.rewards": { en: "REWARDS", ar: "الدافع" },
+  "share_card.pillar.ecosystem": { en: "ECOSYSTEM", ar: "البيئة" },
+  "share_card.eyebrow": {
+    en: "{name}, YOUR PATH POINTS TO",
+    ar: "يا {name}، طريقك يشير إلى",
+  },
+  "share_card.in_cluster": { en: "in {cluster}", ar: "في {cluster}" },
+  "share_card.driven_by": { en: "Driven by {driver}", ar: "بدافع {driver}" },
+  "share_card.footer": {
+    en: "FIND YOUR TAREEQ ✦ tareeq.app",
+    ar: "اكتشف طريقك ✦ tareeq.app",
+  },
+
+  // Share card modal (components/results/ShareCardModal.tsx)
+  "share_card.modal.close_aria": { en: "Close", ar: "إغلاق" },
+  "share_card.modal.share_cta": { en: "Share your compass", ar: "شارك بوصلتك" },
+  "share_card.modal.preparing": { en: "Preparing image…", ar: "جارٍ تجهيز الصورة…" },
+  "share_card.modal.shared_status": { en: "Shared!", ar: "تمت المشاركة!" },
+  "share_card.modal.saved_status": {
+    en: "Image saved and link copied.",
+    ar: "تم حفظ الصورة ونسخ الرابط.",
+  },
+  "share_card.modal.error_status": {
+    en: "Couldn't share right now. Try again.",
+    ar: "تعذّرت المشاركة الآن. حاول مرة أخرى.",
   },
 } as const satisfies Record<string, Entry>;
 

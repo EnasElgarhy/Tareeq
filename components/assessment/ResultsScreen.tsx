@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { ReportBody } from "@/components/assessment/report-parts";
+import type { CompassCardResult } from "@/components/results/CompassCard";
+import { ShareCardModal } from "@/components/results/ShareCardModal";
 import { trackEvent } from "@/lib/analytics/track";
 import { readLocalAssessment, resetLocalAssessment } from "@/lib/assessment/progress";
 import { getClusterLabel } from "@/lib/results/cluster-visuals";
@@ -23,6 +25,7 @@ export function ResultsScreen() {
   const [shareStatus, setShareStatus] = useState("");
   const [shareUrl, setShareUrl] = useState<string | null>(null);
   const [sharing, setSharing] = useState(false);
+  const [shareCard, setShareCard] = useState<CompassCardResult | null>(null);
 
   useEffect(() => {
     const registration = readResultRegistration();
@@ -75,14 +78,13 @@ export function ResultsScreen() {
     }
   }
 
+  /** Opens the animated CompassCard over the results screen — the actual
+   *  share action (native share sheet with the exported PNG + link, or the
+   *  download+copy fallback) lives in ShareCardModal. */
   async function handleShare() {
     if (!report) return;
-
-    const shareText = t("results.share.text")
-      .replace("{cluster}", getClusterLabel(report.clusterCode, t))
-      .replace("{archetype}", t(getArchetypeKey(report.archetype)))
-      .replace("{driver}", report.primaryDriver);
-    const assessmentId = readLocalAssessment()?.assessmentId;
+    const registration = readResultRegistration();
+    if (!registration) return;
 
     setSharing(true);
     const url = await ensureShareUrl();
@@ -93,24 +95,14 @@ export function ResultsScreen() {
       return;
     }
 
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: "My Tareeq Career Compass",
-          text: shareText,
-          url,
-        });
-        setShareStatus(t("results.share.shared"));
-        trackEvent("results_shared", { assessmentId, method: "native_share" });
-        return;
-      }
-
-      await navigator.clipboard.writeText(`${shareText}\n${url}`);
-      setShareStatus(t("results.share.copied"));
-      trackEvent("results_shared", { assessmentId, method: "clipboard" });
-    } catch {
-      setShareStatus(t("results.share.cancelled"));
-    }
+    setShareStatus("");
+    setShareCard({
+      name: registration.name,
+      clusterCode: report.clusterCode,
+      archetype: report.archetype,
+      driverCode: report.score.primaryDriver,
+      ecosystemFit: report.ecosystemFit,
+    });
   }
 
   function handleDownloadView() {
@@ -181,6 +173,19 @@ export function ResultsScreen() {
           ? t("results.footer.generated_with").replace("{model}", report.model ?? "Claude")
           : t("results.footer.fallback").replace("{reason}", report.fallbackReason ?? "")}
       </p>
+
+      {shareCard ? (
+        <ShareCardModal
+          result={shareCard}
+          shareUrl={shareUrl}
+          shareText={t("results.share.text")
+            .replace("{cluster}", getClusterLabel(report.clusterCode, t))
+            .replace("{archetype}", t(getArchetypeKey(report.archetype)))
+            .replace("{driver}", report.primaryDriver)}
+          assessmentId={readLocalAssessment()?.assessmentId}
+          onClose={() => setShareCard(null)}
+        />
+      ) : null}
     </section>
   );
 }
