@@ -1,27 +1,26 @@
 name: Deploy to App Runner (reusable)
 
-# Called by the four deploy-{consumer,admin}-{development,staging}.yml
+# Called by the four deploy-{consumer,admin}-{staging,production}.yml
 # triggers — one shared pipeline parameterized by app + GitHub Environment,
 # so all four deploys can never drift into four different procedures.
 #
 # One GitHub repo (EnasElgarhy/Tareeq), two deployable apps living at
-# apps/consumer/ and apps/admin/ (see docs/deployment/AWS_DEPLOYMENT.md —
-# "Prerequisite: monorepo restructure" — that move hasn't happened yet;
-# this workflow is written for the target layout). AWS resources stay
-# fully separate per app — see docs/deployment/iam-permissions-policy-*.json.
+# apps/consumer/ and apps/admin/ (see docs/deployment/AWS_DEPLOYMENT.md).
+# AWS resources stay fully separate per app — see
+# docs/deployment/iam-permissions-policy-*.json.
 #
 # Auth: OIDC only. No long-lived AWS access keys ever touch GitHub
 # secrets — configure-aws-credentials exchanges a short-lived GitHub
 # Actions token for temporary AWS credentials by assuming the IAM role
 # named below. Because this is one repo, the TRUST policy is the same for
 # both apps within an environment (repo:EnasElgarhy/Tareeq:ref:refs/heads/<branch>)
-# — see iam-trust-policy-github-oidc-{develop,staging}.json — what keeps
+# — see iam-trust-policy-github-oidc-{staging,main}.json — what keeps
 # the two apps' deploys isolated from each other is the PERMISSIONS policy
 # on each app's own role (iam-permissions-policy-<app>-<environment>.json),
 # each scoped to exactly one ECR repo and one App Runner service.
 #
 # Expects, per GitHub Environment (Settings → Environments →
-# <app>-<environment>, e.g. "consumer-development"):
+# <app>-<environment>, e.g. "consumer-staging"):
 #   secrets.AWS_ROLE_ARN                 - the role this workflow assumes
 #   secrets.NEXT_PUBLIC_SUPABASE_URL     - inlined at build time (public)
 #   secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY

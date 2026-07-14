@@ -28,7 +28,7 @@
         "apprunner:StartDeployment",
         "apprunner:DescribeService"
       ],
-      "Resource": "arn:aws:apprunner:eu-north-1:403141583896:service/tareeq-admin-development/*"
+      "Resource": "arn:aws:apprunner:eu-north-1:403141583896:service/tareeq-admin-production/*"
     }
   ]
 }
