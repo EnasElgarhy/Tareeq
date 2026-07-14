@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { KaiAuraV2 } from "@/components/brand/KaiAuraV2";
 import { KaiChromaVideo } from "@/components/brand/KaiChromaVideo";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import {
@@ -115,13 +116,21 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
        *  instance from the mobile one below rather than reordered with
        *  CSS, so the mobile visual sequence (headline → Kai → steps)
        *  never has to be disturbed to achieve the desktop split. Static
-       *  (playing=false, no audioRef), so a second instance is cheap. */}
-      <div className="relative hidden h-[280px] w-full items-center justify-center lg:flex">
+       *  (playing=false, no audioRef), so a second instance is cheap.
+       *  KaiAuraV2 (previously built but unused anywhere) blooms behind
+       *  her — the one atmospheric "arrival" moment for this screen. */}
+      <div className="relative hidden h-[340px] w-full items-center justify-center lg:flex">
+        <div
+          aria-hidden="true"
+          className="anim-aura-bloom pointer-events-none absolute"
+        >
+          <KaiAuraV2 size={360} />
+        </div>
         <div aria-hidden="true" className="anim-kai-drop relative z-10">
           <div className="anim-kai-drop-bob">
             <KaiChromaVideo
               src="/kai/kai-intro-green.mp4"
-              size={180}
+              size={220}
               playing={false}
               restTime={0}
             />
@@ -129,31 +138,39 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col gap-3">
-        <span className="anim-eyebrow-fade-up chip chip--violet-on-dark w-fit">
-          <span className="size-1.5 rounded-full bg-gold" />
-          {t("start.eyebrow")}
-        </span>
-
-        <h1 id="start-heading" className="text-hero text-sand max-w-[16ch] lg:max-w-[22ch]">
-          {t("start.headline_line1")}
-          <br />
-          {t("start.headline_line2_before")}{" "}
-          <span
-            className="text-grad-warm"
-            style={{
-              fontStyle: "italic",
-              fontVariationSettings: '"SOFT" 100, "opsz" 144',
-            }}
-          >
-            {t("start.headline_emphasis")}
+      <div className="flex flex-1 flex-col gap-4">
+        <div className="flex flex-col gap-3">
+          <span className="anim-eyebrow-fade-up chip chip--violet-on-dark w-fit">
+            <span className="size-1.5 rounded-full bg-gold" />
+            {t("start.eyebrow")}
           </span>
-          {t("start.headline_after")}
-        </h1>
+
+          <h1 id="start-heading" className="text-hero text-sand max-w-[16ch] lg:max-w-[22ch]">
+            {t("start.headline_line1")}
+            <br />
+            {t("start.headline_line2_before")}{" "}
+            <span
+              className="text-grad-warm"
+              style={{
+                fontStyle: "italic",
+                fontVariationSettings: '"SOFT" 100, "opsz" 144',
+              }}
+            >
+              {t("start.headline_emphasis")}
+            </span>
+            {t("start.headline_after")}
+          </h1>
+        </div>
 
         {/* Hero illustration — phone/tablet only; desktop uses its own
-         *  column above. */}
-        <div className="relative mx-auto flex h-[180px] w-[180px] items-center justify-center lg:hidden">
+         *  column above. Same aura treatment, scaled down. */}
+        <div className="relative mx-auto flex h-[200px] w-[200px] items-center justify-center lg:hidden">
+          <div
+            aria-hidden="true"
+            className="anim-aura-bloom pointer-events-none absolute"
+          >
+            <KaiAuraV2 size={220} />
+          </div>
           <div
             aria-label={t("kai.guide_aria")}
             role="img"
@@ -165,7 +182,7 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
                   subtly alive. */}
               <KaiChromaVideo
                 src="/kai/kai-intro-green.mp4"
-                size={180}
+                size={200}
                 playing={false}
                 restTime={0}
               />
@@ -219,32 +236,36 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
           </div>
         ) : null}
 
-        {/* Step ladder — denser */}
-        <ol className="relative grid gap-2.5 ps-0.5">
-          <span
-            aria-hidden="true"
-            className="absolute start-[13px] top-4 bottom-4 w-px bg-gradient-to-b from-violet-soft/40 via-violet-soft/20 to-gold/40"
-          />
-          {STEPS.map((step, i) => (
-            <li
-              key={step.n}
-              className="anim-option-in relative grid grid-cols-[28px_1fr] items-center gap-3"
-              style={{ animationDelay: `${320 + i * 90}ms` }}
-            >
-              <span className="glass-tile relative z-10 grid size-7 place-items-center rounded-full text-sand text-[12px] font-bold">
-                {step.n}
-              </span>
-              <div>
-                <p className="text-body-sm font-semibold text-sand leading-tight">
-                  {t(step.titleKey)}
-                </p>
-                <p className="text-[12px] text-sand/55 leading-tight">
-                  {t(step.metaKey)}
-                </p>
-              </div>
-            </li>
-          ))}
-        </ol>
+        {/* Step ladder — lifted into its own card so "the path" reads as
+         *  one deliberate module rather than a plain list floating on
+         *  the night surface. */}
+        <div className="glass-card !p-3.5 !rounded-[22px]">
+          <ol className="relative grid gap-2.5 ps-0.5">
+            <span
+              aria-hidden="true"
+              className="absolute start-[13px] top-4 bottom-4 w-px bg-gradient-to-b from-violet-soft/40 via-violet-soft/20 to-gold/40"
+            />
+            {STEPS.map((step, i) => (
+              <li
+                key={step.n}
+                className="anim-option-in relative grid grid-cols-[28px_1fr] items-center gap-3"
+                style={{ animationDelay: `${320 + i * 90}ms` }}
+              >
+                <span className="glass-tile relative z-10 grid size-7 place-items-center rounded-full text-sand text-[12px] font-bold">
+                  {step.n}
+                </span>
+                <div>
+                  <p className="text-body-sm font-semibold text-sand leading-tight">
+                    {t(step.titleKey)}
+                  </p>
+                  <p className="text-[12px] text-sand/55 leading-tight">
+                    {t(step.metaKey)}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
 
         <div className="flex-1 lg:hidden" />
 
@@ -285,7 +306,7 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
           ) : (
             <>
               {!completed ? (
-                <label className="flex items-start gap-2 rounded-2xl border border-sand/10 bg-sand/[0.045] px-3 py-2 text-start">
+                <label className="glass-tile flex items-start gap-2 !rounded-2xl px-3 py-2 text-start">
                   <input
                     type="checkbox"
                     checked={termsAccepted}

@@ -108,8 +108,15 @@
   --font-sans:
     var(--font-jakarta), system-ui, -apple-system, "Segoe UI", Roboto,
     sans-serif;
+  /* -apple-system first: Apple's documented mechanism for automatic
+     per-script system font substitution — Latin text gets SF Pro, Arabic
+     text automatically gets SF Arabic, without naming it directly (which
+     isn't a reliably matchable font-family name across engines/versions).
+     Falls back to the self-hosted IBM Plex Sans Arabic webfont on
+     Windows/Android/Linux, where there's no Apple system font at all. */
   --font-arabic-stack:
-    var(--font-arabic), "SF Arabic", "Segoe UI Arabic", Tahoma, sans-serif;
+    -apple-system, "SF Arabic", var(--font-arabic), "Segoe UI Arabic", Tahoma,
+    sans-serif;
   --font-question-stack:
     var(--font-question), Georgia, "Times New Roman", serif;
   --font-display: var(--font-display-italic), Georgia, "Times New Roman", serif;
@@ -164,6 +171,31 @@ html.locale-ar .text-display-2,
 html.locale-ar .text-display,
 html.locale-ar .adm-display {
   font-style: normal !important;
+}
+/* The accent word inside these headlines (e.g. "Kai") is wrapped in its own
+   <span style={{ fontStyle: "italic" }}> — an INLINE style, which overrides
+   the *inherited* `font-style: normal` above regardless (inline styles beat
+   inheritance; only an !important rule targeting the span itself can win).
+   IBM Plex Sans Arabic has no real italic face, so the browser synthesizes
+   a slanted/skewed version of the glyphs — WebKit's synthetic-oblique
+   transform pushes the taller Arabic letterforms outside the line box,
+   which is the actual clipping cause (not just line-height). */
+html.locale-ar .text-grad-warm {
+  font-style: normal !important;
+}
+/* IBM Plex Sans Arabic's ascenders/diacritics don't fit the tight Latin
+   line-heights above — Safari/WebKit clips them at the line box (Chromium
+   is more forgiving, so this was invisible in Chrome testing). Same fix
+   already applied to .text-question below via :lang(ar); these three
+   never got it. */
+html.locale-ar .text-hero {
+  line-height: 1.25 !important;
+}
+html.locale-ar .text-display-2 {
+  line-height: 1.22 !important;
+}
+html.locale-ar .text-display-3 {
+  line-height: 1.25 !important;
 }
 
 a {
@@ -267,8 +299,45 @@ button {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
-  /* Prevent descender clipping on tight line-heights */
+  /* Prevent ascender/descender clipping on tight line-heights (and Arabic
+     glyphs, which run taller than the Latin display face) */
+  padding-block-start: 0.05em;
   padding-block-end: 0.05em;
+}
+
+/* Marketing landing page (components/landing/*) — ported from the
+ * standalone tareeq-website repo, which mirrors these exact tokens.
+ * Generic utility-class wrappers around the same CSS vars the rest of
+ * the app reaches via `var(--x)` directly. */
+.font-heading,
+.font-body {
+  font-family: var(--font-jakarta), system-ui, sans-serif;
+}
+.font-display {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-variation-settings:
+    "SOFT" 100,
+    "opsz" 144;
+}
+.font-question {
+  font-family: var(--font-question-stack);
+  font-style: italic;
+}
+.bg-grad-warm {
+  background: var(--grad-warm);
+}
+.bg-aurora {
+  background: var(--aurora);
+}
+.bg-night-gradient {
+  background: var(--night-gradient);
+}
+.bg-violet-gradient {
+  background: var(--violet-gradient);
+}
+.bg-gold-gradient {
+  background: var(--gold-gradient);
 }
 
 /* ============================================================
@@ -1853,6 +1922,134 @@ button {
     transform: translate(var(--px), var(--py)) scale(1);
     opacity: 0;
   }
+}
+
+/* ============================================================
+ * Compass Constellation share card (components/results/CompassCard.tsx)
+ * Reduced motion is already handled by the global
+ * `@media (prefers-reduced-motion: reduce)` rule below, which collapses
+ * every animation to its end state — these classes don't need their own
+ * entry in that block.
+ * ============================================================ */
+@keyframes compass-card-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.compass-card-aurora {
+  animation: compass-card-spin 60s linear infinite;
+}
+@keyframes compass-card-ring-draw {
+  from {
+    stroke-dashoffset: 800;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.compass-card-ring-outer {
+  animation: compass-card-ring-draw 1.6s ease-out 0.1s both;
+}
+.compass-card-ring-inner {
+  animation: compass-card-ring-draw 1.6s ease-out 0.3s both;
+}
+@keyframes compass-card-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.compass-card-ticks-cardinal {
+  animation: compass-card-fade-in 0.8s ease 0.9s both;
+}
+.compass-card-ticks-diagonal {
+  animation: compass-card-fade-in 0.8s ease 1.1s both;
+}
+@keyframes compass-card-bloom {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.compass-card-rose {
+  animation: compass-card-bloom 1s cubic-bezier(0.2, 0.9, 0.3, 1.15) 1s both;
+}
+@keyframes compass-card-dot-pop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.5);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.compass-card-dot {
+  animation: compass-card-dot-pop 0.5s ease both;
+}
+.compass-card-dot-1 {
+  animation-delay: 1.5s;
+}
+.compass-card-dot-2 {
+  animation-delay: 1.65s;
+}
+.compass-card-dot-3 {
+  animation-delay: 1.8s;
+}
+.compass-card-dot-4 {
+  animation-delay: 1.95s;
+}
+.compass-card-label {
+  animation: compass-card-fade-in 0.7s ease both;
+}
+.compass-card-label-1 {
+  animation-delay: 1.6s;
+}
+.compass-card-label-2 {
+  animation-delay: 1.75s;
+}
+.compass-card-label-3 {
+  animation-delay: 1.9s;
+}
+.compass-card-label-4 {
+  animation-delay: 2.05s;
+}
+@keyframes compass-card-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.compass-card-eyebrow {
+  animation: compass-card-fade-up 0.8s ease 2.2s both;
+}
+.compass-card-archetype {
+  animation: compass-card-fade-up 0.9s cubic-bezier(0.2, 0.8, 0.3, 1) 2.5s both;
+}
+.compass-card-cluster-line {
+  animation: compass-card-fade-up 0.9s ease 2.8s both;
+}
+.compass-card-details {
+  animation: compass-card-fade-up 0.8s ease 3.1s both;
+}
+.compass-card-footer {
+  animation: compass-card-fade-in 0.8s ease 3.4s both;
 }
 
 /* RTL helpers */

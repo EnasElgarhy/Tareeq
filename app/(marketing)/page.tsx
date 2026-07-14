@@ -1,12 +1,10 @@
-import { redirect } from "next/navigation";
+import { LandingPage } from "@/components/landing/LandingPage";
 
 /**
- * Root route → Meet Kai.
- *
- * The v1 marketing landing page is retired. First-time visitors land
- * directly on the redesigned ceremony entry (`/intro` — Meet Kai) so
- * the assessment flow is the only experience on production.
+ * Root route → the marketing landing page (ported from
+ * github.com/wahbas/tareq-website), which funnels into the assessment
+ * flow via its own final CTA linking to `/start`.
  */
-export default function RootPage(): never {
-  redirect("/intro");
+export default function RootPage() {
+  return <LandingPage />;
 }
