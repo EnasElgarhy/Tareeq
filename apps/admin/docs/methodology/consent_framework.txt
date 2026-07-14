@@ -1,0 +1,391 @@
+User Consent Framework
+For Developer: Ahmed Wahba
+
+Overview
+Users must explicitly consent to different uses of their data. This document specifies: - What consent options to present - When to ask for consent - How to implement consent UI - How to store consent choices
+Legal principle: Opt-in, not opt-out. Users must actively choose to participate in research.
+
+The Three Levels of Consent
+Level 1: General Platform Use (Mandatory)
+What it covers: Using Tareeq, taking the assessment, viewing results
+User must agree to: Terms of Service + Privacy Policy
+When to ask: Account creation or starting assessment (for anonymous users)
+Level 2: Research Participation (Optional)
+What it covers: Using their anonymized data for research studies, academic papers, platform improvement
+User can choose: Yes or No
+When to ask: End of assessment, before showing results
+Level 3: Longitudinal Follow-Up (Optional)
+What it covers: Contacting them in 6/12/24 months to ask about their actual career choices
+User can choose: Yes or No
+When to ask: End of assessment, before showing results
+Level 4: University Data Sharing (Optional)
+What it covers: Sharing their anonymized data with university research partners
+User can choose: Yes or No
+When to ask: End of assessment, before showing results
+
+Implementation: When and How to Ask
+Step 1: Terms of Service (Before Assessment)
+Location: Account creation page OR anonymous assessment start page
+UI:
+┌────────────────────────────────────────────────────┐
+│                                                    │
+│  Welcome to Tareeq                                │
+│                                                    │
+│  Before you start:                                │
+│                                                    │
+│  ☐ I agree to the Terms of Service and           │
+│     Privacy Policy                                │
+│                                                    │
+│     [View Terms] [View Privacy Policy]            │
+│                                                    │
+│  [Continue to Assessment]                         │
+│  (button disabled until checkbox checked)         │
+│                                                    │
+└────────────────────────────────────────────────────┘
+What this covers: - Platform functionality - Basic data collection (account info, assessment responses) - Non-research uses (showing them their results)
+Database field:
+{
+  accepted_terms: true,
+  terms_accepted_at: "2026-06-15T14:30:00Z",
+  terms_version: "v1.0" // Track which version they agreed to
+}
+
+Step 2: Research Consent (After Assessment)
+Location: Immediately after completing all 40 questions, before showing results
+UI (English version):
+┌────────────────────────────────────────────────────┐
+│                                                    │
+│  Your result is ready!                            │
+│                                                    │
+│  Before we show it, can you help us improve       │
+│  career guidance for students across the region?  │
+│                                                    │
+│  ─────────────────────────────────────────────    │
+│                                                    │
+│  Research Participation (Optional)                │
+│                                                    │
+│  ☐ Yes, you can use my responses for research    │
+│                                                    │
+│     Your data will be:                            │
+│     • Completely anonymous (no name, email)       │
+│     • Used for academic studies & publications    │
+│     • Used to improve the assessment              │
+│     • Never sold to third parties                 │
+│                                                    │
+│     You can withdraw consent anytime.             │
+│                                                    │
+│  ─────────────────────────────────────────────    │
+│                                                    │
+│  Future Follow-Up (Optional)                      │
+│                                                    │
+│  ☐ Yes, you can contact me in 12 months to      │
+│     ask about my actual career choices            │
+│                                                    │
+│     We'll send one email in 12 months asking:     │
+│     "What did you end up studying? Was our        │
+│     guidance helpful?"                            │
+│                                                    │
+│     Helps us validate our predictions.            │
+│                                                    │
+│  ─────────────────────────────────────────────    │
+│                                                    │
+│  University Partnerships (Optional)               │
+│                                                    │
+│  ☐ Yes, you can share my anonymous data with     │
+│     university research partners                  │
+│                                                    │
+│     Universities we work with:                    │
+│     • American University of Sharjah (UAE)        │
+│     • King Fahd University (KSA)                  │
+│     • American University in Cairo (Egypt)        │
+│                                                    │
+│     Your data remains anonymous.                  │
+│                                                    │
+│  ─────────────────────────────────────────────    │
+│                                                    │
+│  [Show My Results]                                │
+│  (works regardless of consent choices)            │
+│                                                    │
+└────────────────────────────────────────────────────┘
+UI (Arabic version):
+┌────────────────────────────────────────────────────┐
+│                                                    │
+│  نتيجتك جاهزة!                                    │
+│                                                    │
+│  قبل أن نعرضها، هل يمكنك مساعدتنا في تحسين       │
+│  التوجيه المهني للطلاب في المنطقة؟                │
+│                                                    │
+│  ─────────────────────────────────────────────    │
+│                                                    │
+│  المشاركة في البحث (اختياري)                      │
+│                                                    │
+│  ☐ نعم، يمكنكم استخدام إجاباتي للبحث العلمي      │
+│                                                    │
+│     ستكون بياناتك:                                │
+│     • مجهولة تماماً (بدون اسم أو بريد إلكتروني)  │
+│     • مستخدمة للدراسات الأكاديمية والنشر          │
+│     • مستخدمة لتحسين التقييم                       │
+│     • لن تُباع لأطراف ثالثة أبداً                 │
+│                                                    │
+│     يمكنك سحب الموافقة في أي وقت.                 │
+│                                                    │
+│  [عرض نتيجتي]                                     │
+│                                                    │
+└────────────────────────────────────────────────────┘
+Critical UX decisions:
+✅ All checkboxes are UNCHECKED by default (opt-in, not opt-out)
+✅ “Show My Results” button works even if they check nothing (no coercion)
+✅ Clear language (no legal jargon like “hereinafter referred to as…”)
+✅ Specific examples (“What did you end up studying?” not “outcome data collection”)
+✅ Short (don’t overwhelm with 10 paragraphs of legalese)
+
+Step 3: Storing Consent
+Database fields:
+// In assessment_data table:
+{
+  // Consent flags
+  consent_general_research: false, // Did they check the research box?
+  consent_longitudinal_followup: false, // Did they check the follow-up box?
+  consent_university_sharing: false, // Did they check the university box?
+
+  // Audit trail
+  consent_recorded_at: "2026-06-15T14:35:00Z",
+  consent_language: "en", // 'en' or 'ar' (which language was consent presented in)
+  consent_version: "v1.0", // Track if consent text changes
+
+  // Withdrawal
+  consent_withdrawn: false,
+  consent_withdrawn_at: null
+}
+Code implementation:
+// When user completes assessment and checks boxes:
+const consentData = {
+  consent_general_research: req.body.researchConsent || false,
+  consent_longitudinal_followup: req.body.followupConsent || false,
+  consent_university_sharing: req.body.universityConsent || false,
+  consent_recorded_at: new Date(),
+  consent_language: req.body.language, // 'en' or 'ar'
+  consent_version: "v1.0"
+};
+
+// Save with assessment data
+await db.assessment_data.create({
+  ...assessmentResults,
+  ...consentData
+});
+
+Withdrawing Consent
+Users must be able to withdraw consent later.
+How to Implement
+Location: User account settings page
+UI:
+┌────────────────────────────────────────────────────┐
+│                                                    │
+│  Research Participation Settings                  │
+│                                                    │
+│  You completed the CORE Assessment on:            │
+│  June 15, 2026                                    │
+│                                                    │
+│  Current consent status:                          │
+│                                                    │
+│  ✓ General research participation                 │
+│  ✗ Longitudinal follow-up                         │
+│  ✗ University data sharing                        │
+│                                                    │
+│  [Change My Consent Preferences]                  │
+│                                                    │
+│  ─────────────────────────────────────────────    │
+│                                                    │
+│  Withdraw All Consent                             │
+│                                                    │
+│  Withdrawing consent means:                       │
+│  • We stop using your data for research           │
+│  • We won't contact you for follow-up             │
+│  • Your past responses remain in anonymized       │
+│    datasets (cannot be removed once anonymized)   │
+│                                                    │
+│  [Withdraw All Research Consent]                  │
+│  (requires confirmation)                          │
+│                                                    │
+└────────────────────────────────────────────────────┘
+Code implementation:
+// When user withdraws consent:
+async function withdrawConsent(assessmentId) {
+  await db.assessment_data.update(
+    {
+      consent_general_research: false,
+      consent_longitudinal_followup: false,
+      consent_university_sharing: false,
+      consent_withdrawn: true,
+      consent_withdrawn_at: new Date()
+    },
+    {
+      where: { assessment_id: assessmentId }
+    }
+  );
+
+  // Stop sending follow-up emails
+  await cancelScheduledEmails(assessmentId);
+}
+Important: Once data is in an anonymized research dataset (e.g., exported CSV for a published paper), it cannot be removed (because we can’t identify which row was theirs). This must be explained clearly.
+
+Special Case: Minors (Under 18)
+Legal requirement varies by country:
+UAE: Parental consent required for users under 21 (legal age of majority)
+Saudi Arabia: Parental consent required for users under 18
+Egypt: Parental consent required for users under 18
+Implementation Option 1: Age Gate (Simplest for MVP)
+Ask for age at start:
+┌────────────────────────────────────────────────────┐
+│                                                    │
+│  How old are you?                                 │
+│                                                    │
+│  [___] years old                                  │
+│                                                    │
+│  ─────────────────────────────────────────────    │
+│                                                    │
+│  If under 18:                                     │
+│                                                    │
+│  "You can take the assessment, but we cannot      │
+│   use your data for research without parental     │
+│   consent. Your results will still be accurate    │
+│   and helpful!"                                   │
+│                                                    │
+│  ☐ I understand                                   │
+│                                                    │
+│  [Continue]                                       │
+│                                                    │
+└────────────────────────────────────────────────────┘
+Backend logic:
+// If user is under 18 in their country:
+if (userAge < getMinorThreshold(userCountry)) {
+  // Automatically set research consent to false
+  consentData.consent_general_research = false;
+  consentData.consent_longitudinal_followup = false;
+  consentData.consent_university_sharing = false;
+  consentData.minor_without_parental_consent = true;
+
+  // Don't show research consent checkboxes
+  // Show results immediately after assessment
+}
+Implementation Option 2: Parental Consent (More Complex, Phase 2)
+For Phase 2, if needed:
+Collect parent email
+Send parent consent form via email
+Parent clicks “I consent” link
+Only then enable research participation
+MVP recommendation: Use Option 1 (age gate). Add Option 2 in Phase 2 if universities require it.
+
+Consent Text: Terms of Service (Basic)
+What users agree to when using Tareeq:
+TERMS OF SERVICE (Summary)
+
+1. You can take the CORE Assessment to explore career directions.
+
+2. We collect:
+   - Your answers to 40 questions
+   - Basic info (age, country, education level)
+   - Your assessment results
+
+3. We use this to:
+   - Show you personalized career guidance
+   - Improve the platform
+
+4. We do NOT:
+   - Sell your data
+   - Share your personal info without consent
+   - Spam you with emails
+
+5. Optional research participation:
+   - You can choose to help our research
+   - Your data becomes anonymous
+   - You can withdraw consent later
+
+6. You own your data:
+   - Export your data anytime
+   - Delete your account anytime
+
+[Full legal Terms of Service]
+This should link to full legal ToS drafted by a lawyer, but the summary is what users see first.
+
+Consent Text: Privacy Policy (Basic)
+PRIVACY POLICY (Summary)
+
+What we collect:
+• Age, country, education level
+• Your answers to assessment questions
+• Your email (if you create an account)
+
+What we don't collect:
+• Your full name (unless you provide it)
+• Your school name
+• Financial information
+• Sensitive personal data
+
+How we use your data:
+• Show you career guidance
+• Improve the assessment
+• Research (only if you consent)
+
+Who we share with:
+• Nobody (unless you consent to university sharing)
+• Not sold to advertisers or third parties
+
+Your rights:
+• View your data
+• Export your data
+• Delete your account
+• Withdraw research consent
+
+[Full legal Privacy Policy]
+
+Compliance Checklist for Wahba
+Before launch, ensure:
+☐ Terms of Service and Privacy Policy pages exist (even if basic)
+☐ Consent UI implemented (checkboxes after assessment)
+☐ Consent fields in database (consent_general_research, etc.)
+☐ Age gate for minors (<18) disables research consent automatically
+☐ Users can withdraw consent via account settings
+☐ Consent version tracking (consent_version field)
+☐ Audit logging (who consented when)
+
+Edge Cases & FAQ
+Q: What if user takes assessment without creating an account (anonymous)?
+A: They can still consent to research. Store consent with their assessment_data using user_id_hash. If they later create an account, link the assessment to their account via email matching.
+Q: What if user retakes assessment multiple times?
+A: Ask for consent each time. Each assessment gets its own consent flags. User might consent for first assessment but not second.
+Q: What if consent laws change?
+A: Update consent_version to “v2.0” and re-prompt existing users with new consent text. Track which version they agreed to.
+Q: What if user creates account in UAE but takes assessment in Saudi Arabia?
+A: Use country_code from assessment location, not account registration. Consent laws follow where they are when they take the assessment.
+Q: What if universities require more specific consent?
+A: Add university-specific consent text in Phase 2. For MVP, general consent is sufficient.
+
+Testing Consent Flow
+Test scenarios before launch:
+User age 17, UAE, no consent: Can they see results? (Yes) Is research flag false? (Yes)
+User age 19, Egypt, all consent: Do all three flags = true? (Yes)
+User withdraws consent: Do flags update? (Yes) Do scheduled emails stop? (Yes)
+Anonymous user with consent: Does assessment save with consent? (Yes)
+Arabic language consent: Is consent text in Arabic? (Yes) Does language field = ‘ar’? (Yes)
+
+Summary: What Wahba Must Build
+MVP (Phase 1):
+Basic ToS/Privacy pages (can be simple, just need to exist)
+Age input at assessment start
+Consent UI after assessment (3 checkboxes + explanations)
+Consent storage (3 boolean fields + metadata)
+Minor age gate (auto-disable research consent if <18)
+“Show Results” button that works regardless of consent choices
+Phase 2 (if needed):
+Consent withdrawal UI (account settings page)
+Parental consent system (email-based approval)
+University-specific consent (if partners require it)
+
+Questions for Wahba to Confirm
+Legal review: Do you need a lawyer to review ToS/Privacy before launch? (Recommended but not required for MVP)
+Age verification: Just ask for age or require ID? (Just ask for MVP)
+Consent language: Show both Arabic and English on same screen, or detect language? (Detect preferred language)
+Minor threshold: Enforce at 18 or vary by country (UAE=21, others=18)? (Start with 18 for all, adjust later if needed)
+
+Consent framework specified. Users can participate in research ethically and you remain compliant with privacy laws.

@@ -1,0 +1,317 @@
+Ethics Approval Guide (IRB)
+For Project Owner: Understanding Research Ethics Compliance
+
+What is IRB/Ethics Approval?
+IRB = Institutional Review Board (American term)
+Ethics Committee = Same thing (more common internationally)
+Simple explanation: Before you can use people’s data for research, an independent committee must review your plans and confirm you’re treating participants ethically.
+Think of it like: A safety inspection before opening a restaurant. The health department checks that you’ll handle food safely. An ethics committee checks that you’ll handle human data safely.
+
+Why You Need It
+Legal Reason:
+Many universities and journals won’t accept research without ethics approval. If you want to publish papers or get a PhD, you need this.
+Practical Reason:
+Protects you legally — Shows you followed proper procedures
+Protects participants — Ensures their data is handled responsibly
+Increases trust — Users feel safer when they know research is ethical
+Enables partnerships — Universities require this before collaborating
+What Happens Without It:
+❌ Universities won’t collaborate with you
+❌ Academic journals won’t publish your research
+❌ PhD programs won’t accept your research data
+❌ Potential legal issues if user privacy is violated
+
+What Ethics Committees Review
+The committee will ask:
+1. What data are you collecting?
+Question responses
+Demographics (age, country, gender)
+User behavior (time spent, device type)
+2. How will you protect privacy?
+Anonymization (user_id_hash, not real names)
+Consent process (users opt-in explicitly)
+Data storage (encrypted, secure servers)
+3. What are the risks to participants?
+Your project: Minimal risk (just taking a career assessment)
+No physical harm
+No psychological harm
+No financial harm
+4. How will you get consent?
+Clear consent language (no jargon)
+Voluntary participation (can decline or withdraw)
+Age appropriate (minors handled correctly)
+5. How will you store and share data?
+Where is data stored? (AWS servers, encrypted)
+Who has access? (Only research team)
+How long kept? (Research data: permanent; personal data: deletable)
+6. What are the benefits?
+To participants: Better career guidance, helps future students
+To society: Improved understanding of career development in MENA region
+
+Types of Ethics Review
+Exempt Review (Fastest, 1-2 weeks)
+When it applies: Research poses minimal risk, uses anonymized data
+Your project likely qualifies because: - No deception involved - No vulnerable populations (unless under 18) - Data is anonymized - Participants give informed consent
+Process: Submit form → Committee chair reviews → Approved (or minor revisions)
+
+Expedited Review (Medium, 2-4 weeks)
+When it applies: More than minimal risk, but not full risk
+Your project might need this if: - Collecting data from minors (under 18) - Asking sensitive questions (you’re not, but committees might be cautious) - Involving multiple countries (UAE/KSA/Egypt)
+Process: Submit form → 1-2 committee members review → Approved (or minor revisions)
+
+Full Review (Slowest, 4-8 weeks)
+When it applies: Greater than minimal risk, vulnerable populations, experimental interventions
+Your project probably doesn’t need this unless you’re doing something invasive.
+
+How to Get Ethics Approval: Three Options
+Option 1: Through a University (Recommended)
+If you’re not currently affiliated with a university, partner with one.
+How:
+Identify a professor in Educational Psychology, Career Development, or related field
+Pitch collaboration: “I’ve built a career assessment platform with 1000+ users. Would you be interested in co-authoring research papers?”
+Submit through their university’s IRB — they guide you through the process
+Universities with ethics committees in your region:
+UAE:
+American University of Sharjah (AUS)
+American University in Dubai (AUD)
+United Arab Emirates University (UAEU)
+Zayed University
+Saudi Arabia:
+King Fahd University of Petroleum & Minerals (KFUPM)
+King Saud University (KSU)
+King Abdulaziz University (KAU)
+Egypt:
+American University in Cairo (AUC)
+Cairo University
+Ain Shams University
+Process:
+Professor sponsors your application
+You fill out IRB application (they help you)
+Committee reviews (1-4 weeks)
+Approved → You can collect data
+You share credit: Professor is co-author on papers
+Cost: Usually free if partnered with faculty
+Timeline: 2-6 weeks
+
+Option 2: Independent Ethics Review
+If you can’t partner with a university, hire an independent review service.
+Commercial IRB services: - WCG IRB (wirb.com) — International, handles commercial research - Pearl IRB (pearl-irb.com) — US-based but works internationally - Advarra (advarra.com) — Commercial review board
+Process:
+Contact service
+Pay fee ($500-2000 USD depending on complexity)
+Submit application
+Review (2-4 weeks)
+Approved → You can collect data
+Pros: - Faster than university committees - No need for academic partnership - Professional and recognized
+Cons: - Costs money - Less credible than university IRB for PhD purposes - Some journals prefer university-based approval
+Timeline: 2-4 weeks
+Cost: $500-2000 USD
+
+Option 3: Wait Until PhD Enrollment
+If you’re enrolling in a PhD program soon, wait and get approval through your PhD university.
+Process:
+Enroll in PhD program (Month 12 of your roadmap)
+Submit IRB application through PhD university
+Get approval
+Retrospectively apply to data already collected (with consent)
+Pros: - Free - PhD advisor helps you - Strongest academic credibility
+Cons: - Can’t formally use Phase 1 data for research until this is done - Delays research publications - Some committees won’t approve retrospective studies
+Timeline: 4-8 weeks after PhD enrollment
+
+What You Need to Prepare (IRB Application Checklist)
+1. Project Description (1-2 pages)
+What to include:
+Project title: “The CORE Career Assessment: A Four-Pillar Model for Career Guidance in Arab Youth”
+Purpose: Help 16-22 year olds make informed career decisions
+Research questions:
+Does the CORE model predict actual career choices?
+How do career preferences differ across UAE, KSA, and Egypt?
+What role do family expectations play in career decisions?
+
+2. Participant Information
+Who: Students aged 16-22 in UAE, Saudi Arabia, Egypt
+How many: 1,000-10,000 participants (over 3 years)
+How recruited: Social media (Instagram, TikTok), school partnerships, university partnerships
+Inclusion criteria: Age 16-22, currently in high school or university
+Exclusion criteria: None (it’s a voluntary online assessment)
+
+3. Procedures
+What participants will do:
+Visit tareeq.me
+Read consent form
+Complete 40-question assessment (12 minutes)
+Receive personalized career guidance
+(Optional) Agree to 12-month follow-up survey
+Data collected:
+Demographics: Age, country, gender, education level, school type
+Responses: Answers to 40 questions
+Results: Career cluster, operational archetype, reward driver, ecosystem fit
+Behavior: Time spent, device type, completion rate
+
+4. Risks and Benefits
+Risks to participants: Minimal
+No physical risk
+No psychological distress (it’s a career assessment, not therapy)
+Possible risk: User sees result they don’t like (mitigated by framing as “guidance” not “destiny”)
+Benefits to participants:
+Immediate: Personalized career guidance (worth $20-50 if paid)
+Long-term: Better career decisions, reduced uncertainty
+Societal: Contributes to research improving career guidance regionally
+
+5. Consent Process
+How consent is obtained:
+Users read consent form before starting assessment
+Must check “I consent” box to proceed
+Can decline research participation and still get results
+Can withdraw consent later via account settings
+Consent form language:
+Written at 8th-grade reading level (age-appropriate)
+Available in English and Arabic
+Explains data use clearly (no legal jargon)
+Special considerations for minors (<18):
+In UAE/KSA/Egypt, parental consent may be required depending on country law
+MVP: Users under 18 are excluded from research (can still use platform)
+Phase 2: Add parental consent system if needed
+
+6. Privacy and Confidentiality
+How data is protected:
+Anonymization: user_id is hashed (one-way, cannot reverse)
+Storage: Encrypted database on secure servers (AWS Middle East region)
+Access: Only research team (you + academic partners)
+Sharing: Only with explicit user consent (for university partnerships)
+Retention: Personal data deletable; research data permanent but anonymized
+No identifiers in research: Published papers use participant IDs, not names
+
+7. Data Management Plan
+Where data is stored:
+Production database: AWS RDS (Middle East region)
+Research exports: Encrypted CSV files on secure university servers
+Backup: AWS S3 with encryption
+Who has access:
+Project owner (you)
+Academic collaborators (co-authors)
+PhD advisors (if applicable)
+NOT accessible to:
+Marketing teams
+Third-party advertisers
+Anyone outside research team
+Data retention:
+Research data: Permanent (required for replication studies)
+Personal data (email, name): Deletable on user request
+Assessment results: Permanent (anonymized)
+
+8. Supporting Documents
+Attach to IRB application:
+Consent form (English and Arabic versions)
+Assessment questions (all 40 questions)
+Privacy policy (from website)
+Recruitment materials (example: Instagram post advertising Tareeq)
+Data security plan (AWS encryption, access controls)
+
+Sample Consent Form (What Users See)
+Research Participation Consent Form
+Title: The CORE Career Assessment: A Four-Pillar Model for Career Guidance
+Researcher: [Your Name], [Your Title], [University Partner if applicable]
+Purpose: We are studying how young people in the UAE, Saudi Arabia, and Egypt make career decisions. Your participation will help us improve career guidance for future students.
+What you’ll do: - Complete a 12-minute online assessment (40 questions) - Receive personalized career guidance immediately - (Optional) Complete a follow-up survey in 12 months
+Risks: Minimal. This is a career assessment, not a medical or psychological test. There are no known risks.
+Benefits: - You get personalized career guidance (free) - You contribute to research helping future students
+Privacy: - Your data will be anonymized (we won’t know your identity) - Your responses are confidential - You can withdraw consent anytime
+Voluntary: Participation is completely voluntary. You can decline and still use Tareeq.
+Questions: Contact [your email] with any concerns.
+Consent: ☐ I have read and understood the above information. ☐ I voluntarily agree to participate in this research. ☐ I understand I can withdraw at any time.
+
+Timeline: When to Get Approval
+Before Launch (Best)
+Apply for ethics approval now
+Wait 2-6 weeks
+Launch platform with approval in place
+All data collected is research-usable from day one
+Recommended for: Option 1 (university partnership) or Option 2 (commercial IRB)
+
+After Launch (Acceptable)
+Launch MVP without approval
+Collect data with consent checkboxes
+Apply for approval in Month 3-6
+Retrospectively apply to data if committee allows
+Recommended for: Option 3 (waiting for PhD enrollment)
+Risk: Some committees won’t approve retrospective studies. But if users consented at the time, usually OK.
+
+FAQ: Common Questions
+Q: Do I need approval in all three countries (UAE, KSA, Egypt)?
+A: Ideally, yes. But practically for MVP: - Start with one: Get approval from one university (e.g., AUS in UAE) - Expand later: Add other countries in Phase 2 - Or use international IRB: Some commercial IRBs cover multiple countries
+
+Q: What if I can’t find a university partner?
+A: Use commercial IRB (Option 2). It’s legitimate and journals accept it.
+
+Q: Does this delay my MVP launch?
+A: It can. Two strategies: 1. Wait for approval (2-6 weeks) then launch — cleanest approach 2. Launch first (collect data with consent), apply for approval in Month 3-6 — faster but riskier
+
+Q: Can I use data collected before approval?
+A: Maybe. If users consented at the time (“I agree my data can be used for research”), some committees allow it. But not guaranteed.
+Safest: Get approval before collecting data.
+
+Q: What if the committee requests changes?
+A: Common. They might ask you to: - Revise consent language (make it clearer) - Add parental consent for minors - Specify data retention period - Clarify who has data access
+Solution: Make requested changes and resubmit (usually fast, 1 week).
+
+Q: Do I need approval every year?
+A: Usually need renewal annually. Submit brief update: - How many participants so far? - Any problems or complaints? - Any changes to procedures?
+Renewal is faster than initial approval (1-2 weeks).
+
+Recommended Path for Your Project
+My Recommendation: Option 1 (University Partnership)
+Why: - Free - Academically credible - Builds relationship for PhD - Professor can co-author papers (helps with publications)
+How to start:
+Identify 3-5 professors in UAE/KSA/Egypt researching career development or educational psychology
+Email them with your pitch:
+
+Sample Email:
+Subject: Research Collaboration Opportunity — Career Assessment Platform
+Dear Professor [Name],
+I am the founder of Tareeq, a career guidance platform for students aged 16-22 in the UAE, Saudi Arabia, and Egypt. We’ve developed a research-backed assessment (the CORE model) and have collected data from [X] users.
+I’m seeking a research collaboration to validate the assessment and publish academic papers on career development in the MENA region. I believe this could be valuable research on topics including:
+Regional differences in career preferences
+Role of cultural factors in career choices
+Predictive validity of career assessments for Arab youth
+Would you be interested in discussing a collaboration? I’m happy to share our data, co-author papers, and support the research in any way needed.
+I can be reached at [your email] or [your phone].
+Best regards, [Your Name]
+
+Meet with professor (Zoom or in-person)
+Agree on research questions and co-authorship
+Submit IRB application through their university
+Get approval → Start collecting data for research
+Timeline: 4-8 weeks from first email to approval
+
+Summary: Action Steps for You
+This Week:
+Decide: Option 1 (university), Option 2 (commercial), or Option 3 (wait for PhD)?
+If Option 1: Identify 3-5 professors to contact
+If Option 2: Research commercial IRB services and costs
+Month 1-2 (While Wahba Builds MVP):
+Draft IRB application (use checklist above)
+Contact university professors or commercial IRB
+Prepare supporting documents (consent form, questions, privacy policy)
+Month 2-3:
+Submit IRB application
+Wait for review (2-6 weeks)
+Respond to committee feedback if needed
+Month 3-4:
+Receive approval ✅
+Launch platform with ethics approval in place
+Start collecting research-grade data
+
+Resources & Links
+Reading:
+“How to Get IRB Approval” (guide): https://www.ncbi.nlm.nih.gov/books/NBK519700/
+Ethics in Social Science Research: https://www.apa.org/ethics/code
+Commercial IRB Services:
+WCG IRB: https://www.wirb.com
+Pearl IRB: https://www.pearl-irb.com
+Advarra: https://www.advarra.com
+University Ethics Committees (UAE):
+AUS Research Ethics Committee: https://www.aus.edu/research
+UAEU Research Ethics Committee: https://www.uaeu.ac.ae/en/research/
+
+You now understand IRB/ethics approval, why you need it, and how to get it. Start the process early so it doesn’t block your research in Phase 2.

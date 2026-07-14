@@ -1,0 +1,42 @@
+question_key,kind,question_en,question_ar,answer_letter,answer_en,answer_ar,category,points
+Q1,single,"A new opportunity appears but the details are fuzzy. You:","تظهر فرصة جديدة لكن تفاصيلها غير واضحة. أنت:",A,"Picture where it could go in five years","تتخيّل إلى أين قد تصل خلال خمس سنوات",VISION,3
+Q1,single,"A new opportunity appears but the details are fuzzy. You:","تظهر فرصة جديدة لكن تفاصيلها غير واضحة. أنت:",B,"Map the first three concrete steps","ترسم أول ثلاث خطوات عملية",EXECUTION,3
+Q1,single,"A new opportunity appears but the details are fuzzy. You:","تظهر فرصة جديدة لكن تفاصيلها غير واضحة. أنت:",C,"Just dive in and figure it out","تبدأ فورًا وتكتشف الطريق",RISK,2
+Q1,single,"A new opportunity appears but the details are fuzzy. You:","تظهر فرصة جديدة لكن تفاصيلها غير واضحة. أنت:",D,"Call people who've done it before","تتصل بمن جرّبوها من قبل",PEOPLE,2
+Q2,single,"Your team is stuck on a hard problem. Your instinct is to:","فريقك عالق في مشكلة صعبة. غريزتك أن:",A,"Invent an approach nobody tried yet","تبتكر أسلوبًا لم يجرّبه أحد",INNOVATION,3
+Q2,single,"Your team is stuck on a hard problem. Your instinct is to:","فريقك عالق في مشكلة صعبة. غريزتك أن:",B,"Break it into a checklist and grind","تقسّمها إلى قائمة وتنجزها",EXECUTION,2
+Q2,single,"Your team is stuck on a hard problem. Your instinct is to:","فريقك عالق في مشكلة صعبة. غريزتك أن:",C,"Rally everyone and split the work","تحفّز الجميع وتوزّع العمل",PEOPLE,2
+Q2,single,"Your team is stuck on a hard problem. Your instinct is to:","فريقك عالق في مشكلة صعبة. غريزتك أن:",D,"Bet on a bold shortcut","تراهن على اختصار جريء",RISK,2
+Q3,binary,"Would you rather launch something imperfect now, or perfect it first?","هل تفضّل إطلاق شيء غير مكتمل الآن، أم إتقانه أولًا؟",A,"Launch now, learn fast","أطلق الآن وتعلّم بسرعة",RISK,3
+Q3,binary,"Would you rather launch something imperfect now, or perfect it first?","هل تفضّل إطلاق شيء غير مكتمل الآن، أم إتقانه أولًا؟",B,"Perfect it first","أتقنه أولًا",EXECUTION,2
+Q4,single,"What energizes you most about building something?","ما الذي يحمّسك أكثر في بناء شيء ما؟",A,"The big idea and the what-if","الفكرة الكبيرة وماذا لو",VISION,3
+Q4,single,"What energizes you most about building something?","ما الذي يحمّسك أكثر في بناء شيء ما؟",B,"Making it actually work","جعله يعمل فعلًا",EXECUTION,3
+Q4,single,"What energizes you most about building something?","ما الذي يحمّسك أكثر في بناء شيء ما؟",C,"Doing it differently than everyone","فعله بشكل مختلف عن الجميع",INNOVATION,3
+Q4,single,"What energizes you most about building something?","ما الذي يحمّسك أكثر في بناء شيء ما؟",D,"Getting people excited to join","إثارة حماس الناس للانضمام",PEOPLE,3
+Q5,single,"A startup you admire just raised millions. Your first thought:","شركة ناشئة تعجبك جمعت ملايين للتو. أول ما يخطر ببالك:",A,"What unmet need did they spot?","ما الحاجة غير الملبّاة التي اكتشفوها؟",VISION,3
+Q5,single,"A startup you admire just raised millions. Your first thought:","شركة ناشئة تعجبك جمعت ملايين للتو. أول ما يخطر ببالك:",B,"How did they ship so fast?","كيف نفّذوا بهذه السرعة؟",EXECUTION,2
+Q5,single,"A startup you admire just raised millions. Your first thought:","شركة ناشئة تعجبك جمعت ملايين للتو. أول ما يخطر ببالك:",C,"What did they do that's never been done?","ما الذي فعلوه ولم يُفعل من قبل؟",INNOVATION,2
+Q5,single,"A startup you admire just raised millions. Your first thought:","شركة ناشئة تعجبك جمعت ملايين للتو. أول ما يخطر ببالك:",D,"Who's on that founding team?","من في فريق التأسيس؟",PEOPLE,2
+Q6,single,"Uncertainty excites me more than it scares me.","عدم اليقين يحمّسني أكثر مما يخيفني.",A,"Strongly agree","أوافق بشدة",RISK,3
+Q6,single,"Uncertainty excites me more than it scares me.","عدم اليقين يحمّسني أكثر مما يخيفني.",B,"Agree","أوافق",RISK,2
+Q6,single,"Uncertainty excites me more than it scares me.","عدم اليقين يحمّسني أكثر مما يخيفني.",C,"Neutral","محايد",,0
+Q6,single,"Uncertainty excites me more than it scares me.","عدم اليقين يحمّسني أكثر مما يخيفني.",D,"Disagree","لا أوافق",EXECUTION,1
+Q7,single,"Pick the compliment that would mean the most:","اختر المديح الذي سيعني لك أكثر:",A,"You saw it before anyone else.","رأيتها قبل الجميع.",VISION,3
+Q7,single,"Pick the compliment that would mean the most:","اختر المديح الذي سيعني لك أكثر:",B,"You actually shipped it.","نفّذتها فعلًا.",EXECUTION,3
+Q7,single,"Pick the compliment that would mean the most:","اختر المديح الذي سيعني لك أكثر:",C,"Nobody thinks like you.","لا أحد يفكّر مثلك.",INNOVATION,3
+Q7,single,"Pick the compliment that would mean the most:","اختر المديح الذي سيعني لك أكثر:",D,"Everyone wanted to follow you.","أراد الجميع أن يتبعك.",PEOPLE,3
+Q8,binary,"Steady paycheck or your own venture?","راتب ثابت أم مشروعك الخاص؟",A,"My own venture","مشروعي الخاص",RISK,3
+Q8,binary,"Steady paycheck or your own venture?","راتب ثابت أم مشروعك الخاص؟",B,"Steady paycheck","راتب ثابت",EXECUTION,1
+Q9,single,"Given a blank whiteboard, you start by writing:","أمام لوح أبيض فارغ، تبدأ بكتابة:",A,"The mission and the dream","الرسالة والحلم",VISION,2
+Q9,single,"Given a blank whiteboard, you start by writing:","أمام لوح أبيض فارغ، تبدأ بكتابة:",B,"The plan and the deadlines","الخطة والمواعيد النهائية",EXECUTION,3
+Q9,single,"Given a blank whiteboard, you start by writing:","أمام لوح أبيض فارغ، تبدأ بكتابة:",C,"Ten wild ideas","عشر أفكار جريئة",INNOVATION,3
+Q9,single,"Given a blank whiteboard, you start by writing:","أمام لوح أبيض فارغ، تبدأ بكتابة:",D,"The list of people to call","قائمة بمن ستتصل بهم",PEOPLE,2
+Q10,single,"People most often come to you for:","غالبًا ما يأتي إليك الناس من أجل:",A,"A bold vision to get behind","رؤية جريئة يلتفّون حولها",VISION,3
+Q10,single,"People most often come to you for:","غالبًا ما يأتي إليك الناس من أجل:",B,"Getting things over the finish line","إيصال الأمور إلى خط النهاية",EXECUTION,3
+Q10,single,"People most often come to you for:","غالبًا ما يأتي إليك الناس من أجل:",C,"A fresh, unexpected angle","زاوية جديدة غير متوقعة",INNOVATION,2
+Q10,single,"People most often come to you for:","غالبًا ما يأتي إليك الناس من أجل:",D,"An introduction or a pep talk","تعريف بشخص أو كلمة تحفيزية",PEOPLE,3
+Q11,single,"Your biggest risk so far has been:","أكبر مخاطرة خضتها حتى الآن كانت:",A,"Backing an idea others doubted","دعم فكرة شكّ بها الآخرون",RISK,3
+Q11,single,"Your biggest risk so far has been:","أكبر مخاطرة خضتها حتى الآن كانت:",B,"Taking on more than I could handle","تحمّل أكثر مما أستطيع",RISK,2
+Q11,single,"Your biggest risk so far has been:","أكبر مخاطرة خضتها حتى الآن كانت:",C,"Trying a method no one taught me","تجربة طريقة لم يعلّمني إياها أحد",INNOVATION,2
+Q11,single,"Your biggest risk so far has been:","أكبر مخاطرة خضتها حتى الآن كانت:",D,"Speaking up to lead a room","المبادرة لقيادة مجموعة",PEOPLE,2
+Q12,text,"Describe a problem in the world you'd genuinely love to solve.","صِف مشكلة في العالم تودّ حقًّا حلّها.",,,,,

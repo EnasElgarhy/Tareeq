@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Tareeq — Light-mode questions variant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght,SOFT@0,9..144,400..900,30..100;1,9..144,400..900,30..100&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --night: #08051a;
+        --midnight: #100a24;
+        --dusk: #221248;
+        --violet: #6e48e4;
+        --violet-soft: #9d7ff0;
+        --sand: #f5eee6;
+        --paper: #f9f4ec;
+        --carbon: #14101f;
+        --gold: #f4c660;
+        --grad-warm: linear-gradient(95deg, #ff3d83 0%, #ff6b3d 55%, #ffa53d 100%);
+        --grad-night: linear-gradient(180deg, #221248 0%, #100a24 38%, #08051a 100%);
+      }
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0; padding: 0;
+        font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+        color: var(--carbon);
+        background: var(--paper);
+        -webkit-font-smoothing: antialiased;
+      }
+      .page {
+        width: 8.5in;
+        min-height: 11in;
+        padding: 0.6in 0.7in;
+        position: relative;
+        overflow: hidden;
+        page-break-after: always;
+        background: var(--paper);
+      }
+      .page:last-child { page-break-after: auto; }
+      .page--night {
+        background: var(--night);
+        color: var(--sand);
+      }
+
+      /* Section chrome */
+      .section-header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        border-bottom: 1px solid rgba(20, 16, 31, 0.12);
+        padding-bottom: 14px;
+        margin-bottom: 22px;
+      }
+      .page--night .section-header { border-bottom-color: rgba(245, 238, 230, 0.14); }
+      .section-header__num {
+        font-family: "Fraunces", Georgia, serif;
+        font-style: italic;
+        font-variation-settings: "SOFT" 60, "opsz" 96;
+        font-size: 26px;
+        color: rgba(20, 16, 31, 0.35);
+      }
+      .page--night .section-header__num { color: rgba(245, 238, 230, 0.4); }
+      .section-header__num em {
+        background: var(--grad-warm);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        font-style: italic;
+      }
+      .section-header h1 {
+        font-family: "Fraunces", Georgia, serif;
+        font-weight: 500;
+        font-variation-settings: "SOFT" 100, "opsz" 144;
+        font-size: 32px;
+        line-height: 1.05;
+        letter-spacing: -0.015em;
+        margin: 0;
+      }
+      .section-header h1 em {
+        font-style: italic;
+        background: var(--grad-warm);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .section-header__brand {
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(20, 16, 31, 0.4);
+        font-weight: 600;
+      }
+      .page--night .section-header__brand { color: rgba(245, 238, 230, 0.5); }
+      p { font-size: 12.5px; line-height: 1.55; color: rgba(20,16,31,0.78); margin: 0 0 10px; max-width: 60ch; }
+      .page--night p { color: rgba(245, 238, 230, 0.78); }
+      strong { font-weight: 700; color: var(--carbon); }
+      .page--night strong { color: var(--sand); }
+      em.warm {
+        font-family: "Fraunces", Georgia, serif;
+        font-style: italic;
+        font-variation-settings: "SOFT" 100, "opsz" 144;
+        background: var(--grad-warm);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      /* =====================================================
+         COVER
+         ===================================================== */
+      .cover {
+        background:
+          radial-gradient(65% 55% at 50% 8%, rgba(157,127,240,0.40), transparent 70%),
+          radial-gradient(50% 40% at 16% 88%, rgba(110,72,228,0.22), transparent 65%),
+          radial-gradient(50% 42% at 86% 88%, rgba(255,107,61,0.18), transparent 70%),
+          var(--grad-night);
+        display: flex; flex-direction: column;
+        justify-content: space-between;
+      }
+      .cover__top {
+        display: flex; justify-content: space-between;
+        font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+        color: rgba(245,238,230,0.55);
+      }
+      .cover__top strong { color: rgba(245,238,230,0.85); font-weight: 600; }
+      .cover__center {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 48px;
+        align-items: center;
+        margin-top: -20px;
+      }
+      .cover__copy {
+        display: flex; flex-direction: column; gap: 18px;
+      }
+      .cover__eyebrow {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 6px 14px; border-radius: 9999px;
+        background: linear-gradient(180deg, rgba(157,127,240,0.22), rgba(110,72,228,0.1));
+        border: 1px solid rgba(245,238,230,0.18);
+        font-size: 10.5px; font-weight: 600;
+        letter-spacing: 0.14em; text-transform: uppercase;
+        color: rgba(245,238,230,0.86);
+        align-self: flex-start;
+      }
+      .cover__eyebrow-dot { width: 6px; height: 6px; border-radius: 9999px; background: var(--gold); }
+      .cover__title {
+        font-family: "Fraunces", Georgia, serif;
+        font-weight: 500;
+        font-variation-settings: "SOFT" 100, "opsz" 144;
+        font-size: 58px; line-height: 0.96;
+        letter-spacing: -0.02em;
+        margin: 0; color: var(--sand);
+      }
+      .cover__title em {
+        font-style: italic;
+        background: var(--grad-warm);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .cover__sub {
+        color: rgba(245,238,230,0.74);
+        font-size: 14.5px;
+        line-height: 1.55;
+        max-width: 38ch;
+        margin: 0;
+      }
+      .cover__phone-stage {
+        position: relative;
+        display: grid; place-items: center;
+        height: 580px;
+      }
+      .cover__phone-halo {
+        position: absolute;
+        inset: -40px;
+        background: radial-gradient(circle, rgba(255,107,61,0.32), transparent 65%);
+        filter: blur(34px);
+      }
+      .cover__phone {
+        position: relative;
+        width: 280px;
+        border-radius: 38px;
+        overflow: hidden;
+        box-shadow:
+          0 0 0 9px #0b0716,
+          0 0 0 11px rgba(245,238,230,0.10),
+          0 28px 70px rgba(0,0,0,0.55);
+        background: var(--sand);
+      }
+      .cover__phone img {
+        width: 100%; display: block;
+      }
+      .cover__bottom {
+        display: flex; justify-content: space-between; align-items: flex-end;
+        font-size: 11px; letter-spacing: 0.08em;
+        color: rgba(245,238,230,0.55);
+      }
+      .cover__bottom strong { color: rgba(245,238,230,0.9); }
+
+      /* =====================================================
+         Phone frames — reusable
+         ===================================================== */
+      .phone {
+        position: relative;
+        width: 100%;
+        border-radius: 26px;
+        overflow: hidden;
+        box-shadow:
+          0 0 0 7px #0b0716,
+          0 0 0 8px rgba(20,16,31,0.05),
+          0 18px 40px rgba(20,16,31,0.18);
+        background: var(--sand);
+        margin: 0;
+      }
+      .phone img {
+        width: 100%;
+        display: block;
+      }
+      .phone--mini {
+        border-radius: 20px;
+        box-shadow:
+          0 0 0 5px #0b0716,
+          0 12px 28px rgba(20,16,31,0.18);
+      }
+
+      /* =====================================================
+         Galleries
+         ===================================================== */
+      .pair-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 36px;
+        margin: 10px 0 14px;
+      }
+      .pair {
+        display: flex; flex-direction: column; gap: 10px;
+      }
+      .pair__caption {
+        text-align: center;
+      }
+      .pair__label {
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: rgba(20,16,31,0.45);
+      }
+      .pair__title {
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--carbon);
+        margin-top: 2px;
+      }
+      .pair__sub {
+        font-size: 11px;
+        color: rgba(20,16,31,0.55);
+        margin-top: 2px;
+      }
+
+      .quad-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin: 10px 0 14px;
+      }
+      .quad {
+        display: flex; flex-direction: column; gap: 8px;
+      }
+      .quad .pair__label,
+      .quad .pair__title,
+      .quad .pair__sub {
+        text-align: center;
+      }
+      .quad .pair__title { font-size: 11.5px; }
+      .quad .pair__sub { font-size: 10px; }
+
+      .triple-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin: 10px 0 14px;
+      }
+
+      /* =====================================================
+         Side narration
+         ===================================================== */
+      .stage {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 36px;
+        align-items: start;
+      }
+      .stage__notes h2 {
+        font-family: "Fraunces", Georgia, serif;
+        font-weight: 500;
+        font-variation-settings: "SOFT" 80, "opsz" 144;
+        font-size: 22px;
+        line-height: 1.1;
+        margin: 0 0 10px;
+        letter-spacing: -0.01em;
+      }
+      .stage__notes h2 em {
+        font-style: italic;
+        background: var(--grad-warm);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .stage__notes h3 {
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        font-weight: 700;
+        margin: 14px 0 6px;
+        color: rgba(20,16,31,0.55);
+      }
+      .stage__notes p, .stage__notes li {
+        font-size: 12px; line-height: 1.55;
+      }
+      .stage__notes ul {
+        padding-left: 18px; margin: 4px 0 12px;
+      }
+      .stage__notes ul li {
+        margin: 0 0 4px;
+      }
+
+      .callout {
+        border-radius: 12px;
+        padding: 14px 16px;
+        background: var(--sand);
+        border: 1px solid rgba(20, 16, 31, 0.08);
+        margin: 12px 0 0;
+      }
+      .callout--warm {
+        background: linear-gradient(180deg, rgba(255,61,131,0.06), rgba(255,165,61,0.04));
+        border-color: rgba(255,107,61,0.22);
+      }
+      .callout--ink {
+        background: var(--carbon); color: var(--sand);
+        border-color: transparent;
+      }
+      .callout--ink p { color: rgba(245,238,230,0.85); }
+      .callout h4 {
+        margin: 0 0 6px;
+        font-size: 10px; letter-spacing: 0.1em;
+        text-transform: uppercase; font-weight: 700;
+        color: rgba(20,16,31,0.55);
+      }
+      .callout--ink h4 { color: var(--gold); }
+
+      /* =====================================================
+         Footer
+         ===================================================== */
+      .footer {
+        position: absolute;
+        left: 0.7in; right: 0.7in;
+        bottom: 0.45in;
+        display: flex; justify-content: space-between;
+        font-size: 10px; letter-spacing: 0.14em;
+        text-transform: uppercase; font-weight: 600;
+        color: rgba(20,16,31,0.4);
+      }
+      .footer__brand { display: inline-flex; align-items: center; gap: 6px; }
+      .footer__dot {
+        width: 6px; height: 6px; border-radius: 9999px;
+        background: var(--gold);
+      }
+      .page--night .footer { color: rgba(245,238,230,0.5); }
+
+      @page { size: Letter portrait; margin: 0; }
+    </style>
+  </head>
+  <body>
+    <!-- ===================================================
+         PAGE 1 — COVER
+         =================================================== -->
+    <section class="page page--night cover">
+      <header class="cover__top">
+        <span><strong>tareeq</strong> · variant study</span>
+        <span><strong>v1 archive</strong> · 2026</span>
+      </header>
+
+      <div class="cover__center">
+        <div class="cover__copy">
+          <span class="cover__eyebrow">
+            <span class="cover__eyebrow-dot"></span>
+            Variant
+          </span>
+          <h1 class="cover__title">
+            Light-mode<br/><em>questions</em>.
+          </h1>
+          <p class="cover__sub">
+            A previous direction we shipped to v1 — the question screens
+            switched to a cream surface inside an otherwise dark assessment
+            shell. Captured here for the client to compare with the
+            current night-surface flow.
+          </p>
+        </div>
+
+        <div class="cover__phone-stage">
+          <span class="cover__phone-halo"></span>
+          <div class="cover__phone">
+            <img src="../screenshots/v1-light-questions/iphone-390-q15-second-pillar.png" alt="Light-mode question screen — Pillar 1 Curiosities"/>
+          </div>
+        </div>
+      </div>
+
+      <footer class="cover__bottom">
+        <span><strong>Source:</strong> archive/v1-plum-coral branch</span>
+        <span><strong>6 questions</strong> · 2 widths · live capture</span>
+      </footer>
+    </section>
+
+    <!-- ===================================================
+         PAGE 2 — THE FRAMING
+         =================================================== -->
+    <section class="page">
+      <header class="section-header">
+        <div>
+          <div class="section-header__num"><em>01</em></div>
+          <h1>How it <em>feels</em>.</h1>
+        </div>
+        <div class="section-header__brand">light-mode questions</div>
+      </header>
+
+      <div class="stage">
+        <div>
+          <div class="phone">
+            <img src="../screenshots/v1-light-questions/iphone-390-q01-opening.png" alt="Q1 — opening question"/>
+          </div>
+        </div>
+        <div class="stage__notes">
+          <h2>A quieter <em>reading room</em>.</h2>
+          <p>
+            V1 used the dark plum surface for everything around the
+            assessment — start, intro, the Contract of Honesty — but switched
+            to a <strong>cream surface specifically inside the question
+            screens</strong>. The result is an editorial reading experience:
+            long-form question text sits on a soft cream card, answer pills
+            carry their own colored icon, and Kai stays as a small
+            character anchor rather than the dominant presence.
+          </p>
+
+          <h3>What's different from the v2 night flow</h3>
+          <ul>
+            <li><strong>Surface</strong> · cream paper, ink type.</li>
+            <li><strong>Question card</strong> · serif italic on a tall pill, not a speech bubble with a tail.</li>
+            <li><strong>Answer pills</strong> · each has a colored icon tile (coral plus, cyan drop, lavender leaf, blush heart, plum lightning) on white.</li>
+            <li><strong>Audio row</strong> · coral play button, neutral mute and speed pills.</li>
+            <li><strong>Compass</strong> · top-center, small coral wedge fills with progress.</li>
+          </ul>
+
+          <div class="callout callout--warm">
+            <h4>The argument for it</h4>
+            <p style="margin:0;">
+              The questions are the slow, considered part of the journey. A
+              cream surface signals "this is reading time" — different
+              register from the ceremony that surrounds it.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <span class="footer__brand"><span class="footer__dot"></span>tareeq · light-mode questions</span>
+        <span>02</span>
+      </footer>
+    </section>
+
+    <!-- ===================================================
+         PAGE 3 — VARIETY ACROSS QUESTION TYPES
+         =================================================== -->
+    <section class="page">
+      <header class="section-header">
+        <div>
+          <div class="section-header__num"><em>02</em></div>
+          <h1>Variety across <em>question types</em>.</h1>
+        </div>
+        <div class="section-header__brand">4 representative questions</div>
+      </header>
+
+      <p>
+        Four captures showing how the light surface holds up across
+        question shapes — from short-form demographic openers to
+        multi-line scenario prompts and binary-choice tradeoffs.
+      </p>
+
+      <div class="quad-grid">
+        <div class="quad">
+          <div class="phone phone--mini">
+            <img src="../screenshots/v1-light-questions/iphone-390-q01-opening.png" alt="Q1"/>
+          </div>
+          <div class="pair__caption">
+            <div class="pair__label">Q 01 · About you</div>
+            <div class="pair__title">Demographic opener</div>
+            <div class="pair__sub">5-option list, no compass progress</div>
+          </div>
+        </div>
+        <div class="quad">
+          <div class="phone phone--mini">
+            <img src="../screenshots/v1-light-questions/iphone-390-q15-second-pillar.png" alt="Q15"/>
+          </div>
+          <div class="pair__caption">
+            <div class="pair__label">Q 15 · Curiosities</div>
+            <div class="pair__title">Scenario prompt</div>
+            <div class="pair__sub">4 long-form options · 25% compass</div>
+          </div>
+        </div>
+        <div class="quad">
+          <div class="phone phone--mini">
+            <img src="../screenshots/v1-light-questions/iphone-390-q28-third-pillar.png" alt="Q28"/>
+          </div>
+          <div class="pair__caption">
+            <div class="pair__label">Q 28 · Rewards</div>
+            <div class="pair__title">Trait choice</div>
+            <div class="pair__sub">Multi-option · mid-pillar</div>
+          </div>
+        </div>
+        <div class="quad">
+          <div class="phone phone--mini">
+            <img src="../screenshots/v1-light-questions/iphone-390-q41-late.png" alt="Q41"/>
+          </div>
+          <div class="pair__caption">
+            <div class="pair__label">Q 41 · Ecosystems</div>
+            <div class="pair__title">Binary tradeoff</div>
+            <div class="pair__sub">2 options · 90% compass</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top: 18px;">
+        <h4>What stays consistent across all six</h4>
+        <p style="margin: 0;">
+          The compass in the header, the pillar label eyebrow, the cream
+          question card with serif italic, the coral play button anchoring
+          the audio row, and the white answer pills with their tone-coded
+          icon tiles on the left. The system holds together visually
+          whether the question is two options or five.
+        </p>
+      </div>
+
+      <footer class="footer">
+        <span class="footer__brand"><span class="footer__dot"></span>tareeq · light-mode questions</span>
+        <span>03</span>
+      </footer>
+    </section>
+
+    <!-- ===================================================
+         PAGE 4 — FLOW CONTEXT
+         =================================================== -->
+    <section class="page">
+      <header class="section-header">
+        <div>
+          <div class="section-header__num"><em>03</em></div>
+          <h1>Where light <em>sits</em> in the v1 flow.</h1>
+        </div>
+        <div class="section-header__brand">flow context</div>
+      </header>
+
+      <p>
+        The light surface was a deliberate <em class="warm">moment</em>,
+        not the whole product. Start, intro, and the Contract of Honesty
+        all stayed on the plum surface. The cream only opened at the first
+        question and closed at the last — like a room you stepped into to
+        think, then stepped out of.
+      </p>
+
+      <div class="triple-grid" style="margin-top: 18px;">
+        <div class="quad">
+          <div class="phone phone--mini">
+            <img src="../screenshots/v1-light-questions/context-start.png" alt="Start screen"/>
+          </div>
+          <div class="pair__caption">
+            <div class="pair__label">/ start</div>
+            <div class="pair__title">Dark plum</div>
+            <div class="pair__sub">Career success · ladder of 3 steps</div>
+          </div>
+        </div>
+        <div class="quad">
+          <div class="phone phone--mini">
+            <img src="../screenshots/v1-light-questions/context-intro-meet-kai.png" alt="Intro / Meet Kai"/>
+          </div>
+          <div class="pair__caption">
+            <div class="pair__label">/ intro</div>
+            <div class="pair__title">Dark plum</div>
+            <div class="pair__sub">Meet your guide · typewriter Kai intro</div>
+          </div>
+        </div>
+        <div class="quad">
+          <div class="phone phone--mini">
+            <img src="../screenshots/v1-light-questions/context-contract.png" alt="Contract screen"/>
+          </div>
+          <div class="pair__caption">
+            <div class="pair__label">/ contract</div>
+            <div class="pair__title">Dark plum</div>
+            <div class="pair__sub">CORE Contract of Honesty</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout--ink" style="margin-top: 24px;">
+        <h4>Comparison vs current v2 production</h4>
+        <p style="margin:0; max-width: 64ch;">
+          V2 (live at <strong>tareeq-gray.vercel.app</strong>) is night
+          surface throughout the entire flow — including the question
+          screens. The compass moves to the header, Kai grows to 120px,
+          the question bubble keeps a cream card but on the dark
+          surrounding chrome. The light-mode variant in this document is
+          archived on the <strong>archive/v1-plum-coral</strong> branch
+          and is still reachable for client demo.
+        </p>
+      </div>
+
+      <footer class="footer">
+        <span class="footer__brand"><span class="footer__dot"></span>tareeq · light-mode questions</span>
+        <span>04</span>
+      </footer>
+    </section>
+  </body>
+</html>

@@ -1,0 +1,58 @@
+question_key,kind,question_en,question_ar,answer_letter,answer_en,answer_ar,category,points
+Q1,single,"When a group project starts, what role do you naturally take?","عندما يبدأ مشروع جماعي، ما الدور الذي تتولاه بطبيعتك؟",A,"I organize the team and set the direction","أنظّم الفريق وأحدد الاتجاه",LEAD,3
+Q1,single,"When a group project starts, what role do you naturally take?","عندما يبدأ مشروع جماعي، ما الدور الذي تتولاه بطبيعتك؟",B,"I figure out the tools and technical setup","",TECH,2
+Q1,single,"When a group project starts, what role do you naturally take?","عندما يبدأ مشروع جماعي، ما الدور الذي تتولاه بطبيعتك؟",C,"I sketch how it should look and feel","",DESIGN,2
+Q1,single,"When a group project starts, what role do you naturally take?","عندما يبدأ مشروع جماعي، ما الدور الذي تتولاه بطبيعتك؟",D,"I make sure everyone understands each other","",COMM,2
+Q2,single,"You have a free weekend to learn something new. You pick:","",A,"Building a small app or automation","",TECH,3
+Q2,single,"You have a free weekend to learn something new. You pick:","",B,"A public-speaking or storytelling workshop","",COMM,3
+Q2,single,"You have a free weekend to learn something new. You pick:","",C,"How to launch a tiny side business","",ENTR,3
+Q2,single,"You have a free weekend to learn something new. You pick:","",D,"A digital illustration or UI design course","",DESIGN,3
+Q3,single,"A dataset lands on your desk with no instructions. You:","",A,"Start charting it to find patterns","",ANALYTIC,3
+Q3,single,"A dataset lands on your desk with no instructions. You:","",B,"Ask who the stakeholders are and what decision it informs","",LEAD,2
+Q3,single,"A dataset lands on your desk with no instructions. You:","",C,"Build a script to clean and process it","",TECH,2
+Q3,single,"A dataset lands on your desk with no instructions. You:","",D,"Wonder how to present it so people care","",COMM,1
+Q4,binary,"Would you rather pitch an idea to investors than debug code for a day?","",A,"Yes, pitch the idea","",ENTR,2
+Q4,binary,"Would you rather pitch an idea to investors than debug code for a day?","",B,"No, I'd take the debugging","",TECH,2
+Q5,single,"What kind of praise means the most to you?","",A,"You really held this team together.","",LEAD,3
+Q5,single,"What kind of praise means the most to you?","",B,"That was elegant — how did you build it?","",TECH,2
+Q5,single,"What kind of praise means the most to you?","",C,"I couldn't stop looking at it.","",DESIGN,3
+Q5,single,"What kind of praise means the most to you?","",D,"You explained that so clearly.","",COMM,2
+Q6,single,"You read about a successful startup. Your first thought is:","",A,"What's the business model?","",ENTR,3
+Q6,single,"You read about a successful startup. Your first thought is:","",B,"What's the tech stack?","",TECH,2
+Q6,single,"You read about a successful startup. Your first thought is:","",C,"Who led that team?","",LEAD,2
+Q6,single,"You read about a successful startup. Your first thought is:","",D,"How did they design the experience?","",DESIGN,2
+Q7,single,"I enjoy breaking a messy problem into clean, logical steps.","",A,"Strongly agree","",ANALYTIC,3
+Q7,single,"I enjoy breaking a messy problem into clean, logical steps.","",B,"Agree","",ANALYTIC,2
+Q7,single,"I enjoy breaking a messy problem into clean, logical steps.","",C,"Neutral","",,0
+Q7,single,"I enjoy breaking a messy problem into clean, logical steps.","",D,"Disagree","",COMM,1
+Q8,single,"Pick the class you'd never skip:","",A,"Entrepreneurship & innovation","",ENTR,3
+Q8,single,"Pick the class you'd never skip:","",B,"Computer science","",TECH,3
+Q8,single,"Pick the class you'd never skip:","",C,"Statistics & data","",ANALYTIC,3
+Q8,single,"Pick the class you'd never skip:","",D,"Visual design","",DESIGN,3
+Q9,single,"Which work environment suits you best?","أي بيئة عمل تناسبك أكثر؟",A,"Leading a team toward a goal","قيادة فريق نحو هدف",LEAD,3
+Q9,single,"Which work environment suits you best?","أي بيئة عمل تناسبك أكثر؟",B,"Deep work on a technical problem","العمل بعمق على مشكلة تقنية",TECH,3
+Q9,single,"Which work environment suits you best?","أي بيئة عمل تناسبك أكثر؟",C,"Launching something of my own","إطلاق شيء جديد خاص بي",ENTR,2
+Q9,single,"Which work environment suits you best?","أي بيئة عمل تناسبك أكثر؟",D,"Crafting a message that inspires","صياغة رسالة تلهم الناس",COMM,2
+Q10,single,"Your ideal contribution to a product is:","",A,"The vision and roadmap","",LEAD,2
+Q10,single,"Your ideal contribution to a product is:","",B,"The architecture and code","",TECH,3
+Q10,single,"Your ideal contribution to a product is:","",C,"The look, feel, and flow","",DESIGN,3
+Q10,single,"Your ideal contribution to a product is:","",D,"The metrics and experiments","",ANALYTIC,2
+Q11,single,"When you hit a wall, you tend to:","",A,"Rally people and delegate","",LEAD,2
+Q11,single,"When you hit a wall, you tend to:","",B,"Research and prototype a fix","",TECH,2
+Q11,single,"When you hit a wall, you tend to:","",C,"Reframe the problem creatively","",DESIGN,2
+Q11,single,"When you hit a wall, you tend to:","",D,"Run the numbers to find the bottleneck","",ANALYTIC,2
+Q12,single,"Which headline would you be proudest to earn?","",A,"Founder turns idea into thriving company","",ENTR,3
+Q12,single,"Which headline would you be proudest to earn?","",B,"Engineer ships breakthrough feature","",TECH,2
+Q12,single,"Which headline would you be proudest to earn?","",C,"Designer reimagines everyday experience","",DESIGN,3
+Q12,single,"Which headline would you be proudest to earn?","",D,"Leader transforms struggling team","",LEAD,3
+Q13,single,"You're happiest communicating through:","",A,"A persuasive talk or story","",COMM,3
+Q13,single,"You're happiest communicating through:","",B,"A clean diagram or dashboard","",ANALYTIC,2
+Q13,single,"You're happiest communicating through:","",C,"A polished visual or mockup","",DESIGN,2
+Q13,single,"You're happiest communicating through:","",D,"A clear plan others can follow","",LEAD,2
+Q14,binary,"Risk or stability — which pulls you more?","",A,"Risk and ownership","",ENTR,3
+Q14,binary,"Risk or stability — which pulls you more?","",B,"Stability and craft","",TECH,1
+Q15,single,"People most often come to you for:","",A,"A decision or direction","",LEAD,3
+Q15,single,"People most often come to you for:","",B,"A technical answer","",TECH,3
+Q15,single,"People most often come to you for:","",C,"Feedback on how something looks","",DESIGN,2
+Q15,single,"People most often come to you for:","",D,"Help making sense of information","",ANALYTIC,2
+Q16,text,"In your own words, what kind of work would make you lose track of time?","بكلماتك الخاصة، ما نوع العمل الذي يجعلك تفقد الإحساس بالوقت؟",,,,,
