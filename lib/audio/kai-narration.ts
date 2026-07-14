@@ -1,4 +1,5 @@
-import { defaultLocale, seedQuestions } from "@/lib/content/seed";
+import { defaultLocale } from "@/lib/content/seed";
+import { assessmentQuestions } from "@/lib/assessment/questions";
 
 type LocalizedRecord = Readonly<Record<string, string>>;
 
@@ -42,7 +43,7 @@ export const KAI_EXTRA_NARRATION = [
     id: "kai_intro",
     text: {
       en: "Hey, I'm Kai. Think of me as a filter for all the noise. There are no wrong answers here — just pick what you would actually do, or the closest thing to it.",
-      ar: "مرحبًا، أنا كاي. اعتبرني مِصفاةً تُنقّي كل الضجيج. لا توجد إجابات خاطئة هنا — اختَر فقط ما ستفعله فعلًا، أو أقرب شيء إليه.",
+      ar: "مرحباً، أنا كاي. اعتبرني مِصفاةً تُنقّي كل الضجيج. لا توجد إجابات خاطئة هنا — اختَر فقط ما ستفعله فعلًا، أو أقرب شيء إليه.",
     },
   },
   {
@@ -67,7 +68,7 @@ function getLocalizedText(text: LocalizedRecord, locale: string) {
 
 export function getKaiNarrationManifest(locale = defaultLocale) {
   return [
-    ...seedQuestions.map((question) => ({
+    ...assessmentQuestions.map((question) => ({
       id: question.externalId,
       text: getLocalizedText(question.title as LocalizedRecord, locale),
     })),

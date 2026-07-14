@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { clusters, contentVersion, seedQuestions } from "../lib/content/seed";
+import { AR_CONTENT } from "../lib/content/translations-ar";
 
 type SupabaseQuestion = {
   id: string;
@@ -113,15 +114,20 @@ async function main() {
   const { data: questions, error: questionsError } = await supabase
     .from("questions")
     .upsert(
-      seedQuestions.map((question) => ({
-        version_id: versionId,
-        external_id: question.externalId,
-        pillar: question.pillar,
-        position: question.position,
-        kind: question.kind,
-        title: question.title,
-        axis: "axis" in question ? question.axis : null,
-      })),
+      seedQuestions.map((question) => {
+        const ar = AR_CONTENT[question.externalId];
+        return {
+          version_id: versionId,
+          external_id: question.externalId,
+          pillar: question.pillar,
+          position: question.position,
+          kind: question.kind,
+          title: ar?.title
+            ? { ...question.title, ar: ar.title }
+            : question.title,
+          axis: "axis" in question ? question.axis : null,
+        };
+      }),
       { onConflict: "version_id,external_id" },
     )
     .select("id, external_id");
@@ -142,15 +148,20 @@ async function main() {
       );
     }
 
-    return question.options.map((option) => ({
-      question_id: questionId,
-      letter: option.letter,
-      position: option.position,
-      text: option.text,
-      cluster_code: "clusterCode" in option ? option.clusterCode : null,
-      driver_code: "driverCode" in option ? option.driverCode : null,
-      axis_value: "axisValue" in option ? option.axisValue : null,
-    }));
+    const arOptions = AR_CONTENT[question.externalId]?.options;
+
+    return question.options.map((option) => {
+      const arText = arOptions?.[option.letter];
+      return {
+        question_id: questionId,
+        letter: option.letter,
+        position: option.position,
+        text: arText ? { ...option.text, ar: arText } : option.text,
+        cluster_code: "clusterCode" in option ? option.clusterCode : null,
+        driver_code: "driverCode" in option ? option.driverCode : null,
+        axis_value: "axisValue" in option ? option.axisValue : null,
+      };
+    });
   });
 
   if (optionRows.length > 0) {
