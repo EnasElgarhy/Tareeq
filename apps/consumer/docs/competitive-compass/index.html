@@ -1,0 +1,1701 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Tareeq — Competitive compass</title>
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght,SOFT@0,9..144,400..900,30..100;1,9..144,400..900,30..100&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* =====================================================
+         Tareeq v2 design tokens
+         ===================================================== */
+      :root {
+        --night: #08051a;
+        --midnight: #100a24;
+        --dusk: #221248;
+        --violet: #6e48e4;
+        --violet-soft: #9d7ff0;
+        --lilac: #c8b6f0;
+        --sand: #f5eee6;
+        --paper: #f9f4ec;
+        --carbon: #14101f;
+        --carbon-soft: #2b2440;
+        --gold: #f4c660;
+        --gold-soft: #fde7a8;
+        --blush: #f2a8b3;
+        --mint: #6fe0c0;
+
+        --grad-warm: linear-gradient(95deg, #ff3d83 0%, #ff6b3d 55%, #ffa53d 100%);
+        --grad-night: linear-gradient(180deg, #221248 0%, #100a24 38%, #08051a 100%);
+        --grad-aurora: linear-gradient(135deg, #6e48e4 0%, #9d7ff0 35%, #f2a8b3 70%, #f4c660 100%);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+        color: var(--carbon);
+        background: var(--paper);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+      }
+
+      /* =====================================================
+         Page system — Letter portrait, ~720pt content area
+         ===================================================== */
+      .page {
+        width: 8.5in;
+        min-height: 11in;
+        padding: 0.6in 0.7in;
+        position: relative;
+        overflow: hidden;
+        page-break-after: always;
+        background: var(--paper);
+      }
+      .page:last-child {
+        page-break-after: auto;
+      }
+      .page--night {
+        background: var(--night);
+        color: var(--sand);
+      }
+      .page--sand {
+        background: var(--sand);
+      }
+
+      /* =====================================================
+         Cover
+         ===================================================== */
+      .cover {
+        background: radial-gradient(
+            65% 55% at 50% 6%,
+            rgba(157, 127, 240, 0.36),
+            transparent 70%
+          ),
+          radial-gradient(
+            45% 35% at 12% 90%,
+            rgba(110, 72, 228, 0.22),
+            transparent 65%
+          ),
+          radial-gradient(
+            45% 40% at 90% 88%,
+            rgba(255, 107, 61, 0.16),
+            transparent 70%
+          ),
+          var(--grad-night);
+        color: var(--sand);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .cover__top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .cover__brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+        font-size: 18px;
+        letter-spacing: -0.025em;
+      }
+      .cover__brand-dot {
+        width: 22px;
+        height: 22px;
+        background: var(--grad-warm);
+        border-radius: 6px;
+        position: relative;
+      }
+      .cover__brand-dot::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 6px;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      }
+      .cover__meta {
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(245, 238, 230, 0.55);
+      }
+      .cover__center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 28px;
+        margin-top: 32px;
+      }
+      .compass-stage {
+        position: relative;
+        width: 280px;
+        height: 280px;
+      }
+      .compass-stage__halo {
+        position: absolute;
+        inset: -40px;
+        background: radial-gradient(
+            circle,
+            rgba(255, 107, 61, 0.35),
+            transparent 65%
+          );
+        filter: blur(28px);
+      }
+      .compass-stage svg {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+      .cover__eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        border-radius: 9999px;
+        background: linear-gradient(
+            180deg,
+            rgba(157, 127, 240, 0.22) 0%,
+            rgba(110, 72, 228, 0.1) 100%
+          );
+        border: 1px solid rgba(245, 238, 230, 0.18);
+        font-size: 10.5px;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: rgba(245, 238, 230, 0.86);
+      }
+      .cover__eyebrow-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 9999px;
+        background: var(--gold);
+      }
+      .cover__title {
+        font-family: "Fraunces", Georgia, serif;
+        font-weight: 600;
+        font-variation-settings: "SOFT" 100, "opsz" 144;
+        font-size: 76px;
+        line-height: 0.95;
+        letter-spacing: -0.025em;
+        margin: 0;
+        text-align: center;
+      }
+      .cover__title em {
+        font-style: italic;
+        font-weight: 500;
+        background: var(--grad-warm);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .cover__subtitle {
+        font-size: 18px;
+        line-height: 1.45;
+        font-weight: 400;
+        text-align: center;
+        color: rgba(245, 238, 230, 0.74);
+        max-width: 22em;
+        margin: 0 auto;
+      }
+      .cover__bottom {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        font-size: 11.5px;
+        letter-spacing: 0.06em;
+        color: rgba(245, 238, 230, 0.55);
+      }
+      .cover__bottom strong {
+        color: rgba(245, 238, 230, 0.85);
+        font-weight: 600;
+      }
+
+      /* =====================================================
+         Section chrome
+         ===================================================== */
+      .section-header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        border-bottom: 1px solid rgba(20, 16, 31, 0.12);
+        padding-bottom: 14px;
+        margin-bottom: 24px;
+      }
+      .section-header__num {
+        font-family: "Fraunces", Georgia, serif;
+        font-style: italic;
+        font-variation-settings: "SOFT" 60, "opsz" 96;
+        font-size: 28px;
+        color: rgba(20, 16, 31, 0.35);
+      }
+      .section-header__num em {
+        background: var(--grad-warm);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        font-style: italic;
+      }
+      .section-header h1 {
+        font-family: "Fraunces", Georgia, serif;
+        font-weight: 500;
+        font-variation-settings: "SOFT" 100, "opsz" 144;
+        font-size: 34px;
+        line-height: 1.05;
+        letter-spacing: -0.015em;
+        margin: 0;
+        color: var(--carbon);
+      }
+      .section-header h1 em {
+        font-style: italic;
+        background: var(--grad-warm);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .section-header__brand {
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(20, 16, 31, 0.4);
+        font-weight: 600;
+      }
+
+      h2 {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        font-weight: 700;
+        font-size: 19px;
+        line-height: 1.25;
+        margin: 22px 0 10px;
+        color: var(--carbon);
+        letter-spacing: -0.01em;
+      }
+      h3 {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 1.3;
+        margin: 14px 0 6px;
+        color: var(--carbon);
+        letter-spacing: -0.005em;
+      }
+      p,
+      li {
+        font-size: 12.5px;
+        line-height: 1.55;
+        color: rgba(20, 16, 31, 0.78);
+        margin: 0 0 10px;
+      }
+      strong {
+        color: var(--carbon);
+        font-weight: 700;
+      }
+      em.serif-accent {
+        font-family: "Fraunces", Georgia, serif;
+        font-style: italic;
+        font-variation-settings: "SOFT" 100, "opsz" 144;
+        background: var(--grad-warm);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      ul {
+        margin: 4px 0 12px;
+        padding-left: 18px;
+      }
+      ul li {
+        margin: 0 0 4px;
+      }
+      a {
+        color: var(--carbon);
+        text-decoration: none;
+        border-bottom: 1px solid rgba(20, 16, 31, 0.3);
+      }
+
+      /* =====================================================
+         Matrix table
+         ===================================================== */
+      .matrix {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+        margin: 12px 0 18px;
+      }
+      .matrix th,
+      .matrix td {
+        text-align: left;
+        padding: 9px 10px;
+        vertical-align: top;
+        line-height: 1.4;
+      }
+      .matrix thead th {
+        background: var(--carbon);
+        color: var(--sand);
+        font-weight: 600;
+        font-size: 9.5px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .matrix tbody tr {
+        background: rgba(245, 238, 230, 0.5);
+        border-bottom: 1px solid rgba(20, 16, 31, 0.06);
+      }
+      .matrix tbody tr:nth-child(even) {
+        background: rgba(245, 238, 230, 0.3);
+      }
+      .matrix .brand {
+        font-weight: 700;
+        color: var(--carbon);
+      }
+      .matrix .lane {
+        color: rgba(20, 16, 31, 0.85);
+      }
+      .matrix .badge {
+        display: inline-block;
+        padding: 2px 7px;
+        border-radius: 9999px;
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        background: rgba(110, 72, 228, 0.12);
+        color: var(--dusk);
+      }
+      .matrix .badge--warm {
+        background: rgba(255, 107, 61, 0.16);
+        color: #c14a26;
+      }
+      .matrix .badge--gold {
+        background: rgba(244, 198, 96, 0.22);
+        color: #8a6d22;
+      }
+      .matrix .badge--mint {
+        background: rgba(111, 224, 192, 0.22);
+        color: #1c7a5e;
+      }
+
+      /* =====================================================
+         Competitor profile card
+         ===================================================== */
+      .profile {
+        background: linear-gradient(
+          180deg,
+          rgba(245, 238, 230, 0.7) 0%,
+          rgba(245, 238, 230, 0.35) 100%
+        );
+        border: 1px solid rgba(20, 16, 31, 0.08);
+        border-radius: 14px;
+        padding: 16px 18px;
+        margin: 0 0 14px;
+        page-break-inside: avoid;
+        position: relative;
+      }
+      .profile::before {
+        content: "";
+        position: absolute;
+        left: 18px;
+        right: 18px;
+        top: 0;
+        height: 2px;
+        background: var(--grad-warm);
+        border-radius: 0 0 2px 2px;
+      }
+      .profile__top {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 8px;
+      }
+      .profile__name {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        font-weight: 800;
+        font-size: 17px;
+        margin: 0;
+        color: var(--carbon);
+        letter-spacing: -0.01em;
+      }
+      .profile__url {
+        font-size: 10.5px;
+        color: rgba(20, 16, 31, 0.5);
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      .profile__lane {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--dusk);
+        margin-bottom: 10px;
+      }
+      .profile__lane::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 9999px;
+        background: var(--gold);
+        flex-shrink: 0;
+      }
+      .profile__grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px 22px;
+      }
+      .profile__cell h4 {
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(20, 16, 31, 0.5);
+        font-weight: 700;
+        margin: 0 0 5px;
+      }
+      .profile__cell p {
+        font-size: 11.5px;
+        line-height: 1.5;
+        margin: 0;
+      }
+      .profile__takeaway {
+        margin-top: 12px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        background: var(--carbon);
+        color: var(--sand);
+        font-size: 11.5px;
+        line-height: 1.5;
+      }
+      .profile__takeaway strong {
+        color: var(--gold);
+        font-weight: 700;
+      }
+
+      /* =====================================================
+         Two-column callouts
+         ===================================================== */
+      .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin: 8px 0 14px;
+      }
+      .callout {
+        border-radius: 12px;
+        padding: 14px 16px;
+        background: var(--sand);
+        border: 1px solid rgba(20, 16, 31, 0.08);
+      }
+      .callout--warm {
+        background: linear-gradient(
+          180deg,
+          rgba(255, 61, 131, 0.06),
+          rgba(255, 165, 61, 0.04)
+        );
+        border-color: rgba(255, 107, 61, 0.22);
+      }
+      .callout--ink {
+        background: var(--carbon);
+        color: var(--sand);
+      }
+      .callout--ink h3 {
+        color: var(--gold);
+      }
+      .callout--ink p,
+      .callout--ink li {
+        color: rgba(245, 238, 230, 0.82);
+      }
+
+      /* =====================================================
+         Priority matrix
+         ===================================================== */
+      .priority {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin: 12px 0;
+      }
+      .priority__quad {
+        border: 1px solid rgba(20, 16, 31, 0.12);
+        border-radius: 12px;
+        padding: 14px 16px;
+        background: var(--sand);
+        min-height: 120px;
+      }
+      .priority__quad h3 {
+        margin: 0 0 8px;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(20, 16, 31, 0.55);
+        font-weight: 700;
+      }
+      .priority__quad--now {
+        background: linear-gradient(
+          180deg,
+          rgba(255, 61, 131, 0.08),
+          rgba(255, 165, 61, 0.05)
+        );
+        border-color: rgba(255, 107, 61, 0.3);
+      }
+      .priority__quad--now h3 {
+        background: var(--grad-warm);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .priority__quad ul {
+        margin: 0;
+        padding-left: 16px;
+      }
+      .priority__quad li {
+        font-size: 11.5px;
+        margin: 0 0 4px;
+      }
+
+      /* =====================================================
+         Source notes
+         ===================================================== */
+      .source-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .source-list li {
+        display: flex;
+        align-items: baseline;
+        gap: 14px;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(20, 16, 31, 0.08);
+        font-size: 12px;
+      }
+      .source-list li:last-child {
+        border-bottom: 0;
+      }
+      .source-list__brand {
+        font-weight: 700;
+        color: var(--carbon);
+        min-width: 130px;
+        flex-shrink: 0;
+      }
+      .source-list__url {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 11px;
+        color: rgba(20, 16, 31, 0.7);
+        word-break: break-all;
+      }
+
+      /* =====================================================
+         Footer
+         ===================================================== */
+      .footer {
+        position: absolute;
+        left: 0.7in;
+        right: 0.7in;
+        bottom: 0.45in;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: rgba(20, 16, 31, 0.4);
+        font-weight: 600;
+      }
+      .footer__brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .footer__dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 9999px;
+        background: var(--gold);
+      }
+      .page--night .footer {
+        color: rgba(245, 238, 230, 0.5);
+      }
+
+      @page {
+        size: Letter portrait;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ===================================================
+         PAGE 1 — COVER
+         =================================================== -->
+    <section class="page page--night cover">
+      <header class="cover__top">
+        <div class="cover__brand">
+          <span class="cover__brand-dot"></span>
+          <span>tareeq</span>
+        </div>
+        <div class="cover__meta">Internal · Competitive landscape · 2026</div>
+      </header>
+
+      <div class="cover__center">
+        <span class="cover__eyebrow">
+          <span class="cover__eyebrow-dot"></span>
+          Strategy brief
+        </span>
+
+        <div class="compass-stage">
+          <div class="compass-stage__halo"></div>
+          <svg viewBox="0 0 280 280" aria-hidden="true">
+            <defs>
+              <linearGradient id="needle" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#FF3D83" />
+                <stop offset="55%" stop-color="#FF6B3D" />
+                <stop offset="100%" stop-color="#FFA53D" />
+              </linearGradient>
+              <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#FFA53D" stop-opacity="0.85" />
+                <stop offset="60%" stop-color="#FF6B3D" stop-opacity="0.4" />
+                <stop offset="100%" stop-color="#FF3D83" stop-opacity="0" />
+              </radialGradient>
+            </defs>
+
+            <!-- Outer ring -->
+            <circle
+              cx="140"
+              cy="140"
+              r="125"
+              fill="none"
+              stroke="#F5EEE6"
+              stroke-width="1"
+              opacity="0.18"
+            />
+            <!-- Inner ring -->
+            <circle
+              cx="140"
+              cy="140"
+              r="100"
+              fill="none"
+              stroke="#F5EEE6"
+              stroke-width="1"
+              opacity="0.3"
+            />
+
+            <!-- Tick marks (every 15°) -->
+            <g stroke="#F5EEE6" stroke-linecap="round">
+              <!-- We'll mark 24 ticks, larger every 90° -->
+              <g opacity="0.6" stroke-width="1.2">
+                <line x1="140" y1="15" x2="140" y2="32" />
+                <line x1="265" y1="140" x2="248" y2="140" />
+                <line x1="140" y1="265" x2="140" y2="248" />
+                <line x1="15" y1="140" x2="32" y2="140" />
+              </g>
+              <g opacity="0.32" stroke-width="0.9">
+                <!-- 30° increments -->
+                <line x1="200" y1="36" x2="195" y2="46" />
+                <line x1="244" y1="80" x2="234" y2="85" />
+                <line x1="244" y1="200" x2="234" y2="195" />
+                <line x1="200" y1="244" x2="195" y2="234" />
+                <line x1="80" y1="244" x2="85" y2="234" />
+                <line x1="36" y1="200" x2="46" y2="195" />
+                <line x1="36" y1="80" x2="46" y2="85" />
+                <line x1="80" y1="36" x2="85" y2="46" />
+              </g>
+            </g>
+
+            <!-- Cardinal letters: C O R E -->
+            <g
+              font-family="Plus Jakarta Sans, sans-serif"
+              font-weight="700"
+              font-size="13"
+              fill="#F5EEE6"
+              text-anchor="middle"
+            >
+              <text x="140" y="9" opacity="0.85">C</text>
+              <text x="272" y="144" opacity="0.55">O</text>
+              <text x="140" y="277" opacity="0.55">R</text>
+              <text x="8" y="144" opacity="0.55">E</text>
+            </g>
+
+            <!-- Center glow -->
+            <circle cx="140" cy="140" r="70" fill="url(#centerGlow)" />
+
+            <!-- Needle north (warm gradient) -->
+            <path
+              d="M 140 28 L 152 140 L 140 152 L 128 140 Z"
+              fill="url(#needle)"
+            />
+            <!-- Needle south (faint) -->
+            <path
+              d="M 140 252 L 132 140 L 140 128 L 148 140 Z"
+              fill="#F5EEE6"
+              opacity="0.18"
+            />
+
+            <!-- Center pivot -->
+            <circle cx="140" cy="140" r="9" fill="#08051A" />
+            <circle cx="140" cy="140" r="9" fill="none" stroke="url(#needle)" stroke-width="1.5" />
+            <!-- Gold brand signature dot -->
+            <circle cx="140" cy="140" r="3.2" fill="#F4C660" />
+          </svg>
+        </div>
+
+        <h1 class="cover__title">
+          Competitive <em>compass</em>.
+        </h1>
+        <p class="cover__subtitle">
+          Career discovery, education pathways, and job-matching competitors —
+          where Tareeq stands and where the white space lies.
+        </p>
+      </div>
+
+      <footer class="cover__bottom">
+        <span>
+          <strong>Audience:</strong> founder &amp; investor brief
+        </span>
+        <span>
+          <strong>7 competitors</strong> &nbsp;·&nbsp; 7 sections
+        </span>
+      </footer>
+    </section>
+
+    <!-- ===================================================
+         PAGE 2 — EXECUTIVE READ
+         =================================================== -->
+    <section class="page">
+      <header class="section-header">
+        <div>
+          <div class="section-header__num"><em>01</em></div>
+          <h1>Executive <em>read</em>.</h1>
+        </div>
+        <div class="section-header__brand">tareeq · compass</div>
+      </header>
+
+      <p>
+        The career discovery space splits into four lanes: <strong>psychometric
+        assessments</strong> (CareerExplorer, YouScience), <strong>school
+        pathway platforms</strong> (Unifrog), <strong>AI strengths and
+        job-matching</strong> (Mentra, PathwayU), and <strong>end-to-end
+        pathway apps</strong> (Yenza, ISMOJO). Each of them solves one stage
+        well. None of them solves the full arc — assessment, local pathway,
+        weekly action, family context — for a young Muslim-majority audience
+        whose decisions are shaped as much by elders and community as by the
+        individual.
+      </p>
+
+      <p>
+        Tareeq's position is not <em class="serif-accent">another career test</em>.
+        It is a guided pathway app that turns CORE assessment results into
+        local opportunities, mentor and counselor support, and weekly action
+        steps a 16-year-old can actually take this week. The product surface
+        we already ship — the editorial onboarding, the compass-as-progress
+        mechanic, the calm night surface, Kai as a non-coercive guide — is the
+        foundation. The competitive opportunity is to extend that arc past the
+        assessment into the parts of the journey that don't yet exist in any
+        single competitor's product.
+      </p>
+
+      <h2>Closest competitor by lane</h2>
+      <ul>
+        <li>
+          <strong>End-to-end pathway model</strong> · Yenza Careers — the most
+          structurally similar to where Tareeq is heading. Assessment →
+          career match → action plan, served on the African continent. Their
+          model validates the thesis; Tareeq's edge is MENA cultural fluency,
+          Arabic-first voice, and family-aware framing.
+        </li>
+        <li>
+          <strong>Regional / MENA-adjacent signal</strong> · ISMOJO — operates
+          in the same cultural orbit, builds school partnerships, and proves
+          there's demand. Their gap: thin on assessment depth and on the
+          editorial / mentorship layer.
+        </li>
+        <li>
+          <strong>Schools go-to-market</strong> · Unifrog and YouScience —
+          institutional moats, deep counselor tooling. If Tareeq sells into
+          schools, these set the bar. The opening: the consumer-grade
+          experience neither of them delivers to the student themselves.
+        </li>
+        <li>
+          <strong>Free consumer funnel</strong> · CareerExplorer — strongest
+          SEO and content-led acquisition. They convert curiosity into a
+          16-minute assessment and a paid upgrade. Tareeq can match their
+          funnel and out-deliver their post-assessment experience.
+        </li>
+        <li>
+          <strong>Strengths-aware matching inspiration</strong> · Mentra —
+          built for neurodivergent talent. Useful template for how
+          Tareeq frames difference as fit rather than deficit.
+        </li>
+      </ul>
+
+      <h2>The wedge</h2>
+      <p>
+        No competitor is solving for the <em class="serif-accent">"after"</em>.
+        Every product in this set hands the user back a report, a cluster, or a
+        match — and then ends. Tareeq's defensible product is what happens in
+        the seven days after the assessment: a local opportunity surfaced,
+        a mentor or counselor connection offered, a small action proposed and
+        completed, and a parent-friendly summary the family can read together.
+        That arc is the moat.
+      </p>
+
+      <footer class="footer">
+        <span class="footer__brand">
+          <span class="footer__dot"></span>
+          tareeq · competitive compass
+        </span>
+        <span>02</span>
+      </footer>
+    </section>
+
+    <!-- ===================================================
+         PAGE 3 — COMPETITOR SNAPSHOT MATRIX
+         =================================================== -->
+    <section class="page">
+      <header class="section-header">
+        <div>
+          <div class="section-header__num"><em>02</em></div>
+          <h1>Competitor <em>snapshot matrix</em>.</h1>
+        </div>
+        <div class="section-header__brand">tareeq · compass</div>
+      </header>
+
+      <p>
+        Seven players, viewed across the four axes that matter for Tareeq:
+        what lane they own, who they serve, what they actually deliver, and
+        how closely they overlap with our wedge.
+      </p>
+
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th style="width: 13%">Brand</th>
+            <th style="width: 16%">Primary lane</th>
+            <th style="width: 18%">Audience</th>
+            <th style="width: 25%">Core deliverable</th>
+            <th style="width: 12%">Regional fit (MENA)</th>
+            <th style="width: 16%">Tareeq overlap</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="brand">Yenza Careers</td>
+            <td class="lane">End-to-end pathway</td>
+            <td>16–25, African continent</td>
+            <td>Assessment + career match + structured action plan + content library</td>
+            <td><span class="badge badge--gold">Adjacent</span></td>
+            <td><span class="badge badge--warm">Direct</span></td>
+          </tr>
+          <tr>
+            <td class="brand">ISMOJO</td>
+            <td class="lane">Regional pathway / schools</td>
+            <td>Students &amp; schools, MENA-adjacent</td>
+            <td>Career exploration + school partnerships + light assessment</td>
+            <td><span class="badge badge--warm">High</span></td>
+            <td><span class="badge badge--warm">Direct</span></td>
+          </tr>
+          <tr>
+            <td class="brand">Unifrog</td>
+            <td class="lane">School pathway platform</td>
+            <td>Schools, counselors, students 14–18</td>
+            <td>University &amp; apprenticeship search + counselor tooling</td>
+            <td><span class="badge">Limited</span></td>
+            <td><span class="badge badge--gold">Partial</span></td>
+          </tr>
+          <tr>
+            <td class="brand">YouScience</td>
+            <td class="lane">Aptitude assessment / schools</td>
+            <td>US schools, students 13–22</td>
+            <td>Brain-game aptitude tests + career &amp; major matches</td>
+            <td><span class="badge">Low</span></td>
+            <td><span class="badge badge--gold">Partial</span></td>
+          </tr>
+          <tr>
+            <td class="brand">PathwayU</td>
+            <td class="lane">Purpose-fit assessment</td>
+            <td>US college students &amp; HE institutions</td>
+            <td>Purpose, interests, workplace fit assessment + major fit</td>
+            <td><span class="badge">Low</span></td>
+            <td><span class="badge badge--gold">Partial</span></td>
+          </tr>
+          <tr>
+            <td class="brand">CareerExplorer</td>
+            <td class="lane">Consumer assessment + content</td>
+            <td>Adults &amp; teens, global English</td>
+            <td>Long-form psychometric assessment + 1,000+ career library + premium</td>
+            <td><span class="badge">Low</span></td>
+            <td><span class="badge badge--mint">Funnel</span></td>
+          </tr>
+          <tr>
+            <td class="brand">Mentra</td>
+            <td class="lane">Neurodivergent job matching</td>
+            <td>Neurodivergent professionals + employers</td>
+            <td>Strengths-aware profile + employer matching marketplace</td>
+            <td><span class="badge">Low</span></td>
+            <td><span class="badge badge--mint">Inspiration</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="two-col">
+        <div class="callout callout--warm">
+          <h3>Where overlap is direct</h3>
+          <p>
+            Yenza Careers and ISMOJO are the only two competitors solving
+            the same shape of problem Tareeq is shipping. Both win on
+            specific dimensions Tareeq can exceed: <strong>Yenza on
+            structured action arcs</strong>, <strong>ISMOJO on regional
+            school distribution</strong>.
+          </p>
+        </div>
+        <div class="callout callout--ink">
+          <h3>Where overlap is structural, not direct</h3>
+          <p>
+            Unifrog, YouScience, PathwayU and CareerExplorer overlap in
+            tooling and methodology but serve a different audience and
+            distribution model. They're benchmarks, not blockers.
+          </p>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <span class="footer__brand">
+          <span class="footer__dot"></span>
+          tareeq · competitive compass
+        </span>
+        <span>03</span>
+      </footer>
+    </section>
+
+    <!-- ===================================================
+         PAGES 4–6 — INDIVIDUAL COMPETITOR PROFILES
+         =================================================== -->
+
+    <!-- PAGE 4 -->
+    <section class="page">
+      <header class="section-header">
+        <div>
+          <div class="section-header__num"><em>03</em></div>
+          <h1>Individual <em>competitor profiles</em>.</h1>
+        </div>
+        <div class="section-header__brand">part 1 of 4</div>
+      </header>
+
+      <article class="profile">
+        <div class="profile__top">
+          <h2 class="profile__name">Yenza Careers</h2>
+          <span class="profile__url">yenzacareers.com</span>
+        </div>
+        <div class="profile__lane">Closest analogue · End-to-end pathway</div>
+        <div class="profile__grid">
+          <div class="profile__cell">
+            <h4>Audience</h4>
+            <p>Youth and young professionals across the African continent (16–25).</p>
+          </div>
+          <div class="profile__cell">
+            <h4>What they sell</h4>
+            <p>
+              A guided arc: assessment → career match → structured action
+              plan → editorial content library. Direct-to-student.
+            </p>
+          </div>
+          <div class="profile__cell">
+            <h4>Strengths</h4>
+            <p>
+              Coherent product narrative, strong African distribution, clear
+              "after the test" arc, content depth.
+            </p>
+          </div>
+          <div class="profile__cell">
+            <h4>Gaps Tareeq can exploit</h4>
+            <p>
+              Not built for MENA cultural context, not Arabic-first, no
+              family/elder framing, no mentor pairing.
+            </p>
+          </div>
+        </div>
+        <p class="profile__takeaway">
+          <strong>Tareeq takeaway:</strong> Yenza proves the end-to-end
+          pathway thesis. Win by being the version built for Arabic-speaking
+          and Muslim-majority youth, with family-aware framing and a mentor
+          layer Yenza doesn't yet ship.
+        </p>
+      </article>
+
+      <article class="profile">
+        <div class="profile__top">
+          <h2 class="profile__name">ISMOJO</h2>
+          <span class="profile__url">ismojo.com</span>
+        </div>
+        <div class="profile__lane">Closest regional signal · MENA-adjacent</div>
+        <div class="profile__grid">
+          <div class="profile__cell">
+            <h4>Audience</h4>
+            <p>Students and schools, with regional / MENA-adjacent positioning.</p>
+          </div>
+          <div class="profile__cell">
+            <h4>What they sell</h4>
+            <p>
+              Career exploration tooling, school partnerships, light
+              assessment functionality. B2B-leaning go-to-market.
+            </p>
+          </div>
+          <div class="profile__cell">
+            <h4>Strengths</h4>
+            <p>
+              Regional credibility, school relationships, validated demand in
+              the territories Tareeq targets.
+            </p>
+          </div>
+          <div class="profile__cell">
+            <h4>Gaps Tareeq can exploit</h4>
+            <p>
+              Thin on assessment depth, no editorial / mentorship layer,
+              limited consumer-grade product polish.
+            </p>
+          </div>
+        </div>
+        <p class="profile__takeaway">
+          <strong>Tareeq takeaway:</strong> ISMOJO confirms the regional
+          demand and the school channel works. Tareeq's edge is product
+          quality: the assessment depth, the editorial onboarding, and the
+          Kai mentor voice are all surfaces ISMOJO doesn't compete on.
+        </p>
+      </article>
+
+      <footer class="footer">
+        <span class="footer__brand">
+          <span class="footer__dot"></span>
+          tareeq · competitive compass
+        </span>
+        <span>04</span>
+      </footer>
+    </section>
+
+    <!-- PAGE 5 -->
+    <section class="page">
+      <header class="section-header">
+        <div>
+          <div class="section-header__num"><em>03</em></div>
+          <h1>Individual <em>competitor profiles</em>.</h1>
+        </div>
+        <div class="section-header__brand">part 2 of 4</div>
+      </header>
+
+      <article class="profile">
+        <div class="profile__top">
+          <h2 class="profile__name">Unifrog</h2>
+          <span class="profile__url">unifrog.org</span>
+        </div>
+        <div class="profile__lane">School pathway platform</div>
+        <div class="profile__grid">
+          <div class="profile__cell">
+            <h4>Audience</h4>
+            <p>Schools, counselors, students 14–18. Heavy institutional play.</p>
+          </div>
+          <div class="profile__cell">
+            <h4>What they sell</h4>
+            <p>
+              A "destinations" platform — universities, apprenticeships,
+              jobs, gap years — plus counselor dashboards and tools.
+            </p>
+          </div>
+          <div class="profile__cell">
+            <h4>Strengths</h4>
+            <p>
+              Deep counselor tooling, comprehensive destination database,
+              strong school distribution outside the US.
+            </p>
+          </div>
+          <div class="profile__cell">
+            <h4>Gaps Tareeq can exploit</h4>
+            <p>
+              Student-facing experience is institutional, not consumer-grade.
+              No emotional voice, no editorial onboarding, no mentor layer.
+            </p>
+          </div>
+        </div>
+        <p class="profile__takeaway">
+          <strong>Tareeq takeaway:</strong> If selling into schools, Unifrog
+          sets the depth bar for destination data. Out-compete by being the
+          product the student actually wants to open — not the tool the
+          counselor assigns.
+        </p>
+      </article>
+
+      <article class="profile">
+        <div class="profile__top">
+          <h2 class="profile__name">YouScience</h2>
+          <span class="profile__url">youscience.com</span>
+        </div>
+        <div class="profile__lane">Aptitude assessment / schools</div>
+        <div class="profile__grid">
+          <div class="profile__cell">
+            <h4>Audience</h4>
+            <p>US schools (mostly), students 13–22.</p>
+          </div>
+          <div class="profile__cell">
+            <h4>What they sell</h4>
+            <p>
+              Brain-game style aptitude assessments that produce career and
+              major matches, sold institutionally to schools.
+            </p>
+          </div>
+          <div class="profile__cell">
+            <h4>Strengths</h4>
+            <p>
+              Differentiated assessment methodology, US school distribution,
+              clean aptitude-to-career storyline.
+            </p>
+          </div>
+          <div class="profile__cell">
+            <h4>Gaps Tareeq can exploit</h4>
+            <p>
+              US-centric, no regional fit, expensive institutional model,
+              limited weekly-action layer post-assessment.
+            </p>
+          </div>
+        </div>
+        <p class="profile__takeaway">
+          <strong>Tareeq takeaway:</strong> YouScience is the strongest
+          schools-channel benchmark for assessment quality. Tareeq's
+          12-minute CORE assessment can match it on rigor while feeling like
+          a product students choose to take, not one they're handed.
+        </p>
+      </article>
+
+      <footer class="footer">
+        <span class="footer__brand">
+          <span class="footer__dot"></span>
+          tareeq · competitive compass
+        </span>
+        <span>05</span>
+      </footer>
+    </section>
+
+    <!-- PAGE 6 -->
+    <section class="page">
+      <header class="section-header">
+        <div>
+          <div class="section-header__num"><em>03</em></div>
+          <h1>Individual <em>competitor profiles</em>.</h1>
+        </div>
+        <div class="section-header__brand">part 3 of 4</div>
+      </header>
+
+      <article class="profile">
+        <div class="profile__top">
+          <h2 class="profile__name">PathwayU</h2>
+          <span class="profile__url">pathwayu.com</span>
+        </div>
+        <div class="profile__lane">Purpose-fit assessment</div>
+        <div class="profile__grid">
+          <div class="profile__cell">
+            <h4>Audience</h4>
+            <p>US college students and higher-ed institutions.</p>
+          </div>
+          <div class="profile__cell">
+            <h4>What they sell</h4>
+            <p>
+              Purpose-led assessment (purpose, interests, workplace style)
+              that matches to majors, careers, and degrees.
+            </p>
+          </div>
+          <div class="profile__cell">
+            <h4>Strengths</h4>
+            <p>
+              The "purpose" framing resonates emotionally. Strong institution
+              partnerships, polished outputs.
+            </p>
+          </div>
+          <div class="profile__cell">
+            <h4>Gaps Tareeq can exploit</h4>
+            <p>
+              Built for college, not pre-college decisions. US workplace
+              model bakes into matches. No local-opportunity layer.
+            </p>
+          </div>
+        </div>
+        <p class="profile__takeaway">
+          <strong>Tareeq takeaway:</strong> Borrow the emotional weight of
+          "purpose" framing. Apply it earlier in the journey (16–18, not
+          18–22), with MENA workplace realities and family context baked in.
+        </p>
+      </article>
+
+      <article class="profile">
+        <div class="profile__top">
+          <h2 class="profile__name">CareerExplorer</h2>
+          <span class="profile__url">careerexplorer.com</span>
+        </div>
+        <div class="profile__lane">Free consumer assessment + content funnel</div>
+        <div class="profile__grid">
+          <div class="profile__cell">
+            <h4>Audience</h4>
+            <p>Adults and teens, global English, primarily SEO-acquired.</p>
+          </div>
+          <div class="profile__cell">
+            <h4>What they sell</h4>
+            <p>
+              A long-form psychometric assessment + 1,000+ career profiles
+              + premium content. Massive SEO content moat.
+            </p>
+          </div>
+          <div class="profile__cell">
+            <h4>Strengths</h4>
+            <p>
+              SEO machine, career library breadth, conversion funnel from
+              free assessment to paid features.
+            </p>
+          </div>
+          <div class="profile__cell">
+            <h4>Gaps Tareeq can exploit</h4>
+            <p>
+              No regional fit. No local opportunity layer. Content is
+              generic; experience is "fill out this form".
+            </p>
+          </div>
+        </div>
+        <p class="profile__takeaway">
+          <strong>Tareeq takeaway:</strong> Model the top-of-funnel.
+          Free, well-structured 12-minute assessment with SEO-ready career
+          cluster pages. Then differentiate downstream with the
+          "after" layer they don't ship.
+        </p>
+      </article>
+
+      <footer class="footer">
+        <span class="footer__brand">
+          <span class="footer__dot"></span>
+          tareeq · competitive compass
+        </span>
+        <span>06</span>
+      </footer>
+    </section>
+
+    <!-- PAGE 7 — Mentra solo + closing strategic frame -->
+    <section class="page">
+      <header class="section-header">
+        <div>
+          <div class="section-header__num"><em>03</em></div>
+          <h1>Individual <em>competitor profiles</em>.</h1>
+        </div>
+        <div class="section-header__brand">part 4 of 4</div>
+      </header>
+
+      <article class="profile">
+        <div class="profile__top">
+          <h2 class="profile__name">Mentra</h2>
+          <span class="profile__url">mentra.com</span>
+        </div>
+        <div class="profile__lane">Strengths-aware, inclusive job matching</div>
+        <div class="profile__grid">
+          <div class="profile__cell">
+            <h4>Audience</h4>
+            <p>
+              Neurodivergent professionals and the employers who hire them.
+              Adjacent, not direct competition.
+            </p>
+          </div>
+          <div class="profile__cell">
+            <h4>What they sell</h4>
+            <p>
+              A strengths-first profile and an employer-side marketplace,
+              built around inclusive matching.
+            </p>
+          </div>
+          <div class="profile__cell">
+            <h4>Strengths</h4>
+            <p>
+              Story-driven onboarding, strengths-as-superpower framing,
+              clear emotional voice.
+            </p>
+          </div>
+          <div class="profile__cell">
+            <h4>Gaps Tareeq can exploit</h4>
+            <p>
+              Different audience entirely — but the framing language is
+              borrowable for Tareeq's CORE results page.
+            </p>
+          </div>
+        </div>
+        <p class="profile__takeaway">
+          <strong>Tareeq takeaway:</strong> Inspiration, not competition.
+          The way Mentra frames difference as fit-not-deficit is the model
+          for how Tareeq should narrate a CORE persona to a 16-year-old
+          who has only ever been told they're "good at school" or "not".
+        </p>
+      </article>
+
+      <!-- Closing strategic frame on the Mentra page -->
+      <div class="callout callout--warm" style="margin-top: 22px">
+        <h3>Reading the field as a whole</h3>
+        <p>
+          Across the seven, the same shape repeats: an assessment, a result,
+          a library, a paywall. The product surfaces all collapse into
+          variations of the same noun — a <em class="serif-accent">test</em>.
+          Tareeq is the only one in this set that has the chance to be a
+          <em class="serif-accent">path</em>: something the user walks, not
+          something the user takes.
+        </p>
+      </div>
+
+      <footer class="footer">
+        <span class="footer__brand">
+          <span class="footer__dot"></span>
+          tareeq · competitive compass
+        </span>
+        <span>07</span>
+      </footer>
+    </section>
+
+    <!-- ===================================================
+         PAGE 8 — WHAT TAREEQ SHOULD DO DIFFERENTLY
+         =================================================== -->
+    <section class="page">
+      <header class="section-header">
+        <div>
+          <div class="section-header__num"><em>04</em></div>
+          <h1>What Tareeq should <em>do differently</em>.</h1>
+        </div>
+        <div class="section-header__brand">tareeq · compass</div>
+      </header>
+
+      <p>
+        The competitive set above hands the user a result and ends. Tareeq's
+        product begins where they end. Six strategic differentiators define
+        the wedge.
+      </p>
+
+      <div class="two-col">
+        <div class="callout callout--warm">
+          <h3>01 · Arabic-first, MENA-fluent</h3>
+          <p>
+            Bilingual EN/AR throughout, including TTS narration with Kai's
+            voice in both. No competitor in this set ships Arabic-first.
+            This alone defines a 50M+ youth audience moat.
+          </p>
+        </div>
+        <div class="callout">
+          <h3>02 · Family-aware framing</h3>
+          <p>
+            A parent-friendly summary of the user's CORE compass — written
+            to be read aloud at the dinner table. The decision is the
+            family's, not just the individual's.
+          </p>
+        </div>
+        <div class="callout">
+          <h3>03 · Local opportunity layer</h3>
+          <p>
+            Real internships, programs, university pathways, and scholarships
+            in the user's city or country, surfaced contextually from their
+            CORE result. Beats generic global career library.
+          </p>
+        </div>
+        <div class="callout">
+          <h3>04 · Mentor &amp; counselor pairing</h3>
+          <p>
+            Not a chatbot — a human mentor warm-introduced based on cluster
+            match. Counselor mode for schools mirrors the same flow.
+          </p>
+        </div>
+        <div class="callout">
+          <h3>05 · Weekly action steps</h3>
+          <p>
+            One actionable next step delivered each week post-assessment —
+            an exploratory chat, a free course, a portfolio prompt. Turns a
+            test into a habit.
+          </p>
+        </div>
+        <div class="callout callout--ink">
+          <h3>06 · Compass, not GPS</h3>
+          <p>
+            Tareeq points the direction. The user chooses the destination.
+            This editorial voice — already established on /intro and
+            /contract — is the brand wedge no competitor matches.
+          </p>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <span class="footer__brand">
+          <span class="footer__dot"></span>
+          tareeq · competitive compass
+        </span>
+        <span>08</span>
+      </footer>
+    </section>
+
+    <!-- ===================================================
+         PAGE 9 — SUGGESTED MVP MODULES
+         =================================================== -->
+    <section class="page">
+      <header class="section-header">
+        <div>
+          <div class="section-header__num"><em>05</em></div>
+          <h1>Suggested <em>MVP modules</em>.</h1>
+        </div>
+        <div class="section-header__brand">tareeq · compass</div>
+      </header>
+
+      <p>
+        Six modules form a complete product surface. The first two are
+        already shipping in production at <strong>tareeq-gray.vercel.app</strong>.
+        The remaining four are the post-assessment arc — Tareeq's defensible
+        territory and the part no competitor in this set delivers.
+      </p>
+
+      <h2 style="margin-top: 18px">Shipping today</h2>
+      <div class="two-col">
+        <div class="callout">
+          <h3>A · CORE assessment (12 min)</h3>
+          <p style="margin-bottom: 6px; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(20,16,31,0.5); font-weight: 700;">
+            Foundation · live
+          </p>
+          <p>
+            54-question assessment across four pillars (Curiosities,
+            Operations, Rewards, Ecosystems). Editorial onboarding with
+            Kai, ritualistic Contract of Honesty, animated compass,
+            milestone "Did you know" beats.
+          </p>
+        </div>
+        <div class="callout">
+          <h3>B · Compass result + persona</h3>
+          <p style="margin-bottom: 6px; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(20,16,31,0.5); font-weight: 700;">
+            Foundation · next sprint
+          </p>
+          <p>
+            A named persona derived from the CORE pillars, framed as fit
+            not score. Borrows Mentra's strengths-as-superpower framing
+            for the local cultural context.
+          </p>
+        </div>
+      </div>
+
+      <h2 style="margin-top: 18px">The defensible "after"</h2>
+      <div class="two-col">
+        <div class="callout callout--warm">
+          <h3>C · Local pathway library</h3>
+          <p style="margin-bottom: 6px; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(20,16,31,0.5); font-weight: 700;">
+            Wedge · none of the 7 ship this
+          </p>
+          <p>
+            Programs, internships, scholarships, and university tracks
+            within the user's country, filtered by CORE cluster. Seed with
+            5 anchor countries (KSA, UAE, Egypt, Jordan, Morocco).
+          </p>
+        </div>
+        <div class="callout callout--warm">
+          <h3>D · Mentor &amp; counselor pairing</h3>
+          <p style="margin-bottom: 6px; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(20,16,31,0.5); font-weight: 700;">
+            Wedge · partial overlap with Yenza
+          </p>
+          <p>
+            A vetted human mentor matched on cluster + language + region.
+            Counselor mode for schools mirrors the same flow for
+            institutional buyers.
+          </p>
+        </div>
+        <div class="callout callout--warm">
+          <h3>E · Weekly next step</h3>
+          <p style="margin-bottom: 6px; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(20,16,31,0.5); font-weight: 700;">
+            Wedge · no competitor delivers cadence
+          </p>
+          <p>
+            One actionable next step per week post-assessment, tailored to
+            cluster: a chat prompt, a free course, a portfolio task, a
+            profile to message. Turns a one-time test into a 12-week habit.
+          </p>
+        </div>
+        <div class="callout callout--ink">
+          <h3>F · Family / elder summary</h3>
+          <p style="margin-bottom: 6px; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(245,238,230,0.6); font-weight: 700;">
+            Wedge · entirely unaddressed
+          </p>
+          <p>
+            A one-page printable or share-ready summary of the user's CORE
+            compass and pathway — written for parents and elders, in their
+            register. Removes the family conversation as a friction point.
+          </p>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <span class="footer__brand">
+          <span class="footer__dot"></span>
+          tareeq · competitive compass
+        </span>
+        <span>09</span>
+      </footer>
+    </section>
+
+    <!-- ===================================================
+         PAGE 10 — PRIORITIZATION
+         =================================================== -->
+    <section class="page">
+      <header class="section-header">
+        <div>
+          <div class="section-header__num"><em>06</em></div>
+          <h1>Prioritization for <em>Tareeq</em>.</h1>
+        </div>
+        <div class="section-header__brand">tareeq · compass</div>
+      </header>
+
+      <p>
+        Sequenced by defensibility × effort. The first quadrant is what
+        ships before fundraise; the rest define the 6–12 month roadmap.
+      </p>
+
+      <div class="priority">
+        <div class="priority__quad priority__quad--now">
+          <h3>Now — high impact, low effort</h3>
+          <ul>
+            <li>Ship the <strong>compass result + persona</strong> page (B).</li>
+            <li>Seed the <strong>local pathway library</strong> in 2 anchor countries (C, MVP slice).</li>
+            <li>Stand up the <strong>family-summary</strong> printable (F).</li>
+            <li>Bilingual EN/AR Kai voiceover on /intro and /q/* (locks the moat).</li>
+          </ul>
+        </div>
+        <div class="priority__quad">
+          <h3>Next — high impact, higher effort</h3>
+          <ul>
+            <li><strong>Mentor pairing v1</strong> (D) — manual matching, 50 mentors.</li>
+            <li><strong>Weekly next step</strong> push (E) — 12-week cluster-specific arc.</li>
+            <li>Extend pathway library (C) to 5 anchor countries.</li>
+          </ul>
+        </div>
+        <div class="priority__quad">
+          <h3>Later — high impact, defer for scale</h3>
+          <ul>
+            <li>Counselor / schools mode (B2B variant of D + admin tooling).</li>
+            <li>Mentor marketplace (productize matching, vetting, payouts).</li>
+            <li>Localization beyond Arabic (Bahasa, Urdu).</li>
+          </ul>
+        </div>
+        <div class="priority__quad">
+          <h3>Not yet — kill or postpone</h3>
+          <ul>
+            <li>Generic global career library (CareerExplorer territory).</li>
+            <li>University destination database depth (Unifrog territory).</li>
+            <li>Adult re-skilling lane (different ICP, different product).</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout callout--warm" style="margin-top: 12px">
+        <h3>The wedge in one sentence</h3>
+        <p>
+          The first Tareeq user to finish the assessment, get matched to a
+          mentor in their city, receive a family-readable summary, and
+          complete week one's action step — that's the moment no competitor
+          in this set can replicate.
+        </p>
+      </div>
+
+      <footer class="footer">
+        <span class="footer__brand">
+          <span class="footer__dot"></span>
+          tareeq · competitive compass
+        </span>
+        <span>10</span>
+      </footer>
+    </section>
+
+    <!-- ===================================================
+         PAGE 11 — SOURCE NOTES
+         =================================================== -->
+    <section class="page">
+      <header class="section-header">
+        <div>
+          <div class="section-header__num"><em>07</em></div>
+          <h1>Source <em>notes</em>.</h1>
+        </div>
+        <div class="section-header__brand">tareeq · compass</div>
+      </header>
+
+      <p>
+        Competitor analysis drawn from each company's public website and
+        publicly available product surface as of 2026. Where claims are
+        made about pricing, distribution, or feature depth, they reflect
+        what the company itself publishes.
+      </p>
+
+      <ul class="source-list">
+        <li>
+          <span class="source-list__brand">Yenza Careers</span>
+          <span class="source-list__url">https://www.yenzacareers.com/en</span>
+        </li>
+        <li>
+          <span class="source-list__brand">ISMOJO</span>
+          <span class="source-list__url">https://ismojo.com/</span>
+        </li>
+        <li>
+          <span class="source-list__brand">Unifrog</span>
+          <span class="source-list__url">https://www.unifrog.org/</span>
+        </li>
+        <li>
+          <span class="source-list__brand">YouScience</span>
+          <span class="source-list__url">https://www.youscience.com/</span>
+        </li>
+        <li>
+          <span class="source-list__brand">PathwayU</span>
+          <span class="source-list__url">https://pathwayu.com/</span>
+        </li>
+        <li>
+          <span class="source-list__brand">CareerExplorer</span>
+          <span class="source-list__url">https://www.careerexplorer.com/</span>
+        </li>
+        <li>
+          <span class="source-list__brand">Mentra</span>
+          <span class="source-list__url">https://www.mentra.com</span>
+        </li>
+      </ul>
+
+      <h2>Tareeq reference surface</h2>
+      <p>
+        Live product: <strong>tareeq-gray.vercel.app</strong>. Design tokens
+        and the redesigned v2 system referenced throughout this document
+        live in the working tree at <strong>app/globals.css</strong> and
+        <strong>tailwind.config.ts</strong>. The compass mechanic, the
+        editorial onboarding (/intro, /contract), and the assessment flow
+        (/q/*) are all in production.
+      </p>
+
+      <div class="callout callout--ink" style="margin-top: 18px">
+        <h3>Methodology note</h3>
+        <p>
+          This document is a strategic brief, not a third-party audit.
+          Numerical claims about competitor scale, pricing, or audience size
+          have been intentionally avoided where they cannot be sourced from
+          the company's own materials. The competitive read is qualitative
+          and product-shape focused — designed to inform Tareeq's roadmap,
+          not to benchmark KPIs.
+        </p>
+      </div>
+
+      <footer class="footer">
+        <span class="footer__brand">
+          <span class="footer__dot"></span>
+          tareeq · competitive compass
+        </span>
+        <span>11</span>
+      </footer>
+    </section>
+  </body>
+</html>

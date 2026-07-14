@@ -1,0 +1,18 @@
+name: Deploy consumer — staging
+
+on:
+  push:
+    branches: [staging]
+    paths:
+      - "apps/consumer/**"
+      - ".github/workflows/deploy-consumer-staging.yml"
+      - ".github/workflows/_deploy-apprunner.yml"
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/_deploy-apprunner.yml
+    with:
+      app: consumer
+      environment: consumer-staging
+      working-directory: apps/consumer
+    secrets: inherit

@@ -1,0 +1,2447 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1B0B3A" />
+  <title>tareeq — Find your path</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-0: #14082b;
+      --bg-1: #2b1265;
+      --bg-2: #4b1a8a;
+      --accent-pink: #ff3d83;
+      --accent-orange: #ff8a3d;
+      --accent-gold: #ffc24d;
+      --logo-cyan: #4ee0ff;
+      --text-100: #ffffff;
+      --text-80: rgba(255,255,255,0.82);
+      --text-60: rgba(255,255,255,0.62);
+      --text-40: rgba(255,255,255,0.40);
+      --glass: rgba(255,255,255,0.06);
+      --glass-strong: rgba(255,255,255,0.10);
+      --glass-border: rgba(255,255,255,0.14);
+      --grad-warm: linear-gradient(95deg, #ff3d83 0%, #ff6b3d 55%, #ffa53d 100%);
+      --grad-warm-soft: linear-gradient(95deg, rgba(255,61,131,0.18), rgba(255,138,61,0.18));
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { margin: 0; padding: 0; height: 100%; overflow-x: hidden; }
+    body {
+      font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+      font-weight: 400;
+      color: var(--text-100);
+      background: var(--bg-0);
+      min-height: 100vh;
+      min-height: 100dvh;
+      letter-spacing: -0.005em;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Ambient background — layered gradients + grain */
+    .bg-layer {
+      position: fixed; inset: 0; z-index: -2;
+      background:
+        radial-gradient(60% 50% at 20% 10%, rgba(255,61,131,0.35), transparent 60%),
+        radial-gradient(70% 60% at 85% 20%, rgba(120,60,255,0.55), transparent 65%),
+        radial-gradient(80% 70% at 50% 100%, rgba(75,26,138,0.95), transparent 70%),
+        linear-gradient(180deg, #190a36 0%, #1B0B3A 50%, #110626 100%);
+    }
+    .bg-grain {
+      position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      opacity: 0.07; mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    }
+
+    /* Layout */
+    .app {
+      position: relative;
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      min-height: 100dvh;
+      padding: 24px 22px 32px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Logo (inline SVG so it always works) */
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      height: 28px;
+      position: relative;
+    }
+    .logo svg, .logo img { height: 100%; width: auto; display: block; }
+    .logo img.raster {
+      max-height: 100%;
+      object-fit: contain;
+    }
+    .logo .has-raster + svg { display: none; } /* hide SVG when raster loaded */
+
+    /* Header */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: env(safe-area-inset-top);
+      margin-bottom: 4px;
+      min-height: 32px;
+    }
+    .iconbtn {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      color: var(--text-100);
+      width: 38px; height: 38px;
+      border-radius: 12px;
+      display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: transform .15s ease, background .15s ease;
+    }
+    .iconbtn:hover { background: var(--glass-strong); }
+    .iconbtn:active { transform: scale(0.96); }
+
+    .topbar-title {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600; font-size: 16px; letter-spacing: -0.01em;
+      color: var(--text-100);
+    }
+    .topbar-wordmark {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 1px;
+      font-size: 22px;
+      line-height: 1;
+      font-weight: 500;
+      letter-spacing: 0;
+    }
+    .topbar-wordmark .q {
+      position: relative;
+      color: var(--logo-cyan);
+      text-shadow: 0 0 12px rgba(78,224,255,0.25);
+    }
+    .topbar-wordmark .q::after {
+      content: "";
+      position: absolute;
+      right: -6px;
+      top: -3px;
+      width: 6px;
+      height: 6px;
+      border: 1.4px solid var(--logo-cyan);
+      border-radius: 50%;
+    }
+    .mode-toggle {
+      min-width: 54px;
+      width: auto;
+      padding: 0 9px;
+      gap: 5px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .mode-toggle .mode-read { display: none; }
+    .mode-toggle[data-mode="read"] .mode-listen { display: none; }
+    .mode-toggle[data-mode="read"] .mode-read { display: inline; }
+    .mode-toggle[data-mode="read"] { color: var(--text-80); }
+
+    /* Progress */
+    .progress-wrap {
+      display: flex; align-items: center; gap: 14px;
+      margin: 22px 0 26px;
+    }
+    .progress-track {
+      flex: 1;
+      height: 6px; border-radius: 999px;
+      background: rgba(255,255,255,0.10);
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-fill {
+      position: absolute; inset: 0;
+      width: 0%;
+      background: var(--grad-warm);
+      border-radius: 999px;
+      box-shadow: 0 0 18px rgba(255,107,61,0.55), 0 0 36px rgba(255,61,131,0.35);
+      transition: width .45s cubic-bezier(.22,.61,.36,1);
+    }
+    .progress-count {
+      font-variant-numeric: tabular-nums;
+      font-size: 14px; font-weight: 600;
+      color: var(--text-60);
+      letter-spacing: 0.02em;
+    }
+    .progress-count b { color: var(--accent-orange); font-weight: 700; }
+    .progress-wrap[data-lesson="true"] {
+      margin: 16px 0 8px;
+    }
+    .progress-wrap[data-lesson="true"] .progress-count {
+      display: none;
+    }
+    .progress-eyebrow {
+      display: none;
+      margin-bottom: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-40);
+    }
+    .progress-eyebrow.active {
+      display: block;
+    }
+
+    /* Screens */
+    .screen { display: none; flex: 1; flex-direction: column; animation: fadeUp .4s ease both; }
+    .screen.active { display: flex; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Landing */
+    .hero {
+      flex: 1;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 8px 4px 0;
+    }
+    .hero-logo {
+      height: 56px;
+      margin-bottom: 28px;
+      animation: floatLogo 6s ease-in-out infinite;
+    }
+    @keyframes floatLogo {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-4px); }
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 12px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 999px;
+      font-size: 12px; font-weight: 500;
+      color: var(--text-80);
+      text-transform: uppercase; letter-spacing: 0.12em;
+      width: max-content;
+      margin-bottom: 18px;
+    }
+    .hero-eyebrow .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent-orange);
+      box-shadow: 0 0 10px var(--accent-orange);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%     { opacity: .5; transform: scale(0.85); }
+    }
+    h1.hero-title {
+      font-family: 'Fraunces', 'Outfit', serif;
+      font-weight: 500;
+      font-size: clamp(36px, 9.5vw, 44px);
+      line-height: 1.05;
+      letter-spacing: -0.025em;
+      margin: 0 0 18px;
+      color: var(--text-100);
+    }
+    h1.hero-title em {
+      font-style: italic;
+      font-weight: 400;
+      background: var(--grad-warm);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-sub {
+      font-size: 17px; line-height: 1.55;
+      color: var(--text-80);
+      margin: 0 0 32px;
+      max-width: 32ch;
+    }
+    .hero-meta {
+      display: flex; gap: 16px;
+      margin-bottom: 36px;
+    }
+    .meta-pill {
+      display: flex; flex-direction: column; gap: 2px;
+      padding: 12px 16px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      flex: 1;
+    }
+    .meta-pill .num {
+      font-family: 'Fraunces', serif;
+      font-size: 22px; font-weight: 600;
+      color: var(--accent-orange);
+      line-height: 1;
+    }
+    .meta-pill .lbl {
+      font-size: 11px; color: var(--text-60);
+      text-transform: uppercase; letter-spacing: 0.1em;
+    }
+    .kai-card {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 14px 16px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      margin-bottom: 24px;
+    }
+    .kai-avatar {
+      flex: none;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--grad-warm);
+      display: grid; place-items: center;
+      font-family: 'Fraunces', serif;
+      font-weight: 700; font-size: 18px;
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(255,61,131,0.4);
+    }
+    .kai-card .text {
+      font-size: 14px; line-height: 1.5; color: var(--text-80);
+    }
+    .kai-card .text b { color: var(--text-100); font-weight: 600; }
+
+    /* CTA */
+    .cta {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%;
+      padding: 18px 22px;
+      background: var(--grad-warm);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow:
+        0 14px 40px rgba(255,61,131,0.45),
+        0 6px 20px rgba(255,138,61,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.3);
+      transition: transform .15s ease, box-shadow .25s ease;
+    }
+    .cta:hover { transform: translateY(-1px); }
+    .cta:active { transform: translateY(1px); }
+    .cta:disabled {
+      opacity: 0.4; cursor: not-allowed;
+      box-shadow: none;
+    }
+    .cta .arrow {
+      width: 18px; height: 18px;
+      transition: transform .2s ease;
+    }
+    .cta:hover .arrow { transform: translateX(3px); }
+
+    .cta-ghost {
+      background: transparent;
+      color: var(--text-80);
+      box-shadow: none;
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 500;
+    }
+    .cta-ghost:hover { color: #fff; }
+
+    .footnote {
+      font-size: 12px;
+      color: var(--text-40);
+      text-align: center;
+      margin-top: 14px;
+    }
+
+    /* Lesson question flow */
+    #screen-question,
+    #screen-tip {
+      flex: 0 0 auto;
+      gap: 14px;
+      padding-bottom: 2px;
+    }
+    .q-card {
+      position: relative;
+      background: transparent;
+      border: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .speech-bubble {
+      position: relative;
+      margin-top: -8px;
+      padding: 18px 18px 17px;
+      border-radius: 24px 24px 24px 10px;
+      background: rgba(255,255,255,0.94);
+      color: #24113d;
+      box-shadow:
+        0 16px 42px rgba(0,0,0,0.23),
+        inset 0 1px 0 rgba(255,255,255,0.78);
+      transform-origin: 30% 0%;
+    }
+    .speech-bubble::before {
+      content: "";
+      position: absolute;
+      left: 30px;
+      top: -14px;
+      width: 30px;
+      height: 30px;
+      background: rgba(255,255,255,0.94);
+      clip-path: polygon(0 100%, 100% 100%, 22% 0);
+      filter: drop-shadow(0 -4px 5px rgba(0,0,0,0.06));
+    }
+    .q-title {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-weight: 500;
+      font-size: clamp(22px, 6.2vw, 26px);
+      line-height: 1.14;
+      letter-spacing: 0;
+      margin: 0;
+      color: #24113d;
+    }
+    .audio-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 54px;
+      margin-top: -2px;
+    }
+    .audio-btn {
+      position: relative;
+      flex: none;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      display: inline-grid;
+      place-items: center;
+      background: var(--grad-warm);
+      border: 0;
+      color: #fff;
+      cursor: pointer;
+      box-shadow:
+        0 12px 28px rgba(255,61,131,0.36),
+        inset 0 1px 0 rgba(255,255,255,0.28);
+      transition: transform .15s ease, opacity .15s ease, filter .15s ease;
+    }
+    .audio-btn:hover { filter: brightness(1.05); }
+    .audio-btn:active { transform: scale(0.94); }
+    .audio-btn[data-state="muted"] { opacity: 0.72; }
+    .audio-btn[data-state="unavailable"] {
+      opacity: 0.42;
+      filter: grayscale(0.25);
+    }
+    .audio-btn .wave-symbol { display: none; }
+    .audio-btn[data-state="playing"] .play-symbol { display: none; }
+    .audio-btn[data-state="playing"] .wave-symbol {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .audio-btn[data-state="playing"] .wave-symbol span {
+      width: 4px;
+      height: 16px;
+      border-radius: 999px;
+      background: currentColor;
+      animation: audioPulse 0.7s ease-in-out infinite;
+    }
+    .audio-btn[data-state="playing"] .wave-symbol span:nth-child(2) {
+      animation-delay: .12s;
+    }
+    .audio-btn[data-state="playing"] .wave-symbol span:nth-child(3) {
+      animation-delay: .24s;
+    }
+    @keyframes audioPulse {
+      0%,100% { transform: scaleY(0.55); opacity: 0.65; }
+      50%     { transform: scaleY(1.15); opacity: 1; }
+    }
+    .slow-btn {
+      min-width: 58px;
+      height: 36px;
+      border-radius: 999px;
+      border: 1px solid var(--glass-border);
+      background: var(--glass);
+      color: var(--text-80);
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: transform .15s ease, background .15s ease, opacity .15s ease;
+    }
+    .slow-btn:hover { background: var(--glass-strong); color: #fff; }
+    .slow-btn:active { transform: scale(0.96); }
+    .slow-btn[hidden] { display: none; }
+    .audio-note {
+      min-height: 18px;
+      margin: -3px 0 0;
+      text-align: center;
+      color: var(--text-40);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    /* Options */
+    .opts { display: flex; flex-direction: column; gap: 9px; }
+    .opt {
+      min-height: 60px;
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 13px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
+      position: relative;
+      overflow: hidden;
+      text-align: left;
+    }
+    .opt:hover {
+      background: var(--glass-strong);
+      border-color: rgba(255,255,255,0.24);
+      transform: translateY(-1px);
+    }
+    .opt .letter {
+      flex: none;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      display: grid; place-items: center;
+      background: rgba(255,255,255,0.10);
+      border: 1px solid var(--glass-border);
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--text-80);
+      transition: all .2s ease;
+    }
+    .opt .body {
+      flex: 1;
+      align-self: center;
+      font-size: 15px;
+      line-height: 1.32;
+      color: var(--text-80);
+    }
+    .opt.selected {
+      background: var(--grad-warm);
+      border-color: transparent;
+      box-shadow:
+        0 10px 28px rgba(255,61,131,0.36),
+        0 2px 14px rgba(255,138,61,0.28),
+        inset 0 1px 0 rgba(255,255,255,0.25);
+    }
+    .opt.selected .body { color: #fff; font-weight: 600; }
+    .opt.selected .letter {
+      background: rgba(255,255,255,0.22);
+      color: #fff;
+      border-color: rgba(255,255,255,0.4);
+    }
+    .opt.binary .letter { display: grid; }
+
+    /* Footer buttons row */
+    .footer {
+      position: sticky;
+      bottom: calc(env(safe-area-inset-bottom) + 0px);
+      display: flex; gap: 12px;
+      margin-top: 2px;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(18px);
+      pointer-events: none;
+      transition: opacity .25s ease, transform .25s cubic-bezier(.22,.61,.36,1);
+    }
+    .footer.ready {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .footer .cta { flex: 1; }
+    .footer .iconbtn { width: 50px; height: 50px; border-radius: 50%; }
+
+    /* Select (for country) */
+    select.input {
+      width: 100%;
+      min-height: 60px;
+      padding: 14px 18px;
+      background-color: rgba(255,255,255,0.94);
+      border: 1px solid rgba(255,255,255,0.45);
+      border-radius: 999px;
+      color: #24113d;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      appearance: none;
+      background-image:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='%2324113d' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 18px center;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.16);
+    }
+    select.input:focus { outline: none; border-color: var(--accent-orange); }
+    select.input option { background: #fff; color: #24113d; }
+
+    /* Tip interstitials */
+    .tip-card {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      padding: 22px 20px 24px;
+      border-radius: 26px;
+      border: 1px solid var(--glass-border);
+      background: var(--glass-strong);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 20px 55px rgba(0,0,0,0.22);
+    }
+    .tip-visual {
+      min-height: 168px;
+      border-radius: 22px;
+      border: 1px solid var(--glass-border);
+      background:
+        radial-gradient(50% 70% at 50% 35%, rgba(255,138,61,0.22), transparent 68%),
+        radial-gradient(60% 55% at 50% 100%, rgba(255,61,131,0.18), transparent 70%),
+        rgba(255,255,255,0.04);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+    .tip-visual svg {
+      width: min(78%, 240px);
+      height: auto;
+      filter: drop-shadow(0 18px 28px rgba(0,0,0,0.26));
+    }
+    .tip-eyebrow {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-40);
+    }
+    .tip-title {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-weight: 500;
+      font-size: 29px;
+      line-height: 1.08;
+      margin: 0;
+    }
+    .tip-copy {
+      margin: -8px 0 0;
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--text-80);
+    }
+
+    /* Results */
+    .result-hero {
+      padding: 12px 0 4px;
+    }
+    .result-greet {
+      font-size: 13px;
+      color: var(--text-60);
+      text-transform: uppercase; letter-spacing: 0.14em;
+      margin-bottom: 8px;
+    }
+    .result-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 500;
+      font-size: 36px;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin: 0 0 6px;
+    }
+    .result-title em {
+      font-style: italic;
+      background: var(--grad-warm);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .result-sub {
+      font-size: 15px; color: var(--text-80);
+      line-height: 1.55;
+      margin: 0 0 20px;
+    }
+
+    .card {
+      background: var(--glass-strong);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 14px;
+      backdrop-filter: blur(10px);
+    }
+    .card-head {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 14px;
+    }
+    .card-eyebrow {
+      font-size: 11px; font-weight: 600;
+      color: var(--text-60);
+      text-transform: uppercase; letter-spacing: 0.14em;
+    }
+    .card-rank {
+      font-family: 'Fraunces', serif;
+      font-size: 24px; font-weight: 500;
+      color: var(--accent-orange);
+      line-height: 1;
+    }
+    .card h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 26px;
+      font-weight: 500;
+      margin: 0 0 6px;
+      letter-spacing: -0.01em;
+    }
+    .card p { margin: 0; color: var(--text-80); font-size: 14px; line-height: 1.5; }
+
+    .bars { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+    .bar {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px;
+    }
+    .bar .name { flex: none; width: 92px; color: var(--text-80); }
+    .bar .meter {
+      flex: 1; height: 8px; border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+      position: relative;
+    }
+    .bar .meter .fill {
+      position: absolute; inset: 0; width: 0%;
+      background: var(--grad-warm);
+      border-radius: 999px;
+      transition: width .8s cubic-bezier(.22,.61,.36,1);
+    }
+    .bar .meter.muted .fill { background: rgba(255,255,255,0.25); }
+    .bar .pct { flex: none; width: 36px; text-align: right; color: var(--text-60); font-variant-numeric: tabular-nums; }
+
+    .axes { display: flex; flex-direction: column; gap: 14px; margin-top: 12px; }
+    .axis {
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .axis-labels {
+      display: flex; justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-60);
+      text-transform: uppercase; letter-spacing: 0.1em;
+    }
+    .axis-track {
+      position: relative;
+      height: 10px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 999px;
+    }
+    .axis-dot {
+      position: absolute;
+      top: 50%;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--grad-warm);
+      transform: translate(-50%, -50%);
+      box-shadow: 0 4px 16px rgba(255,107,61,0.5);
+      transition: left .8s cubic-bezier(.22,.61,.36,1);
+    }
+
+    .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .pill {
+      padding: 7px 12px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--text-80);
+    }
+    .pill.hot {
+      background: var(--grad-warm-soft);
+      border-color: rgba(255,107,61,0.35);
+      color: #fff;
+    }
+
+    /* Misc */
+    .text-center { text-align: center; }
+    .spacer { flex: 1; }
+
+    /* ------------------------------------------------------------------
+       Kai/Nour character stage — hero on landing, smaller lesson host on
+       question screens, compact corner mode, hidden on results.
+       ------------------------------------------------------------------ */
+    .kai-stage {
+      position: relative;
+      width: 100%;
+      pointer-events: none;            /* clicks pass through to content */
+      transition: all 0.55s cubic-bezier(.22,.61,.36,1);
+    }
+    .kai-stage #kaiSvg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      pointer-events: auto;
+      transform-origin: 50% 72%;
+      overflow: visible;
+    }
+    .kai-stage #kaiSvg [stroke] {
+      vector-effect: non-scaling-stroke;
+    }
+
+    #kai-head-breathe {
+      animation: kai-breathe 3.2s ease-in-out infinite;
+      transform-box: fill-box;
+      transform-origin: 50% 90%;
+    }
+    #kai-head-sway {
+      animation: kai-sway 6s ease-in-out infinite;
+      transform-box: fill-box;
+      transform-origin: 50% 90%;
+    }
+    #kai-bun {
+      animation: kai-bun-bob 3.2s ease-in-out infinite;
+      transform-box: fill-box;
+      transform-origin: 22px -48px;
+    }
+    #kai-eyes {
+      --kai-gaze-x: 0px;
+      --kai-gaze-y: 0px;
+      transform: translate(var(--kai-gaze-x), var(--kai-gaze-y)) scaleY(1);
+      transform-box: fill-box;
+      transform-origin: 50% 50%;
+      transition: transform 200ms ease-out;
+    }
+    #kai-eyes.blink {
+      transform: translate(var(--kai-gaze-x), var(--kai-gaze-y)) scaleY(0.08);
+      transition-duration: 90ms;
+    }
+    .kai-stage[data-state="thinking"] #kai-head-sway {
+      animation-play-state: paused;
+      transform: rotate(6deg);
+    }
+    .kai-stage[data-state="celebrating"] #kaiSvg {
+      animation: kai-celebrate 0.7s ease-in-out infinite alternate;
+    }
+    @keyframes kai-breathe {
+      0%,100% { transform: scale(1) translateY(0); }
+      50% { transform: scale(1.015) translateY(-1px); }
+    }
+    @keyframes kai-sway {
+      0%,100% { transform: rotate(-1.5deg); }
+      50% { transform: rotate(1.5deg); }
+    }
+    @keyframes kai-bun-bob {
+      0%,100% { transform: translateY(0) rotate(-18deg); }
+      50% { transform: translateY(-1.5px) rotate(-16deg); }
+    }
+    @keyframes kai-celebrate {
+      from { transform: translateY(0) scale(1); }
+      to { transform: translateY(-2px) scale(1.015); }
+    }
+
+    /* Landing mode — large, centered above the hero copy */
+    .kai-stage[data-mode="landing"] {
+      height: clamp(190px, 32dvh, 260px);
+      margin: 4px 0 14px;
+      filter: drop-shadow(0 30px 50px rgba(255,61,131,0.30))
+              drop-shadow(0 10px 25px rgba(120,60,255,0.28));
+    }
+
+    /* Lesson mode — present, but no longer crowding the mobile question. */
+    .kai-stage[data-mode="lesson"] {
+      height: clamp(145px, 24dvh, 210px);
+      margin: 0 0 4px;
+      border-radius: 24px;
+      overflow: hidden;
+      background:
+        radial-gradient(42% 50% at 50% 42%, rgba(255,138,61,0.22), transparent 70%),
+        radial-gradient(56% 62% at 50% 72%, rgba(255,61,131,0.18), transparent 72%),
+        radial-gradient(80% 80% at 50% 100%, rgba(75,26,138,0.20), transparent 74%);
+      filter: drop-shadow(0 18px 28px rgba(255,61,131,0.18));
+    }
+    .kai-stage[data-mode="lesson"]::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 8px;
+      width: min(58%, 190px);
+      height: 28px;
+      border-radius: 50%;
+      transform: translateX(-50%);
+      background: radial-gradient(closest-side, rgba(0,0,0,0.34), transparent);
+      opacity: 0.34;
+      pointer-events: none;
+    }
+    .kai-stage[data-mode="lesson"][data-speaking="true"] {
+      filter:
+        drop-shadow(0 18px 30px rgba(255,61,131,0.24))
+        drop-shadow(0 0 30px rgba(255,138,61,0.18));
+    }
+    .kai-stage[data-pose="nod"] #kaiSvg {
+      animation: nourNod 0.34s ease-out both;
+    }
+    .kai-stage[data-pose="tilt"] #kaiSvg {
+      animation: nourTilt 0.5s ease-out both;
+    }
+    @keyframes nourNod {
+      0%   { transform: translateY(0); }
+      45%  { transform: translateY(5px) scale(1.01); }
+      100% { transform: translateY(0); }
+    }
+    @keyframes nourTilt {
+      0%,100% { transform: rotateZ(0); }
+      45%     { transform: rotateZ(-2.8deg); }
+    }
+
+    /* Corner mode remains for landing/legacy consistency. */
+    .kai-stage[data-mode="corner"] {
+      position: fixed;
+      top: calc(env(safe-area-inset-top) + 14px);
+      right: 14px;
+      width: 64px;
+      height: 64px;
+      margin: 0;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 1px solid var(--glass-border);
+      background:
+        radial-gradient(60% 80% at 50% 30%, rgba(255,107,61,0.20), rgba(0,0,0,0)),
+        rgba(20,8,40,0.55);
+      backdrop-filter: blur(12px);
+      box-shadow:
+        0 8px 24px rgba(0,0,0,0.35),
+        0 0 0 1px rgba(255,255,255,0.04);
+      z-index: 50;
+    }
+    .kai-stage[data-mode="corner"]::after {
+      /* subtle pulsing ring while speaking */
+      content: "";
+      position: absolute;
+      inset: -2px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      pointer-events: none;
+    }
+    .kai-stage[data-mode="corner"][data-speaking="true"]::after {
+      border-color: rgba(255,107,61,0.85);
+      animation: kaiPulse 1.4s ease-in-out infinite;
+    }
+    @keyframes kaiPulse {
+      0%, 100% { transform: scale(1);    opacity: 0.6; }
+      50%      { transform: scale(1.08); opacity: 1;   }
+    }
+
+    /* Hidden mode — completely out of layout */
+    .kai-stage[data-mode="hidden"] {
+      display: none;
+    }
+    .kai-stage[data-mode="hidden"] #kaiSvg,
+    .kai-stage[data-mode="hidden"] #kai-head-breathe,
+    .kai-stage[data-mode="hidden"] #kai-head-sway,
+    .kai-stage[data-mode="hidden"] #kai-bun {
+      animation-play-state: paused;
+    }
+
+    /* Larger screens: keep mobile feel but elevate */
+    @media (min-width: 600px) {
+      .app {
+        margin: 28px auto;
+        border-radius: 32px;
+        border: 1px solid rgba(255,255,255,0.08);
+        box-shadow:
+          0 30px 80px rgba(0,0,0,0.6),
+          0 0 0 1px rgba(255,255,255,0.04);
+        min-height: calc(100dvh - 56px);
+        background:
+          radial-gradient(80% 60% at 50% 0%, rgba(255,61,131,0.18), transparent 60%),
+          linear-gradient(180deg, rgba(40,16,90,0.6), rgba(20,8,40,0.7));
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-layer" aria-hidden="true"></div>
+  <div class="bg-grain" aria-hidden="true"></div>
+
+  <div class="app">
+    <!-- Topbar -->
+    <div class="topbar" id="topbar">
+      <button class="iconbtn" id="backBtn" aria-label="Back" style="visibility:hidden;">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="topbar-title" id="topbarTitle" aria-label="tareeq">
+        <span class="topbar-wordmark">taree<span class="q">q</span></span>
+      </div>
+      <button class="iconbtn mode-toggle" id="readModeToggle" data-mode="listen" aria-label="Switch to read mode">
+        <span class="mode-listen">Speak</span>
+        <span class="mode-read">Aa</span>
+      </button>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-wrap" id="progressWrap" style="display:none;">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-count"><b id="progressNum">1</b> / <span id="progressTotal">44</span></div>
+    </div>
+    <div class="progress-eyebrow" id="progressEyebrow"></div>
+
+    <!-- Nour stage. Lives outside the screens so one animated SVG can move
+         between landing, lesson, corner, and hidden modes without re-init. -->
+    <div id="kaiStage" class="kai-stage" data-mode="hidden" data-speaking="false">
+      <svg id="kaiSvg" viewBox="-90 -90 180 200" preserveAspectRatio="xMidYMid meet"
+           style="width:100%; height:100%; display:block; filter: drop-shadow(0 8px 18px rgba(0,0,0,0.32));"
+           xmlns="http://www.w3.org/2000/svg" aria-label="Nour, your guide">
+        <g id="kai-body">
+          <rect id="kai-neck" x="-9" y="35" width="18" height="12" rx="2" fill="#e8a87c"/>
+          <path id="kai-shirt" fill="#1a2a45"
+            d="M -56 50 Q -58 70 -54 100 L 54 100 Q 58 70 56 50 Q 46 42 24 44 L 5 50 L 0 62 L -5 50 L -24 44 Q -46 42 -56 50 Z"/>
+        </g>
+        <g id="kai-head-breathe" style="transform-box: fill-box; transform-origin: 50% 90%;">
+          <g id="kai-head-sway" style="transform-box: fill-box; transform-origin: 50% 90%;">
+            <g id="kai-head" style="transform-box: fill-box; transform-origin: 50% 90%;">
+              <g id="kai-hair-back">
+                <path fill="#1a2a45" d="M 28 -22 Q 38 -6 36 22 Q 32 46 22 50 L 18 22 Q 22 0 22 -18 Z"/>
+              </g>
+              <g id="kai-bun">
+                <ellipse fill="#1a2a45" cx="22" cy="-48" rx="14" ry="10"/>
+              </g>
+              <g id="kai-hair-crown">
+                <path fill="#1a2a45"
+                  d="M -30 -18 Q -34 -46 0 -52 Q 34 -52 36 -28 Q 36 -14 28 -16 L 22 -28 Q 0 -32 -22 -28 L -28 -16 Q -32 -14 -30 -18 Z"/>
+              </g>
+              <g id="kai-face">
+                <ellipse fill="#e8a87c" cx="0" cy="0" rx="30" ry="38"/>
+                <ellipse fill="#e8a87c" cx="-28" cy="-1" rx="3" ry="6"/>
+                <ellipse fill="#c4845a" cx="-29" cy="1" rx="1.5" ry="3"/>
+              </g>
+              <g id="kai-hair-front">
+                <path fill="#1a2a45"
+                  d="M -28 -18 Q -8 -32 18 -22 Q 22 -10 18 -4 L 12 -20 Q -6 -24 -22 -16 Q -28 -14 -28 -18 Z"/>
+              </g>
+              <g id="kai-brows">
+                <path id="kai-brow-l" d="M -26 -16 Q -18 -19 -10 -15"
+                      stroke="#1a2a45" stroke-width="3" stroke-linecap="round" fill="none"/>
+                <path id="kai-brow-r" d="M 10 -15 Q 18 -19 26 -16"
+                      stroke="#1a2a45" stroke-width="3" stroke-linecap="round" fill="none"/>
+              </g>
+              <g id="kai-eyes" style="transform-box: fill-box; transform-origin: 50% 50%;">
+                <circle id="kai-eye-l" fill="#1a2a45" cx="-15" cy="-4" r="3"/>
+                <circle id="kai-eye-r" fill="#1a2a45" cx="15" cy="-4" r="3"/>
+              </g>
+              <g id="kai-nose">
+                <path d="M -2 6 Q -4 11 0 13 Q 4 11 2 6"
+                      stroke="#c4845a" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+              </g>
+              <g id="kai-cheeks">
+                <circle fill="#c4604a" opacity="0.75" cx="-22" cy="14" r="4"/>
+                <circle fill="#c4604a" opacity="0.75" cx="22" cy="14" r="4"/>
+              </g>
+              <g id="kai-mouth">
+                <path id="kai-mouth-smile" d="M -5 21 Q 0 23 5 21"
+                      stroke="#7a2828" stroke-width="2" stroke-linecap="round" fill="none"/>
+                <ellipse id="kai-mouth-open" cx="0" cy="22" rx="4" ry="0" fill="#3a1010"/>
+              </g>
+            </g>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <!-- =========== LANDING =========== -->
+    <section class="screen active" id="screen-landing">
+      <div class="hero">
+        <!-- Logo: progressive enhancement — if logo.png/svg exists in folder, it replaces the SVG below -->
+        <div class="logo hero-logo" id="brandLogo" aria-label="tareeq">
+          <svg viewBox="0 0 520 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="qCyan" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%"  stop-color="#a6f3ff"/>
+                <stop offset="50%" stop-color="#5fe5ff"/>
+                <stop offset="100%" stop-color="#3dd2ff"/>
+              </linearGradient>
+              <linearGradient id="tailFade" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%"   stop-color="#5fe5ff" stop-opacity="0.95"/>
+                <stop offset="65%"  stop-color="#7df3ff" stop-opacity="0.85"/>
+                <stop offset="100%" stop-color="#a6f3ff" stop-opacity="0"/>
+              </linearGradient>
+              <filter id="cyanGlow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="2.5" result="blur"/>
+                <feMerge>
+                  <feMergeNode in="blur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+
+            <!-- Wordmark -->
+            <text x="0" y="100"
+                  font-family="Outfit, system-ui, sans-serif"
+                  font-weight="400"
+                  font-size="118"
+                  letter-spacing="-2"
+                  fill="#ffffff">tareeq</text>
+
+            <!-- Magnifying-glass "q" overlay -->
+            <g filter="url(#cyanGlow)">
+              <!-- glass ring (sits on the bowl of the q) -->
+              <circle cx="448" cy="68" r="34"
+                      fill="none" stroke="url(#qCyan)" stroke-width="3.2"/>
+              <!-- diagonal arrow shaft inside -->
+              <line x1="436" y1="80" x2="461" y2="55"
+                    stroke="url(#qCyan)" stroke-width="3.6" stroke-linecap="round"/>
+              <!-- arrow head -->
+              <polyline points="453,55 461,55 461,63"
+                        fill="none" stroke="url(#qCyan)" stroke-width="3.6"
+                        stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- swooshing tail trailing off to the right -->
+              <path d="M462 102 Q488 120 518 124"
+                    fill="none" stroke="url(#tailFade)" stroke-width="6"
+                    stroke-linecap="round"/>
+              <path d="M462 102 Q488 120 518 124"
+                    fill="none" stroke="url(#qCyan)" stroke-width="2.4"
+                    stroke-linecap="round" opacity="0.9"/>
+            </g>
+          </svg>
+        </div>
+
+        <span class="hero-eyebrow"><span class="dot"></span> CORE Assessment · v4</span>
+        <h1 class="hero-title">Find the work that <em>actually lights you up.</em></h1>
+        <p class="hero-sub">A compass, not a GPS. 40 honest questions reveal where your curiosity, energy, and rewards line up.</p>
+
+        <div class="hero-meta">
+          <div class="meta-pill">
+            <span class="num">40</span>
+            <span class="lbl">Questions</span>
+          </div>
+          <div class="meta-pill">
+            <span class="num">~7</span>
+            <span class="lbl">Minutes</span>
+          </div>
+          <div class="meta-pill">
+            <span class="num">8</span>
+            <span class="lbl">Clusters</span>
+          </div>
+        </div>
+
+        <div class="kai-card">
+          <div class="kai-avatar">K</div>
+          <div class="text">
+            <b>Hey, I'm Kai.</b> Think of me as a filter for all the noise. No wrong answers — just pick what you'd actually do.
+          </div>
+        </div>
+
+        <button class="cta" id="startBtn">
+          Start the Assessment
+          <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <p class="footnote">No sign-up. Your answers stay on this device.</p>
+      </div>
+    </section>
+
+    <!-- =========== QUESTION SCREEN (single re-used) =========== -->
+    <section class="screen" id="screen-question">
+      <div class="q-card">
+        <div class="speech-bubble">
+          <h2 class="q-title" id="qTitle"></h2>
+        </div>
+        <div class="audio-row">
+          <button class="audio-btn" id="audioBtn" data-state="idle" aria-label="Replay question">
+            <svg class="play-symbol" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M9 6.5v11l9-5.5-9-5.5z" fill="currentColor"/>
+            </svg>
+            <span class="wave-symbol" aria-hidden="true"><span></span><span></span><span></span></span>
+          </button>
+          <button class="slow-btn" id="slowBtn" type="button" hidden>0.75×</button>
+        </div>
+        <p class="audio-note" id="audioNote"></p>
+        <div class="opts" id="qOpts"></div>
+      </div>
+      <audio id="ttsAudio" preload="auto" playsinline></audio>
+      <div class="footer">
+        <button class="iconbtn" id="prevBtn" aria-label="Previous">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="cta" id="nextBtn" disabled>
+          Next
+          <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- =========== TIP SCREEN (between pillars) =========== -->
+    <section class="screen" id="screen-tip">
+      <div class="tip-card">
+        <div class="tip-visual" id="tipVisual" aria-hidden="true"></div>
+        <div>
+          <div class="tip-eyebrow" id="tipEyebrow">Nour Tip</div>
+          <h2 class="tip-title" id="tipTitle"></h2>
+          <p class="tip-copy" id="tipCopy"></p>
+        </div>
+        <button class="cta" id="tipContinueBtn">
+          Continue
+          <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- =========== RESULTS =========== -->
+    <section class="screen" id="screen-results">
+      <div class="result-hero">
+        <div class="result-greet">Your Career Compass</div>
+        <h1 class="result-title">You're a <em><span id="rArchetype">Catalyst</span></em>.</h1>
+        <p class="result-sub" id="rSub">Built for the <span id="rClusterName">Technology</span> world — driven by <span id="rDriver1">Mastery</span> &amp; <span id="rDriver2">Autonomy</span>.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="card-eyebrow">Top Career Cluster</span>
+          <span class="card-rank">#1</span>
+        </div>
+        <h3 id="rTopCluster">Technology</h3>
+        <p id="rTopClusterDesc">You're drawn to systems, code, and AI — building tools that solve real problems at scale.</p>
+        <div class="bars" id="rClusterBars"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="card-eyebrow">Operational Archetype</span>
+        </div>
+        <h3 id="rArchetypeName">Catalyst</h3>
+        <p id="rArchetypeDesc">Flexible &amp; broad — you connect dots fast across many domains and create momentum.</p>
+        <div class="axes" style="margin-top:18px;">
+          <div class="axis">
+            <div class="axis-labels"><span>Structured</span><span>Flexible</span></div>
+            <div class="axis-track"><div class="axis-dot" id="axProcDot" style="left:75%"></div></div>
+          </div>
+          <div class="axis">
+            <div class="axis-labels"><span>Deep</span><span>Broad</span></div>
+            <div class="axis-track"><div class="axis-dot" id="axScopeDot" style="left:75%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="card-eyebrow">Reward Drivers</span>
+        </div>
+        <div class="pills" id="rDriverPills"></div>
+        <div class="bars" id="rDriverBars" style="margin-top:18px;"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="card-eyebrow">Where You Thrive</span>
+        </div>
+        <div class="axes">
+          <div class="axis">
+            <div class="axis-labels"><span>Collaborative</span><span>Independent</span></div>
+            <div class="axis-track"><div class="axis-dot" id="axSocialDot"></div></div>
+          </div>
+          <div class="axis">
+            <div class="axis-labels"><span>Dynamic</span><span>Predictable</span></div>
+            <div class="axis-track"><div class="axis-dot" id="axEnvDot"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:6px;">
+        <button class="cta" id="restartBtn">
+          Retake
+          <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M3 12a9 9 0 1015-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 4v6h6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <p class="footnote">A compass, not a GPS. You still choose the destination.</p>
+    </section>
+  </div>
+
+  <script>
+  /* ========================================================================
+     TAREEQ — CORE Assessment v4
+     Single-file mobile-first web app.
+     ======================================================================== */
+
+  // ---------- Data ----------
+  const COUNTRIES_ME = [
+    "United Arab Emirates","Saudi Arabia","Egypt","Jordan","Lebanon","Qatar","Kuwait","Bahrain","Oman","Morocco","Tunisia","Algeria","Iraq","Palestine","Syria","Yemen","Libya","Sudan"
+  ];
+  const COUNTRIES_REST = [
+    "United States","United Kingdom","Canada","Australia","France","Germany","Spain","Italy","Netherlands","Sweden","Norway","Denmark","Turkey","India","Pakistan","Bangladesh","Indonesia","Malaysia","Singapore","Japan","South Korea","China","South Africa","Nigeria","Kenya","Brazil","Mexico","Argentina","Other"
+  ];
+
+  // Demographics
+  const demographics = [
+    { id: "QD1", title: "How old are you?", options: [
+      {l:"A", t:"Under 16"},{l:"B", t:"16 or 17"},{l:"C", t:"18 or 19"},{l:"D", t:"20 or 21"},{l:"E", t:"22 or older"}
+    ]},
+    { id: "QD2", title: "Which country do you currently live in?", kind: "select" },
+    { id: "QD3", title: "What is your current academic stage?", options: [
+      {l:"A", t:"Final 2 years of high school"},
+      {l:"B", t:"Gap year or transition"},
+      {l:"C", t:"Year 1 or 2 of university"},
+      {l:"D", t:"Year 3+ of university"},
+      {l:"E", t:"Not currently in formal education"},
+    ]},
+    { id: "QD4", title: "How do you identify?", options: [
+      {l:"A", t:"Female"},{l:"B", t:"Male"},{l:"C", t:"Prefer not to say"}
+    ]},
+  ];
+
+  // Career clusters
+  const CLUSTERS = {
+    TECH: { name:"Technology", desc:"You're drawn to systems, code, and AI — building tools that scale and rethinking how things work." },
+    ENG:  { name:"Engineering", desc:"You love how physical things work — machines, hardware, systems you can see and touch." },
+    SCI:  { name:"Science & Data", desc:"You're a pattern-hunter — math, biology, chemistry, the hidden structure behind everything." },
+    ART:  { name:"Arts & Media", desc:"You think in stories, visuals, and atmosphere — design, film, performance, sound." },
+    BUS:  { name:"Business", desc:"You see opportunity, strategy, and value — building ventures, deals, and growth engines." },
+    LAW:  { name:"Law & Diplomacy", desc:"You think in rules, fairness, and frameworks — debate, policy, negotiation, justice." },
+    PPL:  { name:"People & Psychology", desc:"You read humans well — motivation, behavior, emotions, the soft systems that move groups." },
+    ENV:  { name:"Environment", desc:"You're tuned to ecosystems and the natural world — conservation, life sciences, the planet." },
+  };
+
+  // Pillar 1 — Curiosities (16 Qs, each option maps to a cluster)
+  const pillar1 = [
+    {
+      id:"Q1", title:"You're refreshing your feed. Which video is an immediate click?",
+      options:[
+        {l:"A", t:"\"How a student turned a school project into a real product that got acquired.\"", c:"BUS"},
+        {l:"B", t:"\"Building a real-life flying suit — how the mechanics actually work.\"", c:"ENG"},
+        {l:"C", t:"\"Why do we feel 'cringe' around certain people? The brain science explained.\"", c:"PPL"},
+        {l:"D", t:"\"I let an AI agent organise my entire life for a week — here's what happened.\"", c:"TECH"},
+      ]
+    },
+    {
+      id:"Q2", title:"You're watching an investigation show. Which character's work is most interesting to you?",
+      options:[
+        {l:"A", t:"The lawyer finding a legal angle no one else spotted to win the case.", c:"LAW"},
+        {l:"B", t:"The designer creating the sets, outfits, and overall look of the show.", c:"ART"},
+        {l:"C", t:"The forensic scientist using chemistry to find hidden clues.", c:"SCI"},
+        {l:"D", t:"The detective working the streets, reading people, and connecting the dots.", c:"PPL"},
+      ]
+    },
+    {
+      id:"Q3", title:"Your school adds a new \"Future Skills\" elective. Which one do you sign up for immediately?",
+      options:[
+        {l:"A", t:"Entrepreneurship: Building a business from scratch.", c:"BUS"},
+        {l:"B", t:"Marine Biology Lab: Understanding ocean ecosystems.", c:"ENV"},
+        {l:"C", t:"Robotics Workshop: Designing and building a working machine.", c:"ENG"},
+        {l:"D", t:"Civic Leadership: Debating policy and international affairs.", c:"LAW"},
+      ]
+    },
+    {
+      id:"Q4", title:"Your friends are having a long debate at lunch. Which topic would pull YOU into the conversation the most?",
+      options:[
+        {l:"A", t:"Whether a new social media app is good or bad for young people.", c:"PPL"},
+        {l:"B", t:"Whether a wealthy person should be allowed to build something huge on protected land.", c:"ENV"},
+        {l:"C", t:"Whether a new government rule makes sense or not.", c:"LAW"},
+        {l:"D", t:"Whether a new AI tool will take over a certain job category.", c:"TECH"},
+      ]
+    },
+    {
+      id:"Q5", title:"To make a school project actually interesting, what would YOU add?",
+      options:[
+        {l:"A", t:"A way to use the info to help a real community you care about.", c:"PPL"},
+        {l:"B", t:"A mathematical model or simulation that predicts what happens next.", c:"SCI"},
+        {l:"C", t:"Professional visuals, graphics, or a cinematic video.", c:"ART"},
+        {l:"D", t:"A way to automate the boring parts so a program does the heavy lifting.", c:"TECH"},
+      ]
+    },
+    {
+      id:"Q6", title:"You're helping out at a local festival or school exhibition. Which tent do you run?",
+      options:[
+        {l:"A", t:"The Green Zone — teaching people about protecting the environment.", c:"ENV"},
+        {l:"B", t:"The Fix-It Shop — repairing broken tech or gadgets.", c:"ENG"},
+        {l:"C", t:"The Story Stage — hosting the event and introducing performers.", c:"ART"},
+        {l:"D", t:"The Debate Hub — discussing ideas for the city's future.", c:"LAW"},
+      ]
+    },
+    {
+      id:"Q7", title:"Which news headline makes you most curious to click?",
+      options:[
+        {l:"A", t:"\"New law passed that changes how teenagers can use social media.\"", c:"LAW"},
+        {l:"B", t:"\"Researchers identify the gene behind a major human disease.\"", c:"SCI"},
+        {l:"C", t:"\"The mathematics behind why certain songs always go viral.\"", c:"SCI"},
+        {l:"D", t:"\"New app lets anyone design their own virtual world without coding.\"", c:"TECH"},
+      ]
+    },
+    {
+      id:"Q8", title:"You've been given a major grant to create something with positive impact on your school. What do you build?",
+      options:[
+        {l:"A", t:"A student-run business or café that generates income for school activities.", c:"BUS"},
+        {l:"B", t:"A high-tech robotics lab for building new hardware.", c:"ENG"},
+        {l:"C", t:"An outdoor garden and eco-space for students to decompress.", c:"ENV"},
+        {l:"D", t:"A mental wellness centre with trained peer counsellors.", c:"PPL"},
+      ]
+    },
+    {
+      id:"Q9", title:"A new community rule is announced that everyone hates. What's your instinct?",
+      options:[
+        {l:"A", t:"Organise a meeting to negotiate a change with community leaders.", c:"LAW"},
+        {l:"B", t:"Look for a smart technical workaround that makes the rule irrelevant.", c:"TECH"},
+        {l:"C", t:"Check in on friends who seem most affected by the rule.", c:"PPL"},
+        {l:"D", t:"Calculate and map out exactly how much time or money this rule costs everyone, so the argument has data.", c:"SCI"},
+      ]
+    },
+    {
+      id:"Q10", title:"A public controversy is trending online. Which angle of the story do YOU find most interesting?",
+      options:[
+        {l:"A", t:"The debate about whether the current laws are fair or need changing.", c:"LAW"},
+        {l:"B", t:"The data analysis showing hidden patterns nobody noticed.", c:"SCI"},
+        {l:"C", t:"The stories and visuals emerging from the people most affected.", c:"ART"},
+        {l:"D", t:"The business side — who is making or losing money from this.", c:"BUS"},
+      ]
+    },
+    {
+      id:"Q11", title:"Which of these tasks would you find MOST enjoyable to help someone with, even if you'd have to learn how?",
+      options:[
+        {l:"A", t:"Making sense of a complicated contract or set of rules.", c:"LAW"},
+        {l:"B", t:"Figuring out why their phone, bike, or something mechanical isn't working.", c:"ENG"},
+        {l:"C", t:"Identifying a plant, bird, or animal they found.", c:"ENV"},
+        {l:"D", t:"Coming up with the best strategy to win a competition or game.", c:"BUS"},
+      ]
+    },
+    {
+      id:"Q12", title:"You open a news app and only have time to read 3 articles today. Which topics pull you?",
+      options:[
+        {l:"A", t:"A diplomatic standoff between two countries.", c:"LAW"},
+        {l:"B", t:"A medical breakthrough that could save millions.", c:"SCI"},
+        {l:"C", t:"A young filmmaker whose short film just went viral.", c:"ART"},
+        {l:"D", t:"An entrepreneur who built a regional business empire from nothing.", c:"BUS"},
+      ]
+    },
+    {
+      id:"Q13", title:"You win a major international youth award. Which category is it in?",
+      options:[
+        {l:"A", t:"The Visionary — for the most original and beautiful design.", c:"ART"},
+        {l:"B", t:"The Strategist — for the most profitable innovation.", c:"BUS"},
+        {l:"C", t:"The Guardian — for the most impactful environmental project.", c:"ENV"},
+        {l:"D", t:"The Architect — for designing the most stable and resilient structure.", c:"ENG"},
+      ]
+    },
+    {
+      id:"Q14", title:"You have an empty studio for a month. What do you turn it into?",
+      options:[
+        {l:"A", t:"A podcast or film studio to share stories and ideas.", c:"ART"},
+        {l:"B", t:"A Maker Space with creative tools to build physical things.", c:"ENG"},
+        {l:"C", t:"A data lab to investigate a real-world mystery.", c:"SCI"},
+        {l:"D", t:"A community wellness lounge for peer support and mental health.", c:"PPL"},
+      ]
+    },
+    {
+      id:"Q15", title:"Which skill would you download into your brain instantly if you could?",
+      options:[
+        {l:"A", t:"Coding any app or AI agent from scratch.", c:"TECH"},
+        {l:"B", t:"Speaking any language fluently, with deep cultural understanding.", c:"PPL"},
+        {l:"C", t:"Understanding exactly how any natural ecosystem works and why.", c:"ENV"},
+        {l:"D", t:"Seeing meaningful patterns in massive amounts of data instantly.", c:"SCI"},
+      ]
+    },
+    {
+      id:"Q16", title:"You have a free week to join one exclusive masterclass. Which one do you pick?",
+      options:[
+        {l:"A", t:"The Diplomat — learning to negotiate international agreements.", c:"LAW"},
+        {l:"B", t:"The Founder — building a startup from idea to first investor round.", c:"BUS"},
+        {l:"C", t:"The Guardian — deep-diving into protecting endangered ecosystems.", c:"ENV"},
+        {l:"D", t:"The Producer — mastering storytelling and going viral with a message.", c:"ART"},
+      ]
+    },
+  ];
+
+  // Pillar 2 — Operations (8 Qs, binary)
+  // Q17-Q20 → Processing: A=Structured, B=Flexible
+  // Q21-Q24 → Scope:     A=Deep,       B=Broad
+  const pillar2 = [
+    { id:"Q17", title:"You're learning something completely new — like a musical instrument, a sport, or a craft. Your instinct is:",
+      axis:"PROC", options:[{l:"A", t:"Find a structured course or tutorial and follow it step by step.", v:"STRUCT"},{l:"B", t:"Jump in and start doing it, picking up the techniques as you go.", v:"FLEX"}]},
+    { id:"Q18", title:"You have a huge project due in two weeks. Your brain:",
+      axis:"PROC", options:[{l:"A", t:"Breaks it into small daily tasks and plans steady progress from day one.", v:"STRUCT"},{l:"B", t:"Works best under deadline pressure — that's when your sharpest ideas come.", v:"FLEX"}]},
+    { id:"Q19", title:"You're managing a group for a school project. How do you make sure things get done?",
+      axis:"PROC", options:[{l:"A", t:"You set deadlines and assign clear tasks to each person.", v:"STRUCT"},{l:"B", t:"You keep the goal open and let people figure out how they want to contribute.", v:"FLEX"}]},
+    { id:"Q20", title:"You're using a new creative app for the first time. What do you do?",
+      axis:"PROC", options:[{l:"A", t:"Look for the official guide so you don't waste time or make mistakes.", v:"STRUCT"},{l:"B", t:"Ignore the guide and just start clicking around to see what happens.", v:"FLEX"}]},
+    { id:"Q21", title:"When you get really into a topic, you tend to:",
+      axis:"SCOPE", options:[{l:"A", t:"Go very deep into one narrow aspect until you understand it completely.", v:"DEEP"},{l:"B", t:"Read widely across everything connected to it — the bigger the picture, the better.", v:"BROAD"}]},
+    { id:"Q22", title:"You see an interesting invention online. What catches your attention first?",
+      axis:"SCOPE", options:[{l:"A", t:"The one clever detail that makes it work — you want to understand that one thing.", v:"DEEP"},{l:"B", t:"How the whole design fits together and what it could connect to next.", v:"BROAD"}]},
+    { id:"Q23", title:"You have a free month to learn something new. You'd rather:",
+      axis:"SCOPE", options:[{l:"A", t:"Become genuinely good at one skill, even if you can only do that one thing.", v:"DEEP"},{l:"B", t:"Get a foundational taste of five different skills and see which one you like.", v:"BROAD"}]},
+    { id:"Q24", title:"Watching a movie with a massive plot twist, you usually:",
+      axis:"SCOPE", options:[{l:"A", t:"Focus on one specific clue and trace how it was hidden through the whole film.", v:"DEEP"},{l:"B", t:"Look at the big picture — how all the characters and events connect to the reveal.", v:"BROAD"}]},
+  ];
+
+  // Pillar 3 — Rewards (10 Qs, binary)
+  const pillar3 = [
+    { id:"Q25", title:"Which comment would make your work feel worth it?",
+      options:[{l:"A", t:"\"Everyone's talking about this — you're the name people know now.\"", v:"REC"},{l:"B", t:"\"This helped me genuinely — you made a real difference.\"", v:"IMP"}]},
+    { id:"Q26", title:"You're offered a Golden Ticket reward. Which do you grab?",
+      options:[{l:"A", t:"An invitation to an exclusive event to meet highly influential people.", v:"REC"},{l:"B", t:"Seed funding to turn your own idea into a real business.", v:"AUT"}]},
+    { id:"Q27", title:"You're entering a contest. What's the win that matters most?",
+      options:[{l:"A", t:"Being the person who clearly knows the craft better than anyone.", v:"MAS"},{l:"B", t:"Seeing your work actually used by a community to make a difference.", v:"IMP"}]},
+    { id:"Q28", title:"What do you most want to be able to say about your life in 10 years?",
+      options:[{l:"A", t:"\"My family has everything they need. Nothing is uncertain. I built something solid.\"", v:"STA"},{l:"B", t:"\"I shook things up. I made changes that people will remember.\"", v:"REC"}]},
+    { id:"Q29", title:"What would make you feel most successful at the end of a major project?",
+      options:[{l:"A", t:"Knowing you've developed a rare skill very few people in the world possess.", v:"MAS"},{l:"B", t:"Seeing your project become famous and respected across your city.", v:"REC"}]},
+    { id:"Q30", title:"You're faced with a task everyone else has given up on. You keep going because:",
+      options:[{l:"A", t:"You love the feeling of cracking a code or solving what others couldn't.", v:"MAS"},{l:"B", t:"You know finishing this will genuinely help someone who is struggling.", v:"IMP"}]},
+    { id:"Q31", title:"If you started something online, which stat would you care about most?",
+      options:[{l:"A", t:"The number of people recognising your name and sharing your work.", v:"REC"},{l:"B", t:"The freedom and profit it gives you to keep building independently.", v:"AUT"}]},
+    { id:"Q32", title:"When thinking about a career path, what is your must-have?",
+      options:[{l:"A", t:"A clear, stable path where you know exactly what the next step looks like.", v:"STA"},{l:"B", t:"An open path that's unclear but could let you make a big difference.", v:"IMP"}]},
+    { id:"Q33", title:"You receive two job offers after graduating. Which one is more appealing?",
+      options:[{l:"A", t:"A well-known company with a clear promotion ladder, benefits, and a guaranteed salary.", v:"STA"},{l:"B", t:"An early-stage startup with big upside potential but no salary guarantee.", v:"AUT"}]},
+    { id:"Q34", title:"If you could design your ideal working life, what's your goal?",
+      options:[{l:"A", t:"Total freedom — work whenever and wherever, answering to no one.", v:"AUT"},{l:"B", t:"Being the world's top expert in one specific field that matters.", v:"MAS"}]},
+  ];
+
+  // Pillar 4 — Ecosystems (6 Qs, binary)
+  // Q35-Q37 → Social: A=Collab, B=Indep
+  // Q38-Q40 → Env: A=Dynamic, B=Predictable
+  const pillar4 = [
+    { id:"Q35", title:"You have to focus on something difficult for an hour. What's your ideal setup?",
+      axis:"SOC", options:[{l:"A", t:"A busy café or shared space with some background energy around you.", v:"COL"},{l:"B", t:"A quiet corner with headphones where no one will walk in.", v:"IND"}]},
+    { id:"Q36", title:"You need an answer from a teammate on a project. You:",
+      axis:"SOC", options:[{l:"A", t:"Jump on a call or meet in person — it's easier to think together.", v:"COL"},{l:"B", t:"Send a message so you can stay focused on your own work.", v:"IND"}]},
+    { id:"Q37", title:"You're in a group making a big decision. Your comfort zone is:",
+      axis:"SOC", options:[{l:"A", t:"Being in the middle of the discussion, hearing everyone's thoughts in real time.", v:"COL"},{l:"B", t:"Stepping back to think it through on your own before committing.", v:"IND"}]},
+    { id:"Q38", title:"You're in a team for a pop-up event. Which phase do you enjoy more?",
+      axis:"ENV", options:[{l:"A", t:"Launch Day — fast-moving, unpredictable, all hands on deck.", v:"DYN"},{l:"B", t:"Build-up weeks — steady pace, clear schedule, everything planned.", v:"PRE"}]},
+    { id:"Q39", title:"When you picture your future workspace, what does it look like?",
+      axis:"ENV", options:[{l:"A", t:"High-energy and always-on, with goals that shift as opportunities appear.", v:"DYN"},{l:"B", t:"Calm and focused, with clear goals that stay stable over time.", v:"PRE"}]},
+    { id:"Q40", title:"You're organising a weekend hangout with friends. Your approach is:",
+      axis:"ENV", options:[{l:"A", t:"Go-with-the-flow — tell everyone to show up and figure it out together.", v:"DYN"},{l:"B", t:"Plan the venue, the food, and main activities in advance so it runs smoothly.", v:"PRE"}]},
+  ];
+
+  // ---------- Build full question list ----------
+  // demographics(4) + pillar1(16) + pillar2(8) + pillar3(10) + pillar4(6) = 44
+  const ALL_QUESTIONS = [];
+  demographics.forEach(q => ALL_QUESTIONS.push({ ...q, group:"Pillar · About You", kind: q.kind || "single" }));
+  pillar1.forEach(q => ALL_QUESTIONS.push({ ...q, group:"Pillar 1 · Curiosities", kind:"single" }));
+  pillar2.forEach(q => ALL_QUESTIONS.push({ ...q, group:"Pillar 2 · Operations", kind:"binary" }));
+  pillar3.forEach(q => ALL_QUESTIONS.push({ ...q, group:"Pillar 3 · Rewards", kind:"binary" }));
+  pillar4.forEach(q => ALL_QUESTIONS.push({ ...q, group:"Pillar 4 · Ecosystems", kind:"binary" }));
+
+  const TOTAL = ALL_QUESTIONS.length;
+
+  const TIP_SCREENS = {
+    4: {
+      eyebrow: "Next · Curiosities",
+      title: "Curiosity is data.",
+      copy: "The things you naturally click, debate, and investigate are signals. Do not pick impressive. Pick magnetic.",
+      visual: "curiosity",
+    },
+    20: {
+      eyebrow: "Next · Operations",
+      title: "How you move matters.",
+      copy: "This section notices whether you prefer structure, exploration, deep focus, or a wide map before you act.",
+      visual: "operations",
+    },
+    28: {
+      eyebrow: "Next · Rewards",
+      title: "Motivation has a shape.",
+      copy: "Recognition, impact, autonomy, mastery, and stability pull people differently. Choose the reward that would actually keep you going.",
+      visual: "rewards",
+    },
+    38: {
+      eyebrow: "Next · Ecosystems",
+      title: "Context changes energy.",
+      copy: "The same talent feels different in a busy room, a quiet corner, a fast sprint, or a predictable rhythm.",
+      visual: "ecosystems",
+    },
+  };
+
+  // ---------- Brand logo: prefer logo.svg/logo.png if present ----------
+  (function tryRasterLogo() {
+    const host = document.getElementById("brandLogo");
+    if (!host) return;
+    const candidates = ["logo.svg", "logo.png", "logo.webp", "logo.jpg"];
+    let i = 0;
+    const tryNext = () => {
+      if (i >= candidates.length) return;
+      const probe = new Image();
+      probe.onload = () => {
+        const img = document.createElement("img");
+        img.src = candidates[i];
+        img.alt = "tareeq";
+        img.className = "raster has-raster";
+        host.insertBefore(img, host.firstChild);
+      };
+      probe.onerror = () => { i += 1; tryNext(); };
+      probe.src = candidates[i];
+    };
+    tryNext();
+  })();
+
+  // ---------- State ----------
+  const state = {
+    idx: 0,
+    answers: {},     // q.id => selected option index
+    soundOn: (function () {
+      try { return localStorage.getItem("tareeq:sound") !== "off"; }
+      catch (e) { return true; }
+    })(),
+    audioAvailable: {}, // q.id => bool (cache HEAD probe results)
+    userGestured: false, // becomes true after first user interaction
+    tipTargetIdx: null,
+    lastQuestionThinking: false,
+  };
+
+  /* ---------- Audio (TTS playback) ---------- */
+  const AUDIO_DIR = "audio/";
+  const AUDIO_EXTS = ["mp3", "m4a", "wav"];
+  let audioEl = null;
+  function getAudioEl() {
+    if (!audioEl) audioEl = document.getElementById("ttsAudio");
+    return audioEl;
+  }
+  function persistSoundPref() {
+    try { localStorage.setItem("tareeq:sound", state.soundOn ? "on" : "off"); }
+    catch (e) {}
+  }
+  function isReadMode() {
+    return !state.soundOn;
+  }
+  function setAudioBtnState(s) {
+    const btn = document.getElementById("audioBtn");
+    if (btn) btn.setAttribute("data-state", s);
+  }
+  function setAudioNote(text) {
+    const note = document.getElementById("audioNote");
+    if (note) note.textContent = text || "";
+  }
+  function syncReadModeToggle() {
+    const toggle = $("readModeToggle");
+    if (!toggle) return;
+    const read = isReadMode();
+    toggle.setAttribute("data-mode", read ? "read" : "listen");
+    toggle.setAttribute("aria-label", read ? "Switch to listen mode" : "Switch to read mode");
+    toggle.title = read ? "Read mode: tap to listen automatically" : "Listen mode: tap for read mode";
+  }
+  function stopAudio() {
+    const a = getAudioEl();
+    if (!a) return;
+    try { a.pause(); a.currentTime = 0; } catch (e) {}
+    setAudioBtnState(state.soundOn ? "idle" : "muted");
+  }
+  function audioSrcFor(qid, ext = "mp3") { return AUDIO_DIR + qid + "." + ext; }
+  async function resolveAudioSrc(qid) {
+    if (qid in state.audioAvailable) return state.audioAvailable[qid];
+    for (const ext of AUDIO_EXTS) {
+      const src = audioSrcFor(qid, ext);
+      try {
+        const res = await fetch(src, { method: "HEAD" });
+        if (res.ok) {
+          state.audioAvailable[qid] = src;
+          return src;
+        }
+      } catch (e) {}
+    }
+    state.audioAvailable[qid] = false;
+    return state.audioAvailable[qid];
+  }
+  async function probeAudio(qid) {
+    return Boolean(await resolveAudioSrc(qid));
+  }
+  function syncSlowButton(qid) {
+    const btn = $("slowBtn");
+    if (!btn) return;
+    btn.hidden = true;
+    probeAudio(qid).then(ok => {
+      if (ALL_QUESTIONS[state.idx]?.id === qid) btn.hidden = !ok;
+    });
+  }
+  async function playQuestionAudio(qid, { fromUserClick = false, rate = 1 } = {}) {
+    const a = getAudioEl();
+    if (!a) return;
+
+    // If sound is off and this wasn't a manual tap on the replay button, do nothing.
+    if (!state.soundOn && !fromUserClick) {
+      setAudioBtnState("muted");
+      return;
+    }
+    // Without a prior user gesture, autoplay will be blocked. Skip silently.
+    if (!state.userGestured && !fromUserClick) return;
+
+    const src = await resolveAudioSrc(qid);
+    if (!src) {
+      setAudioBtnState("unavailable");
+      setAudioNote("Narration not baked yet.");
+      return;
+    }
+
+    stopAudio();
+    a.src = src;
+    a.playbackRate = rate;
+    setAudioBtnState("playing");
+    setAudioNote(rate < 1 ? "Slow replay" : "");
+    try {
+      await a.play();
+    } catch (err) {
+      // File missing, network error, or autoplay blocked.
+      setAudioBtnState("unavailable");
+      setAudioNote("Narration not baked yet.");
+      // Don't spam the console with expected 404s while baking — only log
+      // when it's clearly something else.
+      if (!String(err && err.name).match(/NotAllowedError|NotSupportedError/)) {
+        // console.debug("audio:", err);
+      }
+    } finally {
+      if (!state.soundOn && fromUserClick) {
+        a.addEventListener("ended", () => setAudioBtnState("muted"), { once: true });
+      }
+    }
+  }
+
+  // Plays Kai's narration tracks (kai_intro.*, kai_results.*) — does NOT
+  // require the assessment screen to be active. Used on landing + results.
+  async function playKaiTrack(name) {
+    const a = getAudioEl();
+    if (!a || !state.soundOn || !state.userGestured) return;
+    const src = await resolveAudioSrc(name);
+    if (!src) return;
+    stopAudio();
+    a.src = src;
+    try { await a.play(); } catch (e) { /* missing file is fine */ }
+  }
+
+  // ---------- DOM refs ----------
+  const $ = id => document.getElementById(id);
+  const screens = {
+    landing:  $("screen-landing"),
+    question: $("screen-question"),
+    tip:      $("screen-tip"),
+    results:  $("screen-results"),
+  };
+  function showScreen(name) {
+    Object.values(screens).forEach(s => s.classList.remove("active"));
+    screens[name].classList.add("active");
+    window.scrollTo({ top:0, behavior: "instant" in window ? "instant" : "auto" });
+  }
+
+  function updateProgress(label, idx = state.idx) {
+    const filled = (idx / TOTAL) * 100;
+    $("progressFill").style.width = filled + "%";
+    $("progressNum").textContent = Math.min(idx + 1, TOTAL);
+    $("progressTotal").textContent = TOTAL;
+    $("progressWrap").style.display = "flex";
+    $("progressWrap").setAttribute("data-lesson", "true");
+    $("progressEyebrow").textContent = label || "";
+    $("progressEyebrow").classList.toggle("active", Boolean(label));
+  }
+
+  function triggerKaiPose(pose, duration = 520) {
+    const stage = $("kaiStage");
+    if (!stage) return;
+    if (pose === "thinking") {
+      if (window.kai && typeof window.kai.setState === "function") {
+        try { window.kai.setState("thinking"); } catch (e) {}
+      }
+      clearTimeout(triggerKaiPose.timer);
+      triggerKaiPose.timer = setTimeout(() => {
+        if (window.kai && typeof window.kai.setState === "function") {
+          try { window.kai.setState("idle"); } catch (e) {}
+        }
+      }, duration);
+      return;
+    }
+    stage.setAttribute("data-pose", pose);
+    clearTimeout(triggerKaiPose.timer);
+    triggerKaiPose.timer = setTimeout(() => {
+      if (stage.getAttribute("data-pose") === pose) {
+        stage.removeAttribute("data-pose");
+      }
+    }, duration);
+  }
+
+  function tipIllustration(kind) {
+    const common = `fill="none" stroke-linecap="round" stroke-linejoin="round"`;
+    const glow = `<defs><linearGradient id="tipGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff3d83"/><stop offset="100%" stop-color="#ff8a3d"/></linearGradient></defs>`;
+    if (kind === "operations") {
+      return `<svg viewBox="0 0 220 160" role="img">${glow}<path d="M52 114h116" stroke="rgba(255,255,255,.22)" stroke-width="10" ${common}/><path d="M68 114V58h36v56M116 114V40h36v74" stroke="url(#tipGrad)" stroke-width="10" ${common}/><circle cx="68" cy="58" r="11" fill="#ff8a3d"/><circle cx="152" cy="40" r="11" fill="#ff3d83"/></svg>`;
+    }
+    if (kind === "rewards") {
+      return `<svg viewBox="0 0 220 160" role="img">${glow}<path d="M110 38l17 34 38 6-27 27 6 38-34-18-34 18 6-38-27-27 38-6 17-34z" fill="url(#tipGrad)" opacity=".92"/><path d="M64 44l-12-12M164 46l13-13M110 28V12" stroke="rgba(255,255,255,.62)" stroke-width="8" ${common}/></svg>`;
+    }
+    if (kind === "ecosystems") {
+      return `<svg viewBox="0 0 220 160" role="img">${glow}<path d="M60 112c22-54 78-70 104-50-10 52-58 76-104 50z" fill="url(#tipGrad)" opacity=".9"/><path d="M72 104c22-13 46-22 82-36M96 94c-3-17 1-31 13-42M122 84c12 9 21 21 27 36" stroke="rgba(255,255,255,.72)" stroke-width="7" ${common}/></svg>`;
+    }
+    return `<svg viewBox="0 0 220 160" role="img">${glow}<circle cx="104" cy="74" r="39" fill="url(#tipGrad)" opacity=".9"/><path d="M132 102l30 30M87 74h34M104 57v34" stroke="rgba(255,255,255,.78)" stroke-width="9" ${common}/><path d="M48 122c12-16 31-24 55-24" stroke="rgba(255,255,255,.32)" stroke-width="8" ${common}/></svg>`;
+  }
+
+  function showTip(targetIdx) {
+    const tip = TIP_SCREENS[targetIdx];
+    if (!tip) return false;
+    state.tipTargetIdx = targetIdx;
+    stopAudio();
+    kaiSet("lesson", "idle");
+    triggerKaiPose("nod", 360);
+    updateProgress(tip.eyebrow, Math.max(0, targetIdx - 1));
+    $("tipEyebrow").textContent = tip.eyebrow;
+    $("tipTitle").textContent = tip.title;
+    $("tipCopy").textContent = tip.copy;
+    $("tipVisual").innerHTML = tipIllustration(tip.visual);
+    $("backBtn").style.visibility = "visible";
+    showScreen("tip");
+    return true;
+  }
+
+  // ---------- Render Question ----------
+  function renderQuestion({ autoPlay = true } = {}) {
+    const q = ALL_QUESTIONS[state.idx];
+    $("qTitle").textContent = q.title;
+    $("backBtn").style.visibility = state.idx === 0 ? "visible" : "hidden";
+    state.lastQuestionThinking = false;
+
+    const opts = $("qOpts");
+    opts.innerHTML = "";
+
+    if (q.kind === "select") {
+      // country dropdown
+      const sel = document.createElement("select");
+      sel.className = "input";
+      sel.innerHTML = `<option value="" disabled ${state.answers[q.id] ? "" : "selected"}>Select your country…</option>` +
+        '<optgroup label="Middle East &amp; North Africa">' +
+        COUNTRIES_ME.map(c => `<option value="${c}" ${state.answers[q.id]===c?"selected":""}>${c}</option>`).join("") +
+        '</optgroup>' +
+        '<optgroup label="Other">' +
+        COUNTRIES_REST.map(c => `<option value="${c}" ${state.answers[q.id]===c?"selected":""}>${c}</option>`).join("") +
+        '</optgroup>';
+      sel.addEventListener("change", e => {
+        state.answers[q.id] = e.target.value;
+        triggerKaiPose("tilt");
+        updateNextBtn();
+      });
+      opts.appendChild(sel);
+    } else {
+      q.options.forEach((opt, i) => {
+        const el = document.createElement("button");
+        el.type = "button";
+        el.className = "opt" + (q.kind === "binary" ? " binary" : "");
+        if (state.answers[q.id] === i) el.classList.add("selected");
+        el.innerHTML = `<div class="letter">${opt.l}</div><div class="body">${opt.t}</div>`;
+        el.addEventListener("click", () => {
+          state.answers[q.id] = i;
+          triggerKaiPose("tilt");
+          playKaiTrack("got_it");
+          renderQuestion({ autoPlay: false });
+        });
+        opts.appendChild(el);
+      });
+    }
+
+    updateProgress(q.group, state.idx);
+    kaiSet("lesson", "idle");
+    triggerKaiPose("nod", 360);
+    syncReadModeToggle();
+    syncSlowButton(q.id);
+    setAudioNote(isReadMode() ? "Read mode: tap play whenever you want Nour's voice." : "");
+
+    updateNextBtn();
+
+    // Audio: try to play this question's narration.
+    setAudioBtnState(state.soundOn ? "idle" : "muted");
+    if (autoPlay && !isReadMode()) {
+      setTimeout(() => playQuestionAudio(q.id), 260);
+    }
+
+    $("nextBtn").textContent = (state.idx === TOTAL - 1) ? "See My Compass" : "Next";
+    // Re-attach arrow
+    if (state.idx !== TOTAL - 1) {
+      $("nextBtn").innerHTML = `Next <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    } else {
+      $("nextBtn").innerHTML = `See My Compass <svg class="arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    }
+  }
+
+  function updateNextBtn() {
+    const q = ALL_QUESTIONS[state.idx];
+    const answered = state.answers[q.id] !== undefined && state.answers[q.id] !== "";
+    const btn = $("nextBtn");
+    const footer = btn.closest(".footer");
+
+    if (answered && state.idx === TOTAL - 1 && !state.lastQuestionThinking) {
+      state.lastQuestionThinking = true;
+      triggerKaiPose("thinking", 1000);
+      btn.disabled = true;
+      footer.classList.remove("ready");
+      setTimeout(() => {
+        btn.disabled = false;
+        footer.classList.add("ready");
+      }, 1000);
+      return;
+    }
+
+    btn.disabled = !answered;
+    footer.classList.toggle("ready", answered && !btn.disabled);
+  }
+
+  // ---------- Navigation ----------
+  function next() {
+    if (state.idx < TOTAL - 1) {
+      const targetIdx = state.idx + 1;
+      if (showTip(targetIdx)) return;
+      state.idx = targetIdx;
+      renderQuestion();
+    } else {
+      computeAndShowResults();
+    }
+  }
+  function prev() {
+    if (screens.tip.classList.contains("active")) {
+      state.idx = Math.max(0, (state.tipTargetIdx || 1) - 1);
+      renderQuestion({ autoPlay: false });
+      showScreen("question");
+      return;
+    }
+    if (state.idx > 0) {
+      state.idx -= 1;
+      renderQuestion({ autoPlay: false });
+    } else {
+      // back to landing
+      stopAudio();
+      kaiSet("landing", "idle");
+      showScreen("landing");
+      $("progressWrap").style.display = "none";
+      $("progressEyebrow").classList.remove("active");
+    }
+  }
+
+  function continueFromTip() {
+    const targetIdx = state.tipTargetIdx;
+    if (typeof targetIdx !== "number") return;
+    state.idx = targetIdx;
+    state.tipTargetIdx = null;
+    showScreen("question");
+    renderQuestion();
+  }
+
+  // ---------- Scoring ----------
+  function score() {
+    // Clusters
+    const cluster = { TECH:0, ENG:0, SCI:0, ART:0, BUS:0, LAW:0, PPL:0, ENV:0 };
+    pillar1.forEach(q => {
+      const i = state.answers[q.id];
+      if (i !== undefined) cluster[q.options[i].c] += 1;
+    });
+    const clusterRanked = Object.entries(cluster).sort((a,b) => b[1] - a[1]);
+
+    // Operations
+    let struct = 0, flex = 0, deep = 0, broad = 0;
+    pillar2.forEach(q => {
+      const i = state.answers[q.id];
+      if (i === undefined) return;
+      const v = q.options[i].v;
+      if (v === "STRUCT") struct++;
+      if (v === "FLEX") flex++;
+      if (v === "DEEP") deep++;
+      if (v === "BROAD") broad++;
+    });
+    const proc = struct >= flex ? "STRUCT" : "FLEX";
+    const scope = deep >= broad ? "DEEP" : "BROAD";
+    const archetype =
+      (proc === "STRUCT" && scope === "DEEP")  ? "Precisionist" :
+      (proc === "STRUCT" && scope === "BROAD") ? "Coordinator"  :
+      (proc === "FLEX"   && scope === "DEEP")  ? "Explorer"     :
+                                                  "Catalyst";
+    const archetypeDescs = {
+      "Precisionist":"Structured &amp; deep — you go all-in on a craft and master it with discipline.",
+      "Coordinator":"Structured &amp; broad — you orchestrate multiple workstreams and keep complexity calm.",
+      "Explorer":"Flexible &amp; deep — you wander into one domain at a time and obsess until you crack it.",
+      "Catalyst":"Flexible &amp; broad — you connect dots fast across many domains and create momentum.",
+    };
+
+    // Rewards
+    const driver = { REC:0, IMP:0, AUT:0, MAS:0, STA:0 };
+    pillar3.forEach(q => {
+      const i = state.answers[q.id];
+      if (i !== undefined) driver[q.options[i].v] += 1;
+    });
+    const driverRanked = Object.entries(driver).sort((a,b) => b[1] - a[1]);
+    const driverNames = { REC:"Recognition", IMP:"Impact", AUT:"Autonomy", MAS:"Mastery", STA:"Stability" };
+
+    // Ecosystems
+    let col = 0, ind = 0, dyn = 0, pre = 0;
+    pillar4.forEach(q => {
+      const i = state.answers[q.id];
+      if (i === undefined) return;
+      const v = q.options[i].v;
+      if (v === "COL") col++;
+      if (v === "IND") ind++;
+      if (v === "DYN") dyn++;
+      if (v === "PRE") pre++;
+    });
+    // axis position: 0% = left label, 100% = right label
+    const socialPos = 50 + ((ind - col) / 3) * 35; // -3..3 → 15..85
+    const envPos    = 50 + ((pre - dyn) / 3) * 35;
+
+    // Processing/Scope positions (Pillar 2 axes) — both have 4 Qs
+    const procPos  = 50 + ((flex - struct) / 4) * 30; // 20..80
+    const scopePos = 50 + ((broad - deep) / 4) * 30;
+
+    return {
+      cluster, clusterRanked,
+      archetype, archetypeDesc: archetypeDescs[archetype],
+      driver, driverRanked, driverNames,
+      socialPos, envPos, procPos, scopePos,
+    };
+  }
+
+  function computeAndShowResults() {
+    const r = score();
+    // Header
+    const topCluster = r.clusterRanked[0][0];
+    $("rArchetype").textContent = r.archetype;
+    $("rClusterName").textContent = CLUSTERS[topCluster].name;
+    $("rDriver1").textContent = r.driverNames[r.driverRanked[0][0]];
+    $("rDriver2").textContent = r.driverNames[r.driverRanked[1][0]];
+
+    // Top cluster card
+    $("rTopCluster").textContent = CLUSTERS[topCluster].name;
+    $("rTopClusterDesc").textContent = CLUSTERS[topCluster].desc;
+
+    // Cluster bars (top 4)
+    const maxCluster = Math.max(...Object.values(r.cluster), 1);
+    const bars = $("rClusterBars");
+    bars.innerHTML = "";
+    r.clusterRanked.slice(0, 5).forEach(([key, val], i) => {
+      const pct = Math.round((val / 16) * 100);
+      const row = document.createElement("div");
+      row.className = "bar";
+      row.innerHTML = `
+        <div class="name">${CLUSTERS[key].name}</div>
+        <div class="meter ${i === 0 ? "" : "muted"}"><div class="fill" style="width:0%"></div></div>
+        <div class="pct">${pct}%</div>
+      `;
+      bars.appendChild(row);
+      requestAnimationFrame(() => {
+        row.querySelector(".fill").style.width = pct + "%";
+      });
+    });
+
+    // Archetype
+    $("rArchetypeName").textContent = r.archetype;
+    $("rArchetypeDesc").innerHTML = r.archetypeDesc;
+    $("axProcDot").style.left = r.procPos + "%";
+    $("axScopeDot").style.left = r.scopePos + "%";
+
+    // Reward pills + bars
+    const pills = $("rDriverPills");
+    pills.innerHTML = "";
+    r.driverRanked.forEach(([k], i) => {
+      const el = document.createElement("span");
+      el.className = "pill" + (i < 2 ? " hot" : "");
+      el.textContent = (i === 0 ? "Primary · " : i === 1 ? "Secondary · " : "") + r.driverNames[k];
+      pills.appendChild(el);
+    });
+
+    const dBars = $("rDriverBars");
+    dBars.innerHTML = "";
+    r.driverRanked.forEach(([k, v], i) => {
+      const pct = Math.round((v / 4) * 100); // max 4 occurrences per driver (rough cap)
+      const capped = Math.min(pct, 100);
+      const row = document.createElement("div");
+      row.className = "bar";
+      row.innerHTML = `
+        <div class="name">${r.driverNames[k]}</div>
+        <div class="meter ${i < 2 ? "" : "muted"}"><div class="fill" style="width:0%"></div></div>
+        <div class="pct">${v}</div>
+      `;
+      dBars.appendChild(row);
+      requestAnimationFrame(() => {
+        row.querySelector(".fill").style.width = capped + "%";
+      });
+    });
+
+    // Ecosystem axes
+    $("axSocialDot").style.left = r.socialPos + "%";
+    $("axEnvDot").style.left = r.envPos + "%";
+
+    stopAudio();
+    kaiSet("corner", "celebrating");
+    setTimeout(() => kaiSet("hidden"), 2000);
+    showScreen("results");
+    $("progressWrap").style.display = "none";
+    $("progressEyebrow").classList.remove("active");
+    // Optional results outro — graceful no-op if kai_results audio doesn't exist.
+    setTimeout(() => playKaiTrack("kai_results"), 300);
+  }
+
+  // ---------- Kai stage helpers ----------
+  function kaiSet(mode, stateName) {
+    const stage = $("kaiStage");
+    if (stage) stage.setAttribute("data-mode", mode);
+    if (window.kai && typeof window.kai.setMode === "function") {
+      try { window.kai.setMode(mode); } catch (e) {}
+    }
+    if (stateName && window.kai && typeof window.kai.setState === "function") {
+      try { window.kai.setState(stateName); } catch (e) {}
+    }
+  }
+
+  // ---------- Events ----------
+  $("startBtn").addEventListener("click", () => {
+    state.userGestured = true;
+    kaiSet("lesson", "idle");
+    showScreen("question");
+    state.idx = 0;
+    renderQuestion();
+  });
+  $("nextBtn").addEventListener("click", () => { state.userGestured = true; next(); });
+  $("prevBtn").addEventListener("click", () => { state.userGestured = true; prev(); });
+  $("backBtn").addEventListener("click", () => { state.userGestured = true; prev(); });
+  $("tipContinueBtn").addEventListener("click", () => { state.userGestured = true; continueFromTip(); });
+  $("restartBtn").addEventListener("click", () => {
+    state.idx = 0;
+    state.answers = {};
+    state.tipTargetIdx = null;
+    stopAudio();
+    kaiSet("landing", "idle");
+    showScreen("landing");
+    $("progressWrap").style.display = "none";
+    $("progressEyebrow").classList.remove("active");
+  });
+
+  /* Read/listen mode toggle in topbar */
+  $("readModeToggle").addEventListener("click", () => {
+    state.userGestured = true;
+    state.soundOn = !state.soundOn;
+    persistSoundPref();
+    syncReadModeToggle();
+    if (state.soundOn) {
+      // Re-play current question if we're on the assessment screen.
+      if (screens.question.classList.contains("active")) {
+        const q = ALL_QUESTIONS[state.idx];
+        if (q) playQuestionAudio(q.id, { fromUserClick: true });
+      }
+    } else {
+      stopAudio();
+      setAudioNote("Read mode: tap play whenever you want Nour's voice.");
+    }
+  });
+  syncReadModeToggle();
+
+  /* Replay button on the question card */
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest && e.target.closest("#audioBtn");
+    if (!btn) return;
+    state.userGestured = true;
+    // Tapping the replay button while muted should momentarily play this one.
+    const q = ALL_QUESTIONS[state.idx];
+    if (q) playQuestionAudio(q.id, { fromUserClick: true });
+  });
+
+  $("slowBtn").addEventListener("click", () => {
+    state.userGestured = true;
+    const q = ALL_QUESTIONS[state.idx];
+    if (q) playQuestionAudio(q.id, { fromUserClick: true, rate: 0.75 });
+  });
+
+  /* Nour intro — auto-play once on first user gesture while on landing.
+     Tapping anywhere on the landing screen counts as a gesture. The Start
+     button still works the same; the intro just plays in parallel. */
+  (function wireKaiIntro() {
+    let played = false;
+    const tryPlay = () => {
+      if (played) return;
+      if (!screens.landing.classList.contains("active")) return;
+      played = true;
+      state.userGestured = true;
+      // Tiny delay so the audio context has a chance to resume.
+      setTimeout(() => playKaiTrack("kai_intro"), 50);
+    };
+    // First touch/click anywhere on the landing screen triggers the intro.
+    screens.landing.addEventListener("pointerdown", tryPlay, { once: false });
+    // Also let the user tap the stage to replay.
+    const stage = document.getElementById("kaiStage");
+    if (stage) stage.addEventListener("click", () => {
+      played = false; // allow replays
+      tryPlay();
+    });
+  })();
+
+  /* Audio element status events — flip the replay button back to idle when done */
+  (function bindAudioEvents() {
+    const a = getAudioEl();
+    if (!a) return;
+    a.addEventListener("ended", () => {
+      setAudioBtnState(state.soundOn ? "idle" : "muted");
+      setAudioNote(isReadMode() ? "Read mode: tap play whenever you want Nour's voice." : "");
+      a.playbackRate = 1;
+    });
+    a.addEventListener("error", () => {
+      setAudioBtnState("unavailable");
+      setAudioNote("Narration not baked yet.");
+    });
+    a.addEventListener("pause", () => {
+      // Only switch out of "playing" if the playback actually stopped, not on a transient pause.
+      if (a.ended || a.currentTime === 0) setAudioBtnState(state.soundOn ? "idle" : "muted");
+    });
+  })();
+
+  // keyboard a11y
+  document.addEventListener("keydown", (e) => {
+    if (screens.question.classList.contains("active")) {
+      const q = ALL_QUESTIONS[state.idx];
+      if (q.kind !== "select" && /^[1-9]$/.test(e.key)) {
+        const i = parseInt(e.key, 10) - 1;
+        if (i < (q.options?.length || 0)) {
+          state.answers[q.id] = i;
+          triggerKaiPose("tilt");
+          renderQuestion({ autoPlay: false });
+        }
+      }
+      if (e.key === "Enter") {
+        if (!$("nextBtn").disabled) next();
+      }
+      if (e.key === "ArrowLeft") prev();
+    }
+  });
+  </script>
+
+  <!-- ============================================================
+       Kai/Nour — panel-free SVG mentor with audio-driven lip sync.
+       No external dependencies; preserves the legacy window.kai API.
+       ============================================================ -->
+  <script>
+  (function bootKaiSvg() {
+    function initKaiSvg() {
+      const stage = document.getElementById("kaiStage");
+      const kaiSvg = document.getElementById("kaiSvg");
+      const audioEl = document.getElementById("ttsAudio");
+      if (!stage || !kaiSvg || !audioEl) {
+        console.warn("Kai SVG: required DOM nodes missing — skipping init.");
+        return;
+      }
+
+      const eyes = document.getElementById("kai-eyes");
+      const eyeL = document.getElementById("kai-eye-l");
+      const eyeR = document.getElementById("kai-eye-r");
+      const mouthSmile = document.getElementById("kai-mouth-smile");
+      const mouthOpen = document.getElementById("kai-mouth-open");
+      const browL = document.getElementById("kai-brow-l");
+      const browR = document.getElementById("kai-brow-r");
+      const smilePath = "M -5 21 Q 0 23 5 21";
+      const flatPath = "M -4 21 L 4 21";
+      const wideSmilePath = "M -10 18 Q 0 31 10 18";
+      const browNeutralL = "M -26 -16 Q -18 -19 -10 -15";
+      const browNeutralR = "M 10 -15 Q 18 -19 26 -16";
+      const browRaisedL = "M -26 -20 Q -18 -25 -10 -20";
+      const originalEyeL = eyeL ? eyeL.outerHTML : "";
+      const originalEyeR = eyeR ? eyeR.outerHTML : "";
+
+      let currentState = "idle";
+      let ready = false;
+      let raf = 0;
+      let blinkTimer = 0;
+      let currentMouth = 0;
+      let audioCtx = null;
+      let analyser = null;
+      let audioSource = null;
+      let ampBuf = null;
+      let celebratingEyes = false;
+
+      function clamp(min, value, max) {
+        return Math.min(max, Math.max(min, value));
+      }
+
+      function setMode(mode) {
+        stage.setAttribute("data-mode", mode);
+      }
+
+      function show(mode) {
+        setMode(mode || "landing");
+      }
+
+      function isReady() {
+        return ready;
+      }
+
+      function setMouth(amount) {
+        currentMouth = clamp(0, amount, 1);
+        if (mouthOpen) mouthOpen.setAttribute("ry", String(clamp(0, currentMouth * 6, 6)));
+        if (mouthSmile) mouthSmile.style.opacity = String(clamp(0, 1 - currentMouth, 1));
+      }
+
+      function restoreEyes() {
+        if (!celebratingEyes || !eyes) return;
+        eyes.innerHTML = originalEyeL + originalEyeR;
+        celebratingEyes = false;
+      }
+
+      function applyNeutralFace() {
+        restoreEyes();
+        if (browL) browL.setAttribute("d", browNeutralL);
+        if (browR) browR.setAttribute("d", browNeutralR);
+        if (eyes) {
+          eyes.style.setProperty("--kai-gaze-x", "0px");
+          eyes.style.setProperty("--kai-gaze-y", "0px");
+        }
+        if (mouthSmile) {
+          mouthSmile.setAttribute("d", smilePath);
+          mouthSmile.setAttribute("stroke", "#7a2828");
+          mouthSmile.style.opacity = "1";
+        }
+        setMouth(0);
+      }
+
+      function applyThinkingFace() {
+        restoreEyes();
+        if (browL) browL.setAttribute("d", browRaisedL);
+        if (browR) browR.setAttribute("d", browNeutralR);
+        if (eyes) {
+          eyes.style.setProperty("--kai-gaze-x", "1px");
+          eyes.style.setProperty("--kai-gaze-y", "-1px");
+        }
+        if (mouthSmile) {
+          mouthSmile.setAttribute("d", flatPath);
+          mouthSmile.setAttribute("stroke", "#7a2828");
+          mouthSmile.style.opacity = "1";
+        }
+        setMouth(0);
+      }
+
+      function applyCelebratingFace() {
+        if (eyes && !celebratingEyes) {
+          eyes.innerHTML =
+            '<path d="M -21 -4 Q -15 -10 -9 -4" stroke="#1a2a45" stroke-width="3" fill="none" stroke-linecap="round"/>' +
+            '<path d="M 9 -4 Q 15 -10 21 -4" stroke="#1a2a45" stroke-width="3" fill="none" stroke-linecap="round"/>';
+          celebratingEyes = true;
+        }
+        if (browL) browL.setAttribute("d", browNeutralL);
+        if (browR) browR.setAttribute("d", browNeutralR);
+        if (mouthSmile) {
+          mouthSmile.setAttribute("d", wideSmilePath);
+          mouthSmile.setAttribute("stroke", "#7a2828");
+          mouthSmile.style.opacity = "1";
+        }
+        setMouth(0);
+      }
+
+      function setState(nextState) {
+        currentState = nextState || "idle";
+        stage.setAttribute("data-state", currentState);
+        if (currentState === "thinking") applyThinkingFace();
+        else if (currentState === "celebrating") applyCelebratingFace();
+        else applyNeutralFace();
+        startLoop();
+      }
+
+      function ensureAudioGraph() {
+        if (analyser) return;
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if (!Ctx) return;
+        try {
+          audioCtx = new Ctx();
+          audioSource = audioCtx.createMediaElementSource(audioEl);
+          analyser = audioCtx.createAnalyser();
+          analyser.fftSize = 128;
+          analyser.smoothingTimeConstant = 0.6;
+          audioSource.connect(analyser);
+          analyser.connect(audioCtx.destination);
+          ampBuf = new Uint8Array(analyser.frequencyBinCount);
+        } catch (error) {
+          analyser = null;
+          ampBuf = null;
+        }
+      }
+
+      function primeAudioGraph() {
+        ensureAudioGraph();
+        if (audioCtx && audioCtx.state === "suspended") audioCtx.resume().catch(() => {});
+      }
+
+      function readAmplitude() {
+        if (!analyser || !ampBuf) return 0;
+        analyser.getByteFrequencyData(ampBuf);
+        let sum = 0;
+        for (let i = 0; i < ampBuf.length; i++) sum += ampBuf[i];
+        return Math.min(1, (sum / ampBuf.length / 255) * 1.7);
+      }
+
+      function scheduleBlink() {
+        clearTimeout(blinkTimer);
+        const delay = 2200 + Math.random() * 2600;
+        blinkTimer = setTimeout(() => {
+          if (!document.hidden && currentState !== "speaking" && currentState !== "thinking" && currentState !== "celebrating" && eyes) {
+            eyes.classList.add("blink");
+            setTimeout(() => eyes.classList.remove("blink"), 90);
+          }
+          scheduleBlink();
+        }, delay);
+      }
+
+      function animate() {
+        if (document.hidden) {
+          raf = 0;
+          return;
+        }
+        let targetMouth = 0;
+        if (currentState === "speaking" && !audioEl.paused && !audioEl.ended) {
+          targetMouth = readAmplitude();
+        }
+        currentMouth += (targetMouth - currentMouth) * 0.45;
+        setMouth(currentMouth);
+        raf = requestAnimationFrame(animate);
+      }
+
+      function startLoop() {
+        if (!raf && !document.hidden) raf = requestAnimationFrame(animate);
+      }
+
+      function stopLoop() {
+        if (raf) cancelAnimationFrame(raf);
+        raf = 0;
+      }
+
+      if (!window.matchMedia || !window.matchMedia("(pointer: coarse)").matches) {
+        window.addEventListener("pointermove", (event) => {
+          if (!eyes || celebratingEyes) return;
+          const dx = event.clientX - window.innerWidth / 2;
+          const dy = event.clientY - window.innerHeight / 2;
+          eyes.style.setProperty("--kai-gaze-x", clamp(-2, dx * 0.01, 2).toFixed(2) + "px");
+          eyes.style.setProperty("--kai-gaze-y", clamp(-2, dy * 0.01, 2).toFixed(2) + "px");
+        }, { passive: true });
+      }
+
+      document.addEventListener("pointerdown", primeAudioGraph, { once: true, capture: true });
+      document.addEventListener("keydown", primeAudioGraph, { once: true, capture: true });
+
+      audioEl.addEventListener("play", () => {
+        stage.setAttribute("data-speaking", "true");
+        primeAudioGraph();
+        setState("speaking");
+      });
+
+      audioEl.addEventListener("ended", () => {
+        stage.setAttribute("data-speaking", "false");
+        setState("idle");
+      });
+
+      audioEl.addEventListener("pause", () => {
+        stage.setAttribute("data-speaking", "false");
+        if (currentState === "speaking") setState("idle");
+      });
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) stopLoop();
+        else startLoop();
+      });
+
+      window.kai = { setMode, show, setState, isReady };
+      ready = true;
+      setMode("landing");
+      setState("idle");
+      scheduleBlink();
+      window.dispatchEvent(new CustomEvent("kai:ready"));
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initKaiSvg, { once: true });
+    } else {
+      initKaiSvg();
+    }
+  })();
+  </script>
+</body>
+</html>

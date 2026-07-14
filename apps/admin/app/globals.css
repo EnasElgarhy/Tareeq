@@ -1,0 +1,1633 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+ * Tareeq Design System v2.0
+ * Source of truth: docs/design.md
+ * ============================================================ */
+:root {
+  /* Night — primary product surfaces (Orbit-inspired near-black base
+     with a soft violet glow only at the top) */
+  --night: #08051a; /* deepest near-black with hint of violet */
+  --midnight: #100a24; /* mid-dark, used as the gradient core */
+  --dusk: #221248; /* the violet bloom at the top */
+
+  /* Violet — primary brand */
+  --violet: #6e48e4;
+  --violet-soft: #9d7ff0;
+  --lilac: #c8b6f0;
+
+  /* Sand — celebratory contrast surfaces */
+  --sand: #f5eee6;
+  --paper: #f9f4ec;
+
+  /* Carbon — type ink on cream surfaces */
+  --carbon: #14101f;
+  --carbon-soft: #2b2440;
+
+  /* Accents */
+  --gold: #f4c660;
+  --gold-soft: #fde7a8;
+  --blush: #f2a8b3;
+  --mint: #6fe0c0;
+
+  /* Functional */
+  --success: #6fe0c0;
+  --warning: #f4c660;
+  --error: #e07a6f;
+
+  /* Gradients */
+  --night-gradient: linear-gradient(
+    180deg,
+    #221248 0%,
+    #100a24 38%,
+    #08051a 100%
+  );
+  --aurora: linear-gradient(
+    135deg,
+    #6e48e4 0%,
+    #9d7ff0 35%,
+    #f2a8b3 70%,
+    #f4c660 100%
+  );
+  --gold-gradient: linear-gradient(135deg, #f4c660 0%, #f5d57f 100%);
+  --violet-gradient: linear-gradient(135deg, #6e48e4 0%, #9d7ff0 100%);
+  /* Warm sweep — pink → red-orange → gold. The primary accent for
+     headline highlights and the main CTA button. */
+  --grad-warm: linear-gradient(95deg, #ff3d83 0%, #ff6b3d 55%, #ffa53d 100%);
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-2xl: 36px;
+  --radius-pill: 9999px;
+
+  /* Shadows */
+  --ring-dark-sm: inset 0 0 0 1px rgba(245, 238, 230, 0.08);
+  --ring-dark-md: inset 0 0 0 1px rgba(245, 238, 230, 0.14);
+  --shadow-sand-sm:
+    0 1px 2px rgba(20, 16, 31, 0.04), 0 1px 3px rgba(20, 16, 31, 0.06);
+  --shadow-sand-md:
+    0 8px 24px rgba(20, 16, 31, 0.06), 0 2px 8px rgba(20, 16, 31, 0.04);
+  --shadow-sand-lg:
+    0 24px 48px rgba(20, 16, 31, 0.08), 0 8px 16px rgba(20, 16, 31, 0.05);
+  --shadow-gold-glow:
+    0 12px 28px rgba(244, 198, 96, 0.35), 0 4px 10px rgba(244, 198, 96, 0.15);
+  --shadow-violet-glow:
+    0 12px 28px rgba(110, 72, 228, 0.35), 0 4px 10px rgba(110, 72, 228, 0.15);
+  --shadow-warm-glow:
+    0 14px 32px rgba(255, 61, 131, 0.38), 0 6px 14px rgba(255, 107, 61, 0.22);
+
+  /* Motion */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasis: cubic-bezier(0.3, 0, 0, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 320ms;
+  --duration-reveal: 480ms;
+
+  /* Font stacks (overridden by next/font CSS vars in <html>) */
+  --font-sans:
+    var(--font-jakarta), system-ui, -apple-system, "Segoe UI", Roboto,
+    sans-serif;
+  --font-arabic-stack:
+    var(--font-arabic), "SF Arabic", "Segoe UI Arabic", Tahoma, sans-serif;
+  --font-question-stack:
+    var(--font-question), Georgia, "Times New Roman", serif;
+  --font-display: var(--font-display-italic), Georgia, "Times New Roman", serif;
+}
+
+/* ============================================================
+ * Base reset
+ * ============================================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  min-height: 100%;
+  background: var(--night);
+  color-scheme: dark;
+}
+
+body {
+  min-height: 100dvh;
+  font-family: var(--font-sans);
+  color: var(--sand);
+  background: var(--night);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+:lang(ar) {
+  font-family: var(--font-arabic-stack);
+}
+
+a {
+  color: var(--violet-soft);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--lilac);
+}
+/* Inside the light "warm paper" app surface, links inherit the surrounding
+ * ink color by default instead of the global brand-violet link color, so
+ * card and structural links never leak violet (e.g. the hero eyebrow).
+ * Components opt into a specific link color explicitly where they need one. */
+.surface-day a,
+.surface-day a:hover {
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+  color: inherit;
+}
+
+input,
+textarea,
+select,
+button {
+  text-align: start;
+}
+
+/* ============================================================
+ * Typography
+ * ============================================================ */
+.text-hero {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: normal;
+  font-size: clamp(1.875rem, 1.1rem + 4.2vw, 3.5rem);
+  line-height: 1;
+  letter-spacing: -0.022em;
+  font-variation-settings:
+    "SOFT" 100,
+    "opsz" 144;
+}
+.text-display-2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-style: normal;
+  font-size: clamp(1.625rem, 1rem + 2.8vw, 2.5rem);
+  line-height: 1.04;
+  letter-spacing: -0.018em;
+  font-variation-settings:
+    "SOFT" 100,
+    "opsz" 144;
+}
+.text-display-3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-style: normal;
+  font-size: clamp(1.5rem, 1rem + 2vw, 2rem);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  font-variation-settings:
+    "SOFT" 60,
+    "opsz" 96;
+}
+.text-h3 {
+  font: 600 18px/26px var(--font-sans);
+  letter-spacing: -0.005em;
+}
+.text-subhead {
+  font: 500 16px/24px var(--font-sans);
+}
+.text-lead {
+  font: 400 17px/1.55 var(--font-sans);
+}
+.text-body {
+  font: 400 15px/22px var(--font-sans);
+}
+.text-body-sm {
+  font: 400 13.5px/20px var(--font-sans);
+}
+.text-eyebrow {
+  font: 600 12px/16px var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+.text-button {
+  font: 600 16px/1 var(--font-sans);
+  letter-spacing: -0.005em;
+}
+.text-question {
+  font: 400 italic clamp(20px, 1rem + 1.6vw, 28px) / 1.25
+    var(--font-question-stack);
+  letter-spacing: -0.005em;
+}
+.text-question:lang(ar) {
+  line-height: 1.5;
+}
+
+/* Clipped-text utility for the warm pink→orange→gold gradient on
+ * headline accents. Sets all four properties needed across browsers
+ * (Safari's -webkit-text-fill-color matters). */
+.text-grad-warm {
+  background-image: var(--grad-warm);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  /* Prevent descender clipping on tight line-heights */
+  padding-block-end: 0.05em;
+}
+
+/* ============================================================
+ * Surfaces
+ * ============================================================ */
+.surface-night {
+  background: var(--night-gradient);
+  color: var(--sand);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+/* Top-centered violet halo — the Orbit-style "spotlight from above" */
+.surface-night::before {
+  content: "";
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120%;
+  aspect-ratio: 1.4;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(157, 127, 240, 0.38) 0%,
+    rgba(157, 127, 240, 0.12) 30%,
+    transparent 60%
+  );
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(28px);
+}
+/* Lower ambient cyan-mint accent for color variety */
+.surface-night::after {
+  content: "";
+  position: absolute;
+  bottom: -20%;
+  left: -30%;
+  width: 80%;
+  aspect-ratio: 1;
+  background: radial-gradient(
+    circle,
+    rgba(110, 72, 228, 0.18),
+    transparent 65%
+  );
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(36px);
+}
+
+.surface-sand {
+  background: var(--sand);
+  color: var(--carbon);
+  position: relative;
+}
+.surface-sand::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      60% 50% at 80% 0%,
+      rgba(110, 72, 228, 0.07),
+      transparent 60%
+    ),
+    radial-gradient(
+      50% 40% at 15% 100%,
+      rgba(244, 198, 96, 0.1),
+      transparent 65%
+    );
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ------------------------------------------------------------
+ * Light "Warm Paper" surface — used ONLY by the post-result app
+ * (the Home: Overview / Explore / Kai / You). The assessment flow
+ * and Results stay on the dark night theme; arriving here is a
+ * deliberate light "you've landed" moment.
+ *
+ * Design tokens are exposed as --day-* vars so the home components
+ * stay coherent and easy to tune in one place.
+ * ------------------------------------------------------------ */
+.surface-day {
+  --day-bg: #f4eee3;
+  --day-card: #fffcf6;
+  --day-elevated: #ffffff;
+  --day-inset: #efe7da;
+  --day-line: rgba(43, 36, 28, 0.1);
+  --day-line-strong: rgba(43, 36, 28, 0.2);
+  --day-ink: #2a2118;
+  --day-ink-2: #5c5142;
+  --day-ink-3: #675d4e;
+  --day-shadow-card: 0 1px 2px rgba(43, 36, 28, 0.04),
+    0 10px 26px rgba(43, 36, 28, 0.07);
+  --day-shadow-hero: 0 2px 4px rgba(43, 36, 28, 0.05),
+    0 22px 54px rgba(43, 36, 28, 0.11);
+  background: var(--day-bg);
+  color: var(--day-ink);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+/* Warm gold bloom, top-right */
+.surface-day::before {
+  content: "";
+  position: absolute;
+  top: -16%;
+  right: -22%;
+  width: 92%;
+  aspect-ratio: 1.2;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(244, 198, 96, 0.32) 0%,
+    rgba(244, 198, 96, 0.1) 32%,
+    transparent 62%
+  );
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(30px);
+}
+/* Soft violet bloom, lower-left */
+.surface-day::after {
+  content: "";
+  position: absolute;
+  bottom: -18%;
+  left: -26%;
+  width: 82%;
+  aspect-ratio: 1;
+  background: radial-gradient(circle, rgba(157, 127, 240, 0.2), transparent 64%);
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(38px);
+}
+
+/* Faint paper grain — the light counterpart to the night star-field.
+ * Adds tooth without reading as visual noise. */
+.bg-day-wash {
+  background-image:
+    radial-gradient(1px 1px at 18% 22%, rgba(43, 36, 28, 0.05), transparent 2px),
+    radial-gradient(1px 1px at 72% 36%, rgba(43, 36, 28, 0.045), transparent 2px),
+    radial-gradient(1px 1px at 46% 72%, rgba(43, 36, 28, 0.04), transparent 2px),
+    radial-gradient(1px 1px at 88% 84%, rgba(43, 36, 28, 0.035), transparent 2px);
+  background-size: 240px 240px, 200px 200px, 280px 280px, 220px 220px;
+}
+
+.bg-night-stars {
+  background-image:
+    /* Violet-tinted dust — primary specks (Orbit-style) */
+    radial-gradient(
+      1.5px 1.5px at 12% 18%,
+      rgba(157, 127, 240, 0.55),
+      transparent 2px
+    ),
+    radial-gradient(
+      1.5px 1.5px at 78% 24%,
+      rgba(157, 127, 240, 0.45),
+      transparent 2px
+    ),
+    radial-gradient(
+      1px 1px at 42% 12%,
+      rgba(157, 127, 240, 0.4),
+      transparent 1.5px
+    ),
+    radial-gradient(
+      1.5px 1.5px at 88% 52%,
+      rgba(200, 182, 240, 0.5),
+      transparent 2px
+    ),
+    radial-gradient(
+      1px 1px at 8% 62%,
+      rgba(157, 127, 240, 0.42),
+      transparent 1.5px
+    ),
+    radial-gradient(
+      1.5px 1.5px at 32% 78%,
+      rgba(200, 182, 240, 0.55),
+      transparent 2px
+    ),
+    radial-gradient(
+      1px 1px at 68% 88%,
+      rgba(157, 127, 240, 0.4),
+      transparent 1.5px
+    ),
+    radial-gradient(
+      1.5px 1.5px at 92% 92%,
+      rgba(200, 182, 240, 0.45),
+      transparent 2px
+    ),
+    radial-gradient(
+      1px 1px at 22% 42%,
+      rgba(157, 127, 240, 0.32),
+      transparent 1.5px
+    ),
+    radial-gradient(
+      1px 1px at 58% 58%,
+      rgba(200, 182, 240, 0.35),
+      transparent 1.5px
+    ),
+    /* A few warm cream highlights for atmosphere */
+    radial-gradient(
+        1px 1px at 50% 30%,
+        rgba(245, 238, 230, 0.35),
+        transparent 1.5px
+      ),
+    radial-gradient(
+      1px 1px at 18% 96%,
+      rgba(245, 238, 230, 0.4),
+      transparent 1.5px
+    );
+}
+
+/* ============================================================
+ * Buttons
+ * ============================================================ */
+.btn-v2 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  transition:
+    transform var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-base) var(--ease-standard),
+    background var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+.btn-v2[data-size="sm"] {
+  height: 44px;
+  padding: 0 18px;
+  font-size: 14px;
+}
+.btn-v2[data-size="md"] {
+  height: 52px;
+  padding: 0 22px;
+}
+.btn-v2[data-size="lg"] {
+  height: 60px;
+  padding: 0 28px;
+}
+.btn-v2--primary {
+  background: var(--grad-warm);
+  color: var(--sand);
+  box-shadow: var(--shadow-warm-glow);
+}
+.btn-v2--primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow:
+    0 18px 38px rgba(255, 61, 131, 0.45),
+    0 8px 18px rgba(255, 107, 61, 0.28);
+}
+.btn-v2--violet {
+  background: var(--violet);
+  color: var(--sand);
+  box-shadow: var(--shadow-violet-glow);
+}
+.btn-v2--violet:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: #7d57f0;
+}
+.btn-v2--ghost-on-dark {
+  background: rgba(245, 238, 230, 0.08);
+  color: var(--sand);
+  border-color: rgba(245, 238, 230, 0.18);
+}
+.btn-v2--ghost-on-dark:hover:not(:disabled) {
+  background: rgba(245, 238, 230, 0.14);
+}
+.btn-v2--ghost-on-light {
+  background: rgba(20, 16, 31, 0.05);
+  color: var(--carbon);
+  border-color: rgba(20, 16, 31, 0.12);
+}
+.btn-v2--ghost-on-light:hover:not(:disabled) {
+  background: rgba(20, 16, 31, 0.09);
+}
+.btn-v2:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+.btn-v2:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+@media (pointer: coarse) {
+  .btn-v2 {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* ============================================================
+ * Cards
+ * ============================================================ */
+/* Glassmorphism: layered translucent fill + inner top highlight +
+ * blurred backdrop. Used on every card / answer / chip that sits on
+ * the night surface. */
+.card-night,
+.glass-card {
+  background: linear-gradient(
+    180deg,
+    rgba(245, 238, 230, 0.1) 0%,
+    rgba(245, 238, 230, 0.04) 100%
+  );
+  border: 1px solid rgba(245, 238, 230, 0.14);
+  border-radius: var(--radius-xl);
+  padding: 20px;
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  box-shadow:
+    inset 0 1px 0 rgba(245, 238, 230, 0.16),
+    0 8px 24px rgba(0, 0, 0, 0.18);
+  transition:
+    background var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-base) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
+}
+.glass-card:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(245, 238, 230, 0.14) 0%,
+    rgba(245, 238, 230, 0.06) 100%
+  );
+  border-color: rgba(245, 238, 230, 0.22);
+  box-shadow:
+    inset 0 1px 0 rgba(245, 238, 230, 0.22),
+    0 12px 32px rgba(0, 0, 0, 0.24);
+}
+
+/* Smaller glass surface — chips, station nodes, audio buttons */
+.glass-tile {
+  background: linear-gradient(
+    180deg,
+    rgba(245, 238, 230, 0.14) 0%,
+    rgba(245, 238, 230, 0.06) 100%
+  );
+  border: 1px solid rgba(245, 238, 230, 0.18);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  box-shadow: inset 0 1px 0 rgba(245, 238, 230, 0.2);
+}
+
+.card-sand {
+  background: var(--paper);
+  border: 1px solid rgba(20, 16, 31, 0.08);
+  border-radius: var(--radius-xl);
+  padding: 20px;
+  box-shadow: var(--shadow-sand-md);
+}
+
+/* ============================================================
+ * Speech bubble (Kai's voice)
+ * ============================================================ */
+.bubble {
+  position: relative;
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  max-width: 540px;
+}
+.bubble[data-surface="night"] {
+  background: var(--sand);
+  color: var(--carbon);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+}
+.bubble[data-surface="sand"] {
+  background: var(--paper);
+  color: var(--carbon);
+  box-shadow: var(--shadow-sand-md);
+  border: 1px solid rgba(20, 16, 31, 0.06);
+}
+.bubble__tail {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+}
+.bubble[data-tail-edge="top"] .bubble__tail {
+  top: -10px;
+  border-bottom: 10px solid currentColor;
+}
+.bubble[data-tail-edge="bottom"] .bubble__tail {
+  bottom: -10px;
+  border-top: 10px solid currentColor;
+}
+.bubble[data-tail-position="start"] .bubble__tail {
+  inset-inline-start: 28px;
+}
+.bubble[data-tail-position="center"] .bubble__tail {
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+}
+[dir="rtl"] .bubble[data-tail-position="center"] .bubble__tail {
+  transform: translateX(50%);
+}
+
+/* ============================================================
+ * Badge / chip
+ * ============================================================ */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  font: 600 12px/16px var(--font-sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.chip--violet-on-dark {
+  background: linear-gradient(
+    180deg,
+    rgba(157, 127, 240, 0.22) 0%,
+    rgba(157, 127, 240, 0.1) 100%
+  );
+  color: var(--violet-soft);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid rgba(157, 127, 240, 0.28);
+  box-shadow: inset 0 1px 0 rgba(245, 238, 230, 0.18);
+}
+.chip--gold-on-dark {
+  background: rgba(244, 198, 96, 0.16);
+  color: var(--gold);
+}
+.chip--violet-on-light {
+  background: rgba(110, 72, 228, 0.12);
+  color: var(--violet);
+}
+
+/* ============================================================
+ * Motion — keyframes
+ * ============================================================ */
+@keyframes screen-enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes screen-exit-forward {
+  to {
+    opacity: 0;
+    transform: translateY(-18px);
+  }
+}
+@keyframes screen-exit-back {
+  to {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+@keyframes bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes avatar-pop-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.92);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(2px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes avatar-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+@keyframes aura-bloom {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes aura-rotate {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.06);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+@keyframes kai-pop-overshoot {
+  0% {
+    opacity: 0;
+    transform: scale(0.4) translateY(20px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.06) translateY(-4px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+@keyframes eyebrow-fade-up {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+    letter-spacing: 0.12em;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    letter-spacing: 0.16em;
+  }
+}
+@keyframes accent-line-grow {
+  0% {
+    transform: scaleX(0);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+@keyframes cta-spring-up {
+  0% {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-3px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes option-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes contract-item-in {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+    filter: blur(4px);
+  }
+  60% {
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+@keyframes contract-spine-grow {
+  from {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+@keyframes option-confirm {
+  0% {
+    transform: scale(1);
+    box-shadow: var(--shadow-gold-glow);
+  }
+  45% {
+    transform: scale(1.025);
+    box-shadow:
+      0 0 0 6px rgba(157, 127, 240, 0.22),
+      var(--shadow-gold-glow);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: var(--shadow-gold-glow);
+  }
+}
+@keyframes particle-drift-a {
+  0%,
+  100% {
+    transform: translate(0, 0);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translate(8px, -12px);
+    opacity: 0.85;
+  }
+}
+@keyframes particle-drift-b {
+  0%,
+  100% {
+    transform: translate(0, 0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(-10px, -8px);
+    opacity: 0.95;
+  }
+}
+@keyframes particle-drift-c {
+  0%,
+  100% {
+    transform: translate(0, 0);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translate(6px, 14px);
+    opacity: 0.8;
+  }
+}
+@keyframes caret-blink {
+  0%,
+  60% {
+    opacity: 1;
+  }
+  61%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes fade-up {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes analysis-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes analysis-spin-back {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+@keyframes analysis-route-draw {
+  0% {
+    stroke-dashoffset: 360;
+    opacity: 0.25;
+  }
+  45% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0.35;
+  }
+}
+@keyframes analysis-scan {
+  0% {
+    transform: rotate(0deg);
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: rotate(360deg);
+    opacity: 0.3;
+  }
+}
+@keyframes analysis-signal {
+  0%,
+  100% {
+    transform: scale(0.72);
+    opacity: 0.28;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0.92;
+  }
+}
+@keyframes analysis-progress-sheen {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+/* ─────────── Analyzer v2: orbit field + tokens + threads ─────────── */
+@keyframes analysis-thread-draw {
+  0% {
+    stroke-dasharray: 0 100;
+    opacity: 0.15;
+  }
+  60% {
+    stroke-dasharray: 100 0;
+    opacity: 0.75;
+  }
+  100% {
+    stroke-dasharray: 100 0;
+    opacity: 0.25;
+  }
+}
+@keyframes analysis-orbit-token-in {
+  0% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--ox, 0px)), calc(-50% + var(--oy, 0px))) scale(0.4);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(calc(-50% + var(--ox, 0px)), calc(-50% + var(--oy, 0px))) scale(1);
+  }
+}
+@keyframes analysis-orbit-token-pulse {
+  0%, 100% {
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
+  }
+  50% {
+    box-shadow:
+      0 8px 22px rgba(0, 0, 0, 0.4),
+      0 0 0 6px rgba(255, 165, 61, 0.18);
+  }
+}
+@keyframes analysis-aura-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 0 rgba(255, 165, 61, 0.45),
+      0 0 0 0 rgba(255, 61, 131, 0.25);
+  }
+  50% {
+    box-shadow:
+      0 0 0 14px rgba(255, 165, 61, 0),
+      0 0 0 28px rgba(255, 61, 131, 0);
+  }
+}
+@keyframes analysis-particle-float {
+  0% {
+    opacity: 0;
+    transform: translateY(0px);
+  }
+  20% {
+    opacity: 0.75;
+  }
+  80% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-22px);
+  }
+}
+@keyframes analysis-spark {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.25);
+  }
+}
+@keyframes analysis-step-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes analysis-step-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(244, 198, 96, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0 10px rgba(244, 198, 96, 0);
+  }
+}
+@keyframes result-compass-drift {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Utility classes */
+.anim-screen-enter {
+  animation: screen-enter 360ms var(--ease-emphasis) both;
+}
+.anim-screen-exit-forward {
+  animation: screen-exit-forward 240ms var(--ease-standard) forwards;
+}
+.anim-screen-exit-back {
+  animation: screen-exit-back 240ms var(--ease-standard) forwards;
+}
+.anim-bubble-in {
+  animation: bubble-in var(--duration-reveal) var(--ease-emphasis) both;
+}
+.anim-avatar-in {
+  animation: avatar-pop-in var(--duration-reveal) var(--ease-emphasis) both;
+}
+.anim-avatar-bob {
+  animation: avatar-bob 4.2s ease-in-out infinite;
+  animation-delay: var(--duration-reveal);
+}
+.anim-aura-bloom {
+  animation: aura-bloom 900ms var(--ease-emphasis) both;
+}
+.anim-aura-rotate {
+  animation: aura-rotate 16s ease-in-out infinite;
+  transform-origin: center;
+}
+.anim-kai-pop {
+  animation: kai-pop-overshoot 700ms var(--ease-spring) both;
+}
+.anim-eyebrow-fade-up {
+  animation: eyebrow-fade-up 700ms var(--ease-emphasis) both;
+}
+.anim-accent-line-grow {
+  animation: accent-line-grow 4000ms ease-out both;
+  transform-origin: left center;
+}
+[dir="rtl"] .anim-accent-line-grow {
+  transform-origin: right center;
+}
+.anim-cta-spring {
+  animation: cta-spring-up 600ms var(--ease-spring) both;
+}
+.anim-option-in {
+  animation: option-in var(--duration-slow) var(--ease-standard) both;
+}
+.anim-contract-item {
+  animation: contract-item-in 720ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes sheet-up {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes backdrop-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.anim-sheet-up {
+  animation: sheet-up 380ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.anim-backdrop-fade {
+  animation: backdrop-fade 280ms ease-out both;
+}
+.anim-contract-spine {
+  animation: contract-spine-grow 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  transform-origin: top;
+}
+.anim-option-confirm {
+  animation: option-confirm 360ms var(--ease-standard) both;
+}
+.anim-particle-a {
+  animation: particle-drift-a 4.5s ease-in-out infinite;
+}
+.anim-particle-b {
+  animation: particle-drift-b 5.2s ease-in-out infinite;
+}
+.anim-particle-c {
+  animation: particle-drift-c 4s ease-in-out infinite;
+}
+.anim-caret-blink {
+  animation: caret-blink 1s steps(1) infinite;
+}
+.anim-fade-up {
+  animation: fade-up 700ms var(--ease-emphasis) both;
+}
+.analysis-grid {
+  background-image:
+    linear-gradient(rgba(245, 238, 230, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 238, 230, 0.06) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(circle at center, #000 40%, transparent 72%);
+}
+.analysis-spin-slow {
+  animation: analysis-spin 18s linear infinite;
+}
+.analysis-spin-reverse {
+  animation: analysis-spin-back 14s linear infinite;
+}
+.analysis-route {
+  stroke-dasharray: 360;
+  animation: analysis-route-draw 2.4s ease-in-out infinite alternate;
+}
+.analysis-scanline {
+  animation: analysis-scan 3.8s linear infinite;
+}
+.analysis-signal {
+  position: absolute;
+  z-index: 12;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-pill);
+  background: var(--gold);
+  box-shadow: 0 0 0 6px rgba(244, 198, 96, 0.12);
+  animation: analysis-signal 1.8s ease-in-out infinite;
+}
+.analysis-signal--one {
+  top: 22%;
+  right: 20%;
+}
+.analysis-signal--two {
+  bottom: 20%;
+  right: 30%;
+  animation-delay: 420ms;
+}
+.analysis-signal--three {
+  left: 22%;
+  bottom: 34%;
+  background: var(--mint);
+  box-shadow: 0 0 0 6px rgba(111, 224, 192, 0.12);
+  animation-delay: 820ms;
+}
+.analysis-progress {
+  background-size: 200% 100%;
+  animation: analysis-progress-sheen 1.4s linear infinite;
+  transition: width 460ms var(--ease-emphasis);
+}
+.analysis-step {
+  transition:
+    border-color 220ms var(--ease-standard),
+    background-color 220ms var(--ease-standard),
+    transform 220ms var(--ease-standard);
+}
+.analysis-step:has(.animate-spin) {
+  transform: translateX(2px);
+}
+
+/* ─────── Analyzer v2: orbit + threads + tokens + particles ─────── */
+.analysis-thread {
+  stroke-dasharray: 100 0;
+  pathLength: 100;
+  animation: analysis-thread-draw 2.4s ease-in-out infinite;
+}
+.analysis-thread--n {
+  animation-delay: 0s;
+}
+.analysis-thread--e {
+  animation-delay: 0.6s;
+}
+.analysis-thread--s {
+  animation-delay: 1.2s;
+}
+.analysis-thread--w {
+  animation-delay: 1.8s;
+}
+.analysis-orbit-token {
+  animation:
+    analysis-orbit-token-in 0.8s var(--ease-spring) both,
+    analysis-orbit-token-pulse 3s 1s ease-in-out infinite;
+  letter-spacing: -0.02em;
+}
+.analysis-aura {
+  animation: analysis-aura-pulse 3.2s ease-in-out infinite;
+}
+.analysis-particle {
+  background: linear-gradient(135deg, #ffa53d, #ff3d83);
+  box-shadow: 0 0 8px rgba(255, 165, 61, 0.6);
+  animation: analysis-particle-float 7s ease-in-out infinite;
+}
+.analysis-spark {
+  display: inline-block;
+  animation: analysis-spark 1.4s ease-in-out infinite;
+}
+.analysis-progress-sheen {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 100%
+  );
+  animation: analysis-progress-sheen 1.8s ease-in-out infinite;
+}
+.analysis-step-card {
+  animation: analysis-step-card-in 0.55s var(--ease-spring) both;
+}
+.analysis-step-ring {
+  animation: analysis-step-ring 1.6s ease-out infinite;
+}
+.analysis-step-active {
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    rgba(244, 198, 96, 0.18),
+    rgba(255, 107, 61, 0.12)
+  );
+}
+.result-hero {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--result-accent) 54%, var(--night)) 0%,
+    rgba(16, 10, 36, 0.96) 56%,
+    rgba(8, 5, 26, 0.98) 100%
+  );
+}
+.result-hero-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: linear-gradient(180deg, #000, transparent 92%);
+}
+.result-compass-spin {
+  animation: result-compass-drift 28s linear infinite;
+  transform-origin: center;
+}
+
+/* ============================================================
+ * Kai video avatar
+ * ============================================================ */
+.kai-video-avatar {
+  --kai-size: 112px;
+  --kai-mouth-open: 0;
+  position: relative;
+  display: inline-grid;
+  width: var(--kai-size);
+  height: var(--kai-size);
+  place-items: center;
+  border-radius: var(--radius-pill);
+  isolation: isolate;
+  transform: translateZ(0);
+}
+
+.kai-video-avatar[data-video-variant="assessment"] {
+  width: var(--kai-size);
+  height: var(--kai-size);
+  border-radius: var(--radius-pill);
+}
+
+.kai-video-avatar__halo,
+.kai-video-avatar__rim,
+.kai-video-avatar__compass,
+.kai-video-avatar__media,
+.kai-video-avatar__speech {
+  grid-area: 1 / 1;
+}
+
+/* Compass dial framing the portrait. Sized larger than the media so the
+ * bezel ticks + cardinal rose points sit in the ring just outside Kai's
+ * face. Slow drift while idle, brighter glow while speaking. */
+.kai-video-avatar__compass {
+  width: 132%;
+  height: 132%;
+  z-index: 1;
+  pointer-events: none;
+  overflow: visible;
+  opacity: calc(0.62 + (var(--kai-mouth-open) * 0.38));
+  filter: drop-shadow(0 0 8px rgba(157, 127, 240, 0.22));
+  transition:
+    opacity 240ms var(--ease-standard),
+    filter 240ms var(--ease-standard);
+}
+
+.kai-video-avatar__compass-rose {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: result-compass-drift 32s linear infinite;
+}
+
+.kai-video-avatar[data-speaking="true"] .kai-video-avatar__compass {
+  opacity: 1;
+  filter: drop-shadow(0 0 16px rgba(157, 127, 240, 0.5));
+}
+
+/* The compass now carries the "speaking" motif, so retire the older
+ * voice-ring spokes to keep the composition clean. */
+.kai-video-avatar__speech {
+  display: none;
+}
+
+/* ── Kai avatar: ambient warm aura ───────────────────────────────
+ * One coherent idea on the night palette: a soft grad-warm bloom that
+ * breathes while idle, intensifies with the narration level, and emits
+ * concentric "voice rings" only while Kai is speaking. No gold disc,
+ * no conic compass — compositor-friendly (opacity / transform only). */
+.kai-video-avatar__halo {
+  width: 162%;
+  height: 162%;
+  border-radius: var(--radius-pill);
+  background: radial-gradient(
+    circle at 50% 44%,
+    rgba(157, 127, 240, 0.62) 0%,
+    rgba(110, 72, 228, 0.42) 30%,
+    rgba(111, 224, 192, 0.18) 56%,
+    transparent 72%
+  );
+  filter: blur(22px);
+  opacity: calc(0.5 + (var(--kai-mouth-open) * 0.5));
+  z-index: 0;
+  pointer-events: none;
+  animation: kai-aura-breathe 5.2s var(--ease-standard) infinite;
+  transition: opacity 240ms var(--ease-standard);
+}
+
+.kai-video-avatar[data-mood="thinking"] .kai-video-avatar__halo {
+  background: radial-gradient(
+    circle at 50% 46%,
+    rgba(157, 127, 240, 0.5) 0%,
+    rgba(110, 72, 228, 0.28) 34%,
+    rgba(242, 168, 179, 0.12) 60%,
+    transparent 74%
+  );
+}
+
+.kai-video-avatar[data-mood="encouraging"] .kai-video-avatar__halo {
+  background: radial-gradient(
+    circle at 50% 44%,
+    rgba(157, 127, 240, 0.6) 0%,
+    rgba(242, 168, 179, 0.3) 30%,
+    rgba(111, 224, 192, 0.22) 58%,
+    transparent 74%
+  );
+}
+
+/* Inner hairline that crisps the round face edge. The compass dial is
+ * now the visible frame, so this stays whisper-thin (no heavy ring). */
+.kai-video-avatar__rim {
+  width: 90%;
+  height: 90%;
+  border-radius: var(--radius-pill);
+  box-shadow: inset 0 0 0 1.5px rgba(245, 238, 230, 0.22);
+  opacity: calc(0.7 + (var(--kai-mouth-open) * 0.3));
+  z-index: 3;
+  pointer-events: none;
+  transition: opacity 200ms var(--ease-standard);
+}
+
+/* The portrait itself fills the circle; night backing means any
+ * letterboxing reads dark, never a garish solid disc. */
+.kai-video-avatar__media {
+  /* Inset slightly so the compass bezel + cardinal ticks sit in a clear
+   * ring around the face instead of overlapping her hair at the top. */
+  /* Force a square box regardless of the clip's own aspect ratio. The
+   * assessment clip is portrait, and in a CSS-grid cell a percentage
+   * height is indefinite, so the <video> would fall back to its
+   * intrinsic portrait ratio and render as a tall oval. width + auto
+   * height + aspect-ratio guarantees a square; object-fit: cover then
+   * crops the portrait into a clean circle. */
+  width: 90%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: #100a24;
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.42),
+    inset 0 0 0 1px rgba(245, 238, 230, 0.08);
+  object-fit: cover;
+  object-position: center 30%;
+  z-index: 2;
+}
+
+.kai-video-avatar[data-video-variant="assessment"] .kai-video-avatar__halo,
+.kai-video-avatar[data-video-variant="assessment"] .kai-video-avatar__rim,
+.kai-video-avatar[data-video-variant="assessment"] .kai-video-avatar__media {
+  border-radius: inherit;
+}
+
+/* Concentric voice rings — sit behind the portrait and emanate outward
+ * only while speaking, so the visible arc reads as sound from the edge. */
+.kai-video-avatar__speech {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: none;
+  filter: none;
+  transform: none;
+  opacity: 1;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.kai-video-avatar__speech::before,
+.kai-video-avatar__speech::after {
+  content: none;
+}
+
+.kai-video-avatar__speech i {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  border: 1.5px solid rgba(157, 127, 240, 0.62);
+  background: none;
+  opacity: 0;
+  transform: scale(0.8);
+  transform-origin: 50% 50%;
+}
+
+.kai-video-avatar[data-speaking="true"] .kai-video-avatar__speech i {
+  animation: kai-voice-ring 2.1s var(--ease-standard) infinite;
+}
+
+.kai-video-avatar__speech i:nth-child(2) {
+  animation-delay: 0.7s;
+  border-color: rgba(111, 224, 192, 0.5);
+}
+
+.kai-video-avatar__speech i:nth-child(3) {
+  animation-delay: 1.4s;
+  border-color: rgba(245, 238, 230, 0.42);
+}
+
+/* Wave greeting: a soft warm pulse on the ring. */
+.kai-video-avatar[data-gesture="wave"] .kai-video-avatar__rim {
+  animation: kai-rim-greet 2.4s var(--ease-standard) infinite;
+}
+
+@keyframes kai-aura-breathe {
+  0%,
+  100% {
+    transform: scale(0.95);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+@keyframes kai-voice-ring {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  18% {
+    opacity: calc(0.55 * (0.35 + var(--kai-mouth-open)));
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.55);
+  }
+}
+
+@keyframes kai-rim-greet {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* RTL helpers */
+[dir="rtl"] .flip-rtl {
+  transform: scaleX(-1);
+}
+
+/* ============================================================
+ * Focus + a11y
+ * ============================================================ */
+:focus-visible {
+  outline-color: var(--gold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 120ms !important;
+    transition-property: opacity, color, background-color !important;
+    scroll-behavior: auto !important;
+  }
+  .anim-avatar-bob,
+  .anim-aura-rotate,
+  .anim-particle-a,
+  .anim-particle-b,
+  .anim-particle-c,
+  .anim-caret-blink,
+  .analysis-spin-slow,
+  .analysis-spin-reverse,
+  .analysis-route,
+  .analysis-scanline,
+  .analysis-signal,
+  .analysis-progress,
+  .analysis-progress-sheen,
+  .analysis-thread,
+  .analysis-orbit-token,
+  .analysis-aura,
+  .analysis-particle,
+  .analysis-spark,
+  .analysis-step-card,
+  .analysis-step-ring,
+  .kai-video-avatar__speech i,
+  .kai-video-avatar[data-gesture="wave"] .kai-video-avatar__rim,
+  .result-compass-spin {
+    animation: none !important;
+  }
+}
+
+/* ============================================================
+ * KaiChromaVideo — green-screen Kai keyed out per-frame (WebGL)
+ * so she floats transparently over the app (no frame, halo, or
+ * card). Ported from the main app for the transparent Kai.
+ * ============================================================ */
+.kai-chroma {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+}
+.kai-chroma__source {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0; /* decoded but never shown; canvas presents the keyed frames */
+  pointer-events: none;
+}
+.kai-chroma__canvas {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 18px 26px rgba(8, 5, 26, 0.45));
+}

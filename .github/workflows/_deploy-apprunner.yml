@@ -1,0 +1,147 @@
+name: Deploy to App Runner (reusable)
+
+# Called by the four deploy-{consumer,admin}-{staging,production}.yml
+# triggers — one shared pipeline parameterized by app + GitHub Environment,
+# so all four deploys can never drift into four different procedures.
+#
+# One GitHub repo (EnasElgarhy/Tareeq), two deployable apps living at
+# apps/consumer/ and apps/admin/ (see docs/deployment/AWS_DEPLOYMENT.md).
+# AWS resources stay fully separate per app — see
+# docs/deployment/iam-permissions-policy-*.json.
+#
+# Auth: OIDC only. No long-lived AWS access keys ever touch GitHub
+# secrets — configure-aws-credentials exchanges a short-lived GitHub
+# Actions token for temporary AWS credentials by assuming the IAM role
+# named below. Because this is one repo, the TRUST policy is the same for
+# both apps within an environment (repo:EnasElgarhy/Tareeq:ref:refs/heads/<branch>)
+# — see iam-trust-policy-github-oidc-{staging,main}.json — what keeps
+# the two apps' deploys isolated from each other is the PERMISSIONS policy
+# on each app's own role (iam-permissions-policy-<app>-<environment>.json),
+# each scoped to exactly one ECR repo and one App Runner service.
+#
+# Expects, per GitHub Environment (Settings → Environments →
+# <app>-<environment>, e.g. "consumer-staging"):
+#   secrets.AWS_ROLE_ARN                 - the role this workflow assumes
+#   secrets.NEXT_PUBLIC_SUPABASE_URL     - inlined at build time (public)
+#   secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY
+#   vars.AWS_REGION                      - eu-north-1
+#   vars.ECR_REPOSITORY                  - tareeq-consumer or tareeq-admin
+#   vars.APP_RUNNER_SERVICE_ARN          - the target service for this app+env
+#
+# All other runtime secrets (SUPABASE_SERVICE_ROLE_KEY, ANTHROPIC_API_KEY,
+# ELEVENLABS_API_KEY, GEMINI_API_KEY, DATABASE_URL, ...) are NOT handled
+# here — they're configured directly on the App Runner service (env vars /
+# Secrets Manager references), never passed through this pipeline.
+
+on:
+  workflow_call:
+    inputs:
+      app:
+        description: "consumer or admin — must match a docs/deployment/iam-permissions-policy-<app>-* file and an apps/<app> directory"
+        required: true
+        type: string
+      environment:
+        description: "GitHub Environment name, e.g. consumer-development"
+        required: true
+        type: string
+      working-directory:
+        description: "Path to this app's Next.js project root within the monorepo, e.g. apps/consumer — always passed explicitly by the caller (workflow_call inputs can't reference each other in a default)"
+        required: true
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  verify:
+    name: Lint, typecheck, test (${{ inputs.app }})
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: ${{ inputs.working-directory }}/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type-check
+        run: pnpm exec tsc --noEmit
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test
+        run: pnpm test
+
+  build-and-deploy:
+    name: Build, push, deploy (${{ inputs.app }} → ${{ inputs.environment }})
+    needs: verify
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push image
+        id: build
+        working-directory: ${{ inputs.working-directory }}
+        env:
+          REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ inputs.environment }}-${{ github.sha }}
+        run: |
+          docker build \
+            --build-arg NEXT_PUBLIC_SUPABASE_URL="${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}" \
+            --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY="${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" \
+            -t "$REGISTRY/$REPOSITORY:$IMAGE_TAG" \
+            -t "$REGISTRY/$REPOSITORY:${{ inputs.environment }}" \
+            .
+          docker push "$REGISTRY/$REPOSITORY:$IMAGE_TAG"
+          docker push "$REGISTRY/$REPOSITORY:${{ inputs.environment }}"
+
+      - name: Trigger App Runner deployment
+        run: |
+          aws apprunner start-deployment \
+            --service-arn "${{ vars.APP_RUNNER_SERVICE_ARN }}"
+
+      - name: Wait for deployment to finish
+        run: |
+          SERVICE_ARN="${{ vars.APP_RUNNER_SERVICE_ARN }}"
+          for i in $(seq 1 30); do
+            STATUS=$(aws apprunner describe-service --service-arn "$SERVICE_ARN" --query "Service.Status" --output text)
+            echo "App Runner service status: $STATUS"
+            if [ "$STATUS" = "RUNNING" ]; then
+              echo "Deployment succeeded."
+              exit 0
+            fi
+            if [ "$STATUS" = "CREATE_FAILED" ] || [ "$STATUS" = "DELETE_FAILED" ]; then
+              echo "Deployment failed with status $STATUS"
+              exit 1
+            fi
+            sleep 20
+          done
+          echo "Timed out waiting for App Runner to report RUNNING."
+          exit 1
