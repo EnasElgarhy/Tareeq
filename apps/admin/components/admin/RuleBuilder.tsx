@@ -134,7 +134,7 @@ function HighestScoreCoverage({
     <div className="rounded-adm-lg border border-adm-line bg-adm-card p-4">
       <p className="mb-3 text-[13px] text-adm-ink-soft">
         The highest-scoring category wins; its mapped profile is the result. Set a
-        profile's category in the profile editor above.
+        profile&apos;s category in the profile editor above.
       </p>
       <ul className="grid gap-1.5">
         {categories.map((c) => {
