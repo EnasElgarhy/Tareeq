@@ -1,0 +1,21 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "GitHubActionsOIDCStaging",
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::403141583896:oidc-provider/token.actions.githubusercontent.com"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+        },
+        "StringLike": {
+          "token.actions.githubusercontent.com:sub": "repo:EnasElgarhy/Tareeq:ref:refs/heads/staging"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+name: Deploy admin — development
+
+# Path-filtered: a push to develop that only touches apps/consumer/ (or an
+# unrelated top-level file) should not rebuild/redeploy this app.
+on:
+  push:
+    branches: [develop]
+    paths:
+      - "apps/admin/**"
+      - ".github/workflows/deploy-admin-development.yml"
+      - ".github/workflows/_deploy-apprunner.yml"
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/_deploy-apprunner.yml
+    with:
+      app: admin
+      environment: admin-development
+      working-directory: apps/admin
+    secrets: inherit
