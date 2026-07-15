@@ -6,6 +6,7 @@ import { TareeqArrowLeft } from "@/components/brand/icons";
 import { type KaiMood } from "@/components/brand/Kai";
 import { KaiChromaVideo } from "@/components/brand/KaiChromaVideo";
 import { DidYouKnow } from "@/components/onboarding/DidYouKnow";
+import { useAssessmentAudio } from "@/components/assessment/AssessmentAudioProvider";
 import { prefersReducedMotion, uiSounds } from "@/lib/audio/ui-sounds";
 import {
   completeLocalAssessment,
@@ -15,13 +16,13 @@ import {
 } from "@/lib/assessment/progress";
 import { bumpQuestionAttempt } from "@/lib/assessment/question-attempts";
 import {
+  INTERSTITIALS,
   findInterstitialFor,
   markInterstitialSeen,
   type Interstitial,
 } from "@/lib/assessment/interstitials";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { getLocalizedText, getQuestionPath } from "@/lib/assessment/questions";
-import { computeKaiMouthLevel } from "@/lib/audio/lip-sync";
 import { computeScore, type Question } from "@/lib/scoring";
 import { trackEvent } from "@/lib/analytics/track";
 import { contentVersion } from "@/lib/content/seed";
@@ -34,7 +35,6 @@ type AudioState =
   | "locked"
   | "unavailable";
 type ExitDirection = "forward" | "back" | null;
-const KAI_AUDIO_FALLBACK_EXTENSIONS = ["m4a", "mp3"] as const;
 
 interface QuestionScreenProps {
   question: Question;
@@ -91,14 +91,6 @@ export function QuestionScreen({
   restOfWorldCountries,
 }: QuestionScreenProps) {
   const router = useRouter();
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const audioSourceRef = useRef<MediaElementAudioSourceNode | null>(null);
-  const analyserRef = useRef<AnalyserNode | null>(null);
-  const lipSyncFrameRef = useRef<number | null>(null);
-  const lipSyncLevelRef = useRef(0);
-  const autoPlaybackQuestionRef = useRef<string | null>(null);
-  const audioFallbackIndexRef = useRef(0);
 
   // ---------- Analytics (Phase 3 — question intelligence) ----------
   /** When this question was mounted — the baseline for time_spent_ms. */
@@ -120,15 +112,24 @@ export function QuestionScreen({
   const [pendingInterstitial, setPendingInterstitial] =
     useState<Interstitial | null>(null);
 
-  const [soundOn, setSoundOn] = useState(true);
-  const [soundPreferenceReady, setSoundPreferenceReady] = useState(false);
-  const [voiceRequiresGesture, setVoiceRequiresGesture] = useState(false);
-  const [voiceUnlocked, setVoiceUnlocked] = useState(false);
-  const [audioState, setAudioState] = useState<AudioState>("idle");
   const [speed, setSpeed] = useState(1);
-  const [mouthOpen, setMouthOpen] = useState(0);
 
   const { locale, t } = useLocale();
+  const {
+    audioRef,
+    playNarration,
+    preloadNarration,
+    stopNarration,
+    replayNarration,
+    setMuted,
+    setPlaybackRate,
+    isPlaying,
+    isPreparing,
+    isMuted,
+    mouthOpen,
+    activeOwnerId: playbackOwnerId,
+    error: audioError,
+  } = useAssessmentAudio();
 
   const isLastQuestion = index === totalQuestions - 1;
   const isSelect = question.kind === "select";
@@ -142,7 +143,20 @@ export function QuestionScreen({
       : "";
   const title = getLocalizedText(question.title, locale);
   const activeNarrationId = pendingInterstitial?.audioId ?? question.externalId;
-  const activeNarrationKind = pendingInterstitial ? "section" : "question";
+  const activeOwnerId = pendingInterstitial
+    ? `interstitial:${pendingInterstitial.key}`
+    : `question:${question.externalId}`;
+  const isActiveAudioOwner = playbackOwnerId === activeOwnerId;
+  const soundOn = !isMuted;
+  const audioState: AudioState = isMuted
+    ? "muted"
+    : audioError && isActiveAudioOwner
+      ? "unavailable"
+      : isPreparing && isActiveAudioOwner
+        ? "loading"
+        : isPlaying && isActiveAudioOwner
+          ? "playing"
+          : "idle";
 
   /**
    * Shared per-event context for every question_* analytics call.
@@ -252,16 +266,6 @@ export function QuestionScreen({
     return () => window.removeEventListener("pagehide", handlePageHide);
   }, [question.externalId, questionContext]);
 
-  useEffect(() => {
-    setSoundOn(window.localStorage.getItem("tareeq:sound") !== "off");
-    const touchFirstDevice =
-      window.matchMedia("(hover: none), (pointer: coarse)").matches ||
-      /Android|iPhone|iPad|iPod|Mobile/i.test(window.navigator.userAgent);
-    setVoiceRequiresGesture(touchFirstDevice);
-    setVoiceUnlocked(!touchFirstDevice);
-    setSoundPreferenceReady(true);
-  }, []);
-
   const countryOptions = useMemo(
     () => [
       {
@@ -300,7 +304,7 @@ export function QuestionScreen({
 
       window.setTimeout(() => {
         if (shouldShow) {
-          audioRef.current?.pause();
+          stopNarration(activeOwnerId);
           markInterstitialSeen(shouldShow.key);
           setConfirming(null);
           setPendingInterstitial(shouldShow);
@@ -333,11 +337,13 @@ export function QuestionScreen({
       questions,
       recordAnswer,
       router,
+      activeOwnerId,
+      stopNarration,
     ],
   );
 
   function dismissInterstitial() {
-    audioRef.current?.pause();
+    stopNarration(activeOwnerId);
     setPendingInterstitial(null);
     setExiting("forward");
     window.setTimeout(
@@ -351,6 +357,7 @@ export function QuestionScreen({
 
   function goPrevious() {
     if (exiting) return;
+    stopNarration(activeOwnerId);
     uiSounds.back();
     setExiting("back");
     window.setTimeout(
@@ -364,6 +371,7 @@ export function QuestionScreen({
 
   function goNextExplicit() {
     if (!selected.trim() || exiting) return;
+    stopNarration(activeOwnerId);
     uiSounds.advance();
     recordAnswer(selected);
     const progress = saveLocalAnswer(question.externalId, selected, index);
@@ -415,222 +423,50 @@ export function QuestionScreen({
 
   // ---------- Audio ----------
 
-  const stopLipSync = useCallback(() => {
-    if (lipSyncFrameRef.current != null) {
-      window.cancelAnimationFrame(lipSyncFrameRef.current);
-      lipSyncFrameRef.current = null;
-    }
-    lipSyncLevelRef.current = 0;
-    setMouthOpen(0);
-  }, []);
-
-  const ensureLipSyncGraph = useCallback((audio: HTMLAudioElement) => {
-    if (!audioContextRef.current) {
-      const Ctor =
-        window.AudioContext ||
-        (window as unknown as { webkitAudioContext?: typeof AudioContext })
-          .webkitAudioContext;
-      if (!Ctor) return null;
-      audioContextRef.current = new Ctor();
-    }
-    const context = audioContextRef.current;
-    if (!audioSourceRef.current) {
-      const analyser = context.createAnalyser();
-      analyser.fftSize = 1024;
-      analyser.smoothingTimeConstant = 0.18;
-      try {
-        const source = context.createMediaElementSource(audio);
-        source.connect(analyser);
-        analyser.connect(context.destination);
-        audioSourceRef.current = source;
-        analyserRef.current = analyser;
-      } catch {
-        analyserRef.current = null;
-      }
-    }
-    return context;
-  }, []);
-
-  const startLipSync = useCallback(() => {
-    const analyser = analyserRef.current;
-    if (!analyser) return;
-    if (lipSyncFrameRef.current != null) {
-      window.cancelAnimationFrame(lipSyncFrameRef.current);
-    }
-
-    const data = new Uint8Array(analyser.fftSize);
-    const tick = () => {
-      analyser.getByteTimeDomainData(data);
-      const nextLevel = computeKaiMouthLevel(
-        data,
-        lipSyncLevelRef.current,
-        performance.now(),
-      );
-      lipSyncLevelRef.current = nextLevel;
-      setMouthOpen((current) =>
-        Math.abs(current - nextLevel) > 0.012 ? nextLevel : current,
-      );
-      lipSyncFrameRef.current = window.requestAnimationFrame(tick);
-    };
-    tick();
-  }, []);
-
-  const playQuestionAudio = useCallback(
-    async (
-      mode: "auto" | "replay" | "toggle" = "toggle",
-      forceSound = false,
-      userGesture = false,
-    ) => {
-      const audio = audioRef.current;
-      if (!audio) return;
-      if (!soundOn && !forceSound) return;
-      if (userGesture) setVoiceUnlocked(true);
-      if (voiceRequiresGesture && !voiceUnlocked && !userGesture) {
-        setAudioState("locked");
-        stopLipSync();
-        return;
-      }
-      if (mode === "toggle" && audioState === "playing") {
-        audio.pause();
-        setAudioState("idle");
-        return;
-      }
-      setAudioState("loading");
-      audioFallbackIndexRef.current = 0;
-      const nextSrc = `/api/kai-tts/${encodeURIComponent(activeNarrationId)}?locale=${encodeURIComponent(locale)}`;
-      const needsSourceLoad =
-        !audio.getAttribute("src")?.endsWith(nextSrc) || audio.readyState === 0;
-      if (needsSourceLoad) {
-        audio.src = nextSrc;
-        audio.load();
-      }
-      audio.currentTime = 0;
-      audio.playbackRate = speed;
-      try {
-        const context = ensureLipSyncGraph(audio);
-        const playPromise = audio.play();
-        if (context?.state === "suspended") {
-          void context.resume().catch(() => {});
-        }
-        await playPromise;
-        setAudioState("playing");
-        startLipSync();
-      } catch {
-        setAudioState("unavailable");
-        stopLipSync();
-      }
-    },
-    [
-      audioState,
-      activeNarrationId,
-      ensureLipSyncGraph,
+  useEffect(() => {
+    if (exiting) return;
+    playNarration({
+      audioId: activeNarrationId,
       locale,
-      soundOn,
-      speed,
-      startLipSync,
-      stopLipSync,
-      voiceRequiresGesture,
-      voiceUnlocked,
-    ],
-  );
-
-  const handleAudioError = useCallback(() => {
-    const audio = audioRef.current;
-    if (
-      audio &&
-      soundOn &&
-      audioFallbackIndexRef.current < KAI_AUDIO_FALLBACK_EXTENSIONS.length
-    ) {
-      const extension =
-        KAI_AUDIO_FALLBACK_EXTENSIONS[audioFallbackIndexRef.current];
-      audioFallbackIndexRef.current += 1;
-      audio.src = `/audio/${activeNarrationId}.${extension}`;
-      audio.load();
-      audio.currentTime = 0;
-      audio.playbackRate = speed;
-      void audio
-        .play()
-        .then(() => {
-          setAudioState("playing");
-          startLipSync();
-        })
-        .catch(() => {
-          stopLipSync();
-          setAudioState("unavailable");
-        });
-      return;
-    }
-    stopLipSync();
-    setAudioState("unavailable");
-  }, [activeNarrationId, soundOn, speed, startLipSync, stopLipSync]);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.pause();
-    audio.removeAttribute("src");
-    audio.load();
-    stopLipSync();
-    autoPlaybackQuestionRef.current = null;
-    setAudioState(soundOn ? "idle" : "muted");
-  }, [activeNarrationId, soundOn, stopLipSync]);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (audio) audio.playbackRate = speed;
-  }, [speed, audioState]);
-
-  useEffect(() => {
-    return () => {
-      stopLipSync();
-      void audioContextRef.current?.close();
-    };
-  }, [stopLipSync]);
-
-  function toggleSound() {
-    const next = !soundOn;
-    setSoundOn(next);
-    window.localStorage.setItem("tareeq:sound", next ? "on" : "off");
-    if (!next) {
-      audioRef.current?.pause();
-      stopLipSync();
-      setAudioState("muted");
-    } else {
-      setAudioState("idle");
-      window.setTimeout(() => {
-        void playQuestionAudio("replay", true, true);
-      }, 0);
-    }
-  }
-
-  useEffect(() => {
-    if (!soundPreferenceReady || !soundOn || exiting) return;
-    if (autoPlaybackQuestionRef.current === activeNarrationId) return;
-    autoPlaybackQuestionRef.current = activeNarrationId;
-    if (voiceRequiresGesture && !voiceUnlocked) {
-      setAudioState("locked");
-      return;
-    }
-    const delay =
-      activeNarrationKind === "section"
-        ? 180
-        : prefersReducedMotion()
-          ? 80
-          : 520;
-    const timeout = window.setTimeout(() => {
-      void playQuestionAudio("auto");
-    }, delay);
-    return () => window.clearTimeout(timeout);
+      ownerId: activeOwnerId,
+    });
+    return () => stopNarration(activeOwnerId);
   }, [
     activeNarrationId,
-    activeNarrationKind,
+    activeOwnerId,
     exiting,
-    playQuestionAudio,
-    soundOn,
-    soundPreferenceReady,
-    voiceRequiresGesture,
-    voiceUnlocked,
+    locale,
+    playNarration,
+    stopNarration,
   ]);
+
+  useEffect(() => {
+    setPlaybackRate(speed);
+  }, [setPlaybackRate, speed]);
+
+  useEffect(() => {
+    const nextQuestion = questions[index + 1];
+    if (nextQuestion) {
+      preloadNarration({ audioId: nextQuestion.externalId, locale });
+    }
+
+    const interstitialAudioIds = new Set(
+      INTERSTITIALS.filter((item) => item.triggerAfterIndex === index).map(
+        (item) => item.audioId,
+      ),
+    );
+    interstitialAudioIds.forEach((audioId) => {
+      preloadNarration({ audioId, locale });
+    });
+  }, [index, locale, preloadNarration, questions]);
+
+  function toggleSound() {
+    const nextMuted = soundOn;
+    setMuted(nextMuted);
+    if (!nextMuted) {
+      window.setTimeout(() => replayNarration(activeOwnerId), 0);
+    }
+  }
 
   const exitClass =
     exiting === "forward"
@@ -695,7 +531,13 @@ export function QuestionScreen({
       </button>
       <button
         type="button"
-        onClick={() => playQuestionAudio("toggle", false, true)}
+        onClick={() => {
+          if (audioState === "playing") {
+            stopNarration(activeOwnerId);
+            return;
+          }
+          replayNarration(activeOwnerId);
+        }}
         disabled={!soundOn}
         className="glass-tile inline-flex size-8 items-center justify-center rounded-full text-sand/75 transition hover:text-sand active:scale-95 disabled:opacity-40"
         aria-label={audioState === "playing" ? t("audio.pause") : t("audio.replay")}
@@ -749,7 +591,7 @@ export function QuestionScreen({
           mouthOpen={displayedMouthOpen}
           soundOn={soundOn}
           audioRef={audioRef}
-          onReplay={() => playQuestionAudio("replay", false, true)}
+          onReplay={() => replayNarration(activeOwnerId)}
           onToggleSound={toggleSound}
           onDismiss={dismissInterstitial}
         />
@@ -763,23 +605,6 @@ export function QuestionScreen({
           isDenseChoice ? "gap-2" : "gap-3"
         } ${exitClass}`}
       >
-        <audio
-          ref={audioRef}
-          preload="none"
-          playsInline
-          onEnded={() => {
-            stopLipSync();
-            setAudioState(soundOn ? "idle" : "muted");
-          }}
-          onPlay={startLipSync}
-          onPause={() => {
-            stopLipSync();
-            if (audioState === "playing")
-              setAudioState(soundOn ? "idle" : "muted");
-          }}
-          onError={handleAudioError}
-        />
-
         {/* Desktop (lg:) layout — Kai on top, question stretched wider
          *  now that there's real width to use, answers below. `lg:flex-1`
          *  makes this whole block grow to fill the section's available

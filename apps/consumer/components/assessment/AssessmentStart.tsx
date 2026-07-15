@@ -4,6 +4,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { KaiAuraV2 } from "@/components/brand/KaiAuraV2";
 import { KaiChromaVideo } from "@/components/brand/KaiChromaVideo";
+import { useAssessmentAudio } from "@/components/assessment/AssessmentAudioProvider";
+import {
+  INTRO_NARRATION_AUDIO_ID,
+  INTRO_NARRATION_OWNER_ID,
+} from "@/components/assessment/intro-audio";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import {
   defaultVoiceOnForAssessmentStart,
@@ -40,7 +45,8 @@ const STEPS: ReadonlyArray<{ n: number; titleKey: StringKey; metaKey: StringKey 
 
 export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
   const router = useRouter();
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
+  const { playNarration, preloadNarration, setMuted } = useAssessmentAudio();
   const searchParams = useSearchParams();
   const [progress, setProgress] = useState<LocalAssessmentProgress | null>(
     null,
@@ -52,6 +58,10 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
     setProgress(readLocalAssessment());
     setTermsAccepted(Boolean(readPlatformConsent()));
   }, []);
+
+  useEffect(() => {
+    preloadNarration({ audioId: INTRO_NARRATION_AUDIO_ID, locale });
+  }, [locale, preloadNarration]);
 
   const answeredCount = answeredQuestionCount(progress);
   const canResume = answeredCount > 0 && !progress?.completedAt;
@@ -74,6 +84,12 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
 
     const isRetake = Boolean(progress?.completedAt);
     defaultVoiceOnForAssessmentStart();
+    setMuted(false);
+    playNarration({
+      audioId: INTRO_NARRATION_AUDIO_ID,
+      locale,
+      ownerId: INTRO_NARRATION_OWNER_ID,
+    });
     uiSounds.advance();
     if (!readPlatformConsent()) writePlatformConsent();
     resetLocalAssessment();

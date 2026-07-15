@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { AssessmentAudioProvider } from "@/components/assessment/AssessmentAudioProvider";
 import { AssessmentChrome } from "@/components/assessment/AssessmentChrome";
 import { LanguageGate } from "@/components/i18n/LanguageGate";
 import { LocaleProvider } from "@/components/i18n/LocaleProvider";
@@ -12,9 +13,11 @@ export default function AssessmentLayout({
   return (
     <LocaleProvider>
       <LanguageGate>
-        <AssessmentChrome totalQuestions={totalAssessmentQuestions}>
-          {children}
-        </AssessmentChrome>
+        <AssessmentAudioProvider>
+          <AssessmentChrome totalQuestions={totalAssessmentQuestions}>
+            {children}
+          </AssessmentChrome>
+        </AssessmentAudioProvider>
       </LanguageGate>
     </LocaleProvider>
   );

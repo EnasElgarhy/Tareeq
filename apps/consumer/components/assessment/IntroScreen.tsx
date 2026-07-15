@@ -4,49 +4,54 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { KaiChromaVideo } from "@/components/brand/KaiChromaVideo";
 import { Typewriter } from "@/components/primitives/Typewriter";
+import { useAssessmentAudio } from "@/components/assessment/AssessmentAudioProvider";
+import {
+  INTRO_NARRATION_AUDIO_ID,
+  INTRO_NARRATION_OWNER_ID,
+} from "@/components/assessment/intro-audio";
 import { uiSounds } from "@/lib/audio/ui-sounds";
 import { useLocale } from "@/components/i18n/LocaleProvider";
-import { useKaiNarration } from "@/lib/audio/use-kai-narration";
-
-const INTRO_BODY =
-  "Think of me as a filter for all the noise. We’re looking for your Energy Flows — the stuff that makes you lose track of time. Pick what you’d actually do.";
 
 export function IntroScreen() {
   const router = useRouter();
   const { locale, t } = useLocale();
   const introBody = t("intro.body");
   const [typingDone, setTypingDone] = useState(false);
-  const [soundOn, setSoundOn] = useState(true);
-  const [soundPrefReady, setSoundPrefReady] = useState(false);
   const [introCopyActive, setIntroCopyActive] = useState(false);
   const [introCopyRun, setIntroCopyRun] = useState(0);
   const [introTypeSpeed, setIntroTypeSpeed] = useState(44);
-
-  // Hydrate sound preference from localStorage so muting persists
-  // across screens, matching what /q/* already does.
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    setSoundOn(window.localStorage.getItem("tareeq:sound") !== "off");
-    setSoundPrefReady(true);
-    uiSounds.transition();
-  }, []);
-
-  // Shared Kai narration pipeline — auto-plays the kai_intro clip on
-  // desktop, waits for a tap on touch devices (sets state to "locked").
-  const { audioRef, audioState, play, pause } = useKaiNarration({
-    audioId: "kai_intro",
-    autoPlay: soundPrefReady && soundOn,
-    soundOn,
-    locale,
-  });
+  const {
+    audioRef,
+    playNarration,
+    preloadNarration,
+    stopNarration,
+    replayNarration,
+    setMuted,
+    isPlaying: providerIsPlaying,
+    isPreparing,
+    isMuted,
+    activeOwnerId,
+    error,
+  } = useAssessmentAudio();
+  const ownsIntroAudio = activeOwnerId === INTRO_NARRATION_OWNER_ID;
+  const soundOn = !isMuted;
+  const audioState = isMuted
+    ? "muted"
+    : error && ownsIntroAudio
+      ? "unavailable"
+      : isPreparing && ownsIntroAudio
+        ? "loading"
+        : providerIsPlaying && ownsIntroAudio
+          ? "playing"
+          : "idle";
 
   const syncTypeSpeedFromAudio = useCallback(() => {
     const duration = audioRef.current?.duration;
     if (!duration || !Number.isFinite(duration)) return;
     const targetMs = Math.max(2600, duration * 920);
-    const nextSpeed = Math.round(targetMs / INTRO_BODY.length);
+    const nextSpeed = Math.round(targetMs / Math.max(introBody.length, 1));
     setIntroTypeSpeed(Math.min(56, Math.max(24, nextSpeed)));
-  }, [audioRef]);
+  }, [audioRef, introBody.length]);
 
   function restartIntroCopy() {
     setTypingDone(false);
@@ -55,14 +60,41 @@ export function IntroScreen() {
   }
 
   useEffect(() => {
-    if (!soundPrefReady) return;
+    uiSounds.transition();
+  }, []);
 
+  useEffect(() => {
+    preloadNarration({ audioId: INTRO_NARRATION_AUDIO_ID, locale });
+    playNarration({
+      audioId: INTRO_NARRATION_AUDIO_ID,
+      locale,
+      ownerId: INTRO_NARRATION_OWNER_ID,
+    });
+    return () => stopNarration(INTRO_NARRATION_OWNER_ID);
+  }, [locale, playNarration, preloadNarration, stopNarration]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    syncTypeSpeedFromAudio();
+    const handleLoadedMetadata = () => syncTypeSpeedFromAudio();
+    const handleEnded = () => setIntroCopyActive(true);
+    audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+    audio.addEventListener("ended", handleEnded);
+    return () => {
+      audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      audio.removeEventListener("ended", handleEnded);
+    };
+  }, [audioRef, syncTypeSpeedFromAudio]);
+
+  useEffect(() => {
     if (!soundOn || audioState === "muted" || audioState === "unavailable") {
       setIntroCopyActive(true);
       return;
     }
 
-    if (audioState === "playing" || audioState === "ended") {
+    if (audioState === "playing") {
       syncTypeSpeedFromAudio();
       setIntroCopyActive(true);
     }
@@ -70,33 +102,31 @@ export function IntroScreen() {
     if (audioState === "loading") {
       const timeout = window.setTimeout(() => {
         setIntroCopyActive(true);
-      }, 900);
+      }, 260);
       return () => window.clearTimeout(timeout);
     }
-  }, [audioState, soundOn, soundPrefReady, syncTypeSpeedFromAudio]);
+  }, [audioState, soundOn, syncTypeSpeedFromAudio]);
 
   function next() {
-    pause();
+    stopNarration(INTRO_NARRATION_OWNER_ID);
     uiSounds.advance();
     router.push("/contract");
   }
 
   function toggleSound() {
-    const nextValue = !soundOn;
-    setSoundOn(nextValue);
-    window.localStorage.setItem("tareeq:sound", nextValue ? "on" : "off");
-    if (!nextValue) {
-      pause();
+    const nextMuted = soundOn;
+    setMuted(nextMuted);
+    if (nextMuted) {
       setIntroCopyActive(true);
     } else {
       restartIntroCopy();
-      void play(true);
+      window.setTimeout(() => replayNarration(INTRO_NARRATION_OWNER_ID), 0);
     }
   }
 
   function replayOrUnlock() {
     restartIntroCopy();
-    void play(true);
+    replayNarration(INTRO_NARRATION_OWNER_ID);
   }
 
   const isPlaying = audioState === "playing";
@@ -106,15 +136,6 @@ export function IntroScreen() {
       aria-labelledby="intro-heading"
       className="anim-screen-enter flex flex-1 flex-col items-center justify-center gap-5 pb-4 text-center lg:grid lg:grid-cols-2 lg:content-center lg:items-center lg:gap-10 lg:pb-0 lg:text-start"
     >
-      {/* Hidden audio element — driven entirely by useKaiNarration */}
-      <audio
-        ref={audioRef}
-        preload="auto"
-        playsInline
-        className="hidden"
-        onLoadedMetadata={syncTypeSpeedFromAudio}
-      />
-
       {/* Character first — Kai drops in, green screen keyed out so she
           floats transparently over the app (no frame, halo, or card).
           Desktop: her own column, room to be the bigger presence a
