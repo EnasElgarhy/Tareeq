@@ -8,6 +8,10 @@ on:
       - ".github/workflows/deploy-consumer-staging.yml"
       - ".github/workflows/_deploy-apprunner.yml"
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   deploy:
     uses: ./.github/workflows/_deploy-apprunner.yml
