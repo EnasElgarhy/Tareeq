@@ -2,6 +2,12 @@
 
 Mobile-first career discovery for youth in the Middle East and North Africa.
 
+## Contributing
+
+Read [CODING_STYLE.md](./CODING_STYLE.md) before changing code. It defines the
+repository's engineering workflow, TypeScript and Next.js conventions, testing
+gates, security rules, bilingual behavior, and release safety requirements.
+
 ## Development
 
 ```bash
