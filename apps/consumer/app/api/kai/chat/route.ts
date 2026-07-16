@@ -25,6 +25,7 @@ import {
   fallbackMessage,
   normalizeBlocks,
   normalizeIntent,
+  normalizeQuickReplies,
   validateChatRequest,
 } from "@/lib/kai/chat-server";
 import type { KaiChatResult } from "@/lib/kai/chat-stream";
@@ -364,9 +365,9 @@ export async function POST(request: Request) {
               )
             : `The learner just said: "${message}"\n\nWrite Kai's reply now, per the output rules.`;
 
-        // A fast local guess (no extra Gemini call) that steers the prompt
-        // toward the right block set — Gemini's own self-reported "intent" in
-        // the response is what actually gets recorded (see normalizeIntent).
+        // A fast local classification (no extra Gemini call) that selects the
+        // response contract. The schema locks Gemini to this value and the
+        // server records it as the final intent.
         const intentHint =
           kind === "reply" && message ? detectIntent(message) : undefined;
         const model = shouldGroundIntent(intentHint)
@@ -545,11 +546,11 @@ export async function POST(request: Request) {
           ? [...(enforcement.blocks ?? []), groundingBlock]
           : enforcement.blocks;
 
-        const quickReplies = Array.isArray(finalParsed.quickReplies)
-          ? finalParsed.quickReplies
-              .filter((r): r is string => typeof r === "string")
-              .slice(0, 4)
-          : undefined;
+        const quickReplies = normalizeQuickReplies(
+          finalParsed.quickReplies,
+          finalIntent,
+          context.user.locale,
+        );
 
         const kaiMessage: KaiMessage = {
           id: `kai-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,

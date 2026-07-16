@@ -455,6 +455,37 @@ export function normalizeBlocks(value: unknown): KaiMessageBlock[] | undefined {
   return blocks.length > 0 ? blocks : undefined;
 }
 
+const COMPARISON_QUICK_REPLIES = {
+  en: [
+    "Compare study requirements",
+    "Compare career opportunities",
+    "Which option fits my profile?",
+  ],
+  ar: [
+    "قارن متطلبات الدراسة",
+    "قارن الفرص المهنية",
+    "أي خيار يناسب ملفي أكثر؟",
+  ],
+} as const;
+
+export function normalizeQuickReplies(
+  value: unknown,
+  intent: KaiMessageIntent,
+  locale: string,
+): string[] | undefined {
+  if (intent === "career_comparison") {
+    return [...COMPARISON_QUICK_REPLIES[locale === "ar" ? "ar" : "en"]];
+  }
+  if (!Array.isArray(value)) return undefined;
+
+  const normalized = value
+    .filter((reply): reply is string => typeof reply === "string")
+    .map((reply) => reply.trim())
+    .filter(Boolean);
+  const unique = [...new Set(normalized)].slice(0, 4);
+  return unique.length > 0 ? unique : undefined;
+}
+
 export function fallbackMessage(locale: string): KaiMessage {
   const text =
     locale === "ar"

@@ -44,10 +44,14 @@ describe("buildResponseSchema intent contract", () => {
     const action = buildResponseSchema(
       "action_plan",
     ) as unknown as SchemaObject;
+    const comparison = buildResponseSchema(
+      "career_comparison",
+    ) as unknown as SchemaObject;
     const factual = buildResponseSchema(
       "fact_lookup",
     ) as unknown as SchemaObject;
     expect(action.required).toContain("blocks");
+    expect(comparison.required).toContain("blocks");
     expect(factual.required).not.toContain("blocks");
     expect(action.required).toContain("quickReplies");
     expect(factual.required).toContain("quickReplies");

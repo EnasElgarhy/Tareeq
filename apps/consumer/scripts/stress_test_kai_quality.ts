@@ -8,7 +8,7 @@ import type { KaiChatContext } from "../lib/kai/chat-context";
 import type { KaiMessageBlock } from "../lib/kai/chat-types";
 import { readKaiChatStream, type KaiChatResult } from "../lib/kai/chat-stream";
 import type { KaiMessageIntent } from "../lib/kai/intent";
-import { INTENT_REQUIRED_BLOCKS } from "../lib/kai/required-blocks";
+import { getMissingRequiredBlocks } from "../lib/kai/required-blocks";
 
 try {
   loadEnvFile(resolve(process.cwd(), ".env.local"));
@@ -107,8 +107,9 @@ const CASES: QualityCase[] = [
   {
     id: "en-comparison",
     locale: "en",
-    prompt: "Compare studying Law versus International Relations for me.",
+    prompt: "Compare studying Law in Spain and Egypt again.",
     expectedIntent: "career_comparison",
+    expectedAnyBlocks: ["comparison", "comparison_table", "decision_matrix"],
   },
   {
     id: "en-university-location",
@@ -170,6 +171,7 @@ const CASES: QualityCase[] = [
     locale: "ar",
     prompt: "قارن لي بين دراسة القانون والعلاقات الدولية.",
     expectedIntent: "career_comparison",
+    expectedAnyBlocks: ["comparison", "comparison_table", "decision_matrix"],
   },
   {
     id: "ar-confidence",
@@ -264,7 +266,10 @@ function scoreCase(test: QualityCase, result: KaiChatResult): CaseResult {
   const types = blockTypes(result);
   const content = visibleModelContent(result);
   const quickReplyCount = result.message.quickReplies?.length ?? 0;
-  const required = INTENT_REQUIRED_BLOCKS[test.expectedIntent] ?? [];
+  const missingRequired = getMissingRequiredBlocks(
+    test.expectedIntent,
+    result.message.blocks,
+  );
   const recoveredArtifact =
     result.timings?.recoveredViaSimplified === true &&
     (content.match(/(?:^|\s)[1-9١-٩][.)-]/gu)?.length ?? 0) >= 3;
@@ -293,7 +298,7 @@ function scoreCase(test: QualityCase, result: KaiChatResult): CaseResult {
     { name: "no_generic_fallback", pass: !genericFallback },
     {
       name: "required_artifact",
-      pass: required.every((type) => types.includes(type)) || recoveredArtifact,
+      pass: missingRequired.length === 0 || recoveredArtifact,
     },
     {
       name: "quick_replies",

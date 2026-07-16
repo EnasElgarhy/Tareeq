@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   normalizeBlocks,
   normalizeIntent,
+  normalizeQuickReplies,
   validateChatRequest,
 } from "@/lib/kai/chat-server";
 
@@ -778,5 +779,39 @@ describe("normalizeIntent", () => {
   it("falls back to general_question by default when no fallback is given", () => {
     expect(normalizeIntent(undefined)).toBe("general_question");
     expect(normalizeIntent(42)).toBe("general_question");
+  });
+});
+
+describe("normalizeQuickReplies", () => {
+  it("uses comparison-specific follow-ups instead of unrelated model suggestions", () => {
+    expect(
+      normalizeQuickReplies(
+        ["How do I start scholarship research?", "Tell me about my archetype"],
+        "career_comparison",
+        "en",
+      ),
+    ).toEqual([
+      "Compare study requirements",
+      "Compare career opportunities",
+      "Which option fits my profile?",
+    ]);
+  });
+
+  it("localizes comparison follow-ups in Arabic", () => {
+    expect(normalizeQuickReplies([], "career_comparison", "ar")).toEqual([
+      "قارن متطلبات الدراسة",
+      "قارن الفرص المهنية",
+      "أي خيار يناسب ملفي أكثر؟",
+    ]);
+  });
+
+  it("trims, deduplicates, and bounds other model suggestions", () => {
+    expect(
+      normalizeQuickReplies(
+        [" Next step ", "Next step", "Compare costs", 42, "Third", "Fourth"],
+        "general_question",
+        "en",
+      ),
+    ).toEqual(["Next step", "Compare costs", "Third", "Fourth"]);
   });
 });

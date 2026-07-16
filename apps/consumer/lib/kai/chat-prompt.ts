@@ -313,6 +313,7 @@ const STRUCTURED_RESPONSE_INTENTS = new Set<KaiMessageIntent>([
   "resource_recommendation",
   "action_plan",
   "study_plan",
+  "career_comparison",
   "challenge_result",
   "confidence_building",
 ]);

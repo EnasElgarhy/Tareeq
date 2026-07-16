@@ -1,70 +1,70 @@
 # Kai Quality Stress Test
 
-Generated: 2026-07-16T18:23:48.551Z
+Generated: 2026-07-16T19:11:55.441Z
 
 ## Result
 
 **PASS** against the current quality gate.
 
-| Metric                         |             Result |            Gate |
-| ------------------------------ | -----------------: | --------------: |
-| Cases                          |   18 (9 EN / 9 AR) |              18 |
-| Combined quality               |                98% |          >= 85% |
-| Deterministic contract quality |               100% |   >= 90% target |
-| Model-assisted rubric          |                95% |   >= 80% target |
-| Intent accuracy                |               100% |            100% |
-| Locale consistency             |               100% |            100% |
-| Factual source coverage        |               100% |          >= 90% |
-| Fallback rate                  |                 0% |              0% |
-| Text-only recovery rate        |                11% |          <= 15% |
-| Total latency p50 / p95        | 3007 ms / 12156 ms | p95 < 15,000 ms |
-| First text p50 / p95           |   701 ms / 5465 ms |        observed |
+| Metric | Result | Gate |
+| --- | ---: | ---: |
+| Cases | 18 (9 EN / 9 AR) | 18 |
+| Combined quality | 97% | >= 85% |
+| Deterministic contract quality | 100% | >= 90% target |
+| Model-assisted rubric | 92% | >= 80% target |
+| Intent accuracy | 100% | 100% |
+| Locale consistency | 100% | 100% |
+| Factual source coverage | 100% | >= 90% |
+| Fallback rate | 0% | 0% |
+| Text-only recovery rate | 0% | <= 15% |
+| Total latency p50 / p95 | 3333 ms / 5675 ms | p95 < 15,000 ms |
+| First text p50 / p95 | 737 ms / 5674 ms | observed |
 
 The combined score weights deterministic contract checks at 60% and the separate rubric score at 40%. The rubric measures directness, relevance, specificity, appropriate actionability, epistemic care, and naturalness. It does not independently verify factual accuracy.
 
 ## Cases
 
-| Case                   | Intent                  | Blocks                                   | Contract | Rubric | Combined | Total ms | Failed checks | Answer preview                                                                                                                                                                       |
-| ---------------------- | ----------------------- | ---------------------------------------- | -------: | -----: | -------: | -------: | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| en-cost-spain          | fact_lookup             | source_list                              |      100 |    100 |      100 |     5122 | none          | A public bachelor's degree in Spain for an international student typically costs between €3,000 and €12,000 per year in tuition fees, with variations depending on the autonomous re |
-| en-visa-spain          | fact_lookup             | source_list                              |      100 |    100 |      100 |     5040 | none          | Non-EU students planning to study in Spain for over 90 days must obtain a student visa (Type D for stays over 180 days, or a short-stay study visa for up to 180 days). Key requirem |
-| en-explain-result      | explain_result          | insight_block                            |      100 |     83 |       93 |     3007 | none          | Your combination of an Explorer archetype and a Mastery driver suggests you thrive where you can navigate complex systems and solve high-stakes problems.                            |
-| en-family              | family_conversation     | talking_points, checklist, family_script |      100 |     93 |       97 |     3369 | none          | Your parents likely worry about stability, so focus on the long-term professional security and global impact inherent in diplomacy.                                                  |
-| en-resources           | resource_recommendation | learning_resources                       |      100 |    100 |      100 |     1554 | none          | Since you are an Explorer at heart, these resources will help you see how global systems actually function beyond the textbooks.                                                     |
-| en-action-plan         | action_plan             | action_plan                              |      100 |    100 |      100 |     3062 | none          | This 7-day plan focuses on testing your interest in diplomacy through active research and networking.                                                                                |
-| en-comparison          | career_comparison       | text                                     |      100 |     93 |       97 |     1431 | none          | Both paths align well with your Explorer archetype, but they demand different types of mastery. Law is about precise structural analysis, while International Relations focuses on t |
-| en-university-location | university_guidance     | text                                     |      100 |     90 |       96 |     1104 | none          | Before I point you toward specific universities, where are you considering studying? The best path for Law really depends on whether you want to stay in your home region, head to t |
-| en-next-step           | next_step               | text                                     |      100 |     90 |       96 |     2090 | none          | Your result points toward Law and Diplomacy, but your Explorer archetype means you should treat this as a starting point for active investigation, not a final destination. The most |
-| ar-cost-spain          | fact_lookup             | source_list                              |      100 |    100 |      100 |     4169 | none          | تبلغ تكلفة البكالوريوس في جامعة حكومية في إسبانيا للطالب الدولي ما بين 1,500 و 5,000 يورو سنويًا، حيث تختلف الرسوم حسب المنطقة وجنسية الطالب (غير الاتحاد الأوروبي عادةً يدفعون أكثر |
-| ar-lawyer-salary       | fact_lookup             | source_list                              |      100 |     97 |       99 |     5467 | none          | متوسط راتب المحامي في إسبانيا حاليًا يتراوح حوالي 86,493 يورو إلى 88,548 يورو سنويًا، بالإضافة إلى متوسط مكافأة قدرها 5,938 يورو. يختلف هذا الرقم بشكل كبير بناءً على الخبرة، حيث يم |
-| ar-explain-result      | explain_result          | insight_block                            |      100 |     93 |       97 |     2999 | none          | تظهر نتيجتك هذا المسار لأنك تجمع بين حب الاستكشاف ورغبة عميقة في الإتقان، وهو مزيج مثالي للمجالات التي تتطلب تحليلاً دقيقاً وتفاعلاً إنسانياً.                                       |
-| ar-family              | family_conversation     | talking_points, checklist, family_script |      100 |     97 |       99 |     5127 | none          | إقناع الأهل يتطلب التركيز على القيمة المهنية والفرص العالمية التي يفتحها هذا التخصص لك.                                                                                              |
-| ar-resources           | resource_recommendation | learning_resources                       |      100 |     97 |       99 |     1918 | none          | بما أن اهتمامك يميل نحو الدبلوماسية، فمن الرائع أن تبدأ بفهم كيف تدار العلاقات بين الدول بعيداً عن التنظير الجامد.                                                                   |
-| ar-action-plan         | action_plan             | action_plan                              |      100 |     93 |       97 |     1856 | none          | بما أنكِ تميلين إلى الإتقان وتستكشفين القانون، فهذه الخطة ستساعدكِ على فهم واقع هذا المجال بعيداً عن الكتب الأكاديمية.                                                               |
-| ar-comparison          | career_comparison       | text                                     |      100 |     97 |       99 |    11607 | none          | دراسة القانون تركز على القواعد والأنظمة والتحليل المنطقي للنزاعات، بينما تركز العلاقات الدولية على السياسة العالمية والتحليل الاستراتيجي وتفاعلات الدول. إليك مقارنة سريعة لتساعدك ف |
-| ar-confidence          | confidence_building     | reflection_question                      |      100 |     97 |       99 |     1432 | none          | القلق طبيعي جدًا عند التفكير في مسار يتطلب مهارات عالية مثل الدبلوماسية، لكن ملفك يشير إلى أنك تملكين الأدوات الأساسية للنجاح فيه.                                                   |
-| ar-study-plan          | study_plan              | text                                     |      100 |     87 |       95 |    12156 | none          | بما أنكِ تستعدين لدراسة التاريخ، سنركز على ربط الأحداث بالسياق الدبلوماسي الذي يثير اهتمامك. إليكِ خطة لمدة أسبوعين لتركيز جهودك: 1. مراجعة الجداول الزمنية الكبرى وتقسيمها إلى حقب  |
+| Case | Intent | Blocks | Contract | Rubric | Combined | Total ms | Failed checks | Answer preview |
+| --- | --- | --- | ---: | ---: | ---: | ---: | --- | --- |
+| en-cost-spain | fact_lookup | source_list | 100 | 97 | 99 | 3115 | none | A public bachelor's degree in Spain for an international student (non-EU/EEA) typically costs between €3,000 and €12,000 per academic year for tuition, with some sources indicating |
+| en-visa-spain | fact_lookup | source_list | 100 | 93 | 97 | 5654 | none | To obtain a student visa for Spain, non-EU students must provide a valid passport, an official letter of acceptance from a recognized Spanish educational institution, and proof of  |
+| en-explain-result | explain_result | insight_block | 100 | 60 | 84 | 2948 | none | Your result reflects a unique blend of analytical depth and a desire to navigate complex, global systems. |
+| en-family | family_conversation | talking_points, checklist, family_script | 100 | 93 | 97 | 2969 | none | Your parents likely worry about the stability of a path like diplomacy, so focus your conversation on the concrete skills and global opportunities it provides. |
+| en-resources | resource_recommendation | learning_resources | 100 | 97 | 99 | 1491 | none | Since you are an Explorer who thrives on mastery, these resources will give you a solid foundation in the complexities of international relations. |
+| en-action-plan | action_plan | action_plan | 100 | 100 | 100 | 3336 | none | Since you are an Explorer at heart, this plan focuses on testing the reality of diplomatic work against your interest in studying abroad. |
+| en-comparison | career_comparison | comparison_table | 100 | 100 | 100 | 3532 | none | Comparing Law programs in Spain and Egypt involves weighing different legal systems and international exposure. |
+| en-university-location | university_guidance | text | 100 | 97 | 99 | 1634 | none | To give you a meaningful list, I need to know where you are considering studying. Are you looking at universities in your home region, or are you planning to study abroad? |
+| en-next-step | next_step | text | 100 | 90 | 96 | 1617 | none | Your results highlight a clear path in Law and Diplomacy, but your Explorer archetype means you need to test this in the real world before committing. The best next step is to unlo |
+| ar-cost-spain | fact_lookup | source_list | 100 | 100 | 100 | 4418 | none | تبلغ تكلفة البكالوريوس في جامعة حكومية في إسبانيا للطالب الدولي ما بين 700 يورو و6,000 يورو سنويًا، حيث تختلف الرسوم حسب المنطقة والجامعة والتخصص. أما تكاليف المعيشة التقديرية فتتر |
+| ar-lawyer-salary | fact_lookup | source_list | 100 | 100 | 100 | 5675 | none | متوسط راتب المحامي في إسبانيا حاليًا يتراوح بشكل عام بين 52,000 يورو و 87,705 يورو سنويًا. تختلف هذه الأرقام بناءً على الخبرة، حيث يمكن أن يبدأ المحامي المبتدئ بحوالي 59,000 يورو،  |
+| ar-explain-result | explain_result | insight_block | 100 | 63 | 85 | 3135 | none | Your score reflects a natural drive for mastery and a curiosity that thrives in complex, structured environments. |
+| ar-family | family_conversation | talking_points, checklist, family_script | 100 | 97 | 99 | 3715 | none | إقناع الأهل يتطلب التركيز على القيمة العملية والمهارات التي ستكتسبينها في تخصص العلاقات الدولية. |
+| ar-resources | resource_recommendation | learning_resources | 100 | 93 | 97 | 3333 | none | بما أن اهتمامك يميل نحو الدبلوماسية، فمن الرائع البدء بمصادر تبسط لك هذا العالم المعقد وتوضح طبيعة العمل فيه. |
+| ar-action-plan | action_plan | action_plan | 100 | 90 | 96 | 3870 | none | بما أنكِ تميلين بطبعك المستكشف، فالقانون ليس مجرد نصوص، بل هو أداة لفهم كيف يعمل العالم؛ إليكِ خطة عملية لتبدئي رحلة الاستكشاف هذه. |
+| ar-comparison | career_comparison | comparison_table | 100 | 100 | 100 | 3730 | none | سارة، كلا المسارين يغذي فضولك المستكشف، لكنهما يختلفان في التركيز اليومي وطبيعة الأثر الذي ستتركينه. |
+| ar-confidence | confidence_building | reflection_question | 100 | 97 | 99 | 1662 | none | من الطبيعي تمامًا أن تشعر بهذا التردد، فمسار الدبلوماسية يتطلب مهارات متنوعة قد تبدو بعيدة المنال في البداية. دعنا ننظر إلى ما يجعلك مناسبًا لهذا المجال بناءً على ملفك الشخصي. |
+| ar-study-plan | study_plan | action_plan | 100 | 93 | 97 | 4109 | none | هذه خطة عملية لمدة أسبوعين لتركيز جهودك في مادة التاريخ وتثبيت المعلومات بشكل فعال. |
 
 ## Diagnostics
 
-- **en-cost-spain:** Clear, accurate, and provides helpful context regarding regional cost variations.
-- **en-visa-spain:** Comprehensive and well-structured; covers essential requirements and procedural steps effectively.
-- **en-explain-result:** Good synthesis of the user's archetype, though the connection to 'Law' specifically could be more detailed.
-- **en-family:** Practical and empathetic advice; the script and checklist provide immediate, usable value.
-- **en-resources:** Excellent selection of resources with clear justifications tailored to the user's profile.
-- **en-action-plan:** Highly actionable and well-paced plan that encourages active exploration.
-- **en-comparison:** Excellent conceptual comparison that effectively links the fields to the user's archetype.
-- **en-university-location:** Good use of a clarifying question to narrow down a broad request.
-- **en-next-step:** Provides sound strategic advice, though could be more specific with examples of 'hands-on experience'.
-- **ar-cost-spain:** Very clear and informative response with realistic ranges and context.
-- **ar-lawyer-salary:** Provides detailed data, though the high average figure might be misleading without clarifying it often reflects senior roles.
-- **ar-explain-result:** Well-structured explanation that effectively synthesizes the user's profile with the career path.
-- **ar-family:** Excellent, empathetic, and structured advice that provides actionable scripts for a sensitive topic.
-- **ar-resources:** High-quality recommendations with clear reasoning, though Kissinger's book is quite advanced for a beginner.
-- **ar-action-plan:** Good tasks, but the plan is labeled as 7 days while the tasks only cover a few hours of work; it lacks a daily schedule.
-- **ar-comparison:** Clear and balanced comparison, providing helpful context regarding career mobility and degree recognition.
-- **ar-confidence:** Supportive and professional; the reflective question is an excellent coaching technique.
-- **ar-study-plan:** The advice is sound but generic; it lacks a specific day-by-day breakdown for the two-week period.
+- **en-cost-spain:** Excellent, balanced answer that acknowledges conflicting data points transparently.
+- **en-visa-spain:** Very helpful and comprehensive; good handling of varying financial requirements.
+- **en-explain-result:** Too vague and reliant on 'archetype' jargon rather than concrete reasoning.
+- **en-family:** Practical and empathetic advice with useful, actionable scripts.
+- **en-resources:** Good recommendations, though Kissinger's 'World Order' is quite dense for a 'beginner' label.
+- **en-action-plan:** Well-structured, realistic, and highly actionable plan.
+- **en-comparison:** Excellent structured comparison that provides clear, actionable insights into the differences between the two legal systems.
+- **en-university-location:** Appropriate clarification request; it avoids guessing and prompts the user for necessary context.
+- **en-next-step:** Clear and encouraging, though it relies on internal platform terminology which might be confusing without prior context.
+- **ar-cost-spain:** Provides precise, helpful data with clear caveats regarding regional cost variations.
+- **ar-lawyer-salary:** Very informative and well-sourced; the ranges provided are realistic for the Spanish legal market.
+- **ar-explain-result:** The answer starts in English despite the question being in Arabic, which is a significant naturalness failure.
+- **ar-family:** Excellent, empathetic, and structured advice that provides actionable scripts for a sensitive situation.
+- **ar-resources:** Good recommendations, though Kissinger's 'Diplomacy' is quite advanced for a beginner; the tone is encouraging.
+- **ar-action-plan:** The plan is well-structured, but the tasks provided only cover a few hours of work rather than a full 7-day schedule.
+- **ar-comparison:** Clear, concise, and highly effective comparison table that highlights key differences for a student.
+- **ar-confidence:** Excellent coaching approach; it validates the user's feelings and uses a reflective question to deepen the conversation.
+- **ar-study-plan:** Good study techniques provided, but the plan lacks a day-by-day breakdown for the full 14-day duration requested.
 
 ## Method
 
