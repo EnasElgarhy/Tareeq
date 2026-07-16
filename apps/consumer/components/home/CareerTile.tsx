@@ -32,10 +32,10 @@ export function CareerTile({
 }: CareerTileProps) {
   const { t } = useLocale();
   return (
-    <article className="flex w-[166px] shrink-0 snap-start flex-col overflow-hidden rounded-[22px] border border-[color:var(--day-line)] bg-[color:var(--day-card)] shadow-[var(--day-shadow-card)]">
+    <article className="daybreak-story-card rounded-story-alt flex w-[190px] shrink-0 snap-start flex-col overflow-hidden">
       {/* Illustration zone — cluster-tinted */}
       <div
-        className="relative grid h-[116px] place-items-center overflow-hidden"
+        className="relative grid h-[126px] place-items-center overflow-hidden border-b border-[color:var(--day-line)]"
         style={{
           background: `linear-gradient(150deg, ${rgbaFromHex(
             color,
@@ -49,10 +49,10 @@ export function CareerTile({
       </div>
 
       <div className="flex flex-1 flex-col p-3.5">
-        <p className="text-[9.5px] font-black uppercase tracking-[0.14em] text-[color:var(--day-ink-3)]">
+        <p className="daybreak-eyebrow text-[10px]">
           {t("home.tile.career_path")}
         </p>
-        <h3 className="mt-1 line-clamp-2 text-[14.5px] font-black leading-tight text-[color:var(--day-ink)]">
+        <h3 className="daybreak-heading mt-1.5 line-clamp-2 text-[17px] leading-tight text-[color:var(--day-ink)]">
           {career}
         </h3>
         <a

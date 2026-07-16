@@ -261,56 +261,69 @@ export function KaiChatScreen() {
 
   if (authState === "signed-out" || !kaiContext) {
     return (
-      <div className="grid flex-1 place-items-center justify-items-center gap-3 px-4 text-center">
-        <KaiSignal mood="waiting" size={56} />
-        <p className="max-w-[28ch] text-[14px] font-bold leading-snug text-[color:var(--day-ink,#2a2118)]">
-          {t("kai.chat.signed_out")}
-        </p>
-        <Link href="/you" className="btn-v2 btn-v2--primary" data-size="md">
-          {t("kai.chat.signed_out_cta")}
-        </Link>
-      </div>
+      <section className="daybreak-reveal grid flex-1 place-items-center px-2 py-8 text-center">
+        <div className="rounded-story relative grid w-full max-w-[520px] justify-items-center gap-4 overflow-hidden border border-[#413664] bg-[#221248] px-6 py-10 text-[#FFFCF6] shadow-[0_24px_60px_rgba(34,18,72,0.22)]">
+          <span className="absolute inset-x-0 top-0 h-1 bg-[#F2C94C]" aria-hidden="true" />
+          <KaiSignal mood="waiting" size={58} />
+          <p className="daybreak-heading max-w-[24ch] text-[24px] leading-tight text-[#FFFCF6]">
+            {t("kai.chat.signed_out")}
+          </p>
+          <Link
+            href="/you"
+            className="daybreak-inverse-action inline-flex min-h-11 items-center justify-center rounded-full bg-[#FFFCF6] px-5 text-[13px] font-bold text-[#221248] transition hover:bg-[#F2C94C] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F2C94C] focus-visible:ring-offset-2 focus-visible:ring-offset-[#221248]"
+          >
+            {t("kai.chat.signed_out_cta")}
+          </Link>
+        </div>
+      </section>
     );
   }
 
   if (!kaiContext.assessment) {
     return (
-      <div className="grid flex-1 place-items-center justify-items-center gap-3 px-4 text-center">
-        <KaiSignal mood="curious" size={56} />
-        <p className="max-w-[28ch] text-[14px] font-bold leading-snug text-[color:var(--day-ink,#2a2118)]">
-          {t("kai.chat.no_assessment")}
-        </p>
-        <Link href="/start" className="btn-v2 btn-v2--primary" data-size="md">
-          {t("kai.panel.empty_cta")}
-        </Link>
-      </div>
+      <section className="daybreak-reveal grid flex-1 place-items-center px-2 py-8 text-center">
+        <div className="rounded-story relative grid w-full max-w-[520px] justify-items-center gap-4 overflow-hidden border border-[#413664] bg-[#221248] px-6 py-10 text-[#FFFCF6] shadow-[0_24px_60px_rgba(34,18,72,0.22)]">
+          <span className="absolute inset-x-0 top-0 h-1 bg-[#F2C94C]" aria-hidden="true" />
+          <KaiSignal mood="curious" size={58} />
+          <p className="daybreak-heading max-w-[24ch] text-[24px] leading-tight text-[#FFFCF6]">
+            {t("kai.chat.no_assessment")}
+          </p>
+          <Link
+            href="/start"
+            className="daybreak-inverse-action inline-flex min-h-11 items-center justify-center rounded-full bg-[#FFFCF6] px-5 text-[13px] font-bold text-[#221248] transition hover:bg-[#F2C94C] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F2C94C] focus-visible:ring-offset-2 focus-visible:ring-offset-[#221248]"
+          >
+            {t("kai.panel.empty_cta")}
+          </Link>
+        </div>
+      </section>
     );
   }
 
   const nextMilestone = snapshot ? deriveNextMilestone(snapshot) : null;
 
   return (
-    <div className="flex min-h-full flex-col gap-3 pb-1">
+    <div className="daybreak-chat daybreak-reveal mx-auto flex min-h-full w-full max-w-[760px] flex-col gap-4 pb-1">
       {/* Persistent identity — always visible who this conversation is with,
           using our 3D Kai likeness (static image), consistent with the profile
           and Overview widget. */}
-      <div className="flex items-center gap-2.5">
-        <span className="size-9 shrink-0 overflow-hidden rounded-full ring-1 ring-[color:var(--day-line,rgba(43,36,28,0.1))]">
+      <header className="rounded-story-alt relative flex items-center gap-3 overflow-hidden border border-[#413664] bg-[#221248] p-4 text-[#FFFCF6] shadow-[0_18px_42px_rgba(34,18,72,0.18)] lg:p-5">
+        <span className="absolute inset-y-0 start-0 w-1 bg-[#F2C94C]" aria-hidden="true" />
+        <span className="size-12 shrink-0 overflow-hidden rounded-full ring-2 ring-[#F2C94C] ring-offset-2 ring-offset-[#221248]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/kai/kai-poster.png"
             alt="Kai"
-            width={36}
-            height={36}
+            width={48}
+            height={48}
             className="size-full object-cover"
             style={{ objectPosition: "50% 26%" }}
           />
         </span>
         <div className="min-w-0">
-          <p className="text-[13px] font-black leading-tight text-[color:var(--day-ink,#2a2118)]">{t("profile.tab.kai")}</p>
-          <p className="truncate text-[10px] text-[color:var(--day-ink-3,#675d4e)]">{t("kai.chat.subtitle")}</p>
+          <p className="daybreak-heading text-[22px] leading-tight text-[#FFFCF6]">{t("profile.tab.kai")}</p>
+          <p className="mt-0.5 truncate text-[11px] text-[#D8D0EA]">{t("kai.chat.subtitle")}</p>
         </div>
-      </div>
+      </header>
 
       <KaiGroundingCard
         assessment={kaiContext.assessment}
@@ -335,13 +348,13 @@ export function KaiChatScreen() {
           <div className="grid gap-2">
             <Link
               href="/kai/plans"
-              className="flex items-start gap-3 rounded-[20px] border border-[color:var(--day-line,rgba(43,36,28,0.1))] bg-[color:var(--day-card,#fffcf6)] p-3.5 text-start shadow-[0_8px_20px_rgba(43,36,28,0.05)] transition active:scale-[0.99]"
+              className="daybreak-story-card rounded-story flex items-start gap-3 p-4 text-start active:scale-[0.99]"
             >
-              <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-violet/10 text-violet">
+              <span className="daybreak-icon-tile size-10">
                 <ActionPlanIcon size={18} />
               </span>
               <div className="min-w-0 flex-1">
-                <p className="text-[13px] font-black leading-tight text-[color:var(--day-ink,#2a2118)]">
+                <p className="daybreak-heading text-[15px] leading-tight text-[color:var(--day-ink,#2a2118)]">
                   {t("kai.panel.locked.action_plans.title")}
                 </p>
                 <p className="mt-0.5 text-[11.5px] leading-snug text-[color:var(--day-ink-3,#675d4e)]">
@@ -387,7 +400,7 @@ export function KaiChatScreen() {
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src="/kai/kai-poster.png" alt="" width={24} height={24} className="size-full object-cover" style={{ objectPosition: "50% 26%" }} />
                       </span>
-                      <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-[color:var(--day-ink-3,#675d4e)]">
+                      <span className="daybreak-eyebrow text-[color:var(--day-ink-3,#675d4e)]">
                         {t("profile.tab.kai")}
                       </span>
                     </header>
@@ -404,7 +417,7 @@ export function KaiChatScreen() {
                     ) : null}
                     {message.quickReplies ? (
                       <div className="mt-1 border-t border-[color:var(--day-line,rgba(43,36,28,0.08))] pt-3">
-                        <p className="mb-2 text-[10.5px] font-bold uppercase tracking-[0.08em] text-[color:var(--day-ink-3,#675d4e)]">
+                        <p className="daybreak-eyebrow mb-2 text-[color:var(--day-ink-3,#675d4e)]">
                           {t("kai.chat.suggested_next")}
                         </p>
                         <QuickReplies replies={message.quickReplies} onSelect={(reply) => handleSend(reply, true)} />
@@ -430,7 +443,7 @@ export function KaiChatScreen() {
       <div ref={bottomRef} />
 
       {conversation ? (
-        <div className="sticky bottom-0 -mx-5 bg-[color:var(--day-bg,#f4eee3)] px-5 pb-3 pt-2">
+        <div className="sticky bottom-0 z-20 -mx-4 border-t border-[color:var(--day-line)] bg-[color:var(--day-bg,#f4eee3)] px-4 pb-3 pt-3 md:-mx-5 md:px-5">
           <KaiChatInput onSend={(text) => handleSend(text, false)} disabled={isTyping} />
         </div>
       ) : null}

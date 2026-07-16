@@ -10,7 +10,7 @@ export function AnswerSection({ title, children }: { title?: string; children: R
   return (
     <section>
       {title ? (
-        <h4 className="mb-1.5 text-[13px] font-black leading-tight text-[color:var(--day-ink,#2a2118)]">
+        <h4 className="daybreak-heading mb-1.5 text-[15px] leading-tight text-[color:var(--day-ink,#2a2118)]">
           {title}
         </h4>
       ) : null}

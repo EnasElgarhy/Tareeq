@@ -38,12 +38,10 @@ export function CollectionTile({
   return (
     <Link
       href={href}
-      className="relative flex min-h-[196px] w-[182px] shrink-0 snap-start flex-col overflow-hidden rounded-[24px] p-4 shadow-[var(--day-shadow-card)] transition active:scale-[0.98]"
+      className="rounded-story relative flex min-h-[218px] w-[208px] shrink-0 snap-start flex-col overflow-hidden border border-white/10 p-5 shadow-[0_16px_38px_rgba(8,5,26,0.16)] transition active:scale-[0.98]"
       style={{
-        // Ink-dominant jewel tile with a vivid color glow in the top-right
-        // corner — keeps white text legible for every hue (incl. gold/green)
-        // while still reading as the cluster's color.
-        background: `radial-gradient(125% 105% at 94% 4%, ${color} 0%, transparent 52%), ${ink}`,
+        background: `linear-gradient(145deg, ${ink} 0%, #100A24 100%)`,
+        boxShadow: `inset 0 4px 0 ${color}, 0 16px 38px rgba(8,5,26,0.16)`,
       }}
     >
       {/* Scene motif — bleeds off bottom-right */}
@@ -54,10 +52,10 @@ export function CollectionTile({
         <Scene size={132} tone="cream" />
       </span>
 
-      <p className="relative z-10 text-[10px] font-black uppercase tracking-[0.16em] text-white/90">
+      <p className="relative z-10 text-[10px] font-bold uppercase text-[#F4C660]">
         {typeof rank === "number" ? `#${rank} · ${exploreLabel}` : exploreLabel}
       </p>
-      <h3 className="relative z-10 mt-1.5 text-[21px] font-black uppercase leading-[0.95] text-white drop-shadow-[0_1px_8px_rgba(0,0,0,0.25)]">
+      <h3 className="daybreak-heading relative z-10 mt-2 text-[24px] leading-[0.98] text-[#F5EEE6]">
         {label}
       </h3>
       <p className="relative z-10 mt-auto max-w-[20ch] text-[11.5px] font-medium leading-snug text-white/90">

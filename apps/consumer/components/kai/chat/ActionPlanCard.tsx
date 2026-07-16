@@ -39,7 +39,7 @@ export function ActionPlanCard({
   }
 
   return (
-    <div className="max-w-full">
+    <div className="daybreak-story-card rounded-story-alt max-w-full p-4">
       <div className="mb-2.5 flex items-center gap-2.5">
         <span
           className="grid size-9 shrink-0 place-items-center rounded-xl"
@@ -48,11 +48,11 @@ export function ActionPlanCard({
           <ActionPlanIcon size={18} />
         </span>
         <div className="min-w-0 flex-1">
-          <p className="text-[13px] font-black leading-tight text-[color:var(--day-ink,#2a2118)]">
+          <p className="daybreak-heading text-[16px] leading-tight text-[color:var(--day-ink,#2a2118)]">
             {title || t("kai.chat.action_plan_fallback")}
           </p>
           {durationLabel ? (
-            <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-[color:var(--day-ink-3,#675d4e)]">
+            <p className="text-[10px] font-bold uppercase text-[color:var(--day-ink-3,#675d4e)]">
               {durationLabel}
             </p>
           ) : null}
@@ -62,7 +62,7 @@ export function ActionPlanCard({
         {tasks.map((task, index) => (
           <li
             key={task.id}
-            className="flex items-start justify-between gap-2 rounded-[14px] bg-[color:var(--day-inset,#efe7da)] px-3 py-2.5 text-[12px] leading-snug text-[color:var(--day-ink-2,#5c5142)]"
+            className="flex items-start justify-between gap-2 rounded-[10px] border border-[color:var(--day-line)] bg-[color:var(--day-inset,#efe7da)] px-3 py-2.5 text-[12px] leading-snug text-[color:var(--day-ink-2,#5c5142)]"
           >
             <span className="flex items-start gap-2.5">
               <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-violet/15 text-[10px] font-black text-violet">
@@ -71,7 +71,7 @@ export function ActionPlanCard({
               <span className="font-semibold text-[color:var(--day-ink,#2a2118)]">{task.text}</span>
             </span>
             {task.estimatedTime ? (
-              <span className="shrink-0 rounded-full bg-[color:var(--day-card,#fffcf6)] px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-[0.04em] text-[color:var(--day-ink-3,#675d4e)]">
+              <span className="shrink-0 rounded-full bg-[color:var(--day-card,#fffcf6)] px-2 py-0.5 text-[9.5px] font-bold uppercase text-[color:var(--day-ink-3,#675d4e)]">
                 {task.estimatedTime}
               </span>
             ) : null}
@@ -88,7 +88,7 @@ export function ActionPlanCard({
           <button
             type="button"
             onClick={handleSave}
-            className="rounded-full border border-[color:var(--day-line,rgba(43,36,28,0.1))] px-3 py-1.5 text-[11px] font-bold text-[color:var(--day-ink-2,#5c5142)] transition hover:bg-[color:var(--day-inset,#efe7da)]"
+            className="daybreak-secondary-action min-h-0 px-3 py-1.5 text-[11px]"
           >
             {t("kai.chat.action_plan_save")}
           </button>
@@ -96,7 +96,7 @@ export function ActionPlanCard({
         <button
           type="button"
           onClick={handleStart}
-          className="rounded-full bg-violet px-3 py-1.5 text-[11px] font-bold text-white transition hover:bg-violet/90"
+          className="daybreak-primary-action min-h-0 px-3 py-1.5 text-[11px]"
         >
           {t("kai.chat.action_plan_start")}
         </button>

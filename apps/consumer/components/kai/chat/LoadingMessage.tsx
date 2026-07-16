@@ -100,7 +100,7 @@ export function LoadingMessage({ pendingMessage }: { pendingMessage?: string }) 
         <span className="kai-writing-avatar__satellite kai-writing-avatar__satellite--a" />
         <span className="kai-writing-avatar__satellite kai-writing-avatar__satellite--b" />
       </span>
-      <div className="flex items-center gap-2 rounded-[16px] rounded-ss-[6px] border border-[color:var(--day-line,rgba(43,36,28,0.1))] bg-[color:var(--day-card,#fffcf6)] px-3.5 py-2.5 shadow-[0_6px_16px_rgba(43,36,28,0.05)]">
+      <div className="rounded-story-alt flex items-center gap-2 border border-[color:var(--day-line)] bg-[color:var(--day-card,#fffcf6)] px-3.5 py-2.5 shadow-[0_8px_20px_rgba(43,36,28,0.06)]">
         <LoadingIcon id={stage.icon} />
         <span
           key={stage.key}

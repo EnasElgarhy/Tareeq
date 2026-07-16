@@ -38,7 +38,7 @@ export function KaiTextMessage({
 
   return (
     <div className="flex items-end justify-end gap-2">
-      <p className="max-w-[78vw] rounded-[18px] rounded-ee-[6px] bg-carbon px-3.5 py-2.5 text-[13.5px] leading-relaxed text-sand sm:max-w-[280px]">
+      <p className="max-w-[78vw] rounded-[18px] rounded-ee-[6px] bg-[#221248] px-3.5 py-2.5 text-[13.5px] leading-relaxed text-[#FFFCF6] shadow-[0_8px_20px_rgba(34,18,72,0.14)] sm:max-w-[300px]">
         {text}
       </p>
       <UserAvatar name={userName} size={24} />

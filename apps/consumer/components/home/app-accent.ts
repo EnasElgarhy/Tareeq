@@ -6,7 +6,7 @@
  */
 
 /** Brand purple — fills, rings, dots, and text. AA ~5.7:1 on warm paper. */
-export const APP_ACCENT = "#6E48E4";
+export const APP_ACCENT = "#6D5BA8";
 
 /** Deep purple — the dark end of the hero gradient (white text rides this). */
-export const APP_ACCENT_DEEP = "#3A2480";
+export const APP_ACCENT_DEEP = "#221248";

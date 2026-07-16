@@ -34,12 +34,12 @@ export function ExploreScreen() {
   }
 
   return (
-    <section className="flex flex-1 flex-col gap-4 pb-4">
-      <header className="pt-1">
-        <h1 className="text-[26px] font-black leading-tight text-[color:var(--day-ink)]">
+    <section className="daybreak-reveal flex flex-1 flex-col gap-5 pb-6">
+      <header className="pt-1 lg:pt-2">
+        <h1 className="daybreak-heading text-[30px] leading-tight text-[color:var(--day-ink)] lg:text-[38px]">
           {t("home.explore.title")}
         </h1>
-        <p className="mt-0.5 text-[13px] text-[color:var(--day-ink-2)]">
+        <p className="mt-1 max-w-[58ch] text-[13px] leading-relaxed text-[color:var(--day-ink-2)] lg:text-[15px]">
           {t("home.explore.subtitle")}
         </p>
       </header>

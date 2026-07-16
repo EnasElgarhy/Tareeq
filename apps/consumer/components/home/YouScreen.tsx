@@ -54,12 +54,12 @@ export function YouScreen() {
   }
 
   return (
-    <section className="flex flex-1 flex-col gap-4 pb-4">
+    <section className="daybreak-reveal flex flex-1 flex-col gap-5 pb-6">
       <header className="pt-1 lg:pt-2">
-        <h1 className="text-[26px] font-black leading-tight text-[color:var(--day-ink)] lg:text-[34px]">
+        <h1 className="daybreak-heading text-[30px] leading-tight text-[color:var(--day-ink)] lg:text-[38px]">
           {t("home.you.title")}
         </h1>
-        <p className="mt-0.5 text-[13px] text-[color:var(--day-ink-2)] lg:mt-1.5 lg:text-[15px]">
+        <p className="mt-1 max-w-[58ch] text-[13px] leading-relaxed text-[color:var(--day-ink-2)] lg:text-[15px]">
           {t("home.you.subtitle")}
         </p>
       </header>
@@ -85,12 +85,12 @@ export function YouScreen() {
         />
       )}
 
-      <div className="grid gap-2">
-        <p className="ps-0.5 text-[10px] font-black uppercase tracking-[0.14em] text-[color:var(--day-ink-3)]">
+      <div className="grid gap-2.5">
+        <p className="daybreak-eyebrow ps-0.5">
           {t("home.you.account_label")}
         </p>
         {authState === "loading" ? (
-          <div className="h-[140px] animate-pulse rounded-[20px] border border-[color:var(--day-line)] bg-[color:var(--day-inset)]" />
+          <div className="rounded-story h-[140px] animate-pulse border border-[color:var(--day-line)] bg-[color:var(--day-inset)]" />
         ) : authState === "signed-in" ? (
           <SettingsPanel
             displayName={displayName}
@@ -99,8 +99,8 @@ export function YouScreen() {
             onSignOut={handleSignOut}
           />
         ) : (
-          <div className="rounded-[20px] border border-[color:var(--day-line)] bg-[color:var(--day-card)] p-3.5 shadow-[var(--day-shadow-card)]">
-            <p className="text-[13px] font-black leading-tight text-[color:var(--day-ink)]">
+          <div className="py-1">
+            <p className="daybreak-heading text-[18px] leading-tight text-[color:var(--day-ink)]">
               {t("home.you.signin_title")}
             </p>
             <p className="mt-1 text-[12px] leading-relaxed text-[color:var(--day-ink-2)]">
@@ -111,7 +111,7 @@ export function YouScreen() {
              *  human-scaled form reads as an intentional desktop form
              *  instead of a mobile button just stretched wider. */}
             <div className="mt-3 lg:mx-auto lg:max-w-[420px]">
-              <OtpSignIn onSignedIn={() => void reload()} />
+              <OtpSignIn onSignedIn={() => void reload()} variant="daybreak" />
               <p className="mt-3 text-center text-[11px] leading-snug text-[color:var(--day-ink-3)]">
                 {t("home.you.new_here_prefix")}
                 <Link href="/start" className="font-semibold text-[color:var(--day-ink)] underline">

@@ -57,7 +57,7 @@ export function LearningResourceCard({
   const difficultyKey = `kai.resource.difficulty.${resource.difficulty}` as StringKey;
 
   return (
-    <div className="rounded-[18px] border border-[color:var(--day-line,rgba(43,36,28,0.1))] bg-[color:var(--day-card,#fffcf6)] p-3.5 shadow-[0_8px_20px_rgba(43,36,28,0.05)]">
+    <div className="daybreak-story-card rounded-story-alt p-4">
       <div className="flex items-start gap-2.5">
         <span
           className="grid size-9 shrink-0 place-items-center rounded-xl"
@@ -67,16 +67,16 @@ export function LearningResourceCard({
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-[9.5px] font-bold uppercase tracking-[0.08em] text-[color:var(--day-ink-3,#675d4e)]">
+            <span className="text-[9.5px] font-bold uppercase text-[color:var(--day-ink-3,#675d4e)]">
               {t(typeKey)}
             </span>
             <span
-              className={`rounded-full border px-1.5 py-0.5 text-[8.5px] font-bold uppercase tracking-[0.06em] ${DIFFICULTY_TONE[resource.difficulty]}`}
+              className={`rounded-full border px-1.5 py-0.5 text-[8.5px] font-bold uppercase ${DIFFICULTY_TONE[resource.difficulty]}`}
             >
               {t(difficultyKey)}
             </span>
           </div>
-          <p className="mt-0.5 text-[13px] font-black leading-tight text-[color:var(--day-ink,#2a2118)]">{resource.title}</p>
+          <p className="daybreak-heading mt-0.5 text-[15px] leading-tight text-[color:var(--day-ink,#2a2118)]">{resource.title}</p>
           <p className="text-[11px] text-[color:var(--day-ink-3,#675d4e)]">{resource.authorOrProvider}</p>
         </div>
       </div>
@@ -88,14 +88,14 @@ export function LearningResourceCard({
         target="_blank"
         rel="noopener noreferrer"
         onClick={() => trackEvent("kai_resource_search_opened", { type: resource.type })}
-        className="mt-2.5 flex items-center gap-1.5 rounded-[12px] border border-[color:var(--day-line,rgba(43,36,28,0.1))] bg-[color:var(--day-inset,#efe7da)] px-2.5 py-1.5 text-[11px] font-bold text-[color:var(--day-ink-2,#5c5142)] transition hover:bg-[color:var(--day-line-strong,rgba(43,36,28,0.2))]"
+        className="mt-2.5 flex items-center gap-1.5 rounded-[8px] border border-[color:var(--day-line)] bg-[color:var(--day-inset,#efe7da)] px-2.5 py-1.5 text-[11px] font-bold text-[color:var(--day-ink-2,#5c5142)] transition hover:bg-[color:var(--day-card)]"
       >
         <ExternalLink size={12} />
         {t(resource.type === "youtube_video" ? "kai.resource.search_youtube" : "kai.resource.search_web")}
       </a>
 
       <div className="mt-2.5 flex items-center justify-between gap-2">
-        <span className="text-[10.5px] font-bold uppercase tracking-[0.06em] text-[color:var(--day-ink-3,#675d4e)]">
+        <span className="text-[10.5px] font-bold uppercase text-[color:var(--day-ink-3,#675d4e)]">
           {resource.estimatedTime}
         </span>
         <div className="flex items-center gap-1.5">

@@ -126,7 +126,7 @@ export function KaiMessageBlocks({
                     { label: block.rightLabel, points: block.rightPoints },
                   ].map((side, i) => (
                     <div key={i}>
-                      <p className={`mb-1.5 text-[12px] font-bold uppercase tracking-[0.06em] text-[color:var(--day-ink-3,#675d4e)]`}>{side.label}</p>
+                      <p className="mb-1.5 text-[12px] font-bold uppercase text-[color:var(--day-ink-3,#675d4e)]">{side.label}</p>
                       <AnswerBullets items={side.points} />
                     </div>
                   ))}

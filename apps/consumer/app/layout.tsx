@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import {
+  Bricolage_Grotesque,
+  Caveat,
   DM_Serif_Display,
   Fraunces,
   Plus_Jakarta_Sans,
@@ -11,6 +13,20 @@ const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
+  subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
+  display: "swap",
+});
+
+const caveat = Caveat({
+  variable: "--font-caveat",
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
   display: "swap",
 });
 
@@ -71,7 +87,7 @@ export default function RootLayout({
     <html
       lang="en"
       dir="ltr"
-      className={`${jakarta.variable} ${arabic.variable} ${question.variable} ${displayItalic.variable} h-full antialiased`}
+      className={`${jakarta.variable} ${bricolage.variable} ${caveat.variable} ${arabic.variable} ${question.variable} ${displayItalic.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">{children}</body>
     </html>

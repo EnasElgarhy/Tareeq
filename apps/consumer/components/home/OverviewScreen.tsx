@@ -14,7 +14,7 @@ import {
   PeakReachedScene,
 } from "@/components/brand/InterstitialScenes";
 import { AchievementsCard } from "@/components/home/AchievementsCard";
-import { APP_ACCENT, APP_ACCENT_DEEP } from "@/components/home/app-accent";
+import { APP_ACCENT } from "@/components/home/app-accent";
 import { CareerTile } from "@/components/home/CareerTile";
 import { CollectionTile } from "@/components/home/CollectionTile";
 import { CompassHero } from "@/components/home/CompassHero";
@@ -174,7 +174,7 @@ export function OverviewScreen() {
 
   const fullName = snapshot.registration?.name ?? "there";
   const firstName = firstNameOf(fullName);
-  const initials = snapshot.registration ? initialsOf(fullName) : "🧭";
+  const initials = snapshot.registration ? initialsOf(fullName) : "T";
 
   const todayCard = feed.find((c) => c.kind === "today");
   const nextStepCard = feed.find((c) => c.kind === "next-step");
@@ -188,10 +188,11 @@ export function OverviewScreen() {
   >;
 
   return (
-    <section className="flex flex-1 flex-col gap-5 pb-4">
-      <header className="flex items-center justify-between gap-3 pt-1">
+    <section className="flex flex-1 flex-col gap-6 pb-5 lg:gap-7">
+      <header className="daybreak-reveal flex items-center justify-between gap-3 pt-1">
         <div className="min-w-0">
-          <h1 className="text-[26px] font-black leading-tight text-[color:var(--day-ink)]">
+          <p className="daybreak-eyebrow">✦ {t("home.hero.eyebrow")}</p>
+          <h1 className="daybreak-heading mt-1 text-[30px] leading-[1.05] text-[color:var(--day-ink)] sm:text-[36px]">
             {t("home.overview.greeting").replace("{name}", firstName)}
           </h1>
           {proactiveContext?.showInactivityNudge && proactiveContext.daysSinceLastSeen !== null ? (
@@ -206,7 +207,7 @@ export function OverviewScreen() {
         <Link
           href="/you"
           aria-label={t("home.overview.avatar_label")}
-          className="grid size-10 shrink-0 place-items-center rounded-full border border-[color:var(--day-line)] bg-[color:var(--day-card)] text-[13px] font-black text-[color:var(--day-ink-2)] shadow-[var(--day-shadow-card)] transition active:scale-95"
+          className="grid size-11 shrink-0 place-items-center rounded-full border border-[color:var(--day-line)] bg-[color:var(--day-elevated)] font-heading text-[13px] font-bold text-[color:var(--day-ink-2)] shadow-[var(--day-shadow-card)] transition active:scale-95"
         >
           {initials}
         </Link>
@@ -215,115 +216,114 @@ export function OverviewScreen() {
       <CompassHero
         clusterLabel={getClusterLabel(report.clusterCode, t)}
         clusterColor={APP_ACCENT}
-        clusterInk={APP_ACCENT_DEEP}
         confidenceLabel={t(getConfidenceLabelKey(report.score.confidenceLabel))}
         confidence={report.score.confidencePercentage}
       />
 
-      {careers.length > 0 ? (
-        <FeedCarousel
-          title={t("home.overview.paths_title")}
-          subtitle={t("home.overview.paths_subtitle")}
-        >
-          {careers.map((career, i) => (
-            <CareerTile
-              key={career}
-              career={career}
-              color={APP_ACCENT}
-              scene={CAREER_SCENES[i % CAREER_SCENES.length]}
-              watchHref={youtubeSearchUrl(`day in the life of ${career}`)}
+      <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1.45fr)_minmax(300px,0.72fr)] xl:gap-7">
+        <div className="grid min-w-0 gap-6">
+          {careers.length > 0 ? (
+            <FeedCarousel
+              title={t("home.overview.paths_title")}
+              subtitle={t("home.overview.paths_subtitle")}
+            >
+              {careers.map((career, i) => (
+                <CareerTile
+                  key={career}
+                  career={career}
+                  color={APP_ACCENT}
+                  scene={CAREER_SCENES[i % CAREER_SCENES.length]}
+                  watchHref={youtubeSearchUrl(`day in the life of ${career}`)}
+                />
+              ))}
+            </FeedCarousel>
+          ) : null}
+
+          {nextStepCard ? (
+            <FeedCardView
+              card={nextStepCard}
+              clusterColor={APP_ACCENT}
+              clusterInk={APP_ACCENT}
             />
-          ))}
-        </FeedCarousel>
-      ) : null}
+          ) : null}
 
-      {nextStepCard ? (
-        <FeedCardView
-          card={nextStepCard}
-          clusterColor={APP_ACCENT}
-          clusterInk={APP_ACCENT}
-        />
-      ) : null}
+          {topClusters.length > 0 ? (
+            <FeedCarousel
+              title={t("home.overview.clusters_title")}
+              subtitle={t("home.overview.clusters_subtitle")}
+            >
+              {topClusters.map(([code], i) => {
+                const cv = CLUSTER_VISUALS[code];
+                return (
+                  <CollectionTile
+                    key={code}
+                    label={getClusterLabel(code, t)}
+                    tagline={getClusterTagline(code, t)}
+                    color={cv.color}
+                    ink={cv.ink}
+                    scene={COLLECTION_SCENES[i % COLLECTION_SCENES.length]}
+                    href="/explore"
+                    rank={i + 1}
+                  />
+                );
+              })}
+            </FeedCarousel>
+          ) : null}
 
-      {/* The personal guide sits right below the hero + next step — the
-          user's proactive "what to do next", above the progress/achievements
-          spine. */}
-      {askKaiCard ? (
-        <FeedCardView
-          card={askKaiCard}
-          clusterColor={APP_ACCENT}
-          clusterInk={APP_ACCENT}
-        />
-      ) : null}
+          {todayCard ? (
+            <FeedCardView
+              card={todayCard}
+              clusterColor={APP_ACCENT}
+              clusterInk={APP_ACCENT}
+            />
+          ) : null}
 
-      {topClusters.length > 0 ? (
-        <FeedCarousel
-          title={t("home.overview.clusters_title")}
-          subtitle={t("home.overview.clusters_subtitle")}
-        >
-          {topClusters.map(([code], i) => {
-            const cv = CLUSTER_VISUALS[code];
-            return (
-              <CollectionTile
-                key={code}
-                label={getClusterLabel(code, t)}
-                tagline={getClusterTagline(code, t)}
-                color={cv.color}
-                ink={cv.ink}
-                scene={COLLECTION_SCENES[i % COLLECTION_SCENES.length]}
-                href="/explore"
-                rank={i + 1}
+          {insightCard ? (
+            <FeedCardView
+              card={insightCard}
+              clusterColor={APP_ACCENT}
+              clusterInk={APP_ACCENT}
+            />
+          ) : null}
+
+          {intersectionCard ? (
+            <FeedCardView
+              card={intersectionCard}
+              clusterColor={APP_ACCENT}
+              clusterInk={APP_ACCENT}
+            />
+          ) : null}
+        </div>
+
+        <aside className="grid gap-5 md:grid-cols-2 xl:sticky xl:top-0 xl:grid-cols-1">
+          {askKaiCard ? (
+            <div className="md:col-span-2 xl:col-span-1">
+              <FeedCardView
+                card={askKaiCard}
+                clusterColor={APP_ACCENT}
+                clusterInk={APP_ACCENT}
               />
-            );
-          })}
-        </FeedCarousel>
-      ) : null}
+            </div>
+          ) : null}
 
-      {todayCard ? (
-        <FeedCardView
-          card={todayCard}
-          clusterColor={APP_ACCENT}
-          clusterInk={APP_ACCENT}
-        />
-      ) : null}
+          <ProgressRingCard
+            completionPct={snapshot.completionPct}
+            completedCount={snapshot.completedCount}
+            totalCount={snapshot.totalCount}
+            clusterColor={APP_ACCENT}
+            clusterInk={APP_ACCENT}
+            moduleName={nextModule?.name ?? null}
+            moduleTagline={nextModule?.tagline ?? null}
+            moduleDuration={nextModule?.durationLabel ?? null}
+          />
 
-      {/* Two at-a-glance stat widgets pair up on wider screens instead of
-          stacking full-bleed — keeps StreakCard's week strip and the
-          progress ring from over-stretching once the column widens past
-          phone width. */}
-      <div className="grid gap-5 md:grid-cols-2">
-        <ProgressRingCard
-          completionPct={snapshot.completionPct}
-          completedCount={snapshot.completedCount}
-          totalCount={snapshot.totalCount}
-          clusterColor={APP_ACCENT}
-          clusterInk={APP_ACCENT}
-          moduleName={nextModule?.name ?? null}
-          moduleTagline={nextModule?.tagline ?? null}
-          moduleDuration={nextModule?.durationLabel ?? null}
-        />
+          <StreakCard streak={streak} />
 
-        <StreakCard streak={streak} />
+          <div className="md:col-span-2 xl:col-span-1">
+            <AchievementsCard achievements={achievements} />
+          </div>
+        </aside>
       </div>
-
-      <AchievementsCard achievements={achievements} />
-
-      {insightCard ? (
-        <FeedCardView
-          card={insightCard}
-          clusterColor={APP_ACCENT}
-          clusterInk={APP_ACCENT}
-        />
-      ) : null}
-
-      {intersectionCard ? (
-        <FeedCardView
-          card={intersectionCard}
-          clusterColor={APP_ACCENT}
-          clusterInk={APP_ACCENT}
-        />
-      ) : null}
     </section>
   );
 }
-

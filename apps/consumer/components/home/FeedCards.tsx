@@ -31,15 +31,15 @@ import type {
 // icons, and CTA backgrounds (each ink passes WCAG AA on the warm-paper card).
 const ACCENT_VIVID: Record<Exclude<FeedAccent, "cluster">, string> = {
   gold: "#F4C660",
-  violet: "#6E48E4",
-  mint: "#6FE0C0",
+  violet: "#6D5BA8",
+  mint: "#3D8A73",
 };
 const ACCENT_INK: Record<Exclude<FeedAccent, "cluster">, string> = {
-  gold: "#6B4D00",
-  violet: "#6E48E4", // brand purple — AA on the warm-paper card (~5.7:1)
-  mint: "#0E7A6E",
+  gold: "#7A4A21",
+  violet: "#6D5BA8",
+  mint: "#3D8A73",
 };
-const GOLD_INK = "#6B4D00";
+const GOLD_INK = "#7A4A21";
 
 function accentVivid(accent: FeedAccent, clusterColor: string): string {
   return accent === "cluster" ? clusterColor : ACCENT_VIVID[accent];
@@ -88,28 +88,28 @@ export function FeedCardView({
 function TodayCardView({ card }: { card: TodayCard }) {
   return (
     <article
-      className="relative overflow-hidden rounded-[24px] border border-gold/40 p-4 shadow-[var(--day-shadow-card)]"
+      className="daybreak-story-card rounded-story-alt relative overflow-hidden border-gold/40 p-5"
       style={{
         background:
-          "radial-gradient(130% 100% at 100% 0%, rgba(255,138,76,0.18), transparent 56%), var(--day-card)",
+          "linear-gradient(135deg, rgba(244,198,96,0.16), transparent 58%), var(--day-card)",
       }}
     >
       <div className="relative z-10">
         <p
-          className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.16em]"
+          className="daybreak-eyebrow flex items-center gap-1.5"
           style={{ color: GOLD_INK }}
         >
           <Sun size={13} />
           {card.eyebrow}
         </p>
-        <h2 className="mt-2 text-[19px] font-black leading-[1.12] text-[color:var(--day-ink)]">
+        <h2 className="daybreak-heading mt-2 text-[21px] leading-[1.12] text-[color:var(--day-ink)]">
           {card.title}
         </h2>
         <p className="mt-2 text-[13.5px] leading-relaxed text-[color:var(--day-ink-2)]">
           {card.body}
         </p>
         {card.source ? (
-          <p className="mt-2.5 text-[10.5px] font-semibold uppercase tracking-[0.08em] text-[color:var(--day-ink-3)]">
+          <p className="mt-2.5 text-[10.5px] font-semibold uppercase text-[color:var(--day-ink-3)]">
             {card.source}
           </p>
         ) : null}
@@ -135,14 +135,14 @@ function NextStepCardView({
   );
 
   return (
-    <article className="relative overflow-hidden rounded-[22px] border border-[color:var(--day-line)] bg-[color:var(--day-card)] p-4 shadow-[var(--day-shadow-card)]">
+    <article className="daybreak-story-card rounded-story relative overflow-hidden p-5">
       <span
         aria-hidden
         className="absolute inset-y-4 left-0 w-1 rounded-r-full"
         style={{ background: vivid }}
       />
       <span
-        className="inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em]"
+        className="inline-flex items-center rounded-xl px-2.5 py-1 text-[10px] font-bold uppercase"
         style={{
           background: rgbaFromHex(vivid, 0.14),
           color: ink,
@@ -151,7 +151,7 @@ function NextStepCardView({
       >
         {card.label}
       </span>
-      <h3 className="mt-2.5 text-[15.5px] font-black leading-tight text-[color:var(--day-ink)]">
+      <h3 className="daybreak-heading mt-2.5 text-[18px] leading-tight text-[color:var(--day-ink)]">
         {card.title}
       </h3>
       <p className="mt-1.5 text-[12.5px] leading-relaxed text-[color:var(--day-ink-2)]">
@@ -162,7 +162,7 @@ function NextStepCardView({
           href={card.href}
           target="_blank"
           rel="noreferrer"
-          className="mt-3 inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[12px] font-bold transition active:scale-95"
+          className="mt-3 inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-[12px] font-bold transition active:scale-95"
           style={{ background: ink, color: "#fff" }}
         >
           {ctaInner}
@@ -170,7 +170,7 @@ function NextStepCardView({
       ) : (
         <Link
           href={card.href}
-          className="mt-3 inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[12px] font-bold transition active:scale-95"
+          className="mt-3 inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-[12px] font-bold transition active:scale-95"
           style={{ background: ink, color: "#fff" }}
         >
           {ctaInner}
@@ -189,15 +189,15 @@ function SpotlightCardView({
 }) {
   const { t } = useLocale();
   return (
-    <article className="rounded-[22px] border border-[color:var(--day-line)] bg-[color:var(--day-card)] p-4 shadow-[var(--day-shadow-card)]">
-      <p className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-[color:var(--day-ink-3)]">
+    <article className="daybreak-story-card rounded-story-alt p-5">
+      <p className="daybreak-eyebrow flex items-center gap-1.5">
         <span
           className="size-1.5 rounded-full"
           style={{ background: theme.clusterColor }}
         />
         {t("home.feed.spotlight_eyebrow")}
       </p>
-      <h3 className="mt-1.5 text-[17px] font-black leading-tight text-[color:var(--day-ink)]">
+      <h3 className="daybreak-heading mt-1.5 text-[19px] leading-tight text-[color:var(--day-ink)]">
         {card.career}
       </h3>
       <p className="mt-1.5 text-[12.5px] leading-relaxed text-[color:var(--day-ink-2)]">
@@ -227,10 +227,10 @@ function UnlockCardView({
 }) {
   const { t } = useLocale();
   return (
-    <article className="rounded-[22px] border border-[color:var(--day-line)] bg-[color:var(--day-card)] p-4 shadow-[var(--day-shadow-card)]">
+    <article className="daybreak-story-card rounded-story p-5">
       <div className="flex items-end justify-between gap-2">
         <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[color:var(--day-ink-3)]">
+          <p className="daybreak-eyebrow">
             {t("profile.journey.eyebrow")}
           </p>
           <p className="mt-0.5 text-[13px] font-semibold text-[color:var(--day-ink-2)]">
@@ -240,7 +240,7 @@ function UnlockCardView({
           </p>
         </div>
         <span
-          className="text-[22px] font-black tabular-nums leading-none"
+          className="font-heading text-[24px] font-bold tabular-nums leading-none"
           style={{ color: theme.clusterInk }}
         >
           {card.completionPct}%
@@ -262,7 +262,7 @@ function UnlockCardView({
           <Lock size={16} />
         </span>
         <div className="min-w-0 flex-1">
-          <p className="text-[13px] font-black text-[color:var(--day-ink)]">
+          <p className="daybreak-heading text-[14px] text-[color:var(--day-ink)]">
             {card.moduleName}
           </p>
           <p className="truncate text-[11.5px] text-[color:var(--day-ink-3)]">
@@ -282,17 +282,17 @@ function UnlockCardView({
 
 function InsightCardView({ card }: { card: InsightCard }) {
   return (
-    <article className="relative overflow-hidden rounded-[22px] border border-[color:var(--day-line)] bg-[color:var(--day-card)] p-4 shadow-[var(--day-shadow-card)]">
+    <article className="daybreak-story-card rounded-story-alt relative overflow-hidden p-5">
       <span
         aria-hidden
         className="absolute inset-y-4 left-0 w-1 rounded-r-full"
         style={{ background: ACCENT_VIVID.violet }}
       />
-      <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[color:var(--day-ink-3)]">
+      <p className="daybreak-eyebrow">
         {card.eyebrow}
       </p>
       <h3
-        className="mt-1 text-[16px] font-black leading-tight"
+        className="daybreak-heading mt-1 text-[19px] leading-tight"
         style={{ color: ACCENT_INK.violet }}
       >
         {card.title}
@@ -312,7 +312,7 @@ function IntersectionCardView({
   theme: CardTheme;
 }) {
   return (
-    <article className="rounded-[22px] border border-[color:var(--day-line)] bg-[color:var(--day-card)] p-4 shadow-[var(--day-shadow-card)]">
+    <article className="daybreak-story-card rounded-story p-5">
       <div className="flex items-center gap-2">
         <span
           className="grid size-8 place-items-center rounded-full"
@@ -323,7 +323,7 @@ function IntersectionCardView({
         >
           <Shuffle size={16} />
         </span>
-        <h3 className="text-[14px] font-black text-[color:var(--day-ink)]">
+        <h3 className="daybreak-heading text-[17px] text-[color:var(--day-ink)]">
           {card.title}
         </h3>
       </div>
@@ -384,13 +384,13 @@ function AskKaiCardView({ card, theme }: { card: AskKaiCard; theme: CardTheme })
   ];
 
   return (
-    <div
-      className="overflow-hidden rounded-[22px] border border-[color:var(--day-line)] p-3.5 shadow-[var(--day-shadow-card)]"
-      style={{
-        background:
-          "linear-gradient(135deg, rgba(110,72,228,0.10), rgba(244,198,96,0.10)), var(--day-card)",
-      }}
-    >
+    <div className="daybreak-story-card daybreak-kai-note rounded-story-alt relative overflow-hidden bg-[color:var(--day-elevated)] p-5">
+      <span
+        aria-hidden="true"
+        className="absolute end-4 top-3 text-[20px] text-[#B07A18]"
+      >
+        ✦
+      </span>
       <div className="flex items-center gap-2.5">
         <span className="size-9 shrink-0 overflow-hidden rounded-full ring-2 ring-[color:var(--day-card)] shadow-[var(--day-shadow-card)]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -404,7 +404,7 @@ function AskKaiCardView({ card, theme }: { card: AskKaiCard; theme: CardTheme })
           />
         </span>
         <div className="min-w-0 flex-1">
-          <p className="flex items-center gap-1 text-[14px] font-black leading-tight text-[color:var(--day-ink)]">
+          <p className="daybreak-heading flex items-center gap-1 text-[16px] leading-tight text-[color:var(--day-ink)]">
             <Sparkles size={12} style={{ color: theme.clusterInk }} />
             {t("home.feed.ask_kai_eyebrow")}
           </p>
@@ -415,7 +415,7 @@ function AskKaiCardView({ card, theme }: { card: AskKaiCard; theme: CardTheme })
       </div>
 
       {/* Memory line — intentionally lighter than the actions below. */}
-      <p className="mt-2 text-[11.5px] leading-snug text-[color:var(--day-ink-3)]">
+      <p className="font-hand mt-3 pe-5 text-[21px] font-semibold leading-[1.12] text-[color:var(--day-ink-2)]">
         {card.focusLine}
       </p>
 
@@ -424,7 +424,7 @@ function AskKaiCardView({ card, theme }: { card: AskKaiCard; theme: CardTheme })
           <Link
             key={key}
             href={href}
-            className="group flex items-center gap-2.5 rounded-xl border border-[color:var(--day-line)] bg-[color:var(--day-card)]/70 px-2.5 py-2 text-[12.5px] font-bold text-[color:var(--day-ink)] transition hover:border-[color:var(--day-line-strong)] active:scale-[0.99]"
+            className="group flex items-center gap-2.5 rounded-xl border border-[color:var(--day-line)] bg-[color:var(--day-inset)]/75 px-3 py-2.5 text-[12.5px] font-bold text-[color:var(--day-ink)] transition hover:border-[color:var(--day-line-strong)] active:scale-[0.99]"
           >
             <span
               className="grid size-6 shrink-0 place-items-center rounded-lg"

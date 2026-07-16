@@ -21,19 +21,19 @@ export function FeedCarousel({
   children,
 }: FeedCarouselProps) {
   return (
-    <section className="grid gap-2.5">
+    <section className="daybreak-reveal grid gap-3">
       <div className="flex items-center gap-2">
-        <h2 className="text-[19px] font-black leading-tight text-[color:var(--day-ink)]">
+        <h2 className="daybreak-heading text-[22px] leading-tight text-[color:var(--day-ink)]">
           {title}
         </h2>
         {badge}
       </div>
       {subtitle ? (
-        <p className="-mt-1 text-[13px] leading-snug text-[color:var(--day-ink-2)]">
+        <p className="-mt-1 text-[13.5px] leading-relaxed text-[color:var(--day-ink-2)]">
           {subtitle}
         </p>
       ) : null}
-      <div className="-mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 md:-mx-6 md:px-6 lg:mx-0 lg:px-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {children}
       </div>
     </section>

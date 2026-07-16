@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Compass } from "lucide-react";
 import Link from "next/link";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 
@@ -16,12 +16,12 @@ export function NoCompassEmptyState({
 }) {
   const { t } = useLocale();
   return (
-    <section className="flex flex-1 flex-col items-center justify-center gap-4 px-2 text-center">
-      <span className="grid size-16 place-items-center rounded-full border border-[color:var(--day-line)] bg-[color:var(--day-card)] text-[26px] shadow-[var(--day-shadow-card)]">
-        🧭
+    <section className="daybreak-reveal flex flex-1 flex-col items-center justify-center gap-4 px-2 py-8 text-center">
+      <span className="rounded-story grid size-16 place-items-center border border-[#413664] bg-[#221248] text-[#F2C94C] shadow-[0_18px_34px_rgba(34,18,72,0.2)]">
+        <Compass size={28} strokeWidth={1.8} />
       </span>
       <div className="grid gap-1.5">
-        <h1 className="text-[22px] font-black text-[color:var(--day-ink)]">{title}</h1>
+        <h1 className="daybreak-heading text-[28px] leading-tight text-[color:var(--day-ink)]">{title}</h1>
         <p className="mx-auto max-w-[32ch] text-[13.5px] leading-relaxed text-[color:var(--day-ink-2)]">
           {description}
         </p>

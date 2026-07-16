@@ -27,15 +27,9 @@ export function StreakCard({ streak }: { streak: StreakInfo }) {
   const { t } = useLocale();
 
   return (
-    <article className="relative overflow-hidden rounded-[22px] border border-[color:var(--day-line)] bg-[color:var(--day-card)] p-4 shadow-[var(--day-shadow-card)]">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -right-6 -top-10 size-[140px] rounded-full opacity-70"
-        style={{ background: "radial-gradient(circle, rgba(244,198,96,0.24), rgba(244,198,96,0) 70%)" }}
-      />
-
+    <article className="daybreak-story-card rounded-story-alt relative overflow-hidden p-5">
       <div className="relative flex items-center justify-between gap-3">
-        <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[color:var(--day-ink-3)]">
+        <p className="daybreak-eyebrow">
           {t("profile.streak.title")}
         </p>
         {!streak.badgeUnlocked ? (
@@ -56,7 +50,7 @@ export function StreakCard({ streak }: { streak: StreakInfo }) {
           <StreakIcon size={34} />
         </span>
         <div className="flex items-baseline gap-1.5">
-          <span className="text-[34px] font-black leading-none tabular-nums text-[color:var(--day-ink)]">
+          <span className="font-heading text-[38px] font-bold leading-none tabular-nums text-[color:var(--day-ink)]">
             {streak.count}
           </span>
           <span className="text-[12.5px] font-semibold text-[color:var(--day-ink-2)]">

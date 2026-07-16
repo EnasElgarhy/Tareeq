@@ -19,11 +19,13 @@ export function AppSidebarNav() {
   return (
     <nav
       aria-label={t("home.tab.nav_label")}
-      className="hidden shrink-0 flex-col gap-1 border-e border-[color:var(--day-line)] py-2 pe-4 lg:flex lg:w-[220px]"
+      className="rounded-story hidden h-fit shrink-0 flex-col gap-1 bg-[#100A24] p-3 text-[#F5EEE6] shadow-[0_22px_48px_rgba(8,5,26,0.18)] lg:sticky lg:top-0 lg:flex lg:w-[224px]"
     >
-      <div className="mb-6 flex items-center gap-2 px-3 text-[color:var(--day-ink)]">
-        <TareeqCompass size={22} />
-        <span className="text-[15px] font-black tracking-[-0.01em]">Tareeq</span>
+      <div className="mb-5 flex items-center gap-2.5 px-3 py-2 text-[#F5EEE6]">
+        <span className="grid size-8 place-items-center rounded-full bg-[#F4C660] text-[#100A24]">
+          <TareeqCompass size={19} />
+        </span>
+        <span className="font-heading text-[17px] font-bold">Tareeq</span>
       </div>
 
       {NAV_ITEMS.map((item) => {
@@ -34,15 +36,13 @@ export function AppSidebarNav() {
             key={item.href}
             href={item.href}
             aria-current={isActive ? "page" : undefined}
-            className="group flex items-center gap-3 rounded-2xl px-3 py-2.5 transition"
+            className="group flex items-center gap-3 rounded-xl px-3 py-2.5 transition"
             style={{
-              color: isActive ? "var(--app-ink, #6B4D00)" : "var(--day-ink-3, #675D4E)",
+              color: isActive ? "#100A24" : "rgba(245,238,230,0.72)",
               ...(isActive
                 ? {
-                    background:
-                      "color-mix(in oklab, var(--app-accent, #F4C660) 14%, transparent)",
-                    boxShadow:
-                      "inset 0 0 0 1px color-mix(in oklab, var(--app-accent, #F4C660) 28%, transparent)",
+                    background: "#F4C660",
+                    boxShadow: "0 8px 22px rgba(244,198,96,0.18)",
                   }
                 : {}),
             }}
@@ -50,7 +50,7 @@ export function AppSidebarNav() {
             <span className="grid size-8 shrink-0 place-items-center">
               <Icon size={20} strokeWidth={isActive ? 2.4 : 1.9} />
             </span>
-            <span className="text-[13.5px] font-bold tracking-[-0.005em]">{t(item.labelKey)}</span>
+            <span className="text-[13.5px] font-bold">{t(item.labelKey)}</span>
           </Link>
         );
       })}

@@ -310,9 +310,18 @@ button {
  * standalone tareeq-website repo, which mirrors these exact tokens.
  * Generic utility-class wrappers around the same CSS vars the rest of
  * the app reaches via `var(--x)` directly. */
-.font-heading,
+.font-heading {
+  font-family: var(--font-bricolage), var(--font-jakarta), system-ui, sans-serif;
+}
 .font-body {
   font-family: var(--font-jakarta), system-ui, sans-serif;
+}
+.font-hand {
+  font-family: var(--font-caveat), cursive;
+}
+.font-heading:lang(ar),
+.font-hand:lang(ar) {
+  font-family: var(--font-arabic), sans-serif;
 }
 .font-display {
   font-family: var(--font-display);
@@ -2106,42 +2115,16 @@ button {
     0 10px 26px rgba(43, 36, 28, 0.07);
   --day-shadow-hero: 0 2px 4px rgba(43, 36, 28, 0.05),
     0 22px 54px rgba(43, 36, 28, 0.11);
-  background: var(--day-bg);
+  --daybreak-violet: #6d5ba8;
+  --daybreak-gold-ink: #7a4a21;
+  --daybreak-green: #3d8a73;
+  --daybreak-clay: #c96f63;
+  background:
+    linear-gradient(180deg, rgba(255, 252, 246, 0.72), transparent 34%),
+    var(--day-bg);
   color: var(--day-ink);
   position: relative;
   isolation: isolate;
-  overflow: hidden;
-}
-/* Warm gold bloom, top-right */
-.surface-day::before {
-  content: "";
-  position: absolute;
-  top: -16%;
-  right: -22%;
-  width: 92%;
-  aspect-ratio: 1.2;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(244, 198, 96, 0.32) 0%,
-    rgba(244, 198, 96, 0.1) 32%,
-    transparent 62%
-  );
-  pointer-events: none;
-  z-index: -1;
-  filter: blur(30px);
-}
-/* Soft violet bloom, lower-left */
-.surface-day::after {
-  content: "";
-  position: absolute;
-  bottom: -18%;
-  left: -26%;
-  width: 82%;
-  aspect-ratio: 1;
-  background: radial-gradient(circle, rgba(157, 127, 240, 0.2), transparent 64%);
-  pointer-events: none;
-  z-index: -1;
-  filter: blur(38px);
 }
 
 /* Faint paper grain — the light counterpart to the night star-field.
@@ -2153,6 +2136,157 @@ button {
     radial-gradient(1px 1px at 46% 72%, rgba(43, 36, 28, 0.04), transparent 2px),
     radial-gradient(1px 1px at 88% 84%, rgba(43, 36, 28, 0.035), transparent 2px);
   background-size: 240px 240px, 200px 200px, 280px 280px, 220px 220px;
+}
+
+/* Daybreak dashboard language: warm paper, irregular storybook geometry,
+ * and restrained motion. These are scoped utilities for the post-result app
+ * so the assessment's night interface remains untouched. */
+.daybreak-grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0.035;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.65'/%3E%3C/svg%3E");
+}
+.rounded-story {
+  border-radius: 2.4rem 1.7rem 2.2rem 1.9rem;
+}
+.rounded-story-alt {
+  border-radius: 1.65rem 2.35rem 1.85rem 2.2rem;
+}
+.daybreak-heading {
+  font-family: var(--font-bricolage), var(--font-jakarta), system-ui, sans-serif;
+  font-weight: 750;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+.daybreak-heading:lang(ar) {
+  font-family: var(--font-arabic), sans-serif;
+}
+.daybreak-eyebrow {
+  color: var(--daybreak-gold-ink);
+  font-family: var(--font-jakarta), system-ui, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+.daybreak-story-card {
+  border: 1px solid var(--day-line);
+  background: var(--day-card);
+  box-shadow: 0 10px 36px rgba(42, 33, 24, 0.06);
+  transition:
+    transform 220ms cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 220ms cubic-bezier(0.2, 0, 0, 1);
+}
+@media (hover: hover) {
+  .daybreak-story-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 48px rgba(42, 33, 24, 0.1);
+  }
+}
+.daybreak-reveal {
+  animation: daybreak-reveal 520ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+.daybreak-kai-note {
+  transform: rotate(-0.65deg);
+  box-shadow: 0 14px 34px rgba(42, 33, 24, 0.09);
+}
+.daybreak-primary-action {
+  display: inline-flex;
+  min-height: 2.875rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  background: #221248;
+  padding: 0.7rem 1.15rem;
+  color: #fffcf6;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.2;
+  box-shadow: 0 12px 24px rgba(34, 18, 72, 0.18);
+  transition:
+    background-color 180ms ease,
+    transform 180ms ease;
+}
+.daybreak-primary-action:hover {
+  background: #34205f;
+}
+.daybreak-primary-action:active {
+  transform: translateY(1px);
+}
+.daybreak-primary-action:focus-visible,
+.daybreak-secondary-action:focus-visible {
+  outline: 2px solid #6d5ba8;
+  outline-offset: 2px;
+}
+.surface-day a.daybreak-primary-action,
+.surface-day a.daybreak-primary-action:hover {
+  color: #fffcf6;
+}
+.surface-day a.daybreak-secondary-action,
+.surface-day a.daybreak-secondary-action:hover {
+  color: var(--day-ink-2);
+}
+.surface-day a.daybreak-inverse-action,
+.surface-day a.daybreak-inverse-action:hover {
+  color: #221248;
+}
+.daybreak-secondary-action {
+  display: inline-flex;
+  min-height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 1px solid var(--day-line);
+  border-radius: 9999px;
+  background: var(--day-card);
+  padding: 0.55rem 0.95rem;
+  color: var(--day-ink-2);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease;
+}
+.daybreak-secondary-action:hover {
+  background: var(--day-inset);
+  color: var(--day-ink);
+}
+.daybreak-icon-tile {
+  display: grid;
+  flex: none;
+  place-items: center;
+  border-radius: 0.75rem;
+  background: rgba(242, 201, 76, 0.18);
+  color: #7a5a00;
+}
+@keyframes daybreak-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .daybreak-reveal {
+    animation: none;
+  }
+  .daybreak-story-card {
+    transition: none;
+  }
+  .daybreak-primary-action,
+  .daybreak-secondary-action {
+    transition: none;
+  }
 }
 
 /* ─── Kai contextual loading icons (components/kai/chat/loading-icons.tsx) ───
