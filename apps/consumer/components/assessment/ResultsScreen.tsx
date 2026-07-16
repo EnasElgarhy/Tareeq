@@ -169,8 +169,8 @@ export function ResultsScreen() {
       </div>
 
       <p className="text-center text-[11px] leading-snug text-sand/38">
-        {report.source === "claude"
-          ? t("results.footer.generated_with").replace("{model}", report.model ?? "Claude")
+        {report.source !== "fallback"
+          ? t("results.footer.generated_with").replace("{model}", report.model ?? "Gemini")
           : t("results.footer.fallback").replace("{reason}", report.fallbackReason ?? "")}
       </p>
 

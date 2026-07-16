@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { ActionPlanIcon, DeepDiveIcon } from "@/components/brand/DomainIcons";
-import { KaiChromaVideo } from "@/components/brand/KaiChromaVideo";
 import { KaiGroundingCard } from "@/components/kai/KaiGroundingCard";
 import { KaiLockedToolCard } from "@/components/kai/KaiLockedToolCard";
 import { KaiSignal } from "@/components/kai/KaiSignal";
@@ -292,15 +291,21 @@ export function KaiChatScreen() {
 
   return (
     <div className="flex min-h-full flex-col gap-3 pb-1">
-      {/* Persistent identity — always visible who this conversation is
-          with, using her real filmed likeness (not the abstract mark)
-          since this is the one clear "you're talking to Kai" moment. */}
+      {/* Persistent identity — always visible who this conversation is with,
+          using our 3D Kai likeness (static image), consistent with the profile
+          and Overview widget. */}
       <div className="flex items-center gap-2.5">
-        <div className="grid size-9 shrink-0 place-items-center overflow-hidden rounded-full bg-carbon ring-1 ring-carbon/10">
-          <div style={{ transform: "translateY(3px)" }}>
-            <KaiChromaVideo src="/kai/kai-mentor-green.mp4" size={44} playing={false} restTime={2.3} />
-          </div>
-        </div>
+        <span className="size-9 shrink-0 overflow-hidden rounded-full ring-1 ring-[color:var(--day-line,rgba(43,36,28,0.1))]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/kai/kai-poster.png"
+            alt="Kai"
+            width={36}
+            height={36}
+            className="size-full object-cover"
+            style={{ objectPosition: "50% 26%" }}
+          />
+        </span>
         <div className="min-w-0">
           <p className="text-[13px] font-black leading-tight text-[color:var(--day-ink,#2a2118)]">{t("profile.tab.kai")}</p>
           <p className="truncate text-[10px] text-[color:var(--day-ink-3,#675d4e)]">{t("kai.chat.subtitle")}</p>
@@ -363,26 +368,60 @@ export function KaiChatScreen() {
           {conversation.messages.length === 0 && !isTyping ? (
             <KaiConversationEmptyState />
           ) : (
-            <div className="grid gap-3">
-              {conversation.messages.map((message) => (
-                <div key={message.id} className="grid gap-2">
-                  <KaiTextMessage role={message.role} text={message.text} userName={kaiContext.user.displayName} />
-                  {message.blocks && memory ? (
-                    <KaiMessageBlocks
-                      blocks={message.blocks}
-                      modules={snapshot?.modules ?? []}
-                      memory={memory}
-                      nextMilestone={nextMilestone}
-                      onRecommendationOpen={(title) => trackEvent("kai_recommendation_clicked", { title })}
-                      onResumeContinue={handleResumeContinue}
-                    />
-                  ) : null}
-                  {message.quickReplies ? (
-                    <QuickReplies replies={message.quickReplies} onSelect={(reply) => handleSend(reply, true)} />
-                  ) : null}
-                </div>
-              ))}
-              {isTyping ? <LoadingMessage label={t("kai.chat.thinking")} /> : null}
+            <div className="grid gap-6">
+              {conversation.messages.map((message) =>
+                message.role === "user" ? (
+                  <KaiTextMessage
+                    key={message.id}
+                    role={message.role}
+                    text={message.text}
+                    userName={kaiContext.user.displayName}
+                  />
+                ) : (
+                  // One Kai turn = one flowing answer surface: avatar + name
+                  // once at the top, the reply and its sections beneath, and
+                  // the suggested next questions pinned to the very bottom.
+                  <article key={message.id} className="grid gap-3">
+                    <header className="flex items-center gap-2">
+                      <span className="size-6 shrink-0 overflow-hidden rounded-full ring-1 ring-[color:var(--day-line,rgba(43,36,28,0.1))]">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src="/kai/kai-poster.png" alt="" width={24} height={24} className="size-full object-cover" style={{ objectPosition: "50% 26%" }} />
+                      </span>
+                      <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-[color:var(--day-ink-3,#675d4e)]">
+                        {t("profile.tab.kai")}
+                      </span>
+                    </header>
+                    <KaiTextMessage role={message.role} text={message.text} userName={kaiContext.user.displayName} />
+                    {message.blocks && memory ? (
+                      <KaiMessageBlocks
+                        blocks={message.blocks}
+                        modules={snapshot?.modules ?? []}
+                        memory={memory}
+                        nextMilestone={nextMilestone}
+                        onRecommendationOpen={(title) => trackEvent("kai_recommendation_clicked", { title })}
+                        onResumeContinue={handleResumeContinue}
+                      />
+                    ) : null}
+                    {message.quickReplies ? (
+                      <div className="mt-1 border-t border-[color:var(--day-line,rgba(43,36,28,0.08))] pt-3">
+                        <p className="mb-2 text-[10.5px] font-bold uppercase tracking-[0.08em] text-[color:var(--day-ink-3,#675d4e)]">
+                          {t("kai.chat.suggested_next")}
+                        </p>
+                        <QuickReplies replies={message.quickReplies} onSelect={(reply) => handleSend(reply, true)} />
+                      </div>
+                    ) : null}
+                  </article>
+                ),
+              )}
+              {isTyping ? (
+                <LoadingMessage
+                  pendingMessage={
+                    [...conversation.messages]
+                      .reverse()
+                      .find((m) => m.role === "user")?.text
+                  }
+                />
+              ) : null}
             </div>
           )}
         </div>

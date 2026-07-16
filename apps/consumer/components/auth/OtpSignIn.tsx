@@ -3,7 +3,12 @@
 import { ArrowRight, Mail } from "lucide-react";
 import { type FormEvent, useState } from "react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
-import { sendEmailOtp, verifyEmailOtp } from "@/lib/auth/otp";
+import {
+  OTP_MAX_LENGTH,
+  OTP_MIN_LENGTH,
+  sendEmailOtp,
+  verifyEmailOtp,
+} from "@/lib/auth/otp";
 
 function isValidEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -45,7 +50,7 @@ export function OtpSignIn({ onSignedIn }: { onSignedIn: () => void }) {
 
   async function handleVerify(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (code.trim().length < 6) {
+    if (code.trim().length < OTP_MIN_LENGTH) {
       setError(t("auth.otp.invalid_code_length"));
       return;
     }
@@ -129,9 +134,9 @@ export function OtpSignIn({ onSignedIn }: { onSignedIn: () => void }) {
         value={code}
         onChange={(event) => setCode(event.target.value)}
         className="h-14 w-full rounded-2xl bg-sand px-4 text-center text-[20px] font-bold tracking-[0.24em] text-carbon outline-none shadow-sand-sm focus-visible:ring-2 focus-visible:ring-gold"
-        placeholder="000000"
+        placeholder={"0".repeat(OTP_MIN_LENGTH)}
         inputMode="numeric"
-        maxLength={6}
+        maxLength={OTP_MAX_LENGTH}
       />
 
       {error ? (

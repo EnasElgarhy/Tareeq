@@ -1,4 +1,4 @@
-import { Compass, House, Sparkles, UserRound } from "lucide-react";
+import { ClipboardList, House, Sparkles, UserRound } from "lucide-react";
 import type { ComponentType } from "react";
 import type { StringKey } from "@/lib/i18n/strings";
 
@@ -12,8 +12,8 @@ export interface NavItem {
 
 export const NAV_ITEMS: NavItem[] = [
   { labelKey: "home.tab.overview", href: "/home", icon: House, alsoActiveOn: ["/home-preview"] },
-  { labelKey: "home.explore.title", href: "/explore", icon: Compass },
   { labelKey: "home.tab.kai", href: "/kai", icon: Sparkles },
+  { labelKey: "kai.plans.title", href: "/kai/plans", icon: ClipboardList, alsoActiveOn: ["/kai/plans"] },
   { labelKey: "home.you.title", href: "/you", icon: UserRound },
 ];
 

@@ -226,6 +226,37 @@ describe("AssessmentAudioProvider", () => {
     expect(getApi().activeOwnerId).toBe("question:Q1");
   });
 
+  it("restarts the active narration when its locale changes", async () => {
+    const api = await renderProvider();
+
+    await act(async () => {
+      api.playNarration({
+        audioId: "kai_intro",
+        locale: "ar",
+        ownerId: "intro:kai_intro",
+      });
+      await flushPlayback();
+    });
+
+    expect(document.querySelector("audio")?.getAttribute("src")).toBe(
+      "/audio/kai_intro.ar.mp3",
+    );
+
+    await act(async () => {
+      getApi().playNarration({
+        audioId: "kai_intro",
+        locale: "en",
+        ownerId: "intro:kai_intro",
+      });
+      await flushPlayback();
+    });
+
+    expect(playSpy).toHaveBeenCalledTimes(2);
+    expect(document.querySelector("audio")?.getAttribute("src")).toBe(
+      "/audio/kai_intro.m4a",
+    );
+  });
+
   it("ignores stale owner stops after a newer owner starts", async () => {
     const api = await renderProvider();
 

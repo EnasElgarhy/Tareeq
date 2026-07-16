@@ -377,6 +377,43 @@ export function buildResponseSchema(intentHint?: KaiMessageIntent) {
   };
 }
 
+/**
+ * Text-only response schema for the Phase 2C recovery retry.
+ *
+ * Measured (docs/kai-audit): on the heavy artifact intents, gemini-2.5-flash
+ * loops on ANY structured array under constrained decoding — requiring a block
+ * re-triggers the loop, and leaving it optional makes the model drop it and
+ * answer in prose anyway. So the reliable recovery removes structured output
+ * entirely: just `text` + `intent`, no `blocks` array to loop on. The
+ * recovery instruction (ARTIFACT_SIMPLIFY_HINT) tells the model to put the
+ * short answer directly in `text` (e.g. a numbered list of steps), which
+ * completes reliably and carries the real content — far better than the
+ * generic "I'm having trouble" fallback.
+ */
+export function buildRecoverySchema() {
+  return {
+    type: "OBJECT",
+    properties: {
+      text: {
+        type: "STRING",
+        description:
+          "Your complete short reply as plain text. May include a short numbered or bulleted list written inline. Keep it concise.",
+      },
+      intent: {
+        type: "STRING",
+        enum: [...KAI_MESSAGE_INTENTS],
+        description: "Your own honest classification of this turn. Analytics only.",
+      },
+      quickReplies: {
+        type: "ARRAY",
+        items: { type: "STRING" },
+        description: "2-3 short suggested replies the user could tap next.",
+      },
+    },
+    required: ["text", "intent"],
+  };
+}
+
 const GOAL_FRAMING: Record<KaiChatContext["conversation"]["goal"], string> = {
   explain_results: "The user wants you to explain their Career Compass result in more depth.",
   find_majors: "The user wants help finding university majors that fit their result.",
@@ -420,8 +457,13 @@ export function buildContextPrompt(context: KaiChatContext, intentHint?: KaiMess
     );
   }
 
+  // Guard against a context that arrives without `journey` (the type marks it
+  // required, but a malformed/partial client payload must degrade gracefully,
+  // not 500 the whole chat request — this was silently failing chat).
+  const completedAssessments = journey?.completedAssessments ?? [];
+  const lockedModules = journey?.lockedModules ?? [];
   lines.push(
-    `Journey — completed: ${journey.completedAssessments.join(", ") || "none"}; still locked: ${journey.lockedModules.join(", ") || "none"}.`,
+    `Journey — completed: ${completedAssessments.join(", ") || "none"}; still locked: ${lockedModules.join(", ") || "none"}.`,
   );
 
   if (memories.items.length > 0 || memories.personSummary) {

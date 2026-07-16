@@ -51,7 +51,9 @@ export function readPlan(id: string): KaiPlan | undefined {
 
 export function createPlan(from: KaiActionPlanBlock, now = new Date().toISOString()): KaiPlan {
   const plan: KaiPlan = {
-    id: `plan-${now}-${Math.random().toString(36).slice(2, 8)}`,
+    // URL-safe id — the raw ISO timestamp's colons/dots break the dynamic
+    // route round-trip (/kai/plans/[id]), so strip to alphanumerics only.
+    id: `plan-${now.replace(/[^\dA-Za-z]/g, "")}-${Math.random().toString(36).slice(2, 8)}`,
     title: from.title,
     ...(from.durationLabel ? { durationLabel: from.durationLabel } : {}),
     tasks: from.tasks.map((task) => ({

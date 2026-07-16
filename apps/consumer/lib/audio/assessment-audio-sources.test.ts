@@ -1,3 +1,6 @@
+import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   firstPreloadableAssessmentAudioSource,
@@ -5,6 +8,16 @@ import {
 } from "./assessment-audio-sources";
 
 describe("resolveAssessmentNarrationSources", () => {
+  it("keeps the approved English assessment narrator intro recording", () => {
+    const introAudio = readFileSync(
+      resolve(process.cwd(), "public/audio/kai_intro.m4a"),
+    );
+
+    expect(createHash("sha256").update(introAudio).digest("hex")).toBe(
+      "956a785c3642a7405575f9d6ac8fa2a73696e3031700047c99436b51c78e7b50",
+    );
+  });
+
   it("prefers baked English question audio before the TTS API", () => {
     expect(
       resolveAssessmentNarrationSources({ audioId: "Q12", locale: "en" }),
@@ -21,6 +34,20 @@ describe("resolveAssessmentNarrationSources", () => {
     ).toEqual([{ kind: "api", src: "/api/kai-tts/Q12?locale=ar" }]);
   });
 
+  it("never uses unlocalized static narration for Arabic", () => {
+    expect(
+      resolveAssessmentNarrationSources({
+        audioId: "custom_prompt",
+        locale: "ar",
+      }),
+    ).toEqual([
+      {
+        kind: "api",
+        src: "/api/kai-tts/custom_prompt?locale=ar",
+      },
+    ]);
+  });
+
   it("uses localized static interstitial files before the TTS API", () => {
     expect(
       resolveAssessmentNarrationSources({
@@ -33,14 +60,15 @@ describe("resolveAssessmentNarrationSources", () => {
     ]);
   });
 
-  it("uses localized static intro files before the TTS API", () => {
+  it("uses the assessment narrator for English and localized Arabic intro", () => {
     expect(
       resolveAssessmentNarrationSources({
         audioId: "kai_intro",
         locale: "en",
       }),
     ).toEqual([
-      { kind: "static", src: "/audio/kai_intro.en.mp3" },
+      { kind: "static", src: "/audio/kai_intro.m4a" },
+      { kind: "static", src: "/audio/kai_intro.mp3" },
       { kind: "api", src: "/api/kai-tts/kai_intro?locale=en" },
     ]);
 

@@ -3,11 +3,14 @@
 import {
   ArrowRight,
   ArrowUpRight,
+  Compass,
   Lock,
   PlayCircle,
+  Scale,
   Shuffle,
   Sparkles,
   Sun,
+  Users,
 } from "lucide-react";
 import Link from "next/link";
 import { useLocale } from "@/components/i18n/LocaleProvider";
@@ -344,65 +347,99 @@ function promptHref(prompt: string): string {
   return `/kai?prompt=${encodeURIComponent(prompt)}`;
 }
 
-/** A seeded set of chat openers — looks like the start of a conversation
- * with Kai, one bubble per suggested question. The lead prompt uses
- * `card.href` when it's a real proactive moment (e.g. resuming a
- * conversation); every other bubble always starts a fresh chat seeded
- * with its exact text. */
+/**
+ * The personal-guide widget — calm and scannable in under 3 seconds.
+ * A compact header (Kai + "Based on your Compass"), one low-weight memory
+ * line saying what Kai knows, and exactly three high-weight shortcut rows.
+ * Deliberately NOT a chat-history stack of quoted prompts: these read as
+ * next-actions (Spotify "Continue listening" / Duolingo next lesson), not a
+ * transcript. "Explain this to my parents" is always present — a core Tareeq
+ * use case. Keeps the existing warm-paper card style + violet/gold wash.
+ */
 function AskKaiCardView({ card, theme }: { card: AskKaiCard; theme: CardTheme }) {
   const { t } = useLocale();
-  const leadHref = card.href ?? promptHref(card.prompt);
+  const chipVivid = accentVivid("violet", theme.clusterColor);
+
+  const actions = [
+    {
+      key: "continue",
+      Icon: Compass,
+      label: t("home.feed.ask_kai_action_continue"),
+      // Resume the real recommended move when there is one, else open a
+      // fresh chat seeded with a "keep exploring" opener.
+      href: card.href ?? promptHref(t("home.feed.ask_kai_prompt_continue")),
+    },
+    {
+      key: "parents",
+      Icon: Users,
+      label: t("home.feed.ask_kai_action_parents"),
+      href: promptHref(t("home.feed.ask_kai_prompt_parents")),
+    },
+    {
+      key: "compare",
+      Icon: Scale,
+      label: t("home.feed.ask_kai_action_compare"),
+      href: promptHref(t("home.feed.ask_kai_prompt_compare")),
+    },
+  ];
 
   return (
     <div
-      className="overflow-hidden rounded-[22px] border border-[color:var(--day-line)] p-4 shadow-[var(--day-shadow-card)]"
+      className="overflow-hidden rounded-[22px] border border-[color:var(--day-line)] p-3.5 shadow-[var(--day-shadow-card)]"
       style={{
         background:
-          "linear-gradient(135deg, rgba(110,72,228,0.12), rgba(244,198,96,0.12)), var(--day-card)",
+          "linear-gradient(135deg, rgba(110,72,228,0.10), rgba(244,198,96,0.10)), var(--day-card)",
       }}
     >
-      <Link href={leadHref} className="group flex items-center gap-3">
-        <span className="size-14 shrink-0 overflow-hidden rounded-full ring-2 ring-[color:var(--day-card)] shadow-[var(--day-shadow-card)]">
-          {/* The "video Kai" — poster frame of the assessment-host video.
-              eslint-disable-next-line @next/next/no-img-element */}
+      <div className="flex items-center gap-2.5">
+        <span className="size-9 shrink-0 overflow-hidden rounded-full ring-2 ring-[color:var(--day-card)] shadow-[var(--day-shadow-card)]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/kai/kai-poster.png"
             alt="Kai"
-            width={56}
-            height={56}
+            width={36}
+            height={36}
             className="size-full object-cover"
             style={{ objectPosition: "50% 26%" }}
           />
         </span>
         <div className="min-w-0 flex-1">
-          <p className="flex items-center gap-1 text-[10px] font-black uppercase tracking-[0.14em] text-[color:var(--day-ink-3)]">
-            <Sparkles size={11} style={{ color: theme.clusterInk }} />
+          <p className="flex items-center gap-1 text-[14px] font-black leading-tight text-[color:var(--day-ink)]">
+            <Sparkles size={12} style={{ color: theme.clusterInk }} />
             {t("home.feed.ask_kai_eyebrow")}
           </p>
-          <p className="text-[13.5px] font-black text-[color:var(--day-ink)]">
-            {t("home.feed.ask_kai_title")}
+          <p className="text-[11px] font-semibold text-[color:var(--day-ink-3)]">
+            {t("home.feed.ask_kai_subtitle")}
           </p>
         </div>
-        <ArrowRight
-          size={16}
-          className="shrink-0 text-[color:var(--day-ink-3)] transition group-hover:translate-x-0.5"
-        />
-      </Link>
+      </div>
 
-      <div className="mt-3 grid gap-2">
-        <Link
-          href={leadHref}
-          className="rounded-2xl rounded-tl-md border border-[color:var(--day-line)] bg-[color:var(--day-elevated)] px-3 py-2.5 text-[12.5px] font-medium leading-snug text-[color:var(--day-ink-2)] transition hover:border-[color:var(--day-line-strong)]"
-        >
-          “{card.prompt}”
-        </Link>
-        {card.morePrompts.map((prompt) => (
+      {/* Memory line — intentionally lighter than the actions below. */}
+      <p className="mt-2 text-[11.5px] leading-snug text-[color:var(--day-ink-3)]">
+        {card.focusLine}
+      </p>
+
+      <div className="mt-2.5 grid gap-1.5">
+        {actions.map(({ key, Icon, label, href }) => (
           <Link
-            key={prompt}
-            href={promptHref(prompt)}
-            className="rounded-2xl rounded-tl-md border border-[color:var(--day-line)] bg-[color:var(--day-elevated)] px-3 py-2.5 text-[12.5px] font-medium leading-snug text-[color:var(--day-ink-2)] transition hover:border-[color:var(--day-line-strong)]"
+            key={key}
+            href={href}
+            className="group flex items-center gap-2.5 rounded-xl border border-[color:var(--day-line)] bg-[color:var(--day-card)]/70 px-2.5 py-2 text-[12.5px] font-bold text-[color:var(--day-ink)] transition hover:border-[color:var(--day-line-strong)] active:scale-[0.99]"
           >
-            “{prompt}”
+            <span
+              className="grid size-6 shrink-0 place-items-center rounded-lg"
+              style={{
+                background: rgbaFromHex(chipVivid, 0.14),
+                color: theme.clusterInk,
+              }}
+            >
+              <Icon size={13} />
+            </span>
+            <span className="flex-1">{label}</span>
+            <ArrowRight
+              size={14}
+              className="shrink-0 text-[color:var(--day-ink-3)] transition group-hover:translate-x-0.5"
+            />
           </Link>
         ))}
       </div>

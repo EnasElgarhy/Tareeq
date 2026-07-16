@@ -8,12 +8,10 @@ import { OtpSignIn } from "@/components/auth/OtpSignIn";
 import { CareerCompassIcon } from "@/components/brand/DomainIcons";
 import { SettingsPanel } from "@/components/assessment/SettingsPanel";
 import { JourneyModuleCard } from "@/components/assessment/JourneyModuleCard";
-import { JourneyPath } from "@/components/kai/JourneyPath";
 import { NoCompassEmptyState } from "@/components/home/NoCompassEmptyState";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { signOut } from "@/lib/auth/otp";
 import { useKaiProfile } from "@/lib/kai/useKaiProfile";
-import { deriveMinutesRemaining } from "@/lib/profile/activity";
 import { getModuleNameKey, readProfileSnapshot, type ProfileSnapshot } from "@/lib/profile/journey";
 
 const MODULE_ICONS: Record<string, ReactNode> = {
@@ -55,8 +53,6 @@ export function YouScreen() {
     await reload();
   }
 
-  const minutesRemaining = localSnapshot ? deriveMinutesRemaining(localSnapshot) : 0;
-
   return (
     <section className="flex flex-1 flex-col gap-4 pb-4">
       <header className="pt-1 lg:pt-2">
@@ -70,26 +66,6 @@ export function YouScreen() {
 
       {localSnapshot?.coreReport ? (
         <div className="grid gap-3">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[color:var(--day-ink-3)]">
-                {t("profile.journey.eyebrow")}
-              </p>
-              <h2 className="mt-1 text-[16px] font-black text-[color:var(--day-ink)]">
-                {t("home.you.stages_complete")
-                  .replace("{completed}", String(localSnapshot.completedCount))
-                  .replace("{total}", String(localSnapshot.totalCount))}
-              </h2>
-            </div>
-            {minutesRemaining > 0 ? (
-              <span className="shrink-0 rounded-full border border-[color:var(--day-line)] px-2.5 py-1 text-[10px] font-bold text-[color:var(--day-ink-3)]">
-                {t("profile.journey.minutes_left").replace("{n}", String(minutesRemaining))}
-              </span>
-            ) : null}
-          </div>
-
-          <JourneyPath modules={localSnapshot.modules} />
-
           <div className="grid gap-2 md:grid-cols-2 md:gap-3">
             {localSnapshot.modules.map((mod) => (
               <JourneyModuleCard

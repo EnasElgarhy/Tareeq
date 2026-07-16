@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+**/node_modules/
 /.pnp
 .pnp.*
 .yarn/*
@@ -19,6 +20,7 @@
 
 # next.js
 /.next/
+**/.next/
 /out/
 
 # production
@@ -37,6 +39,8 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 !.env.example
+**/.env*
+!**/.env.example
 
 # local voice-cloning references can contain sensitive biometric voice data
 prototype/assets/voice/*.wav
@@ -49,7 +53,10 @@ prototype/assets/voice/*.m4a
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+**/*.tsbuildinfo
+**/next-env.d.ts
 
 # Iteration screenshots used to author the docs/* PDFs — the PDFs
 # embed everything they need, so keep these locally for reference only.
 docs/screenshots/
+**/docs/screenshots/

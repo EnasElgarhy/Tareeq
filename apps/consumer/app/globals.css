@@ -112,11 +112,12 @@
      per-script system font substitution — Latin text gets SF Pro, Arabic
      text automatically gets SF Arabic, without naming it directly (which
      isn't a reliably matchable font-family name across engines/versions).
-     Falls back to the self-hosted IBM Plex Sans Arabic webfont on
-     Windows/Android/Linux, where there's no Apple system font at all. */
+     IBM Plex Sans Arabic (self-hosted `var(--font-arabic)`) is the intended
+     brand Arabic face and is listed FIRST so it renders everywhere — including
+     Apple devices, which would otherwise substitute SF Arabic. The system
+     Arabic faces remain only as a fallback in case the webfont fails to load. */
   --font-arabic-stack:
-    -apple-system, "SF Arabic", var(--font-arabic), "Segoe UI Arabic", Tahoma,
-    sans-serif;
+    var(--font-arabic), "SF Arabic", "Segoe UI Arabic", Tahoma, sans-serif;
   --font-question-stack:
     var(--font-question), Georgia, "Times New Roman", serif;
   --font-display: var(--font-display-italic), Georgia, "Times New Roman", serif;
@@ -936,150 +937,54 @@ button {
     transform: translateY(0);
   }
 }
-@keyframes analysis-spin {
+@keyframes analysis-compass-enter {
+  from {
+    opacity: 0.9;
+    transform: scale(0.95) rotate(-3deg);
+  }
   to {
-    transform: rotate(360deg);
-  }
-}
-@keyframes analysis-spin-back {
-  to {
-    transform: rotate(-360deg);
-  }
-}
-@keyframes analysis-route-draw {
-  0% {
-    stroke-dashoffset: 360;
-    opacity: 0.25;
-  }
-  45% {
     opacity: 1;
-  }
-  100% {
-    stroke-dashoffset: 0;
-    opacity: 0.35;
+    transform: scale(1) rotate(0deg);
   }
 }
-@keyframes analysis-scan {
-  0% {
-    transform: rotate(0deg);
-    opacity: 0.3;
-  }
-  50% {
-    opacity: 0.8;
-  }
-  100% {
-    transform: rotate(360deg);
-    opacity: 0.3;
-  }
-}
-@keyframes analysis-signal {
+@keyframes analysis-segment-breathe {
   0%,
   100% {
-    transform: scale(0.72);
-    opacity: 0.28;
-  }
-  50% {
-    transform: scale(1);
-    opacity: 0.92;
-  }
-}
-@keyframes analysis-progress-sheen {
-  0% {
-    background-position: 0% 50%;
-  }
-  100% {
-    background-position: 200% 50%;
-  }
-}
-/* ─────────── Analyzer v2: orbit field + tokens + threads ─────────── */
-@keyframes analysis-thread-draw {
-  0% {
-    stroke-dasharray: 0 100;
-    opacity: 0.15;
-  }
-  60% {
-    stroke-dasharray: 100 0;
-    opacity: 0.75;
-  }
-  100% {
-    stroke-dasharray: 100 0;
-    opacity: 0.25;
-  }
-}
-@keyframes analysis-orbit-token-in {
-  0% {
-    opacity: 0;
-    transform: translate(calc(-50% + var(--ox, 0px)), calc(-50% + var(--oy, 0px))) scale(0.4);
-  }
-  100% {
-    opacity: 1;
-    transform: translate(calc(-50% + var(--ox, 0px)), calc(-50% + var(--oy, 0px))) scale(1);
-  }
-}
-@keyframes analysis-orbit-token-pulse {
-  0%, 100% {
-    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
-  }
-  50% {
-    box-shadow:
-      0 8px 22px rgba(0, 0, 0, 0.4),
-      0 0 0 6px rgba(255, 165, 61, 0.18);
-  }
-}
-@keyframes analysis-aura-pulse {
-  0%, 100% {
-    box-shadow:
-      0 0 0 0 rgba(255, 165, 61, 0.45),
-      0 0 0 0 rgba(255, 61, 131, 0.25);
-  }
-  50% {
-    box-shadow:
-      0 0 0 14px rgba(255, 165, 61, 0),
-      0 0 0 28px rgba(255, 61, 131, 0);
-  }
-}
-@keyframes analysis-particle-float {
-  0% {
-    opacity: 0;
-    transform: translateY(0px);
-  }
-  20% {
-    opacity: 0.75;
-  }
-  80% {
-    opacity: 0.5;
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-22px);
-  }
-}
-@keyframes analysis-spark {
-  0%, 100% {
-    opacity: 0.6;
-    transform: scale(1);
+    opacity: 0.72;
   }
   50% {
     opacity: 1;
-    transform: scale(1.25);
   }
 }
-@keyframes analysis-step-card-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
+@keyframes analysis-editorial-float {
+  0%,
+  100% {
     transform: translateY(0);
   }
-}
-@keyframes analysis-step-ring {
-  0% {
-    box-shadow: 0 0 0 0 rgba(244, 198, 96, 0.5);
+  50% {
+    transform: translateY(-4px);
   }
+}
+@keyframes analysis-halo-pulse {
+  0%,
   100% {
-    box-shadow: 0 0 0 10px rgba(244, 198, 96, 0);
+    opacity: 0.42;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(1.06);
+  }
+}
+@keyframes analysis-status-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(0.86);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 @keyframes result-compass-drift {
@@ -1246,125 +1151,187 @@ button {
 .anim-fade-up {
   animation: fade-up 700ms var(--ease-emphasis) both;
 }
-.analysis-grid {
-  background-image:
-    linear-gradient(rgba(245, 238, 230, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(245, 238, 230, 0.06) 1px, transparent 1px);
-  background-size: 32px 32px;
-  mask-image: radial-gradient(circle at center, #000 40%, transparent 72%);
+.analysis-compass-frame {
+  animation: analysis-editorial-float 4.6s ease-in-out infinite;
 }
-.analysis-spin-slow {
-  animation: analysis-spin 18s linear infinite;
-}
-.analysis-spin-reverse {
-  animation: analysis-spin-back 14s linear infinite;
-}
-.analysis-route {
-  stroke-dasharray: 360;
-  animation: analysis-route-draw 2.4s ease-in-out infinite alternate;
-}
-.analysis-scanline {
-  animation: analysis-scan 3.8s linear infinite;
-}
-.analysis-signal {
-  position: absolute;
-  z-index: 12;
-  width: 10px;
-  height: 10px;
-  border-radius: var(--radius-pill);
-  background: var(--gold);
-  box-shadow: 0 0 0 6px rgba(244, 198, 96, 0.12);
-  animation: analysis-signal 1.8s ease-in-out infinite;
-}
-.analysis-signal--one {
-  top: 22%;
-  right: 20%;
-}
-.analysis-signal--two {
-  bottom: 20%;
-  right: 30%;
-  animation-delay: 420ms;
-}
-.analysis-signal--three {
-  left: 22%;
-  bottom: 34%;
-  background: var(--mint);
-  box-shadow: 0 0 0 6px rgba(111, 224, 192, 0.12);
-  animation-delay: 820ms;
-}
-.analysis-progress {
-  background-size: 200% 100%;
-  animation: analysis-progress-sheen 1.4s linear infinite;
-  transition: width 460ms var(--ease-emphasis);
-}
-.analysis-step {
-  transition:
-    border-color 220ms var(--ease-standard),
-    background-color 220ms var(--ease-standard),
-    transform 220ms var(--ease-standard);
-}
-.analysis-step:has(.animate-spin) {
-  transform: translateX(2px);
-}
-
-/* ─────── Analyzer v2: orbit + threads + tokens + particles ─────── */
-.analysis-thread {
-  stroke-dasharray: 100 0;
-  pathLength: 100;
-  animation: analysis-thread-draw 2.4s ease-in-out infinite;
-}
-.analysis-thread--n {
-  animation-delay: 0s;
-}
-.analysis-thread--e {
-  animation-delay: 0.6s;
-}
-.analysis-thread--s {
-  animation-delay: 1.2s;
-}
-.analysis-thread--w {
-  animation-delay: 1.8s;
-}
-.analysis-orbit-token {
-  animation:
-    analysis-orbit-token-in 0.8s var(--ease-spring) both,
-    analysis-orbit-token-pulse 3s 1s ease-in-out infinite;
-  letter-spacing: -0.02em;
-}
-.analysis-aura {
-  animation: analysis-aura-pulse 3.2s ease-in-out infinite;
-}
-.analysis-particle {
-  background: linear-gradient(135deg, #ffa53d, #ff3d83);
-  box-shadow: 0 0 8px rgba(255, 165, 61, 0.6);
-  animation: analysis-particle-float 7s ease-in-out infinite;
-}
-.analysis-spark {
-  display: inline-block;
-  animation: analysis-spark 1.4s ease-in-out infinite;
-}
-.analysis-progress-sheen {
+.analysis-compass-plate {
+  animation: analysis-compass-enter 480ms var(--ease-emphasis) both;
+  border: 1px solid rgba(245, 238, 230, 0.1);
   background: linear-gradient(
-    90deg,
+    180deg,
+    rgba(245, 238, 230, 0.06) 0%,
+    rgba(245, 238, 230, 0.02) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(245, 238, 230, 0.12),
+    0 12px 40px rgba(0, 0, 0, 0.35);
+}
+.analysis-compass-art {
+  opacity: 0.96;
+  transform: scale(1.015);
+}
+.analysis-compass-warm-glow {
+  top: 69%;
+  left: 50%;
+  width: 34%;
+  aspect-ratio: 1.5;
+  border-radius: 999px;
+  background: radial-gradient(
+    ellipse,
+    rgba(255, 165, 61, 0.3),
+    rgba(255, 61, 131, 0.04) 62%,
+    transparent 76%
+  );
+  filter: blur(4px);
+  transform: translate(-50%, -50%);
+  animation: analysis-halo-pulse 4.6s ease-in-out infinite;
+}
+.analysis-image-needle {
+  top: 48.3%;
+  left: 50%;
+  width: 18%;
+  height: 45%;
+  transform: translate(-50%, -50%) rotate(var(--needle-angle));
+  transform-origin: center;
+  transition: transform 700ms var(--ease-emphasis);
+}
+.analysis-image-needle__north,
+.analysis-image-needle__south {
+  position: absolute;
+  left: 50%;
+  display: block;
+  width: 62%;
+  filter: drop-shadow(0 0 5px rgba(255, 107, 61, 0.34));
+}
+.analysis-image-needle__north {
+  bottom: 48%;
+  height: 48%;
+  background: linear-gradient(135deg, #ff3d83, #ff6b3d 55%, #ffa53d);
+  clip-path: polygon(50% 0%, 100% 100%, 50% 82%, 0% 100%);
+  transform: translateX(-50%);
+}
+.analysis-image-needle__south {
+  top: 48%;
+  height: 38%;
+  background: linear-gradient(90deg, rgba(157, 127, 240, 0.3), #f5eee6 52%, rgba(157, 127, 240, 0.44));
+  clip-path: polygon(50% 100%, 100% 0%, 50% 18%, 0% 0%);
+  transform: translateX(-50%);
+}
+.analysis-image-hub {
+  width: 54%;
+  aspect-ratio: 1;
+  border: 1px solid rgba(245, 238, 230, 0.82);
+  background: var(--night);
+  box-shadow:
+    0 0 0 3px rgba(157, 127, 240, 0.32),
+    0 0 12px rgba(255, 107, 61, 0.22);
+  transform: translate(-50%, -50%);
+}
+.analysis-image-hub::after {
+  content: "";
+  position: absolute;
+  inset: 34%;
+  border-radius: 999px;
+  background: #ffa53d;
+}
+.analysis-compass-signal {
+  width: 11.5%;
+  aspect-ratio: 1;
+  border: 1px solid rgba(245, 238, 230, 0.26);
+  background: rgba(15, 9, 37, 0.86);
+  color: rgba(245, 238, 230, 0.4);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  opacity: 0.42;
+  transform: translate(-50%, -50%) scale(0.9);
+  transition:
+    background-color 420ms var(--ease-standard),
+    border-color 420ms var(--ease-standard),
+    color 420ms var(--ease-standard),
+    opacity 420ms var(--ease-standard),
+    transform 520ms var(--ease-emphasis);
+}
+.analysis-compass-signal[data-state="complete"] {
+  border-color: rgba(157, 127, 240, 0.72);
+  background: rgba(91, 57, 154, 0.72);
+  color: var(--sand);
+  opacity: 0.76;
+}
+.analysis-compass-signal[data-state="active"] {
+  border-color: rgba(245, 238, 230, 0.82);
+  background: linear-gradient(135deg, #ff3d83, #ff6b3d 55%, #ffa53d);
+  color: #fff8ee;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.08);
+  box-shadow: 0 0 18px rgba(255, 107, 61, 0.4);
+  animation: analysis-segment-breathe 1.5s ease-in-out infinite;
+}
+.analysis-status-dot {
+  animation: analysis-status-pulse 1.4s ease-in-out infinite;
+}
+.analysis-status-reel {
+  mask-image: linear-gradient(
+    180deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.45) 50%,
+    #000 22%,
+    #000 78%,
     transparent 100%
   );
-  animation: analysis-progress-sheen 1.8s ease-in-out infinite;
-}
-.analysis-step-card {
-  animation: analysis-step-card-in 0.55s var(--ease-spring) both;
-}
-.analysis-step-ring {
-  animation: analysis-step-ring 1.6s ease-out infinite;
-}
-.analysis-step-active {
-  position: relative;
-  background: linear-gradient(
-    135deg,
-    rgba(244, 198, 96, 0.18),
-    rgba(255, 107, 61, 0.12)
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    transparent 0%,
+    #000 22%,
+    #000 78%,
+    transparent 100%
   );
+}
+.analysis-reel-item {
+  opacity: 0.16;
+  transform: translateY(calc(-50% + var(--reel-y))) scale(0.97);
+  transition:
+    opacity 520ms var(--ease-standard),
+    transform 620ms var(--ease-emphasis);
+  will-change: transform, opacity;
+}
+.analysis-reel-item[data-state="active"] {
+  opacity: 1;
+  transform: translateY(calc(-50% + var(--reel-y))) scale(1);
+}
+.analysis-reel-item[data-state="complete"] {
+  opacity: 0.3;
+}
+.analysis-reel-item[data-visibility="far"] {
+  opacity: 0;
+  pointer-events: none;
+}
+.analysis-reel-icon {
+  color: var(--stage-color);
+  border-color: color-mix(in srgb, var(--stage-color) 48%, transparent);
+  background: color-mix(in srgb, var(--stage-color) 12%, transparent);
+  transition:
+    background-color 420ms var(--ease-standard),
+    border-color 420ms var(--ease-standard),
+    color 420ms var(--ease-standard);
+}
+.analysis-reel-item[data-state="active"] .analysis-reel-icon {
+  box-shadow: 0 0 18px color-mix(in srgb, var(--stage-color) 22%, transparent);
+}
+.analysis-reel-detail {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(3px);
+  transition:
+    max-height 420ms var(--ease-standard),
+    opacity 360ms var(--ease-standard),
+    transform 420ms var(--ease-standard);
+}
+.analysis-reel-item[data-state="active"] .analysis-reel-detail {
+  max-height: 44px;
+  opacity: 1;
+  transform: translateY(0);
 }
 .result-hero {
   background: linear-gradient(
@@ -2080,20 +2047,11 @@ button {
   .anim-particle-b,
   .anim-particle-c,
   .anim-caret-blink,
-  .analysis-spin-slow,
-  .analysis-spin-reverse,
-  .analysis-route,
-  .analysis-scanline,
-  .analysis-signal,
-  .analysis-progress,
-  .analysis-progress-sheen,
-  .analysis-thread,
-  .analysis-orbit-token,
-  .analysis-aura,
-  .analysis-particle,
-  .analysis-spark,
-  .analysis-step-card,
-  .analysis-step-ring,
+  .analysis-compass-frame,
+  .analysis-compass-plate,
+  .analysis-compass-warm-glow,
+  .analysis-compass-signal,
+  .analysis-status-dot,
   .kai-video-avatar__speech i,
   .kai-video-avatar[data-gesture="wave"] .kai-video-avatar__rim,
   .result-compass-spin,
@@ -2195,4 +2153,55 @@ button {
     radial-gradient(1px 1px at 46% 72%, rgba(43, 36, 28, 0.04), transparent 2px),
     radial-gradient(1px 1px at 88% 84%, rgba(43, 36, 28, 0.035), transparent 2px);
   background-size: 240px 240px, 200px 200px, 280px 280px, 220px 220px;
+}
+
+/* ─── Kai contextual loading icons (components/kai/chat/loading-icons.tsx) ───
+   Small (16px) animated marks paired with each progressive status message.
+   Compositor-friendly only (transform / opacity), calm timings, and they
+   honour reduced-motion (see the media query at the end of this block). */
+@keyframes kai-load-rotate {
+  to { transform: rotate(360deg); }
+}
+@keyframes kai-load-pulse {
+  0%, 100% { transform: scale(0.82); opacity: 0.55; }
+  50% { transform: scale(1); opacity: 1; }
+}
+@keyframes kai-load-seq {
+  0%, 100% { opacity: 0.28; }
+  50% { opacity: 1; }
+}
+@keyframes kai-load-rise {
+  0%, 100% { transform: scaleY(0.4); }
+  50% { transform: scaleY(1); }
+}
+@keyframes kai-load-bob {
+  0%, 100% { transform: translateY(1.1px); }
+  50% { transform: translateY(-1.1px); }
+}
+@keyframes kai-load-sweep {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(1.6px, 1.6px); }
+}
+@keyframes kai-load-twinkle {
+  0%, 100% { transform: scale(0.7) rotate(0deg); opacity: 0.6; }
+  50% { transform: scale(1) rotate(45deg); opacity: 1; }
+}
+.kai-load-ico { color: var(--day-accent, #6e48e4); }
+.kai-load-ico * { transform-box: fill-box; transform-origin: center; }
+.kai-load-rotate { animation: kai-load-rotate 2.4s linear infinite; transform-box: fill-box; transform-origin: center; }
+.kai-load-pulse { animation: kai-load-pulse 1.3s ease-in-out infinite; }
+.kai-load-seq { animation: kai-load-seq 1.2s ease-in-out infinite; }
+.kai-load-rise { animation: kai-load-rise 1s ease-in-out infinite; }
+.kai-load-bob { animation: kai-load-bob 1.1s ease-in-out infinite; }
+.kai-load-sweep { animation: kai-load-sweep 1.4s ease-in-out infinite; }
+.kai-load-twinkle { animation: kai-load-twinkle 1.4s ease-in-out infinite; }
+@keyframes kai-load-textin {
+  from { opacity: 0; transform: translateY(2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.kai-load-textin { animation: kai-load-textin 0.3s var(--ease-out, ease-out); }
+@media (prefers-reduced-motion: reduce) {
+  .kai-load-textin { animation: none; }
+  .kai-load-rotate, .kai-load-pulse, .kai-load-seq, .kai-load-rise,
+  .kai-load-bob, .kai-load-sweep, .kai-load-twinkle { animation: none; }
 }

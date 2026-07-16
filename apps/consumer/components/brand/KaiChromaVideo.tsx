@@ -8,6 +8,11 @@ import {
   type RefObject,
 } from "react";
 
+// Audio is treated as audible once its currentTime passes this many seconds.
+// currentTime only advances when sound is genuinely playing, so this gates
+// Kai's mouth to the real voice (unlike play/playing events, which fire early).
+const AUDIBLE_EPS = 0.02;
+
 interface KaiChromaVideoProps extends HTMLAttributes<HTMLDivElement> {
   /** Rendered square footprint, in px (or any CSS length). */
   size?: number | string;
@@ -233,14 +238,26 @@ export function KaiChromaVideo({
         gl!.drawArrays(gl!.TRIANGLES, 0, 6);
       }
       // ── Deterministic playback reconciliation ──────────────────────
-      // Events only flip playingRef (the "want playing" flag); ALL video
-      // play/pause/seek happens here, edge-detected, so there are no
-      // event-race conflicts between seeking and play().
+      // ALL video play/pause/seek happens here, edge-detected, so there are
+      // no event-race conflicts between seeking and play().
       const { playStart: ps, playEnd: pe, restTime: rt, loop: lp } =
         cfgRef.current;
-      // Slaved to the audio element's play/pause state (frame-accurate;
-      // freezes within ~1 frame of the audio stopping).
-      const want = playingRef.current;
+      // Audio mode: gate on the audio's REAL progress, not its play/playing
+      // events. Those fire up to ~300ms before the audio pipeline actually
+      // produces sound (decode/render latency), which made Kai's mouth run
+      // ahead of the voice. currentTime only advances once sound is truly
+      // audible, so `currentTime > AUDIBLE_EPS` starts her within ~1 frame of
+      // the first audible moment. Static mode falls back to the `playing`
+      // flag set from the prop.
+      const audioEl = audioRef?.current ?? null;
+      const want = audioEl
+        ? !audioEl.paused && !audioEl.ended && audioEl.currentTime > AUDIBLE_EPS
+        : playingRef.current;
+      // Keep playingRef in sync with the live decision so tryPlay()'s guard
+      // (which bails when !playingRef.current) actually lets the clip play in
+      // audio mode — otherwise the video seeks to the talking frame and
+      // freezes there, mouth never moving.
+      playingRef.current = want;
       // A play-once clip that has finished → hold its last (smiling) frame.
       const holding = !lp && pe == null && video!.ended;
 
@@ -261,17 +278,15 @@ export function KaiChromaVideo({
         tryPlay();
         pausedFrames = 0;
       } else if (!want && prevWant) {
-        // Falling edge: stop the mouth. Snap to the closed-mouth rest frame
-        // ONLY when the audio has truly stopped; if we paused merely because
-        // the voice went quiet (audio still running), hold the current frame
-        // so a resume continues smoothly.
+        // Falling edge: audio truly stopped (paused/ended) → freeze on the
+        // closed-mouth rest frame. `want` only drops when the audio is no
+        // longer progressing, so a mid-narration silent beat (currentTime
+        // still advancing) never triggers this.
         video!.pause();
-        if (!playingRef.current) {
-          try {
-            video!.currentTime = rt;
-          } catch {
-            /* metadata not ready yet */
-          }
+        try {
+          video!.currentTime = rt;
+        } catch {
+          /* metadata not ready yet */
         }
       } else if (want) {
         // Sustained playing: loop the talking window, loop the whole clip if
@@ -299,12 +314,10 @@ export function KaiChromaVideo({
         // make her mouth move after she's "done talking".
         if (!video!.paused) {
           video!.pause();
-          if (!playingRef.current) {
-            try {
-              video!.currentTime = rt;
-            } catch {
-              /* ignore */
-            }
+          try {
+            video!.currentTime = rt;
+          } catch {
+            /* ignore */
           }
         }
       }
@@ -322,38 +335,17 @@ export function KaiChromaVideo({
       gl.deleteBuffer(buffer);
       gl.deleteProgram(program);
     };
-  }, [src]);
+    // audioRef is a stable ref object (read live inside the rAF loop); listing
+    // it satisfies exhaustive-deps without causing re-runs.
+  }, [src, audioRef]);
 
-  // Playback control = just maintain the "want playing" flag. The rAF loop
-  // (above) reconciles the actual video play/pause/seek with edge detection,
-  // which avoids all the seek-vs-play() race conditions of doing it here.
-  //
-  //  · audio mode: want = the <audio> is actually playing (frame-accurate
-  //    start on play, freeze on pause/ended).
-  //  · static mode: want = the `playing` prop.
+  // Static (no-audio) mode only: mirror the `playing` prop into the flag the
+  // rAF loop reads. In audio mode the loop reads the <audio> element's live
+  // currentTime/paused state directly each frame (see frame()), so no event
+  // wiring is needed — and gating on real progress rather than play/playing
+  // events is what keeps Kai's mouth aligned to the actual voice.
   useEffect(() => {
-    const audio = audioRef?.current ?? null;
-
-    if (audio) {
-      const setTrue = () => {
-        playingRef.current = true;
-      };
-      const setFalse = () => {
-        playingRef.current = false;
-      };
-      playingRef.current = !audio.paused && !audio.ended;
-      audio.addEventListener("play", setTrue);
-      audio.addEventListener("playing", setTrue);
-      audio.addEventListener("pause", setFalse);
-      audio.addEventListener("ended", setFalse);
-      return () => {
-        audio.removeEventListener("play", setTrue);
-        audio.removeEventListener("playing", setTrue);
-        audio.removeEventListener("pause", setFalse);
-        audio.removeEventListener("ended", setFalse);
-      };
-    }
-
+    if (audioRef) return;
     playingRef.current = playing;
   }, [audioRef, playing, restTime, playStart, playEnd]);
 

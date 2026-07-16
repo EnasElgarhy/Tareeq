@@ -1,9 +1,16 @@
 "use client";
 
-import { CheckCircle2 } from "lucide-react";
+import {
+  Check,
+  FileText,
+  ListChecks,
+  Search,
+  Waypoints,
+  type LucideIcon,
+} from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { KaiChromaVideo } from "@/components/brand/KaiChromaVideo";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { readLocalAssessment } from "@/lib/assessment/progress";
 import type { StringKey } from "@/lib/i18n/strings";
@@ -16,32 +23,58 @@ import {
 
 type AnalysisStatus = "working" | "done" | "error";
 
-const ANALYSIS_STEPS: ReadonlyArray<{
+const ANALYSIS_STAGES: ReadonlyArray<{
+  letter: "C" | "O" | "R" | "E";
   titleKey: StringKey;
   detailKey: StringKey;
-  glyph: string;
+  icon: LucideIcon;
+  color: string;
+  angle: number;
+  signalPosition: { top: string; left: string };
 }> = [
-  { titleKey: "analyzing.step1.title", detailKey: "analyzing.step1.detail", glyph: "📡" },
-  { titleKey: "analyzing.step2.title", detailKey: "analyzing.step2.detail", glyph: "🧭" },
-  { titleKey: "analyzing.step3.title", detailKey: "analyzing.step3.detail", glyph: "🪡" },
-  { titleKey: "analyzing.step4.title", detailKey: "analyzing.step4.detail", glyph: "✍️" },
+  {
+    letter: "C",
+    titleKey: "analyzing.step1.title",
+    detailKey: "analyzing.step1.detail",
+    icon: ListChecks,
+    color: "var(--blush)",
+    angle: 0,
+    signalPosition: { top: "17%", left: "50%" },
+  },
+  {
+    letter: "O",
+    titleKey: "analyzing.step2.title",
+    detailKey: "analyzing.step2.detail",
+    icon: Search,
+    color: "var(--gold)",
+    angle: 90,
+    signalPosition: { top: "48.5%", left: "83%" },
+  },
+  {
+    letter: "R",
+    titleKey: "analyzing.step3.title",
+    detailKey: "analyzing.step3.detail",
+    icon: Waypoints,
+    color: "var(--mint)",
+    angle: 180,
+    signalPosition: { top: "80%", left: "50%" },
+  },
+  {
+    letter: "E",
+    titleKey: "analyzing.step4.title",
+    detailKey: "analyzing.step4.detail",
+    icon: FileText,
+    color: "var(--violet-soft)",
+    angle: 270,
+    signalPosition: { top: "48.5%", left: "17%" },
+  },
 ];
-
-// Four CORE pillars orbit Kai while the analysis runs. Each token has
-// a delay so they cascade in instead of appearing at once. Positions
-// are radial offsets around the center.
-const ORBIT_TOKENS = [
-  { letter: "C", label: "Curiosities", angle: -90, color: "#FF6B3D", delay: 0 },
-  { letter: "O", label: "Operations",  angle:   0, color: "#FFA53D", delay: 0.15 },
-  { letter: "R", label: "Rewards",     angle:  90, color: "#FF3D83", delay: 0.3 },
-  { letter: "E", label: "Ecosystems",  angle: 180, color: "#9D7FF0", delay: 0.45 },
-] as const;
 
 export function AnalyzingScreen() {
   const router = useRouter();
   const { t, locale } = useLocale();
   const startedRef = useRef(false);
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStage, setActiveStage] = useState(0);
   const [status, setStatus] = useState<AnalysisStatus>("working");
 
   useEffect(() => {
@@ -61,13 +94,10 @@ export function AnalyzingScreen() {
     if (startedRef.current) return;
     startedRef.current = true;
 
-    // If a report is already cached, still show the loader — but in
-    // a "ready" state for a short beat instead of redirecting instantly.
-    // This guarantees the redesigned animations are visible even on
-    // return visits and on devices that resolve the API in <100ms.
+    // Let a cached report settle into the completed route before revealing it.
     if (existingReport) {
       setStatus("done");
-      setActiveStep(ANALYSIS_STEPS.length - 1);
+      setActiveStage(ANALYSIS_STAGES.length - 1);
       window.setTimeout(() => router.replace("/results"), 1800);
       return;
     }
@@ -104,10 +134,7 @@ export function AnalyzingScreen() {
         }
         setStatus("error");
       } finally {
-        // Minimum visible time of 3 seconds so the orbit + thread +
-        // step-cascade animations all have time to land before we
-        // redirect to /results. Previously was 900ms which often
-        // flashed by faster than users could perceive.
+        // Keep the screen visible long enough for all four signals to form.
         const elapsed = Date.now() - startedAt;
         window.setTimeout(
           () => router.replace("/results"),
@@ -120,341 +147,197 @@ export function AnalyzingScreen() {
   }, [router, locale, t]);
 
   useEffect(() => {
-    // 4 steps × 820ms ≈ 3.3s — matches the 3s minimum visible time
-    // so every step turns "done" before we redirect.
     const interval = window.setInterval(() => {
-      setActiveStep((step) => Math.min(step + 1, ANALYSIS_STEPS.length - 1));
-    }, 820);
+      setActiveStage((stage) =>
+        Math.min(stage + 1, ANALYSIS_STAGES.length - 1),
+      );
+    }, 900);
     return () => window.clearInterval(interval);
   }, []);
 
-  const progress =
-    status === "done"
-      ? 100
-      : Math.min(94, Math.round(((activeStep + 1) / ANALYSIS_STEPS.length) * 88));
+  const formed = status !== "working";
+  const headline = formed
+    ? t("analyzing.headline_ready")
+    : t("analyzing.headline_working");
+  const statusLabel = formed
+    ? t("analyzing.status_ready")
+    : t("analyzing.status_working");
+  const reelItems = [
+    ...ANALYSIS_STAGES.map((stage) => ({
+      title: t(stage.titleKey),
+      detail: t(stage.detailKey),
+      icon: stage.icon,
+      color: stage.color,
+    })),
+    {
+      title: t("analyzing.ready_title"),
+      detail: t("analyzing.ready_detail"),
+      icon: Check,
+      color: "var(--mint)",
+    },
+  ];
+  const reelActiveIndex = formed ? ANALYSIS_STAGES.length : activeStage;
 
   return (
-    <section className="anim-screen-enter relative flex flex-1 flex-col gap-5 overflow-hidden text-center">
-      {/* Floating background particles — adds atmosphere across the whole screen */}
-      <FloatingParticles />
-
-      {/* ─── Hero stage: Kai surrounded by orbiting CORE tokens, threads
-              drawing toward the center, scanning beam sweeping. ─── */}
-      <div className="relative mx-auto grid h-[280px] w-full max-w-[320px] place-items-center">
-        <AnalysisOrbitField status={status} />
-        <div className="relative z-10 grid size-[126px] place-items-center overflow-hidden rounded-full border border-sand/14 bg-night/85 shadow-[0_22px_60px_rgba(0,0,0,0.4)]">
-          {/* Pulsing aura ring */}
-          <span className="analysis-aura absolute inset-0 rounded-full" aria-hidden />
-          {/* New Kai — green screen keyed out, scaled + clipped to the
-              circular plate so she reads as a face while tokens orbit. */}
-          <div className="anim-avatar-bob">
-            <div style={{ transform: "translateY(12px)" }}>
-              {/* No narration on the loader — rest on a closed-mouth frame
-                  so Kai doesn't murmur silently. */}
-              <KaiChromaVideo
-                src="/kai/kai-mentor-green.mp4"
-                size={150}
-                playing={false}
-                restTime={2.3}
-              />
-            </div>
-          </div>
-        </div>
-        {/* CORE pillar tokens orbiting Kai */}
-        {ORBIT_TOKENS.map((token) => (
-          <OrbitToken key={token.letter} {...token} status={status} />
-        ))}
-      </div>
-
-      {/* ─── Status copy ─── */}
-      <div className="relative z-10 grid gap-2 text-center">
-        <span className="chip chip--violet-on-dark mx-auto">
-          {status === "done" ? (
-            <CheckCircle2 size={13} />
-          ) : (
-            <span className="analysis-spark size-1.5 rounded-full bg-gold" aria-hidden />
-          )}
-          {status === "done" ? t("analyzing.status_ready") : t("analyzing.status_working")}
-        </span>
-        <h1 className="text-display-2 mx-auto max-w-[14ch] text-sand">
-          {t("analyzing.headline_before")}{" "}
-          <span
-            className="text-grad-warm"
-            style={{
-              fontStyle: "italic",
-              fontVariationSettings: '"SOFT" 100, "opsz" 144',
-            }}
-          >
-            {t("analyzing.headline_emphasis")}
-          </span>{" "}
-          {t("analyzing.headline_after")}
-        </h1>
-        <p className="text-body-sm mx-auto max-w-[34ch] text-sand/65">
-          {t("analyzing.subtitle")}
-        </p>
-      </div>
-
-      {/* ─── Progress meter ─── */}
-      <div className="relative z-10 rounded-[24px] border border-sand/12 bg-sand/[0.055] p-3 shadow-[0_18px_52px_rgba(0,0,0,0.22)]">
-        <div className="mb-3 flex items-center justify-between gap-3 text-[11px] font-bold uppercase tracking-[0.13em] text-sand/52">
-          <span className="flex items-center gap-1.5">
-            <span className="analysis-spark size-1.5 rounded-full bg-grad-warm" aria-hidden />
-            {t("analyzing.signal_strength")}
-          </span>
-          <span className="tabular-nums text-grad-warm">{progress}%</span>
-        </div>
-        <div className="relative h-2 overflow-hidden rounded-full bg-night/55">
-          <div
-            className="analysis-progress h-full rounded-full bg-grad-warm transition-[width] duration-500"
-            style={{ width: `${progress}%` }}
-          />
-          {/* Sheen pulse traveling across the bar */}
-          <span className="analysis-progress-sheen absolute inset-y-0 w-12 -translate-x-full" />
-        </div>
-      </div>
-
-      {/* ─── Steps cascading in ─── */}
-      <ol className="relative z-10 grid w-full gap-2 text-start">
-        {ANALYSIS_STEPS.map((step, index) => {
-          const complete = index < activeStep || status === "done";
-          const active = index === activeStep && status === "working";
-
-          return (
-            <li
-              key={step.titleKey}
-              className={`analysis-step-card grid grid-cols-[40px_1fr_auto] items-center gap-2 rounded-[18px] border px-3 py-2.5 transition-colors ${
-                complete
-                  ? "border-grad-warm/35 bg-grad-warm/8"
-                  : active
-                    ? "border-sand/18 bg-sand/[0.075]"
-                    : "border-sand/8 bg-sand/[0.03]"
-              }`}
-              style={{ animationDelay: `${index * 120}ms` }}
-            >
+    <section
+      className="relative flex flex-1 items-center overflow-hidden py-5 sm:py-8"
+      aria-busy={status === "working"}
+    >
+      <div className="relative z-10 mx-auto grid w-full max-w-[560px] justify-items-center gap-3 text-center sm:gap-5">
+        <div className="grid justify-items-center gap-3" aria-live="polite">
+          <p className="text-eyebrow flex items-center gap-2 text-sand/55">
+            {formed ? (
+              <Check aria-hidden="true" size={14} className="text-mint" />
+            ) : (
               <span
-                className={`relative grid size-9 place-items-center rounded-full text-lg ${
-                  complete
-                    ? "bg-grad-warm text-sand shadow-warm-glow"
-                    : active
-                      ? "analysis-step-active bg-sand/12 text-gold"
-                      : "bg-night/45 text-sand/35"
-                }`}
-              >
-                {complete ? <CheckCircle2 size={17} /> : step.glyph}
-                {active ? (
-                  <span className="analysis-step-ring absolute inset-0 rounded-full" aria-hidden />
-                ) : null}
-              </span>
-              <div className="min-w-0">
-                <p
-                  className={`text-[13px] font-bold leading-tight ${
-                    complete || active ? "text-sand" : "text-sand/45"
-                  }`}
-                >
-                  {t(step.titleKey)}
-                </p>
-                <p
-                  className={`mt-0.5 text-[10.5px] leading-snug ${
-                    complete || active ? "text-sand/55" : "text-sand/30"
-                  }`}
-                >
-                  {t(step.detailKey)}
-                </p>
-              </div>
-              <span className="text-[9.5px] font-bold uppercase tracking-[0.12em] text-sand/38">
-                {complete
-                  ? t("analyzing.step_status_done")
-                  : active
-                    ? t("analyzing.step_status_now")
-                    : t("analyzing.step_status_next")}
-              </span>
-            </li>
-          );
-        })}
-      </ol>
+                aria-hidden="true"
+                className="analysis-status-dot size-1.5 rounded-full bg-gold"
+              />
+            )}
+            {statusLabel}
+          </p>
 
-      {status === "error" ? (
-        <p className="relative z-10 text-[12px] leading-snug text-sand/50">
-          {t("analyzing.error_message")}
-        </p>
-      ) : null}
+          <h1 className="text-display-2 max-w-[15ch] !tracking-normal text-sand">
+            {headline}
+          </h1>
+          <p className="text-body-sm max-w-[42ch] text-sand/65">
+            {t(formed ? "analyzing.subtitle_ready" : "analyzing.subtitle")}
+          </p>
+        </div>
+
+        <CompassFormation
+          activeStage={activeStage}
+          formed={formed}
+          label={statusLabel}
+        />
+
+        <div
+          className="analysis-status-reel relative h-32 w-full max-w-[460px] overflow-hidden border-y border-sand/10 sm:h-[158px]"
+          aria-live="polite"
+        >
+          {reelItems.map((item, index) => {
+            const distance = index - reelActiveIndex;
+            const state =
+              index < reelActiveIndex
+                ? "complete"
+                : index === reelActiveIndex
+                  ? "active"
+                  : "pending";
+            const ItemIcon = state === "complete" ? Check : item.icon;
+            return (
+              <div
+                key={item.title}
+                className="analysis-reel-item absolute inset-x-0 top-1/2 flex items-center justify-center gap-3 px-3 text-start"
+                data-state={state}
+                data-visibility={Math.abs(distance) > 2 ? "far" : "near"}
+                aria-hidden={index !== reelActiveIndex}
+                style={
+                  {
+                    "--reel-y": `${distance * 58}px`,
+                    "--stage-color": item.color,
+                  } as CSSProperties
+                }
+              >
+                <span className="analysis-reel-icon grid size-9 shrink-0 place-items-center rounded-full border">
+                  <ItemIcon aria-hidden="true" size={15} />
+                </span>
+                <span className="min-w-0 w-full max-w-[350px]">
+                  <span className="block text-[15px] font-semibold leading-snug text-sand">
+                    {item.title}
+                  </span>
+                  <span className="analysis-reel-detail text-body-sm mt-0.5 block text-sand/50">
+                    {item.detail}
+                  </span>
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+        {status === "error" ? (
+          <p className="max-w-[44ch] text-[12px] leading-relaxed text-sand/50">
+            {t("analyzing.error_message")}
+          </p>
+        ) : null}
+      </div>
     </section>
   );
 }
 
-/**
- * Floating ambient particles behind the whole screen — gives the
- * "something is alive" feeling without competing with the central
- * orbit composition.
- */
-function FloatingParticles() {
-  const particles = [
-    { x: "8%",  y: "12%", size: 4,  delay: 0,   dur: 7 },
-    { x: "82%", y: "18%", size: 3,  delay: 1.2, dur: 8.5 },
-    { x: "18%", y: "78%", size: 5,  delay: 2.4, dur: 9 },
-    { x: "76%", y: "70%", size: 3,  delay: 0.6, dur: 7.5 },
-    { x: "92%", y: "44%", size: 2,  delay: 3.1, dur: 6.5 },
-    { x: "5%",  y: "48%", size: 2,  delay: 1.8, dur: 8 },
-    { x: "50%", y: "5%",  size: 2,  delay: 2.7, dur: 7.2 },
-  ];
-  return (
-    <div aria-hidden className="pointer-events-none absolute inset-0">
-      {particles.map((p, i) => (
-        <span
-          key={i}
-          className="analysis-particle absolute rounded-full"
-          style={{
-            left: p.x,
-            top: p.y,
-            width: p.size,
-            height: p.size,
-            animationDelay: `${p.delay}s`,
-            animationDuration: `${p.dur}s`,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
-/**
- * A CORE pillar token (C, O, R, E) orbiting Kai. Position is computed
- * from `angle` so the 4 tokens land at the 4 compass directions.
- * Continuous slow orbit motion via CSS.
- */
-function OrbitToken({
-  letter,
-  label: _label,
-  angle,
-  color,
-  delay,
-  status,
+function CompassFormation({
+  activeStage,
+  formed,
+  label,
 }: {
-  letter: string;
+  activeStage: number;
+  formed: boolean;
   label: string;
-  angle: number;
-  color: string;
-  delay: number;
-  status: AnalysisStatus;
 }) {
-  const radius = 108;
-  const rad = (angle * Math.PI) / 180;
-  const x = Math.cos(rad) * radius;
-  const y = Math.sin(rad) * radius;
+  const needleAngle = formed ? 315 : ANALYSIS_STAGES[activeStage].angle;
+
   return (
-    <span
-      aria-hidden
-      className="analysis-orbit-token absolute z-20 grid size-9 place-items-center rounded-full text-[12px] font-black text-sand shadow-[0_8px_22px_rgba(0,0,0,0.4)]"
-      style={{
-        left: "50%",
-        top: "50%",
-        // --ox/--oy feed the entrance keyframes so the token settles at
-        // its compass position (not collapsed to center over Kai's face).
-        ["--ox"]: `${x}px`,
-        ["--oy"]: `${y}px`,
-        transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
-        background: `linear-gradient(135deg, ${color}, color-mix(in srgb, ${color} 50%, #ffffff))`,
-        animationDelay: `${delay}s`,
-        opacity: status === "done" ? 1 : undefined,
-      } as CSSProperties}
-    >
-      {letter}
-    </span>
-  );
-}
-
-/**
- * Background SVG: pulsing concentric rings, sweeping scanline,
- * four threads drawing in from each compass direction toward the
- * center anchor. Builds the "everything is converging on Kai" read.
- */
-function AnalysisOrbitField({ status }: { status: AnalysisStatus }) {
-  const accent = status === "error" ? "var(--error)" : "var(--gold)";
-  return (
-    <svg
-      aria-hidden
-      viewBox="0 0 320 320"
-      className="absolute inset-0 h-full w-full"
-    >
-      <defs>
-        <linearGradient id="orbitSweep" x1="40" y1="40" x2="280" y2="280">
-          <stop offset="0" stopColor="var(--violet-soft)" stopOpacity="0.16" />
-          <stop offset="0.55" stopColor="var(--blush)" stopOpacity="0.7" />
-          <stop offset="1" stopColor="var(--gold)" stopOpacity="0.9" />
-        </linearGradient>
-        <radialGradient id="orbitCore" cx="50%" cy="50%" r="50%">
-          <stop offset="0" stopColor="var(--gold)" stopOpacity="0.45" />
-          <stop offset="0.7" stopColor="var(--gold)" stopOpacity="0" />
-        </radialGradient>
-      </defs>
-
-      {/* Soft warm core glow behind Kai */}
-      <circle cx="160" cy="160" r="80" fill="url(#orbitCore)" />
-
-      {/* Outer dashed ring — slowly rotates */}
-      <g
-        className="analysis-spin-slow"
-        style={{ transformOrigin: "160px 160px" }}
+    <div className="analysis-compass-frame relative aspect-square w-[clamp(140px,42vw,230px)] shrink-0">
+      <div
+        role="img"
+        aria-label={label}
+        className="analysis-compass-plate absolute inset-0 overflow-hidden rounded-[32px]"
       >
-        <circle
-          cx="160"
-          cy="160"
-          r="140"
-          fill="none"
-          stroke="url(#orbitSweep)"
-          strokeDasharray="24 14"
-          strokeWidth="1.5"
+        <Image
+          src="/illustrations/analysis-compass.png"
+          alt=""
+          fill
+          priority
+          sizes="230px"
+          className="analysis-compass-art object-cover"
         />
-      </g>
-      {/* Middle dotted ring — reverse rotation */}
-      <g
-        className="analysis-spin-reverse"
-        style={{ transformOrigin: "160px 160px" }}
-      >
-        <circle
-          cx="160"
-          cy="160"
-          r="108"
-          fill="none"
-          stroke="var(--sand)"
-          strokeDasharray="2 10"
-          strokeOpacity="0.34"
-          strokeWidth="1.5"
+
+        <span
+          aria-hidden="true"
+          className="analysis-compass-warm-glow absolute"
         />
-      </g>
 
-      {/* Four threads converging from each compass direction to the
-          center anchor. Each draws in continuously. */}
-      <g
-        fill="none"
-        stroke={accent}
-        strokeOpacity="0.45"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      >
-        <path className="analysis-thread analysis-thread--n" d="M 160 20 L 160 110" />
-        <path className="analysis-thread analysis-thread--e" d="M 300 160 L 210 160" />
-        <path className="analysis-thread analysis-thread--s" d="M 160 300 L 160 210" />
-        <path className="analysis-thread analysis-thread--w" d="M 20 160 L 110 160" />
-      </g>
+        <span
+          aria-hidden="true"
+          className="analysis-image-needle absolute"
+          style={
+            {
+              "--needle-angle": `${needleAngle}deg`,
+            } as CSSProperties
+          }
+        >
+          <span className="analysis-image-needle__north" />
+          <span className="analysis-image-needle__south" />
+          <span
+            className="analysis-image-hub absolute left-1/2 top-1/2 rounded-full"
+            data-formed={formed || undefined}
+          />
+        </span>
 
-      {/* Sweeping vertical scanline */}
-      <line
-        className="analysis-scanline"
-        x1="160"
-        x2="160"
-        y1="35"
-        y2="285"
-        stroke="var(--gold)"
-        strokeLinecap="round"
-        strokeOpacity="0.55"
-        strokeWidth="2"
-        style={{ transformOrigin: "160px 160px" }}
-      />
-
-      {/* Inner translucent disc so Kai's container sits in a slight
-          well of darkness for legibility */}
-      <circle cx="160" cy="160" r="70" fill="var(--night)" opacity="0.55" />
-    </svg>
+        {ANALYSIS_STAGES.map((stage, index) => {
+          const state =
+            formed || index < activeStage
+              ? "complete"
+              : index === activeStage
+                ? "active"
+                : "pending";
+          return (
+            <span
+              key={stage.letter}
+              aria-hidden="true"
+              className="analysis-compass-signal absolute grid place-items-center rounded-full"
+              data-state={state}
+              style={
+                {
+                  top: stage.signalPosition.top,
+                  left: stage.signalPosition.left,
+                } as CSSProperties
+              }
+            >
+              {stage.letter}
+            </span>
+          );
+        })}
+      </div>
+    </div>
   );
 }

@@ -20,6 +20,10 @@ const LOCALIZED_STATIC_IDS = new Set([
   "kai_intro",
   "kai_results",
 ]);
+const ENGLISH_ASSESSMENT_VOICE_STATIC_IDS = new Set([
+  "kai_intro",
+  "kai_results",
+]);
 
 function shortLocaleOf(locale = "en") {
   return locale.split("-", 1)[0]?.toLowerCase() || "en";
@@ -63,17 +67,31 @@ export function resolveAssessmentNarrationSources({
     sources.push(normalizeFallbackSource(source));
   }
 
-  if (LOCALIZED_STATIC_IDS.has(audioId) && (shortLocale === "en" || shortLocale === "ar")) {
+  if (
+    shortLocale === "en" &&
+    ENGLISH_ASSESSMENT_VOICE_STATIC_IDS.has(audioId)
+  ) {
+    for (const extension of STATIC_EXTENSIONS) {
+      sources.push(staticSource(`/audio/${audioId}.${extension}`));
+    }
+  } else if (
+    LOCALIZED_STATIC_IDS.has(audioId) &&
+    (shortLocale === "en" || shortLocale === "ar")
+  ) {
     sources.push(staticSource(`/audio/${audioId}.${shortLocale}.mp3`));
   }
 
-  if (isQuestionStaticAudioId(audioId) && shortLocale !== "ar") {
+  if (isQuestionStaticAudioId(audioId) && shortLocale === "en") {
     for (const extension of STATIC_EXTENSIONS) {
       sources.push(staticSource(`/audio/${audioId}.${extension}`));
     }
   }
 
-  if (!LOCALIZED_STATIC_IDS.has(audioId) && !isQuestionStaticAudioId(audioId)) {
+  if (
+    shortLocale === "en" &&
+    !LOCALIZED_STATIC_IDS.has(audioId) &&
+    !isQuestionStaticAudioId(audioId)
+  ) {
     for (const extension of STATIC_EXTENSIONS) {
       sources.push(staticSource(`/audio/${audioId}.${extension}`));
     }

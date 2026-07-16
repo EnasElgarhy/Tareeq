@@ -100,7 +100,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: writeError.message }, { status: 500 });
   }
 
-  const origin = new URL(request.url).origin;
+  // Behind the reverse proxy, request.url's host is the container's internal
+  // bind (e.g. 0.0.0.0:3000); use the proxy's forwarded host/proto so the
+  // shared link points at the real public domain.
+  const fwdHost =
+    request.headers.get("x-forwarded-host") ?? request.headers.get("host");
+  const fwdProto = request.headers.get("x-forwarded-proto") ?? "https";
+  const origin = fwdHost
+    ? `${fwdProto}://${fwdHost}`
+    : new URL(request.url).origin;
   return NextResponse.json({
     shareToken,
     url: `${origin}/share/${shareToken}`,

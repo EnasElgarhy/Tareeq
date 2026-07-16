@@ -55,6 +55,8 @@ export function AssessmentChrome({
   // needs more reading width than the 640px form-screen bucket without
   // going as wide as the hero/question layouts.
   const isResults = pathname === "/results";
+  // Registration uses the same wider desktop canvas for its Kai/form split.
+  const isRegistration = pathname === "/register";
   // The Kai conversation is a deliberate light "you've landed" surface —
   // the rest of the flow (assessment + Results) stays on the dark night
   // theme. (/profile used to be a second light surface here; it now
@@ -120,7 +122,9 @@ export function AssessmentChrome({
               ? "lg:max-w-[1040px]"
               : isResults
                 ? "lg:max-w-[860px]"
-                : "lg:max-w-[640px]"
+                : isRegistration
+                  ? "lg:max-w-[960px]"
+                  : "lg:max-w-[640px]"
         } ${
           hasQuestion
             ? "gap-2 pb-3 pt-[max(env(safe-area-inset-top),0.625rem)]"
@@ -278,7 +282,6 @@ function QuestionCompassPanel({
     </section>
   );
 }
-
 
 /**
  * ProfileChip — a small avatar that appears in the chrome's right slot

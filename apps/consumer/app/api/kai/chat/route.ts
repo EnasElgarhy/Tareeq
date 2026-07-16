@@ -1,9 +1,15 @@
 import {
   buildContextPrompt,
   buildOpeningInstruction,
+  buildRecoverySchema,
   buildResponseSchema,
   buildSystemPrompt,
 } from "@/lib/kai/chat-prompt";
+import {
+  ARTIFACT_SIMPLIFY_HINT,
+  GENERIC_RECOVERY_HINT,
+  needsArtifact,
+} from "@/lib/kai/artifact/artifact-kinds";
 import { type BlockType, enforceRequiredBlocks } from "@/lib/kai/chat-enforcement";
 import { fallbackMessage, normalizeBlocks, normalizeIntent, validateChatRequest } from "@/lib/kai/chat-server";
 import type { KaiChatContext } from "@/lib/kai/chat-context";
@@ -11,6 +17,7 @@ import type { KaiMessage } from "@/lib/kai/chat-types";
 import type { KaiMessageIntent } from "@/lib/kai/intent";
 import { detectIntent } from "@/lib/kai/intent";
 import { buildMemoryCandidates } from "@/lib/kai/memory/memory-builder";
+import { detectDegenerateOutput } from "@/lib/kai/repetition";
 
 export const runtime = "nodejs";
 
@@ -27,9 +34,15 @@ type ParsedGeminiResponse = {
   personSummary?: unknown;
 };
 
+type GeminiFailureReason =
+  | "network_error"
+  | "gemini_error"
+  | "unparseable_response"
+  | "provider_repetition_loop";
+
 type GeminiAttempt =
   | { ok: true; parsed: ParsedGeminiResponse }
-  | { ok: false; reason: "network_error" | "gemini_error" | "unparseable_response" };
+  | { ok: false; reason: GeminiFailureReason };
 
 /**
  * One full request/parse attempt. Occasionally (observed reliably on
@@ -48,6 +61,9 @@ async function callGeminiOnce(
   context: KaiChatContext,
   prompt: string,
   intentHint: KaiMessageIntent | undefined,
+  // Phase 2C: the simplified single-block recovery schema overrides the
+  // normal per-intent schema when a repetition loop needs recovering.
+  schemaOverride?: object,
 ): Promise<GeminiAttempt> {
   let geminiResponse: Response;
   try {
@@ -89,7 +105,7 @@ async function callGeminiOnce(
           // one object measurably raised the odds of the repetition-loop
           // failure above, on top of costing more prompt tokens on every
           // single request regardless of what this turn actually needed.
-          responseSchema: buildResponseSchema(intentHint),
+          responseSchema: schemaOverride ?? buildResponseSchema(intentHint),
         },
       }),
     });
@@ -107,6 +123,24 @@ async function callGeminiOnce(
     candidates?: Array<{ content?: { parts?: Array<{ text?: string }> }; finishReason?: string }>;
   };
   const raw = payload.candidates?.[0]?.content?.parts?.[0]?.text;
+  const finishReason = payload.candidates?.[0]?.finishReason;
+
+  // Classify degenerate output (repetition loop / MAX_TOKENS saturation)
+  // BEFORE parsing. A truncated loop yields invalid JSON, and an identical
+  // retry re-hits the same trajectory (Phase 1 audit), so surface it as its
+  // own reason instead of a generic parse failure the caller would retry.
+  const degenerate = detectDegenerateOutput(raw, finishReason);
+  if (degenerate.degenerate) {
+    console.warn(
+      "[kai/chat] degenerate output:",
+      degenerate.reason,
+      "finishReason:",
+      finishReason,
+      "rawLen:",
+      raw?.length ?? 0,
+    );
+    return { ok: false, reason: "provider_repetition_loop" };
+  }
 
   let parsed: ParsedGeminiResponse;
   try {
@@ -168,8 +202,40 @@ export async function POST(request: Request) {
   const prompt = `${buildContextPrompt(context, intentHint)}\n\n${instruction}`;
 
   let attempt = await callGeminiOnce(apiKey, model, context, prompt, intentHint);
-  if (!attempt.ok) {
+  // Retry once ONLY for transient failures. A repetition-loop / MAX_TOKENS
+  // failure recurs on an identical retry (measured, Phase 1 audit) and just
+  // doubles latency toward the client timeout, so an IDENTICAL retry is
+  // pointless — handle that failure with the simplified-schema recovery below.
+  if (!attempt.ok && attempt.reason !== "provider_repetition_loop") {
     attempt = await callGeminiOnce(apiKey, model, context, prompt, intentHint);
+  }
+
+  // Phase 2C recovery: any repetition loop (finishReason MAX_TOKENS under
+  // constrained JSON decoding) gets ONE text-only recovery attempt. The
+  // recovery schema drops the `blocks` array entirely (nothing structured to
+  // loop on), so the model writes a short plain-text answer that completes
+  // reliably — a real answer instead of the generic "I'm having trouble"
+  // fallback. Heavy artifact intents get a kind-specific hint (put the plan/
+  // script/comparison inline as text); everything else gets a generic one.
+  // The loop is stochastic and hits light intents too (measured), so this is
+  // NOT gated on needsArtifact — every repetition loop is worth one recovery.
+  let recoveredViaSimplified = false;
+  if (!attempt.ok && attempt.reason === "provider_repetition_loop") {
+    const artifact = intentHint ? needsArtifact(intentHint) : null;
+    const hint = artifact ? ARTIFACT_SIMPLIFY_HINT[artifact.kind] : GENERIC_RECOVERY_HINT;
+    const recovered = await callGeminiOnce(
+      apiKey,
+      model,
+      context,
+      `${prompt}\n\n${hint}`,
+      intentHint,
+      buildRecoverySchema(),
+    );
+    if (recovered.ok) {
+      console.warn("[kai/chat] recovered via text-only schema", artifact ? artifact.kind : "generic");
+      attempt = recovered;
+      recoveredViaSimplified = true;
+    }
   }
   if (!attempt.ok) {
     return Response.json({
@@ -188,23 +254,35 @@ export async function POST(request: Request) {
   // what's missing, then fall back to honest deterministic content.
   // Keeps whichever attempt's quickReplies/summary/memoryUpdates
   // actually produced the blocks we ended up using.
-  const enforcement = await enforceRequiredBlocks<ParsedGeminiResponse>(
-    { text: (attempt.parsed.text as string).trim(), blocks: normalizeBlocks(attempt.parsed.blocks), intent: resolvedIntent },
-    context,
-    async (stillMissing: BlockType[]) => {
-      const stricterInstruction = `${instruction}\n\nYour previous reply for this turn was missing a required ${stillMissing.join(" and ")} block — it answered in plain prose instead. Write it again, and this time you MUST include ${stillMissing.length === 1 ? "that block" : "those blocks"}. Do not explain the plan/answer in "text" — put the substance in the block(s).`;
-      const stricterPrompt = `${buildContextPrompt(context, intentHint)}\n\n${stricterInstruction}`;
-      const retryAttempt = await callGeminiOnce(apiKey, model, context, stricterPrompt, intentHint);
-      if (!retryAttempt.ok) return null;
+  //
+  // SKIP enforcement when we recovered via the simplified schema: the
+  // recovery deliberately downgraded the artifact (e.g. action_plan →
+  // flat bullet_list) to escape the repetition loop, so re-demanding the
+  // heavy required block here would issue a full-schema stricter retry
+  // that just re-enters the same loop. The simplified block IS the answer.
+  const enforcement = recoveredViaSimplified
+    ? {
+        text: (attempt.parsed.text as string).trim(),
+        blocks: normalizeBlocks(attempt.parsed.blocks),
+        retryRaw: null as ParsedGeminiResponse | null,
+      }
+    : await enforceRequiredBlocks<ParsedGeminiResponse>(
+        { text: (attempt.parsed.text as string).trim(), blocks: normalizeBlocks(attempt.parsed.blocks), intent: resolvedIntent },
+        context,
+        async (stillMissing: BlockType[]) => {
+          const stricterInstruction = `${instruction}\n\nYour previous reply for this turn was missing a required ${stillMissing.join(" and ")} block — it answered in plain prose instead. Write it again, and this time you MUST include ${stillMissing.length === 1 ? "that block" : "those blocks"}. Do not explain the plan/answer in "text" — put the substance in the block(s).`;
+          const stricterPrompt = `${buildContextPrompt(context, intentHint)}\n\n${stricterInstruction}`;
+          const retryAttempt = await callGeminiOnce(apiKey, model, context, stricterPrompt, intentHint);
+          if (!retryAttempt.ok) return null;
 
-      return {
-        text: (retryAttempt.parsed.text as string).trim(),
-        blocks: normalizeBlocks(retryAttempt.parsed.blocks),
-        intent: normalizeIntent(retryAttempt.parsed.intent, resolvedIntent),
-        raw: retryAttempt.parsed,
-      };
-    },
-  );
+          return {
+            text: (retryAttempt.parsed.text as string).trim(),
+            blocks: normalizeBlocks(retryAttempt.parsed.blocks),
+            intent: normalizeIntent(retryAttempt.parsed.intent, resolvedIntent),
+            raw: retryAttempt.parsed,
+          };
+        },
+      );
 
   const finalParsed = enforcement.retryRaw ?? attempt.parsed;
   const finalIntent = enforcement.retryRaw ? normalizeIntent(enforcement.retryRaw.intent, resolvedIntent) : resolvedIntent;

@@ -1,30 +1,60 @@
 import { useEffect } from "react";
+import { AnswerBullets, AnswerSection } from "@/components/kai/chat/AnswerSection";
 import { ActionPlanCard } from "@/components/kai/chat/ActionPlanCard";
-import { BulletListCard } from "@/components/kai/chat/BulletListCard";
-import { CareerCard } from "@/components/kai/chat/CareerCard";
-import { ChecklistCard } from "@/components/kai/chat/ChecklistCard";
-import { ComparisonCard } from "@/components/kai/chat/ComparisonCard";
 import { ComparisonTableCard } from "@/components/kai/chat/ComparisonTableCard";
 import { DecisionMatrixCard } from "@/components/kai/chat/DecisionMatrixCard";
-import { FamilyScriptCard } from "@/components/kai/chat/FamilyScriptCard";
 import { GoalCard } from "@/components/kai/chat/GoalCard";
-import { InsightBlockCard } from "@/components/kai/chat/InsightBlockCard";
 import { JourneyCard } from "@/components/kai/chat/JourneyCard";
 import { LearningResourcesCard } from "@/components/kai/chat/LearningResourcesCard";
 import { MemoryCard } from "@/components/kai/chat/MemoryCard";
 import { MilestoneCard } from "@/components/kai/chat/MilestoneCard";
-import { ObjectionResponseCard } from "@/components/kai/chat/ObjectionResponseCard";
 import { RecommendationHistoryCard } from "@/components/kai/chat/RecommendationHistoryCard";
-import { ReflectionQuestionCard } from "@/components/kai/chat/ReflectionQuestionCard";
 import { ResumeConversationCard } from "@/components/kai/chat/ResumeConversationCard";
-import { TalkingPointsCard } from "@/components/kai/chat/TalkingPointsCard";
-import { UniversityCard } from "@/components/kai/chat/UniversityCard";
 import { trackEvent } from "@/lib/analytics/track";
 import type { KaiMessageBlock } from "@/lib/kai/chat-types";
 import type { KaiMemoryProfile } from "@/lib/kai/memory/memory-types";
 import type { NextMilestone } from "@/lib/profile/activity";
 import type { ProfileSnapshot } from "@/lib/profile/journey";
 
+const ink = "text-[color:var(--day-ink,#2a2118)]";
+const ink2 = "text-[color:var(--day-ink-2,#5c5142)]";
+
+/** A career/university recommendation as a flat, tappable row — no card. */
+function RecoRow({
+  title,
+  description,
+  onOpen,
+}: {
+  title: string;
+  description: string;
+  onOpen?: () => void;
+}) {
+  const inner = (
+    <>
+      <span aria-hidden className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--day-accent,#6e48e4)]" />
+      <span className="min-w-0">
+        <span className={`block text-[13.5px] font-bold ${ink}`}>{title}</span>
+        {description ? <span className={`block text-[12.5px] leading-relaxed ${ink2}`}>{description}</span> : null}
+      </span>
+    </>
+  );
+  return onOpen ? (
+    <button type="button" onClick={onOpen} className="-mx-2 flex w-full items-start gap-2.5 rounded-lg px-2 py-1 text-start transition hover:bg-[color:var(--day-inset,#efe7da)]">
+      {inner}
+    </button>
+  ) : (
+    <span className="flex items-start gap-2.5 px-0 py-1">{inner}</span>
+  );
+}
+
+/**
+ * Renders one Kai answer's blocks as a single flowing surface — typographic
+ * sections separated by whitespace, not a stack of bordered cards (see the
+ * chat redesign brief). Simple content (insight/bullets/points/script/
+ * comparison/recommendations) renders inline as flat sections; only the
+ * genuinely interactive or structural blocks (action plan, resources, journey,
+ * matrices, system cards) keep a dedicated component.
+ */
 export function KaiMessageBlocks({
   blocks,
   modules,
@@ -42,59 +72,84 @@ export function KaiMessageBlocks({
   onResumeContinue?: () => void;
   onPlanSaved?: () => void;
 }) {
-  // Fired once per rendered block, keyed by type — one central place
-  // rather than duplicating a trackEvent call inside every card. `blocks`
-  // is a stable reference per message (see chat-storage.ts's immutable
-  // append pattern), so this only re-fires when the message's own
-  // blocks actually change, not on unrelated parent re-renders.
   useEffect(() => {
-    for (const block of blocks) {
-      trackEvent("kai_block_rendered", { type: block.type });
-    }
+    for (const block of blocks) trackEvent("kai_block_rendered", { type: block.type });
   }, [blocks]);
 
   return (
-    <div className="grid gap-2">
+    <div className="space-y-5">
       {blocks.map((block, index) => {
         switch (block.type) {
-          case "career_card":
+          case "insight_block":
             return (
-              <CareerCard
-                key={index}
-                title={block.title}
-                description={block.description}
-                onOpen={onRecommendationOpen ? () => onRecommendationOpen(block.title) : undefined}
-              />
+              <AnswerSection key={index} title={block.title}>
+                <p className={`text-[13.5px] leading-relaxed ${ink2}`}>{block.body}</p>
+              </AnswerSection>
             );
-          case "university_card":
+          case "bullet_list":
+          case "checklist":
             return (
-              <UniversityCard
-                key={index}
-                title={block.title}
-                description={block.description}
-                onOpen={onRecommendationOpen ? () => onRecommendationOpen(block.title) : undefined}
-              />
+              <AnswerSection key={index} title={block.title}>
+                <AnswerBullets items={block.items} />
+              </AnswerSection>
             );
-          case "action_plan":
+          case "talking_points":
             return (
-              <ActionPlanCard
-                key={index}
-                title={block.title}
-                durationLabel={block.durationLabel}
-                tasks={block.tasks}
-                onPlanSaved={onPlanSaved}
-              />
+              <AnswerSection key={index} title={block.title}>
+                <AnswerBullets items={block.points} />
+              </AnswerSection>
+            );
+          case "family_script":
+            return (
+              <AnswerSection key={index} title={block.title}>
+                <div className="grid gap-2">
+                  {block.script.map((line, i) => (
+                    <p key={i} className={`border-l-2 border-[color:var(--day-accent,#6e48e4)]/30 ps-3 text-[13.5px] italic leading-relaxed ${ink2}`}>
+                      “{line}”
+                    </p>
+                  ))}
+                </div>
+              </AnswerSection>
+            );
+          case "reflection_question":
+            return (
+              <p key={index} className={`border-l-2 border-[color:var(--day-accent,#6e48e4)]/40 ps-3 text-[14px] font-semibold italic leading-relaxed ${ink}`}>
+                {block.question}
+              </p>
             );
           case "comparison":
             return (
-              <ComparisonCard
-                key={index}
-                leftLabel={block.leftLabel}
-                leftPoints={block.leftPoints}
-                rightLabel={block.rightLabel}
-                rightPoints={block.rightPoints}
-              />
+              <AnswerSection key={index}>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {[
+                    { label: block.leftLabel, points: block.leftPoints },
+                    { label: block.rightLabel, points: block.rightPoints },
+                  ].map((side, i) => (
+                    <div key={i}>
+                      <p className={`mb-1.5 text-[12px] font-bold uppercase tracking-[0.06em] text-[color:var(--day-ink-3,#675d4e)]`}>{side.label}</p>
+                      <AnswerBullets items={side.points} />
+                    </div>
+                  ))}
+                </div>
+              </AnswerSection>
             );
+          case "career_card":
+          case "university_card":
+            return (
+              <AnswerSection key={index} title={block.type === "career_card" ? "Career example" : "Where to study"}>
+                <RecoRow
+                  title={block.title}
+                  description={block.description}
+                  onOpen={onRecommendationOpen ? () => onRecommendationOpen(block.title) : undefined}
+                />
+              </AnswerSection>
+            );
+
+          // Interactive / structural blocks keep a dedicated component.
+          case "action_plan":
+            return <ActionPlanCard key={index} title={block.title} durationLabel={block.durationLabel} tasks={block.tasks} onPlanSaved={onPlanSaved} />;
+          case "learning_resources":
+            return <LearningResourcesCard key={index} title={block.title} resources={block.resources} />;
           case "journey":
             return <JourneyCard key={index} title={block.title} modules={modules} />;
           case "memory_card":
@@ -102,46 +157,15 @@ export function KaiMessageBlocks({
           case "recommendation_history":
             return <RecommendationHistoryCard key={index} title={block.title} memory={memory} />;
           case "resume_conversation":
-            return (
-              <ResumeConversationCard
-                key={index}
-                title={block.title}
-                description={block.description}
-                onContinue={() => onResumeContinue?.()}
-              />
-            );
+            return <ResumeConversationCard key={index} title={block.title} description={block.description} onContinue={() => onResumeContinue?.()} />;
           case "goal_card":
             return <GoalCard key={index} title={block.title} description={block.description} />;
           case "milestone_card":
             return <MilestoneCard key={index} title={block.title} milestone={nextMilestone} />;
-          case "learning_resources":
-            return <LearningResourcesCard key={index} title={block.title} resources={block.resources} />;
-          case "insight_block":
-            return <InsightBlockCard key={index} title={block.title} body={block.body} />;
-          case "bullet_list":
-            return <BulletListCard key={index} title={block.title} items={block.items} />;
-          case "checklist":
-            return <ChecklistCard key={index} title={block.title} items={block.items} />;
-          case "talking_points":
-            return <TalkingPointsCard key={index} title={block.title} points={block.points} />;
-          case "family_script":
-            return <FamilyScriptCard key={index} title={block.title} script={block.script} />;
-          case "objection_response_list":
-            return <ObjectionResponseCard key={index} title={block.title} items={block.items} />;
-          case "reflection_question":
-            return <ReflectionQuestionCard key={index} question={block.question} />;
           case "comparison_table":
             return <ComparisonTableCard key={index} title={block.title} columns={block.columns} rows={block.rows} />;
           case "decision_matrix":
-            return (
-              <DecisionMatrixCard
-                key={index}
-                title={block.title}
-                options={block.options}
-                rows={block.rows}
-                recommendation={block.recommendation}
-              />
-            );
+            return <DecisionMatrixCard key={index} title={block.title} options={block.options} rows={block.rows} recommendation={block.recommendation} />;
           default:
             return null;
         }

@@ -12,5 +12,7 @@ type PlanDetailPageProps = {
 
 export default async function KaiPlanDetailPage({ params }: PlanDetailPageProps) {
   const { id } = await params;
-  return <PlanDetailScreen planId={id} />;
+  // Decode so any URL-encoded characters in an older plan id (e.g. colons
+  // from a legacy ISO-timestamp id) match the stored id on lookup.
+  return <PlanDetailScreen planId={decodeURIComponent(id)} />;
 }

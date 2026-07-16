@@ -13,8 +13,9 @@ import { isLocale, type Locale } from "@/lib/i18n/locale";
 
 export const runtime = "nodejs";
 
-const ANTHROPIC_MESSAGES_ENDPOINT = "https://api.anthropic.com/v1/messages";
-const DEFAULT_MODEL = "claude-sonnet-4-20250514";
+const GEMINI_ENDPOINT_BASE =
+  "https://generativelanguage.googleapis.com/v1beta/models";
+const DEFAULT_MODEL = "gemini-2.5-flash";
 
 type GenerateResultBody = {
   name?: string;
@@ -75,12 +76,12 @@ export async function POST(request: Request) {
   const fallback = buildFallbackReport({
     result,
     name: body.name,
-    fallbackReason: "Claude generation was not available.",
+    fallbackReason: "Gemini generation was not available.",
     locale,
   });
 
-  const apiKey = process.env.ANTHROPIC_API_KEY || process.env.CLAUDE_API_KEY;
-  const model = process.env.ANTHROPIC_MODEL || DEFAULT_MODEL;
+  const apiKey = process.env.GEMINI_API_KEY;
+  const model = process.env.GEMINI_MODEL || DEFAULT_MODEL;
 
   if (!apiKey) {
     trackEvent("results_generated", { source: "fallback", reason: "missing_api_key" });
@@ -88,7 +89,7 @@ export async function POST(request: Request) {
       report: {
         ...fallback,
         model,
-        fallbackReason: "ANTHROPIC_API_KEY is not configured.",
+        fallbackReason: "GEMINI_API_KEY is not configured.",
       } satisfies PersonalizedCompassReport,
     });
   }
@@ -96,7 +97,7 @@ export async function POST(request: Request) {
   const ecosystemFit = getEcosystemFit(result);
   const multiCuriousCodes = getMultiCuriousClusters(result);
   const answerDigest = createAnswerDigest(body.answers, assessmentQuestions);
-  // Cluster context sent to Claude stays in English regardless of the
+  // Cluster context sent to Gemini stays in English regardless of the
   // target output language — it's reasoning input, not user-facing text;
   // the system prompt below separately instructs the output language.
   const topCluster = getClusterProfile(result.topCluster, "en");
@@ -104,7 +105,7 @@ export async function POST(request: Request) {
   const promptPayload = {
     learner: {
       name: body.name || "the learner",
-      // Do not send email to Claude. The app collects it for account/contact
+      // Do not send email to Gemini. The app collects it for account/contact
       // continuity; generation only needs the learner's first-person context.
     },
     outputLanguage: locale === "ar" ? "Arabic" : "English",
@@ -150,29 +151,43 @@ export async function POST(request: Request) {
 
   trackEvent("ai_generation_started", { kind: "results_narrative", model });
 
-  const response = await fetch(ANTHROPIC_MESSAGES_ENDPOINT, {
-    method: "POST",
-    headers: {
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({
-      model,
-      max_tokens: 2200,
-      temperature: 0.35,
-      system:
-        `You generate CORE Assessment career guidance for Tareeq. Follow these rules exactly: provide guidance, not personality labels; never present the top cluster as a fixed destiny, diagnosis, or prescription; use language like 'your answers point to high curiosity for...' or 'your curiosity compass is pointing toward...'; write in Kai's voice; use direct second-person language; avoid hedge words, corporate speak, and inspirational cliches. Reveal information in this order: career families or job directions first, then university types/majors, then high-school subject choices. Include all guidance as exploration, not a single path. Include concrete school subjects, university majors, career families/job titles, less obvious paths, a reality check, and next steps. In the reality check, recommend watching YouTube searches such as 'day in the life of [role]' before choosing. Use regional school wording such as A-Levels, Tawjihi, Mathematics, Physics, Chemistry. Keep total narrative tight and useful for a 17-year-old in the Middle East. Write every field in the requested JSON shape — including every item in the school-subject, university-major, career, and less-obvious-path arrays — entirely in ${promptPayload.outputLanguage}${locale === "ar" ? ", using natural Modern Standard Arabic career and academic terminology (school-subject and regional-exam names like Tawjihi or A-Levels may stay as commonly written)" : ""}. Return only valid JSON with the requested shape.`,
-      messages: [
-        {
-          role: "user",
-          content: `Create a personalized CORE Assessment result from this JSON. Use the deterministic score as truth and use the answer digest only to add nuance. Do not describe the learner as a fixed personality type. Return only JSON.\n\n${JSON.stringify(
-            promptPayload,
-          )}`,
+  const systemPrompt = `You generate CORE Assessment career guidance for Tareeq. Follow these rules exactly: provide guidance, not personality labels; never present the top cluster as a fixed destiny, diagnosis, or prescription; use language like 'your answers point to high curiosity for...' or 'your curiosity compass is pointing toward...'; write in Kai's voice; use direct second-person language; avoid hedge words, corporate speak, and inspirational cliches. Reveal information in this order: career families or job directions first, then university types/majors, then high-school subject choices. Include all guidance as exploration, not a single path. Include concrete school subjects, university majors, career families/job titles, less obvious paths, a reality check, and next steps. In the reality check, recommend watching YouTube searches such as 'day in the life of [role]' before choosing. Use regional school wording such as A-Levels, Tawjihi, Mathematics, Physics, Chemistry. Keep total narrative tight and useful for a 17-year-old in the Middle East. Write every field in the requested JSON shape — including every item in the school-subject, university-major, career, and less-obvious-path arrays — entirely in ${promptPayload.outputLanguage}${locale === "ar" ? ", using natural Modern Standard Arabic career and academic terminology (school-subject and regional-exam names like Tawjihi or A-Levels may stay as commonly written)" : ""}. Return only valid JSON with the requested shape.`;
+
+  const response = await fetch(
+    `${GEMINI_ENDPOINT_BASE}/${model}:generateContent?key=${apiKey}`,
+    {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      // The score is deterministic; this call only writes the narrative, so a
+      // slow/failed generation must fall back cleanly rather than hang.
+      signal: AbortSignal.timeout(25_000),
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: systemPrompt }] },
+        contents: [
+          {
+            role: "user",
+            parts: [
+              {
+                text: `Create a personalized CORE Assessment result from this JSON. Use the deterministic score as truth and use the answer digest only to add nuance. Do not describe the learner as a fixed personality type. Return only JSON.\n\n${JSON.stringify(
+                  promptPayload,
+                )}`,
+              },
+            ],
+          },
+        ],
+        generationConfig: {
+          temperature: 0.35,
+          // 2.5-Flash counts "thinking" tokens against the output budget; with
+          // thinking left on it can burn the whole budget before emitting any
+          // JSON. Disable it (same as the Kai chat route) so the full report
+          // JSON always lands.
+          maxOutputTokens: 4096,
+          thinkingConfig: { thinkingBudget: 0 },
+          responseMimeType: "application/json",
         },
-      ],
-    }),
-  });
+      }),
+    },
+  );
 
   if (!response.ok) {
     trackEvent("ai_generation_failed", {
@@ -180,21 +195,19 @@ export async function POST(request: Request) {
       model,
       status: response.status,
     });
-    trackEvent("results_generated", { source: "fallback", reason: "claude_error" });
+    trackEvent("results_generated", { source: "fallback", reason: "gemini_error" });
     return Response.json({
       report: {
         ...fallback,
         model,
-        fallbackReason: `Claude API returned ${response.status}.`,
+        fallbackReason: `Gemini API returned ${response.status}.`,
       } satisfies PersonalizedCompassReport,
     });
   }
 
   try {
     const data = await response.json();
-    const text = data?.content?.find?.(
-      (entry: { type?: string }) => entry.type === "text",
-    )?.text;
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (typeof text !== "string") throw new Error("Missing text content.");
 
@@ -205,7 +218,7 @@ export async function POST(request: Request) {
     const report: PersonalizedCompassReport = {
       ...fallback,
       generatedAt: new Date().toISOString(),
-      source: "claude",
+      source: "gemini",
       model,
       fallbackReason: undefined,
       headline: normalizeString(generated.headline, fallback.headline),
@@ -243,7 +256,7 @@ export async function POST(request: Request) {
     };
 
     trackEvent("ai_generation_completed", { kind: "results_narrative", model });
-    trackEvent("results_generated", { source: "claude" });
+    trackEvent("results_generated", { source: "gemini" });
     return Response.json({ report });
   } catch {
     trackEvent("ai_generation_failed", {
@@ -256,7 +269,7 @@ export async function POST(request: Request) {
       report: {
         ...fallback,
         model,
-        fallbackReason: "Claude response could not be parsed.",
+        fallbackReason: "Gemini response could not be parsed.",
       } satisfies PersonalizedCompassReport,
     });
   }

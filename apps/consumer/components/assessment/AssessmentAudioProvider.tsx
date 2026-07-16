@@ -341,11 +341,20 @@ export function AssessmentAudioProvider({ children }: { children: ReactNode }) {
     (options: PlayNarrationOptions) => {
       const request = makeRequest(options);
       const current = stateRef.current;
+      const previousRequest = currentRequestRef.current;
       currentRequestRef.current = request;
+
+      const hasSameSources =
+        previousRequest?.sources.length === request.sources.length &&
+        previousRequest.sources.every(
+          (source, index) => source.src === request.sources[index]?.src,
+        );
 
       if (
         current.activeOwnerId === request.ownerId &&
         current.currentAudioId === request.audioId &&
+        previousRequest?.locale === request.locale &&
+        hasSameSources &&
         (current.isPlaying || current.isPreparing)
       ) {
         if (audioRef.current) {

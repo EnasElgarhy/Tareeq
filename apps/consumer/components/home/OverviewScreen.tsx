@@ -245,6 +245,17 @@ export function OverviewScreen() {
         />
       ) : null}
 
+      {/* The personal guide sits right below the hero + next step — the
+          user's proactive "what to do next", above the progress/achievements
+          spine. */}
+      {askKaiCard ? (
+        <FeedCardView
+          card={askKaiCard}
+          clusterColor={APP_ACCENT}
+          clusterInk={APP_ACCENT}
+        />
+      ) : null}
+
       {topClusters.length > 0 ? (
         <FeedCarousel
           title={t("home.overview.clusters_title")}
@@ -300,14 +311,6 @@ export function OverviewScreen() {
       {insightCard ? (
         <FeedCardView
           card={insightCard}
-          clusterColor={APP_ACCENT}
-          clusterInk={APP_ACCENT}
-        />
-      ) : null}
-
-      {askKaiCard ? (
-        <FeedCardView
-          card={askKaiCard}
           clusterColor={APP_ACCENT}
           clusterInk={APP_ACCENT}
         />

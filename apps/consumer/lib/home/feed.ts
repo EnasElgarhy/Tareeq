@@ -98,6 +98,9 @@ export interface AskKaiCard {
    * own tappable bubbles below the lead prompt — each starts a real
    * chat with that exact text (lib/kai/starter-prompts.ts). */
   morePrompts: string[];
+  /** One short sentence, less weight than the actions — what Kai knows
+   * ("Your Compass points toward Law & Diplomacy."). Not a chat prompt. */
+  focusLine: string;
 }
 
 export type HomeFeedCard =
@@ -360,6 +363,10 @@ export function buildHomeFeed({
     prompt: leadPrompt,
     href: proactiveMoment?.href,
     morePrompts: starterPrompts.filter((p) => p !== leadPrompt),
+    focusLine: t("home.feed.ask_kai_focus").replace(
+      "{paths}",
+      getClusterLabel(report.clusterCode, t),
+    ),
   });
 
   // 7 · A second spotlight to reward scrolling

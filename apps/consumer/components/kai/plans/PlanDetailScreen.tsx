@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, ChevronLeft, Circle, CircleDot, Trash2 } from "lucide-react";
+import { CheckCircle2, ChevronLeft, Circle, CircleDot, ClipboardList, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -37,11 +37,18 @@ export function PlanDetailScreen({ planId }: { planId: string }) {
 
   if (plan === null) {
     return (
-      <section className="flex flex-1 flex-col items-center justify-center gap-3 px-2 text-center">
-        <p className="text-[14px] font-bold text-[color:var(--day-ink,#2a2118)]">{t("kai.plans.not_found")}</p>
-        <Link href="/kai/plans" className="btn-v2 btn-v2--primary" data-size="md">
-          {t("nav.back")}
-        </Link>
+      <section className="flex flex-1 flex-col items-center px-4 pt-14 lg:pt-20">
+        <div className="flex w-full max-w-[360px] flex-col items-center gap-4 rounded-[24px] border border-[color:var(--day-line)] bg-[color:var(--day-card)] px-6 py-10 text-center shadow-[var(--day-shadow-card)]">
+          <span className="grid size-14 place-items-center rounded-2xl bg-[color:var(--day-inset)] text-[color:var(--day-ink-3)]">
+            <ClipboardList size={26} />
+          </span>
+          <p className="text-[15px] font-black text-[color:var(--day-ink)]">
+            {t("kai.plans.not_found")}
+          </p>
+          <Link href="/kai/plans" className="btn-v2 btn-v2--primary" data-size="md">
+            {t("nav.back")}
+          </Link>
+        </div>
       </section>
     );
   }
