@@ -1,4 +1,5 @@
 import {
+  buildComparisonRecoverySchema,
   buildContextPrompt,
   buildFactualSystemPrompt,
   buildOpeningInstruction,
@@ -24,6 +25,7 @@ import {
 import {
   fallbackMessage,
   normalizeBlocks,
+  normalizeComparisonRecoveryBlock,
   normalizeIntent,
   normalizeQuickReplies,
   validateChatRequest,
@@ -58,6 +60,12 @@ type ParsedGeminiResponse = {
   summary?: unknown;
   memoryUpdates?: unknown;
   personSummary?: unknown;
+  leftLabel?: unknown;
+  leftPoint1?: unknown;
+  leftPoint2?: unknown;
+  rightLabel?: unknown;
+  rightPoint1?: unknown;
+  rightPoint2?: unknown;
 };
 
 type GeminiFailureReason =
@@ -421,12 +429,10 @@ export async function POST(request: Request) {
         }
 
         // Phase 2C recovery: any repetition loop (finishReason MAX_TOKENS under
-        // constrained JSON decoding) gets ONE text-only recovery attempt. The
-        // recovery schema drops the `blocks` array entirely (nothing structured to
-        // loop on), so the model writes a short plain-text answer that completes
-        // reliably — a real answer instead of the generic "I'm having trouble"
-        // fallback. Heavy artifact intents get a kind-specific hint (put the plan/
-        // script/comparison inline as text); everything else gets a generic one.
+        // constrained JSON decoding) gets ONE simplified recovery attempt. Plans
+        // and scripts become text-only. Comparisons use flat string fields that
+        // the server promotes into a comparison card, avoiding the nested arrays
+        // that trigger the loop while preserving the required artifact.
         // The loop is stochastic and hits light intents too (measured), so this is
         // NOT gated on needsArtifact — every repetition loop is worth one recovery.
         let recoveredViaSimplified = false;
@@ -442,17 +448,30 @@ export async function POST(request: Request) {
             context,
             `${prompt}\n\n${hint}`,
             intentHint,
-            buildRecoverySchema(intentHint),
+            artifact?.kind === "comparison"
+              ? buildComparisonRecoverySchema(intentHint)
+              : buildRecoverySchema(intentHint),
             emitText,
             remainingTimeout(),
           );
           if (recovered.ok) {
-            console.warn(
-              "[kai/chat] recovered via text-only schema",
-              artifact ? artifact.kind : "generic",
-            );
-            attempt = recovered;
-            recoveredViaSimplified = true;
+            const comparisonBlock =
+              artifact?.kind === "comparison"
+                ? normalizeComparisonRecoveryBlock(recovered.parsed)
+                : null;
+            if (artifact?.kind !== "comparison" || comparisonBlock) {
+              console.warn(
+                "[kai/chat] recovered via simplified schema",
+                artifact ? artifact.kind : "generic",
+              );
+              attempt = comparisonBlock
+                ? {
+                    ...recovered,
+                    parsed: { ...recovered.parsed, blocks: [comparisonBlock] },
+                  }
+                : recovered;
+              recoveredViaSimplified = true;
+            }
           }
         }
         if (!attempt.ok) {

@@ -467,6 +467,54 @@ export function buildRequiredBlocksSchema(
 }
 
 /**
+ * Comparison-only repetition recovery. Gemini can loop on nested block/table
+ * arrays, so this schema collects two labels and two points per side as flat
+ * strings. The server deterministically promotes them into a comparison block.
+ */
+export function buildComparisonRecoverySchema(
+  intent: KaiMessageIntent = "career_comparison",
+) {
+  return {
+    type: "OBJECT",
+    properties: {
+      text: {
+        type: "STRING",
+        description: "One short sentence introducing the comparison.",
+      },
+      intent: { type: "STRING", enum: [intent] },
+      leftLabel: { type: "STRING", description: "The first option's name." },
+      leftPoint1: {
+        type: "STRING",
+        description: "One concrete advantage or defining difference for the first option.",
+      },
+      leftPoint2: {
+        type: "STRING",
+        description: "A second concrete advantage or defining difference for the first option.",
+      },
+      rightLabel: { type: "STRING", description: "The second option's name." },
+      rightPoint1: {
+        type: "STRING",
+        description: "One concrete advantage or defining difference for the second option.",
+      },
+      rightPoint2: {
+        type: "STRING",
+        description: "A second concrete advantage or defining difference for the second option.",
+      },
+    },
+    required: [
+      "text",
+      "intent",
+      "leftLabel",
+      "leftPoint1",
+      "leftPoint2",
+      "rightLabel",
+      "rightPoint1",
+      "rightPoint2",
+    ],
+  };
+}
+
+/**
  * Text-only response schema for the Phase 2C recovery retry.
  *
  * Measured (docs/kai-audit): on the heavy artifact intents, gemini-2.5-flash

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  buildComparisonRecoverySchema,
   buildRecoverySchema,
   buildRequiredBlocksSchema,
   buildResponseSchema,
@@ -94,5 +95,23 @@ describe("buildRecoverySchema (Phase 2C text-only recovery)", () => {
     expect(Object.keys(recovery.properties).length).toBeLessThan(
       Object.keys(full.properties).length,
     );
+  });
+});
+
+describe("buildComparisonRecoverySchema", () => {
+  it("uses required flat strings instead of blocks or arrays", () => {
+    const schema = buildComparisonRecoverySchema() as unknown as SchemaObject;
+    expect(Object.keys(schema.properties)).not.toContain("blocks");
+    expect(schema.required).toEqual([
+      "text",
+      "intent",
+      "leftLabel",
+      "leftPoint1",
+      "leftPoint2",
+      "rightLabel",
+      "rightPoint1",
+      "rightPoint2",
+    ]);
+    expect(schema.properties.intent.enum).toEqual(["career_comparison"]);
   });
 });

@@ -39,11 +39,12 @@ describe("needsArtifact", () => {
     }
   });
 
-  it("every artifact kind has a text-only recovery hint", () => {
+  it("every artifact kind steers recovery away from structured blocks", () => {
     for (const kind of ["action_plan", "family_script", "comparison"] as const) {
-      // Recovery is text-only — the hint must steer away from structured blocks.
-      expect(ARTIFACT_SIMPLIFY_HINT[kind]).toMatch(/plain text/i);
       expect(ARTIFACT_SIMPLIFY_HINT[kind]).toMatch(/do NOT use structured blocks/i);
     }
+    expect(ARTIFACT_SIMPLIFY_HINT.action_plan).toMatch(/plain text/i);
+    expect(ARTIFACT_SIMPLIFY_HINT.family_script).toMatch(/plain text/i);
+    expect(ARTIFACT_SIMPLIFY_HINT.comparison).toMatch(/do NOT use .*arrays/i);
   });
 });

@@ -43,9 +43,9 @@ export const GENERIC_RECOVERY_HINT =
   "IMPORTANT: answer entirely in plain text — do NOT use structured blocks. Keep your reply short and concise.";
 
 /**
- * Recovery instruction per kind. The recovery is TEXT-ONLY (see
- * buildRecoverySchema): structured blocks loop under constrained decoding for
- * these intents, so the model writes the whole short answer inline in `text`.
+ * Recovery instruction per kind. Action plans and family scripts recover as
+ * text-only output. Comparisons use a flat, non-array schema that the server
+ * promotes into a comparison card without asking Gemini for nested blocks.
  */
 export const ARTIFACT_SIMPLIFY_HINT: Record<ArtifactKind, string> = {
   action_plan:
@@ -53,7 +53,7 @@ export const ARTIFACT_SIMPLIFY_HINT: Record<ArtifactKind, string> = {
   family_script:
     "IMPORTANT: answer entirely in plain text — do NOT use structured blocks. Give a brief opener and at most 3 short lines they could say, written directly in your text reply.",
   comparison:
-    "IMPORTANT: answer entirely in plain text — do NOT use structured blocks. Give a SHORT comparison as a few concise bullet lines per option, written directly in your text reply.",
+    "IMPORTANT: do NOT use structured blocks or arrays. Fill every required left/right label and point field with a concise, concrete comparison in the learner's language.",
 };
 
 /** Returns the artifact descriptor for an intent, or null when the intent's

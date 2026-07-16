@@ -1,6 +1,7 @@
 import type { KaiChatContext } from "@/lib/kai/chat-context";
 import type {
   KaiActionTask,
+  KaiComparisonBlock,
   KaiComparisonTableBlock,
   KaiDecisionMatrixRow,
   KaiMessage,
@@ -453,6 +454,42 @@ export function normalizeBlocks(value: unknown): KaiMessageBlock[] | undefined {
   }
 
   return blocks.length > 0 ? blocks : undefined;
+}
+
+export function normalizeComparisonRecoveryBlock(
+  value: unknown,
+): KaiComparisonBlock | null {
+  if (typeof value !== "object" || value === null) return null;
+  const raw = value as Record<string, unknown>;
+  const fields = [
+    "leftLabel",
+    "leftPoint1",
+    "leftPoint2",
+    "rightLabel",
+    "rightPoint1",
+    "rightPoint2",
+  ] as const;
+  if (
+    fields.some(
+      (field) => typeof raw[field] !== "string" || !raw[field].trim(),
+    )
+  ) {
+    return null;
+  }
+
+  return {
+    type: "comparison",
+    leftLabel: (raw.leftLabel as string).trim(),
+    leftPoints: [
+      (raw.leftPoint1 as string).trim(),
+      (raw.leftPoint2 as string).trim(),
+    ],
+    rightLabel: (raw.rightLabel as string).trim(),
+    rightPoints: [
+      (raw.rightPoint1 as string).trim(),
+      (raw.rightPoint2 as string).trim(),
+    ],
+  };
 }
 
 const COMPARISON_QUICK_REPLIES = {

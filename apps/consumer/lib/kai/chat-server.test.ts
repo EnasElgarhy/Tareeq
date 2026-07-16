@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   normalizeBlocks,
+  normalizeComparisonRecoveryBlock,
   normalizeIntent,
   normalizeQuickReplies,
   validateChatRequest,
@@ -813,5 +814,35 @@ describe("normalizeQuickReplies", () => {
         "en",
       ),
     ).toEqual(["Next step", "Compare costs", "Third", "Fourth"]);
+  });
+});
+
+describe("normalizeComparisonRecoveryBlock", () => {
+  it("promotes flat recovery fields into a comparison block", () => {
+    expect(
+      normalizeComparisonRecoveryBlock({
+        leftLabel: "Spain",
+        leftPoint1: "EU legal exposure",
+        leftPoint2: "Spanish-language practice",
+        rightLabel: "Egypt",
+        rightPoint1: "Strong MENA network",
+        rightPoint2: "Arabic-language practice",
+      }),
+    ).toEqual({
+      type: "comparison",
+      leftLabel: "Spain",
+      leftPoints: ["EU legal exposure", "Spanish-language practice"],
+      rightLabel: "Egypt",
+      rightPoints: ["Strong MENA network", "Arabic-language practice"],
+    });
+  });
+
+  it("rejects an incomplete comparison recovery", () => {
+    expect(
+      normalizeComparisonRecoveryBlock({
+        leftLabel: "Spain",
+        rightLabel: "Egypt",
+      }),
+    ).toBeNull();
   });
 });
