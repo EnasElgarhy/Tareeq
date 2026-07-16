@@ -110,6 +110,19 @@ export interface KaiLearningResourcesBlock {
   resources: KaiLearningResource[];
 }
 
+export interface KaiSourceCitation {
+  title: string;
+  url: string;
+}
+
+/** Verified web references attached from Gemini grounding metadata on the
+ * server. The model cannot author this block or its URLs. */
+export interface KaiSourceListBlock {
+  type: "source_list";
+  title: string;
+  sources: KaiSourceCitation[];
+}
+
 /** The "Ground" step of the coaching framework — a short callout tying
  * the answer back to the learner's real cluster/archetype/driver/
  * ecosystem, distinct from the persistent KaiGroundingCard header
@@ -204,6 +217,7 @@ export type KaiMessageBlock =
   | KaiGoalCardBlock
   | KaiMilestoneCardBlock
   | KaiLearningResourcesBlock
+  | KaiSourceListBlock
   | KaiInsightBlock
   | KaiBulletListBlock
   | KaiChecklistBlock

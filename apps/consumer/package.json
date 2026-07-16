@@ -11,6 +11,7 @@
     "format": "prettier --check .",
     "test": "vitest run --passWithNoTests",
     "test:e2e": "playwright test",
+    "kai:quality": "tsx scripts/stress_test_kai_quality.ts",
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "seed": "tsx scripts/seed_db.ts",

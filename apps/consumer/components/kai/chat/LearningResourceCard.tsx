@@ -94,11 +94,13 @@ export function LearningResourceCard({
         {t(resource.type === "youtube_video" ? "kai.resource.search_youtube" : "kai.resource.search_web")}
       </a>
 
-      <div className="mt-2.5 flex items-center justify-between gap-2">
-        <span className="text-[10.5px] font-bold uppercase text-[color:var(--day-ink-3,#675d4e)]">
-          {resource.estimatedTime}
-        </span>
-        <div className="flex items-center gap-1.5">
+      <div className="mt-2.5 flex items-center gap-2">
+        {resource.estimatedTime ? (
+          <span className="text-[10.5px] font-bold uppercase text-[color:var(--day-ink-3,#675d4e)]">
+            {resource.estimatedTime}
+          </span>
+        ) : null}
+        <div className="ms-auto flex items-center gap-1.5">
           <button
             type="button"
             onClick={onToggleSave}

@@ -368,6 +368,46 @@ describe("normalizeBlocks (Gemini response → KaiMessageBlock[])", () => {
     ]);
   });
 
+  it("does not require an invented time estimate for a website resource", () => {
+    const result = normalizeBlocks([
+      {
+        type: "learning_resources",
+        title: "Official sources",
+        resources: [
+          {
+            type: "website",
+            title: "Study in Spain",
+            author_or_provider: "SEPIE",
+            reason: "Official guidance for international students.",
+            difficulty: "beginner",
+          },
+        ],
+      },
+    ]);
+    const resource =
+      result?.[0].type === "learning_resources"
+        ? result[0].resources[0]
+        : undefined;
+    expect(resource).toMatchObject({
+      type: "website",
+      title: "Study in Spain",
+      authorOrProvider: "SEPIE",
+    });
+    expect(resource).not.toHaveProperty("estimatedTime");
+  });
+
+  it("drops model-authored source lists because verified URLs are server-owned", () => {
+    expect(
+      normalizeBlocks([
+        {
+          type: "source_list",
+          title: "Sources",
+          sources: [{ title: "Invented source", url: "https://example.com" }],
+        },
+      ]),
+    ).toBeUndefined();
+  });
+
   it("drops the whole learning_resources block when the resources array is empty", () => {
     expect(
       normalizeBlocks([

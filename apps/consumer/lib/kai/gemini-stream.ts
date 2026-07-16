@@ -1,6 +1,35 @@
+export interface GeminiGroundingSource {
+  title: string;
+  url: string;
+}
+
 export interface GeminiStreamPayload {
   raw: string;
   finishReason?: string;
+  sources?: GeminiGroundingSource[];
+}
+
+interface GeminiCandidate {
+  content?: { parts?: Array<{ text?: string }> };
+  finishReason?: string;
+  groundingMetadata?: {
+    groundingChunks?: Array<{
+      web?: { uri?: string; title?: string };
+    }>;
+  };
+}
+
+function collectGroundingSources(
+  candidate: GeminiCandidate | undefined,
+  sourcesByUrl: Map<string, GeminiGroundingSource>,
+) {
+  for (const groundingChunk of candidate?.groundingMetadata?.groundingChunks ??
+    []) {
+    const url = groundingChunk.web?.uri?.trim();
+    if (!url || sourcesByUrl.has(url) || !/^https?:\/\//i.test(url)) continue;
+    const title = groundingChunk.web?.title?.trim() || new URL(url).hostname;
+    sourcesByUrl.set(url, { title, url });
+  }
 }
 
 export function normalizeAbortTimeoutMs(timeoutMs: number): number {
@@ -66,22 +95,19 @@ export async function readGeminiSse(
   let raw = "";
   let finishReason: string | undefined;
   let lastText = "";
+  const sourcesByUrl = new Map<string, GeminiGroundingSource>();
 
   const consumeLine = (line: string) => {
     if (!line.startsWith("data:")) return;
     const data = line.slice(5).trim();
     if (!data || data === "[DONE]") return;
     try {
-      const payload = JSON.parse(data) as {
-        candidates?: Array<{
-          content?: { parts?: Array<{ text?: string }> };
-          finishReason?: string;
-        }>;
-      };
+      const payload = JSON.parse(data) as { candidates?: GeminiCandidate[] };
       const candidate = payload.candidates?.[0];
       const chunk = candidate?.content?.parts?.[0]?.text;
       if (typeof chunk === "string") raw = mergeGeminiChunk(raw, chunk);
       if (candidate?.finishReason) finishReason = candidate.finishReason;
+      collectGroundingSources(candidate, sourcesByUrl);
       const text = extractPartialJsonString(raw, "text");
       if (text && text !== lastText) {
         lastText = text;
@@ -101,5 +127,35 @@ export async function readGeminiSse(
     if (done) break;
   }
   if (buffer) consumeLine(buffer);
-  return { raw, finishReason };
+  const sources = [...sourcesByUrl.values()].slice(0, 5);
+  return {
+    raw,
+    finishReason,
+    ...(sources.length > 0 ? { sources } : {}),
+  };
+}
+
+/** Grounded calls use generateContent rather than streamGenerateContent:
+ * Gemini currently includes groundingMetadata only on the non-streaming
+ * response. The answer still emits once as soon as that response arrives. */
+export async function readGeminiJson(
+  response: Response,
+  onText: (text: string) => void,
+): Promise<GeminiStreamPayload> {
+  const payload = (await response.json()) as {
+    candidates?: GeminiCandidate[];
+  };
+  const candidate = payload.candidates?.[0];
+  const raw =
+    candidate?.content?.parts?.map((part) => part.text ?? "").join("") ?? "";
+  const text = extractPartialJsonString(raw, "text");
+  if (text) onText(text);
+  const sourcesByUrl = new Map<string, GeminiGroundingSource>();
+  collectGroundingSources(candidate, sourcesByUrl);
+  const sources = [...sourcesByUrl.values()].slice(0, 5);
+  return {
+    raw,
+    finishReason: candidate?.finishReason,
+    ...(sources.length > 0 ? { sources } : {}),
+  };
 }

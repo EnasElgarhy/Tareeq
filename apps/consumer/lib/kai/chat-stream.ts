@@ -12,6 +12,9 @@ export interface KaiChatResult {
     modelMs: number;
     totalMs: number;
     attempts: number;
+    /** A provider repetition loop was recovered with the bounded text-only
+     * schema. The answer is usable but rich blocks may be absent. */
+    recoveredViaSimplified?: boolean;
   };
 }
 

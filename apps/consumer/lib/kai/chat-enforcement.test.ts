@@ -53,6 +53,39 @@ describe("repairRequiredBlocks", () => {
     expect(result.text).toBe("Here's how to start:");
   });
 
+  it("promotes an existing day-by-day bullet list instead of appending an unrelated fallback plan", () => {
+    const result = repairRequiredBlocks({
+      text: "Here are the steps for researching study costs in Spain.",
+      blocks: [
+        {
+          type: "bullet_list",
+          title: "Your 7-day research plan",
+          items: [
+            "Day 1-2: List three public universities with Law programs",
+            "Day 3-4: Document tuition fees for international students",
+            "Day 5-6: Research relevant scholarship portals",
+            "Day 7: Compare the total estimated annual costs",
+          ],
+        },
+      ],
+      intent: "action_plan",
+      locale: "en",
+    });
+
+    expect(result.stillMissing).toEqual([]);
+    expect(result.blocks).toHaveLength(1);
+    expect(result.blocks?.[0]).toMatchObject({
+      type: "action_plan",
+      title: "Your 7-day research plan",
+      tasks: [
+        { text: "List three public universities with Law programs" },
+        { text: "Document tuition fees for international students" },
+        { text: "Research relevant scholarship portals" },
+        { text: "Compare the total estimated annual costs" },
+      ],
+    });
+  });
+
   it("converts markdown bullets into a checklist block for family_conversation", () => {
     const result = repairRequiredBlocks({
       text: "Before you talk to them:\n- Pick a calm moment\n- Bring one example",

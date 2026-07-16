@@ -1,3 +1,4 @@
+import { ExternalLink } from "lucide-react";
 import { useEffect } from "react";
 import { AnswerBullets, AnswerSection } from "@/components/kai/chat/AnswerSection";
 import { ActionPlanCard } from "@/components/kai/chat/ActionPlanCard";
@@ -150,6 +151,25 @@ export function KaiMessageBlocks({
             return <ActionPlanCard key={index} title={block.title} durationLabel={block.durationLabel} tasks={block.tasks} onPlanSaved={onPlanSaved} />;
           case "learning_resources":
             return <LearningResourcesCard key={index} title={block.title} resources={block.resources} />;
+          case "source_list":
+            return (
+              <AnswerSection key={index} title={block.title}>
+                <div className="grid gap-2">
+                  {block.sources.map((source) => (
+                    <a
+                      key={source.url}
+                      href={source.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`flex min-w-0 items-center gap-2 text-[12.5px] font-semibold leading-snug underline decoration-[color:var(--day-line)] underline-offset-4 transition hover:text-[color:var(--day-accent,#6e48e4)] ${ink2}`}
+                    >
+                      <ExternalLink size={13} className="shrink-0" aria-hidden />
+                      <span className="truncate">{source.title}</span>
+                    </a>
+                  ))}
+                </div>
+              </AnswerSection>
+            );
           case "journey":
             return <JourneyCard key={index} title={block.title} modules={modules} />;
           case "memory_card":

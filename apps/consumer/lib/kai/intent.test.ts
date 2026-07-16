@@ -26,6 +26,24 @@ describe("detectIntent", () => {
     expect(detectIntent("أحتاج خطة دراسة للامتحانات")).toBe("study_plan");
   });
 
+  it("detects current factual questions before broader university guidance", () => {
+    expect(
+      detectIntent(
+        "How much does a public university in Spain cost for an international student?",
+      ),
+    ).toBe("fact_lookup");
+    expect(
+      detectIntent("What are the current student visa requirements for Spain?"),
+    ).toBe("fact_lookup");
+  });
+
+  it("detects factual questions in Arabic", () => {
+    expect(
+      detectIntent("كم تبلغ الرسوم الجامعية في إسبانيا للطلاب الدوليين؟"),
+    ).toBe("fact_lookup");
+    expect(detectIntent("ما آخر موعد للتقديم على المنح؟")).toBe("fact_lookup");
+  });
+
   it("detects action_plan in English", () => {
     expect(detectIntent("Build me a 7-day plan to get started")).toBe("action_plan");
   });
@@ -91,8 +109,9 @@ describe("detectIntent", () => {
     expect(detectIntent("")).toBe("general_question");
   });
 
-  it("exports all 11 intents in KAI_MESSAGE_INTENTS", () => {
-    expect(KAI_MESSAGE_INTENTS).toHaveLength(11);
+  it("exports all 12 intents in KAI_MESSAGE_INTENTS", () => {
+    expect(KAI_MESSAGE_INTENTS).toHaveLength(12);
+    expect(KAI_MESSAGE_INTENTS).toContain("fact_lookup");
     expect(KAI_MESSAGE_INTENTS).toContain("general_question");
   });
 });

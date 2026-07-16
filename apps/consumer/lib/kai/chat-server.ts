@@ -59,6 +59,7 @@ const BLOCK_TYPES = new Set([
   "goal_card",
   "milestone_card",
   "learning_resources",
+  "source_list",
   "insight_block",
   "bullet_list",
   "checklist",
@@ -111,11 +112,10 @@ function normalizeResource(value: unknown): KaiLearningResource | null {
     !RESOURCE_DIFFICULTIES.has(raw.difficulty)
   )
     return null;
-  if (typeof raw.estimated_time !== "string" || !raw.estimated_time.trim())
-    return null;
-
   const searchQuery =
     typeof raw.search_query === "string" ? raw.search_query.trim() : "";
+  const estimatedTime =
+    typeof raw.estimated_time === "string" ? raw.estimated_time.trim() : "";
 
   return {
     type: raw.type as KaiLearningResource["type"],
@@ -123,7 +123,7 @@ function normalizeResource(value: unknown): KaiLearningResource | null {
     authorOrProvider: raw.author_or_provider.trim(),
     reason: raw.reason.trim(),
     difficulty: raw.difficulty as KaiLearningResource["difficulty"],
-    estimatedTime: raw.estimated_time.trim(),
+    ...(estimatedTime ? { estimatedTime } : {}),
     ...(searchQuery ? { searchQuery } : {}),
   };
 }
@@ -394,6 +394,10 @@ export function normalizeBlocks(value: unknown): KaiMessageBlock[] | undefined {
           resources,
         });
       }
+    } else if (raw.type === "source_list") {
+      // Source lists are created server-side from provider grounding metadata,
+      // never accepted from the model's structured response.
+      continue;
     } else if (raw.type === "insight_block") {
       const body = typeof raw.body === "string" ? raw.body.trim() : "";
       if (title && body) blocks.push({ type: "insight_block", title, body });

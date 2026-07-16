@@ -1,7 +1,9 @@
 import {
   buildContextPrompt,
+  buildFactualSystemPrompt,
   buildOpeningInstruction,
   buildRecoverySchema,
+  buildRequiredBlocksSchema,
   buildResponseSchema,
   buildSystemPrompt,
 } from "@/lib/kai/chat-prompt";
@@ -27,11 +29,13 @@ import {
 } from "@/lib/kai/chat-server";
 import type { KaiChatResult } from "@/lib/kai/chat-stream";
 import type { KaiChatContext } from "@/lib/kai/chat-context";
-import type { KaiMessage } from "@/lib/kai/chat-types";
+import type { KaiMessage, KaiSourceListBlock } from "@/lib/kai/chat-types";
 import type { KaiMessageIntent } from "@/lib/kai/intent";
-import { detectIntent } from "@/lib/kai/intent";
+import { detectIntent, shouldGroundIntent } from "@/lib/kai/intent";
 import {
+  type GeminiGroundingSource,
   normalizeAbortTimeoutMs,
+  readGeminiJson,
   readGeminiSse,
 } from "@/lib/kai/gemini-stream";
 import { buildMemoryCandidates } from "@/lib/kai/memory/memory-builder";
@@ -43,6 +47,7 @@ export const runtime = "nodejs";
 const GEMINI_ENDPOINT_BASE =
   "https://generativelanguage.googleapis.com/v1beta/models";
 const DEFAULT_MODEL = "gemini-3.1-flash-lite";
+const DEFAULT_FACT_MODEL = "gemini-2.5-flash";
 
 type ParsedGeminiResponse = {
   text?: unknown;
@@ -57,12 +62,35 @@ type ParsedGeminiResponse = {
 type GeminiFailureReason =
   | "network_error"
   | "gemini_error"
+  | "missing_grounding"
   | "unparseable_response"
   | "provider_repetition_loop";
 
 type GeminiAttempt =
-  | { ok: true; parsed: ParsedGeminiResponse }
+  | {
+      ok: true;
+      parsed: ParsedGeminiResponse;
+      sources: GeminiGroundingSource[];
+    }
   | { ok: false; reason: GeminiFailureReason; retryable: boolean };
+
+function buildGroundingBlock(
+  sources: GeminiGroundingSource[],
+  locale: string,
+): KaiSourceListBlock | undefined {
+  if (sources.length === 0) return undefined;
+  return {
+    type: "source_list",
+    title: locale === "ar" ? "المصادر" : "Sources",
+    sources: sources.slice(0, 4),
+  };
+}
+
+function factualQuickReplies(locale: string): string[] {
+  return locale === "ar"
+    ? ["قارن لي الخيارات", "ما الذي يجب أن أتحقق منه؟"]
+    : ["Compare the options", "What should I verify next?"];
+}
 
 /**
  * One full request/parse attempt. The repetition guard remains because
@@ -87,9 +115,10 @@ async function callGeminiOnce(
   timeoutMs = 15_000,
 ): Promise<GeminiAttempt> {
   let geminiResponse: Response;
+  const grounded = shouldGroundIntent(intentHint);
   try {
     geminiResponse = await fetch(
-      `${GEMINI_ENDPOINT_BASE}/${model}:streamGenerateContent?alt=sse&key=${apiKey}`,
+      `${GEMINI_ENDPOINT_BASE}/${model}:${grounded ? "generateContent" : "streamGenerateContent"}?${grounded ? "" : "alt=sse&"}key=${apiKey}`,
       {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -98,33 +127,46 @@ async function callGeminiOnce(
         signal: AbortSignal.timeout(normalizeAbortTimeoutMs(timeoutMs)),
         body: JSON.stringify({
           systemInstruction: {
-            parts: [{ text: buildSystemPrompt(context.user.locale) }],
+            parts: [
+              {
+                text: grounded
+                  ? buildFactualSystemPrompt(context.user.locale)
+                  : buildSystemPrompt(context.user.locale),
+              },
+            ],
           },
           contents: [{ role: "user", parts: [{ text: prompt }] }],
-          generationConfig: {
-            temperature: 0.6,
-            maxOutputTokens: schemaOverride
-              ? 1024
-              : intentHint && needsArtifact(intentHint)
-                ? 4096
-                : 2560,
-            thinkingConfig: { thinkingBudget: 0 },
-            responseMimeType: "application/json",
-            // Narrowed to only the block types relevant to this turn's
-            // detected intent (plus cheap system-continuity types) — the
-            // full 20-type schema with every type's fields flattened into
-            // one object measurably raised the odds of the repetition-loop
-            // failure above, on top of costing more prompt tokens on every
-            // single request regardless of what this turn actually needed.
-            responseSchema: schemaOverride ?? buildResponseSchema(intentHint),
-          },
+          ...(grounded ? { tools: [{ google_search: {} }] } : {}),
+          generationConfig: grounded
+            ? {
+                temperature: 0.1,
+                maxOutputTokens: 1024,
+              }
+            : {
+                temperature: 0.6,
+                maxOutputTokens: schemaOverride
+                  ? 1024
+                  : intentHint && needsArtifact(intentHint)
+                    ? 4096
+                    : 2560,
+                thinkingConfig: { thinkingBudget: 0 },
+                responseMimeType: "application/json",
+                // Narrowed to only the block types relevant to this turn's
+                // detected intent (plus cheap system-continuity types).
+                responseSchema:
+                  schemaOverride ?? buildResponseSchema(intentHint),
+              },
         }),
       },
     );
   } catch (error) {
     const timedOut =
       error instanceof DOMException && error.name === "TimeoutError";
-    return { ok: false, reason: "network_error", retryable: !timedOut };
+    return {
+      ok: false,
+      reason: "network_error",
+      retryable: !timedOut || grounded,
+    };
   }
 
   if (!geminiResponse.ok) {
@@ -141,7 +183,20 @@ async function callGeminiOnce(
     };
   }
 
-  const streamed = await readGeminiSse(geminiResponse, onText);
+  let streamed;
+  try {
+    streamed = grounded
+      ? await readGeminiJson(geminiResponse, () => undefined)
+      : await readGeminiSse(geminiResponse, onText);
+  } catch (error) {
+    const timedOut =
+      error instanceof DOMException && error.name === "TimeoutError";
+    return {
+      ok: false,
+      reason: "network_error",
+      retryable: !timedOut || grounded,
+    };
+  }
   const raw = streamed.raw;
   const finishReason = streamed.finishReason;
 
@@ -162,6 +217,26 @@ async function callGeminiOnce(
     return { ok: false, reason: "provider_repetition_loop", retryable: false };
   }
 
+  if (grounded) {
+    const text = raw.trim();
+    if (!text) {
+      return { ok: false, reason: "unparseable_response", retryable: false };
+    }
+    if (!streamed.sources?.length) {
+      return { ok: false, reason: "missing_grounding", retryable: true };
+    }
+    onText(text);
+    return {
+      ok: true,
+      parsed: {
+        text,
+        intent: "fact_lookup",
+        quickReplies: factualQuickReplies(context.user.locale),
+      },
+      sources: streamed.sources,
+    };
+  }
+
   let parsed: ParsedGeminiResponse;
   try {
     parsed = raw ? JSON.parse(raw) : {};
@@ -176,7 +251,7 @@ async function callGeminiOnce(
       raw?.slice(-200),
       err,
     );
-    return { ok: false, reason: "unparseable_response", retryable: false };
+    return { ok: false, reason: "unparseable_response", retryable: true };
   }
 
   const text =
@@ -184,10 +259,10 @@ async function callGeminiOnce(
       ? parsed.text.trim()
       : null;
   if (!text) {
-    return { ok: false, reason: "unparseable_response", retryable: false };
+    return { ok: false, reason: "unparseable_response", retryable: true };
   }
 
-  return { ok: true, parsed };
+  return { ok: true, parsed, sources: streamed.sources ?? [] };
 }
 
 export async function POST(request: Request) {
@@ -254,7 +329,7 @@ export async function POST(request: Request) {
       void (async () => {
         const { kind, context, message } = validated.value;
         const apiKey = process.env.GEMINI_API_KEY;
-        const model = process.env.GEMINI_MODEL || DEFAULT_MODEL;
+        const coachingModel = process.env.GEMINI_MODEL || DEFAULT_MODEL;
 
         if (!apiKey) {
           const result: KaiChatResult = {
@@ -281,7 +356,7 @@ export async function POST(request: Request) {
           return;
         }
 
-        const instruction =
+        const baseInstruction =
           kind === "open"
             ? buildOpeningInstruction(
                 context.memories.items.length > 0 ||
@@ -294,8 +369,16 @@ export async function POST(request: Request) {
         // the response is what actually gets recorded (see normalizeIntent).
         const intentHint =
           kind === "reply" && message ? detectIntent(message) : undefined;
+        const model = shouldGroundIntent(intentHint)
+          ? process.env.GEMINI_FACT_MODEL || DEFAULT_FACT_MODEL
+          : coachingModel;
+        const instruction = shouldGroundIntent(intentHint)
+          ? `${baseInstruction}\n\nYou MUST use Google Search for this factual turn and ground the answer in the search results before writing the response.`
+          : baseInstruction;
 
-        const prompt = `${buildContextPrompt(context, intentHint)}\n\n${instruction}`;
+        const prompt = shouldGroundIntent(intentHint)
+          ? `Learner's factual question:\n${message}\n\nAnswer it now using Google Search and the output contract.`
+          : `${buildContextPrompt(context, intentHint)}\n\n${instruction}`;
 
         let attemptCount = 1;
         const modelStartedAt = performance.now();
@@ -309,15 +392,18 @@ export async function POST(request: Request) {
           intentHint,
           undefined,
           emitText,
-          remainingTimeout(),
+          shouldGroundIntent(intentHint)
+            ? Math.min(7_000, remainingTimeout())
+            : remainingTimeout(),
         );
         // Retry once ONLY for transient failures. A repetition-loop / MAX_TOKENS
         // failure recurs on an identical retry (measured, Phase 1 audit) and just
         // doubles latency toward the client timeout, so an IDENTICAL retry is
         // pointless — handle that failure with the simplified-schema recovery below.
-        if (
+        while (
           !attempt.ok &&
           attempt.retryable &&
+          attemptCount < 3 &&
           performance.now() - requestStartedAt < 8_000
         ) {
           attemptCount += 1;
@@ -355,7 +441,7 @@ export async function POST(request: Request) {
             context,
             `${prompt}\n\n${hint}`,
             intentHint,
-            buildRecoverySchema(),
+            buildRecoverySchema(intentHint),
             emitText,
             remainingTimeout(),
           );
@@ -394,10 +480,9 @@ export async function POST(request: Request) {
           return;
         }
 
-        const resolvedIntent = normalizeIntent(
-          attempt.parsed.intent,
-          intentHint,
-        );
+        const resolvedIntent =
+          intentHint ??
+          normalizeIntent(attempt.parsed.intent, "general_question");
 
         // If the response is missing a block its intent requires (an
         // action_plan answered as day-by-day prose, a family_conversation
@@ -436,7 +521,7 @@ export async function POST(request: Request) {
                   context,
                   stricterPrompt,
                   intentHint,
-                  undefined,
+                  buildRequiredBlocksSchema(resolvedIntent, stillMissing),
                   emitText,
                   remainingTimeout(),
                 );
@@ -445,19 +530,20 @@ export async function POST(request: Request) {
                 return {
                   text: (retryAttempt.parsed.text as string).trim(),
                   blocks: normalizeBlocks(retryAttempt.parsed.blocks),
-                  intent: normalizeIntent(
-                    retryAttempt.parsed.intent,
-                    resolvedIntent,
-                  ),
+                  intent: resolvedIntent,
                   raw: retryAttempt.parsed,
                 };
               },
             );
 
         const finalParsed = enforcement.retryRaw ?? attempt.parsed;
-        const finalIntent = enforcement.retryRaw
-          ? normalizeIntent(enforcement.retryRaw.intent, resolvedIntent)
-          : resolvedIntent;
+        const finalIntent = resolvedIntent;
+        const groundingBlock = shouldGroundIntent(finalIntent)
+          ? buildGroundingBlock(attempt.sources, context.user.locale)
+          : undefined;
+        const finalBlocks = groundingBlock
+          ? [...(enforcement.blocks ?? []), groundingBlock]
+          : enforcement.blocks;
 
         const quickReplies = Array.isArray(finalParsed.quickReplies)
           ? finalParsed.quickReplies
@@ -470,7 +556,7 @@ export async function POST(request: Request) {
           role: "kai",
           createdAt: new Date().toISOString(),
           text: enforcement.text,
-          blocks: enforcement.blocks,
+          blocks: finalBlocks,
           quickReplies:
             quickReplies && quickReplies.length > 0 ? quickReplies : undefined,
           intent: finalIntent,
@@ -497,6 +583,7 @@ export async function POST(request: Request) {
             modelMs: Math.round(performance.now() - modelStartedAt),
             totalMs: Math.round(performance.now() - requestStartedAt),
             attempts: attemptCount,
+            ...(recoveredViaSimplified ? { recoveredViaSimplified: true } : {}),
           },
         };
         if (repositoryAvailable) {
@@ -515,6 +602,7 @@ export async function POST(request: Request) {
           attempts: attemptCount,
           source: result.source,
           intent: kaiMessage.intent,
+          groundedSources: groundingBlock?.sources.length ?? 0,
         });
         send({ type: "complete", data: result });
         close();
