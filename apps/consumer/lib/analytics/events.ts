@@ -71,6 +71,7 @@ export const KAI_CHAT_EVENT_NAMES = [
   "kai_chat_started",
   "kai_message_sent",
   "kai_message_received",
+  "kai_message_failed",
   "kai_quick_reply_clicked",
   "kai_recommendation_clicked",
   "kai_conversation_finished",
@@ -126,7 +127,10 @@ export const EVENT_NAMES = [
 export type EventName = (typeof EVENT_NAMES)[number];
 
 export function isEventName(value: unknown): value is EventName {
-  return typeof value === "string" && (EVENT_NAMES as readonly string[]).includes(value);
+  return (
+    typeof value === "string" &&
+    (EVENT_NAMES as readonly string[]).includes(value)
+  );
 }
 
 const deviceSchema = z

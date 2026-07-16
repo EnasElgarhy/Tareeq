@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { normalizeBlocks, normalizeIntent, validateChatRequest } from "@/lib/kai/chat-server";
+import {
+  normalizeBlocks,
+  normalizeIntent,
+  validateChatRequest,
+} from "@/lib/kai/chat-server";
 
 function validContext() {
   return {
@@ -8,13 +12,19 @@ function validContext() {
     report: null,
     journey: { completedAssessments: [], lockedModules: [] },
     conversation: { goal: "find_majors", summary: "", recentMessages: [] },
-    memories: { items: [] as Array<{ category: string; value: string }>, personSummary: "" },
+    memories: {
+      items: [] as Array<{ category: string; value: string }>,
+      personSummary: "",
+    },
   };
 }
 
 describe("validateChatRequest", () => {
   it("accepts a well-formed 'open' request", () => {
-    const result = validateChatRequest({ kind: "open", context: validContext() });
+    const result = validateChatRequest({
+      kind: "open",
+      context: validContext(),
+    });
     expect(result.ok).toBe(true);
   });
 
@@ -27,6 +37,40 @@ describe("validateChatRequest", () => {
     expect(result.ok).toBe(true);
   });
 
+  it("accepts durable request ids only as a complete UUID set", () => {
+    const ids = {
+      threadId: "11111111-1111-4111-8111-111111111111",
+      requestId: "22222222-2222-4222-8222-222222222222",
+      userMessageId: "33333333-3333-4333-8333-333333333333",
+      assistantMessageId: "44444444-4444-4444-8444-444444444444",
+    };
+    expect(
+      validateChatRequest({
+        kind: "reply",
+        context: validContext(),
+        message: "Hello",
+        ...ids,
+      }).ok,
+    ).toBe(true);
+    expect(
+      validateChatRequest({
+        kind: "reply",
+        context: validContext(),
+        message: "Hello",
+        threadId: ids.threadId,
+      }).ok,
+    ).toBe(false);
+    expect(
+      validateChatRequest({
+        kind: "reply",
+        context: validContext(),
+        message: "Hello",
+        ...ids,
+        requestId: "not-a-uuid",
+      }).ok,
+    ).toBe(false);
+  });
+
   it("rejects a non-object body", () => {
     expect(validateChatRequest("nope").ok).toBe(false);
     expect(validateChatRequest(null).ok).toBe(false);
@@ -34,17 +78,27 @@ describe("validateChatRequest", () => {
   });
 
   it("rejects an invalid kind", () => {
-    const result = validateChatRequest({ kind: "delete", context: validContext() });
+    const result = validateChatRequest({
+      kind: "delete",
+      context: validContext(),
+    });
     expect(result.ok).toBe(false);
   });
 
   it("rejects 'reply' with no message", () => {
-    const result = validateChatRequest({ kind: "reply", context: validContext() });
+    const result = validateChatRequest({
+      kind: "reply",
+      context: validContext(),
+    });
     expect(result.ok).toBe(false);
   });
 
   it("rejects 'reply' with a blank message", () => {
-    const result = validateChatRequest({ kind: "reply", context: validContext(), message: "   " });
+    const result = validateChatRequest({
+      kind: "reply",
+      context: validContext(),
+      message: "   ",
+    });
     expect(result.ok).toBe(false);
   });
 
@@ -103,7 +157,9 @@ describe("validateChatRequest", () => {
   it("accepts a context with populated memories", () => {
     const context = validContext();
     context.memories = {
-      items: [{ category: "career_interest", value: "Artificial Intelligence" }],
+      items: [
+        { category: "career_interest", value: "Artificial Intelligence" },
+      ],
       personSummary: "Ahmed is exploring AI.",
     };
     const result = validateChatRequest({ kind: "open", context });
@@ -122,22 +178,37 @@ describe("normalizeBlocks (Gemini response → KaiMessageBlock[])", () => {
   });
 
   it("drops entries with an unknown or missing type", () => {
-    const result = normalizeBlocks([{ type: "made_up_type", title: "x" }, { title: "no type" }]);
+    const result = normalizeBlocks([
+      { type: "made_up_type", title: "x" },
+      { title: "no type" },
+    ]);
     expect(result).toBeUndefined();
   });
 
   it("normalizes a career_card, dropping it if title is missing", () => {
-    expect(normalizeBlocks([{ type: "career_card", description: "no title" }])).toBeUndefined();
+    expect(
+      normalizeBlocks([{ type: "career_card", description: "no title" }]),
+    ).toBeUndefined();
     const result = normalizeBlocks([
-      { type: "career_card", title: "UX Designer", description: "Fits your Explorer style." },
+      {
+        type: "career_card",
+        title: "UX Designer",
+        description: "Fits your Explorer style.",
+      },
     ]);
     expect(result).toEqual([
-      { type: "career_card", title: "UX Designer", description: "Fits your Explorer style." },
+      {
+        type: "career_card",
+        title: "UX Designer",
+        description: "Fits your Explorer style.",
+      },
     ]);
   });
 
   it("normalizes an action_plan, dropping malformed tasks and empty plans", () => {
-    expect(normalizeBlocks([{ type: "action_plan", title: "Plan", tasks: [] }])).toBeUndefined();
+    expect(
+      normalizeBlocks([{ type: "action_plan", title: "Plan", tasks: [] }]),
+    ).toBeUndefined();
     const result = normalizeBlocks([
       {
         type: "action_plan",
@@ -158,15 +229,22 @@ describe("normalizeBlocks (Gemini response → KaiMessageBlock[])", () => {
       expect(block.title).toBe("This week");
       expect(block.durationLabel).toBe("7 days");
       expect(block.tasks).toHaveLength(2);
-      expect(block.tasks[0]).toMatchObject({ text: "Watch a day-in-the-life video", estimatedTime: "20 min" });
+      expect(block.tasks[0]).toMatchObject({
+        text: "Watch a day-in-the-life video",
+        estimatedTime: "20 min",
+      });
       expect(block.tasks[0].id).toEqual(expect.any(String));
-      expect(block.tasks[1]).toMatchObject({ text: "Message one professional" });
+      expect(block.tasks[1]).toMatchObject({
+        text: "Message one professional",
+      });
     }
   });
 
   it("normalizes a comparison, requiring both labels", () => {
     expect(
-      normalizeBlocks([{ type: "comparison", leftLabel: "A", leftPoints: [], rightPoints: [] }]),
+      normalizeBlocks([
+        { type: "comparison", leftLabel: "A", leftPoints: [], rightPoints: [] },
+      ]),
     ).toBeUndefined();
     const result = normalizeBlocks([
       {
@@ -198,7 +276,9 @@ describe("normalizeBlocks (Gemini response → KaiMessageBlock[])", () => {
       { type: "made_up" },
       { type: "career_card", title: "Data Analyst", description: "" },
     ]);
-    expect(result).toEqual([{ type: "career_card", title: "Data Analyst", description: "" }]);
+    expect(result).toEqual([
+      { type: "career_card", title: "Data Analyst", description: "" },
+    ]);
   });
 
   it("normalizes a memory_card, defaulting the title if Gemini omits it", () => {
@@ -214,7 +294,11 @@ describe("normalizeBlocks (Gemini response → KaiMessageBlock[])", () => {
   });
 
   it("normalizes a resume_conversation, dropping it if title is missing", () => {
-    expect(normalizeBlocks([{ type: "resume_conversation", description: "no title" }])).toBeUndefined();
+    expect(
+      normalizeBlocks([
+        { type: "resume_conversation", description: "no title" },
+      ]),
+    ).toBeUndefined();
     const result = normalizeBlocks([
       {
         type: "resume_conversation",
@@ -232,9 +316,15 @@ describe("normalizeBlocks (Gemini response → KaiMessageBlock[])", () => {
   });
 
   it("normalizes a goal_card, dropping it if title is missing", () => {
-    expect(normalizeBlocks([{ type: "goal_card", description: "no title" }])).toBeUndefined();
-    const result = normalizeBlocks([{ type: "goal_card", title: "Study abroad", description: "" }]);
-    expect(result).toEqual([{ type: "goal_card", title: "Study abroad", description: "" }]);
+    expect(
+      normalizeBlocks([{ type: "goal_card", description: "no title" }]),
+    ).toBeUndefined();
+    const result = normalizeBlocks([
+      { type: "goal_card", title: "Study abroad", description: "" },
+    ]);
+    expect(result).toEqual([
+      { type: "goal_card", title: "Study abroad", description: "" },
+    ]);
   });
 
   it("normalizes a milestone_card, defaulting the title if omitted", () => {
@@ -279,7 +369,11 @@ describe("normalizeBlocks (Gemini response → KaiMessageBlock[])", () => {
   });
 
   it("drops the whole learning_resources block when the resources array is empty", () => {
-    expect(normalizeBlocks([{ type: "learning_resources", title: "x", resources: [] }])).toBeUndefined();
+    expect(
+      normalizeBlocks([
+        { type: "learning_resources", title: "x", resources: [] },
+      ]),
+    ).toBeUndefined();
   });
 
   it("drops an individual resource missing a required field, keeping the rest", () => {
@@ -288,7 +382,13 @@ describe("normalizeBlocks (Gemini response → KaiMessageBlock[])", () => {
         type: "learning_resources",
         title: "Worth checking out",
         resources: [
-          { type: "book", title: "No reason here", author_or_provider: "x", difficulty: "beginner", estimated_time: "1h" },
+          {
+            type: "book",
+            title: "No reason here",
+            author_or_provider: "x",
+            difficulty: "beginner",
+            estimated_time: "1h",
+          },
           {
             type: "course",
             title: "CS50",
@@ -361,8 +461,14 @@ describe("normalizeBlocks (Gemini response → KaiMessageBlock[])", () => {
       difficulty: "beginner",
       estimated_time: "10 min",
     }));
-    const result = normalizeBlocks([{ type: "learning_resources", title: "x", resources }]);
-    expect(result?.[0].type === "learning_resources" ? result[0].resources.length : -1).toBe(3);
+    const result = normalizeBlocks([
+      { type: "learning_resources", title: "x", resources },
+    ]);
+    expect(
+      result?.[0].type === "learning_resources"
+        ? result[0].resources.length
+        : -1,
+    ).toBe(3);
   });
 
   it("ignores any url field Gemini might invent — it was never part of the schema", () => {
@@ -383,49 +489,102 @@ describe("normalizeBlocks (Gemini response → KaiMessageBlock[])", () => {
         ],
       },
     ]);
-    const resource = result?.[0].type === "learning_resources" ? result[0].resources[0] : undefined;
+    const resource =
+      result?.[0].type === "learning_resources"
+        ? result[0].resources[0]
+        : undefined;
     expect(resource).not.toHaveProperty("url");
   });
 
   it("normalizes an insight_block, requiring both title and body", () => {
-    expect(normalizeBlocks([{ type: "insight_block", title: "Only a title" }])).toBeUndefined();
+    expect(
+      normalizeBlocks([{ type: "insight_block", title: "Only a title" }]),
+    ).toBeUndefined();
     const result = normalizeBlocks([
-      { type: "insight_block", title: "Why this fits", body: "You're driven by Mastery, and this path rewards it." },
+      {
+        type: "insight_block",
+        title: "Why this fits",
+        body: "You're driven by Mastery, and this path rewards it.",
+      },
     ]);
     expect(result).toEqual([
-      { type: "insight_block", title: "Why this fits", body: "You're driven by Mastery, and this path rewards it." },
+      {
+        type: "insight_block",
+        title: "Why this fits",
+        body: "You're driven by Mastery, and this path rewards it.",
+      },
     ]);
   });
 
   it("normalizes a bullet_list, title is optional but items are required", () => {
-    expect(normalizeBlocks([{ type: "bullet_list", title: "Empty", items: [] }])).toBeUndefined();
-    const result = normalizeBlocks([{ type: "bullet_list", items: ["First", "Second"] }]);
-    expect(result).toEqual([{ type: "bullet_list", items: ["First", "Second"] }]);
+    expect(
+      normalizeBlocks([{ type: "bullet_list", title: "Empty", items: [] }]),
+    ).toBeUndefined();
+    const result = normalizeBlocks([
+      { type: "bullet_list", items: ["First", "Second"] },
+    ]);
+    expect(result).toEqual([
+      { type: "bullet_list", items: ["First", "Second"] },
+    ]);
   });
 
   it("normalizes a checklist, requiring both title and items", () => {
-    expect(normalizeBlocks([{ type: "checklist", items: ["No title"] }])).toBeUndefined();
-    const result = normalizeBlocks([{ type: "checklist", title: "Before you talk to them", items: ["Pick a calm moment", "Bring one example"] }]);
+    expect(
+      normalizeBlocks([{ type: "checklist", items: ["No title"] }]),
+    ).toBeUndefined();
+    const result = normalizeBlocks([
+      {
+        type: "checklist",
+        title: "Before you talk to them",
+        items: ["Pick a calm moment", "Bring one example"],
+      },
+    ]);
     expect(result).toEqual([
-      { type: "checklist", title: "Before you talk to them", items: ["Pick a calm moment", "Bring one example"] },
+      {
+        type: "checklist",
+        title: "Before you talk to them",
+        items: ["Pick a calm moment", "Bring one example"],
+      },
     ]);
   });
 
   it("normalizes talking_points", () => {
     const result = normalizeBlocks([
-      { type: "talking_points", title: "What to lead with", points: ["It's a research-backed direction", "You've thought this through"] },
+      {
+        type: "talking_points",
+        title: "What to lead with",
+        points: [
+          "It's a research-backed direction",
+          "You've thought this through",
+        ],
+      },
     ]);
     expect(result).toEqual([
-      { type: "talking_points", title: "What to lead with", points: ["It's a research-backed direction", "You've thought this through"] },
+      {
+        type: "talking_points",
+        title: "What to lead with",
+        points: [
+          "It's a research-backed direction",
+          "You've thought this through",
+        ],
+      },
     ]);
   });
 
   it("normalizes a family_script", () => {
     const result = normalizeBlocks([
-      { type: "family_script", title: "What you can say", script: ["I've thought about this a lot.", "Here's why it fits me."] },
+      {
+        type: "family_script",
+        title: "What you can say",
+        script: ["I've thought about this a lot.", "Here's why it fits me."],
+      },
     ]);
     expect(result).toEqual([
-      { type: "family_script", title: "What you can say", script: ["I've thought about this a lot.", "Here's why it fits me."] },
+      {
+        type: "family_script",
+        title: "What you can say",
+        script: ["I've thought about this a lot.", "Here's why it fits me."],
+      },
     ]);
   });
 
@@ -435,7 +594,10 @@ describe("normalizeBlocks (Gemini response → KaiMessageBlock[])", () => {
         type: "objection_response_list",
         title: "Likely concerns",
         objections: [
-          { objection: "Will you find a job?", response: "This field has strong, growing demand." },
+          {
+            objection: "Will you find a job?",
+            response: "This field has strong, growing demand.",
+          },
           { objection: "Missing a response" },
           { response: "Missing an objection" },
         ],
@@ -445,22 +607,43 @@ describe("normalizeBlocks (Gemini response → KaiMessageBlock[])", () => {
       {
         type: "objection_response_list",
         title: "Likely concerns",
-        items: [{ objection: "Will you find a job?", response: "This field has strong, growing demand." }],
+        items: [
+          {
+            objection: "Will you find a job?",
+            response: "This field has strong, growing demand.",
+          },
+        ],
       },
     ]);
   });
 
   it("normalizes a reflection_question", () => {
-    const result = normalizeBlocks([{ type: "reflection_question", question: "What would make this feel worth it in 5 years?" }]);
-    expect(result).toEqual([{ type: "reflection_question", question: "What would make this feel worth it in 5 years?" }]);
+    const result = normalizeBlocks([
+      {
+        type: "reflection_question",
+        question: "What would make this feel worth it in 5 years?",
+      },
+    ]);
+    expect(result).toEqual([
+      {
+        type: "reflection_question",
+        question: "What would make this feel worth it in 5 years?",
+      },
+    ]);
   });
 
   it("drops a reflection_question with a blank question", () => {
-    expect(normalizeBlocks([{ type: "reflection_question", question: "   " }])).toBeUndefined();
+    expect(
+      normalizeBlocks([{ type: "reflection_question", question: "   " }]),
+    ).toBeUndefined();
   });
 
   it("normalizes a comparison_table, requiring title, columns, and rows", () => {
-    expect(normalizeBlocks([{ type: "comparison_table", title: "x", columns: ["A"] }])).toBeUndefined();
+    expect(
+      normalizeBlocks([
+        { type: "comparison_table", title: "x", columns: ["A"] },
+      ]),
+    ).toBeUndefined();
     const result = normalizeBlocks([
       {
         type: "comparison_table",
@@ -468,7 +651,10 @@ describe("normalizeBlocks (Gemini response → KaiMessageBlock[])", () => {
         columns: ["Lawyer", "Diplomat", "Policy Analyst"],
         table_rows: [
           { label: "Typical hours", values: ["Long", "Moderate", "Moderate"] },
-          { label: "Requires postgrad?", values: ["Yes", "Often", "Sometimes"] },
+          {
+            label: "Requires postgrad?",
+            values: ["Yes", "Often", "Sometimes"],
+          },
         ],
       },
     ]);
@@ -479,14 +665,21 @@ describe("normalizeBlocks (Gemini response → KaiMessageBlock[])", () => {
         columns: ["Lawyer", "Diplomat", "Policy Analyst"],
         rows: [
           { label: "Typical hours", values: ["Long", "Moderate", "Moderate"] },
-          { label: "Requires postgrad?", values: ["Yes", "Often", "Sometimes"] },
+          {
+            label: "Requires postgrad?",
+            values: ["Yes", "Often", "Sometimes"],
+          },
         ],
       },
     ]);
   });
 
   it("normalizes a decision_matrix, requiring title, options, and rows", () => {
-    expect(normalizeBlocks([{ type: "decision_matrix", title: "x", options: ["A", "B"] }])).toBeUndefined();
+    expect(
+      normalizeBlocks([
+        { type: "decision_matrix", title: "x", options: ["A", "B"] },
+      ]),
+    ).toBeUndefined();
     const result = normalizeBlocks([
       {
         type: "decision_matrix",
@@ -525,7 +718,9 @@ describe("normalizeBlocks (Gemini response → KaiMessageBlock[])", () => {
         ],
       },
     ]);
-    expect(result?.[0]).toMatchObject({ rows: [{ criterion: "Kept", scores: [1, 2] }] });
+    expect(result?.[0]).toMatchObject({
+      rows: [{ criterion: "Kept", scores: [1, 2] }],
+    });
   });
 });
 
@@ -535,7 +730,9 @@ describe("normalizeIntent", () => {
   });
 
   it("falls back to the provided fallback for an unknown value", () => {
-    expect(normalizeIntent("not_a_real_intent", "career_comparison")).toBe("career_comparison");
+    expect(normalizeIntent("not_a_real_intent", "career_comparison")).toBe(
+      "career_comparison",
+    );
   });
 
   it("falls back to general_question by default when no fallback is given", () => {

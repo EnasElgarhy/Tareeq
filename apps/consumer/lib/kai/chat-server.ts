@@ -20,6 +20,22 @@ export interface ChatRequestBody {
   kind?: "open" | "reply";
   context?: KaiChatContext;
   message?: string;
+  threadId?: string;
+  threadTitle?: string;
+  requestId?: string;
+  userMessageId?: string;
+  assistantMessageId?: string;
+}
+
+export interface ValidatedChatRequest {
+  kind: "open" | "reply";
+  context: KaiChatContext;
+  message?: string;
+  threadId?: string;
+  threadTitle?: string;
+  requestId?: string;
+  userMessageId?: string;
+  assistantMessageId?: string;
 }
 
 const GOALS = new Set([
@@ -55,6 +71,8 @@ const BLOCK_TYPES = new Set([
 ]);
 
 const INTENT_SET = new Set<string>(KAI_MESSAGE_INTENTS);
+const UUID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 const RESOURCE_TYPES = new Set([
   "book",
@@ -79,14 +97,25 @@ function normalizeResource(value: unknown): KaiLearningResource | null {
   if (typeof value !== "object" || value === null) return null;
   const raw = value as Record<string, unknown>;
 
-  if (typeof raw.type !== "string" || !RESOURCE_TYPES.has(raw.type)) return null;
+  if (typeof raw.type !== "string" || !RESOURCE_TYPES.has(raw.type))
+    return null;
   if (typeof raw.title !== "string" || !raw.title.trim()) return null;
-  if (typeof raw.author_or_provider !== "string" || !raw.author_or_provider.trim()) return null;
+  if (
+    typeof raw.author_or_provider !== "string" ||
+    !raw.author_or_provider.trim()
+  )
+    return null;
   if (typeof raw.reason !== "string" || !raw.reason.trim()) return null;
-  if (typeof raw.difficulty !== "string" || !RESOURCE_DIFFICULTIES.has(raw.difficulty)) return null;
-  if (typeof raw.estimated_time !== "string" || !raw.estimated_time.trim()) return null;
+  if (
+    typeof raw.difficulty !== "string" ||
+    !RESOURCE_DIFFICULTIES.has(raw.difficulty)
+  )
+    return null;
+  if (typeof raw.estimated_time !== "string" || !raw.estimated_time.trim())
+    return null;
 
-  const searchQuery = typeof raw.search_query === "string" ? raw.search_query.trim() : "";
+  const searchQuery =
+    typeof raw.search_query === "string" ? raw.search_query.trim() : "";
 
   return {
     type: raw.type as KaiLearningResource["type"],
@@ -100,7 +129,12 @@ function normalizeResource(value: unknown): KaiLearningResource | null {
 }
 
 function stringArray(value: unknown): string[] {
-  return Array.isArray(value) ? value.filter((entry): entry is string => typeof entry === "string" && entry.trim().length > 0) : [];
+  return Array.isArray(value)
+    ? value.filter(
+        (entry): entry is string =>
+          typeof entry === "string" && entry.trim().length > 0,
+      )
+    : [];
 }
 
 /** Generates a stable-enough id locally — never trusts an LLM-supplied
@@ -116,7 +150,8 @@ function normalizeActionTasks(value: unknown): KaiActionTask[] {
     if (typeof entry !== "object" || entry === null) return;
     const raw = entry as Record<string, unknown>;
     if (typeof raw.text !== "string" || !raw.text.trim()) return;
-    const estimatedTime = typeof raw.estimated_time === "string" ? raw.estimated_time.trim() : "";
+    const estimatedTime =
+      typeof raw.estimated_time === "string" ? raw.estimated_time.trim() : "";
     tasks.push({
       id: taskId(index),
       text: raw.text.trim(),
@@ -134,12 +169,17 @@ function normalizeObjectionItems(value: unknown): KaiObjectionResponseItem[] {
     const raw = entry as Record<string, unknown>;
     if (typeof raw.objection !== "string" || !raw.objection.trim()) continue;
     if (typeof raw.response !== "string" || !raw.response.trim()) continue;
-    items.push({ objection: raw.objection.trim(), response: raw.response.trim() });
+    items.push({
+      objection: raw.objection.trim(),
+      response: raw.response.trim(),
+    });
   }
   return items;
 }
 
-function normalizeComparisonTableRows(value: unknown): KaiComparisonTableBlock["rows"] {
+function normalizeComparisonTableRows(
+  value: unknown,
+): KaiComparisonTableBlock["rows"] {
   if (!Array.isArray(value)) return [];
   const rows: KaiComparisonTableBlock["rows"] = [];
   for (const entry of value) {
@@ -161,7 +201,9 @@ function normalizeDecisionMatrixRows(value: unknown): KaiDecisionMatrixRow[] {
     const raw = entry as Record<string, unknown>;
     if (typeof raw.criterion !== "string" || !raw.criterion.trim()) continue;
     const scores = Array.isArray(raw.scores)
-      ? raw.scores.filter((n): n is number => typeof n === "number" && Number.isFinite(n))
+      ? raw.scores.filter(
+          (n): n is number => typeof n === "number" && Number.isFinite(n),
+        )
       : [];
     if (scores.length === 0) continue;
     rows.push({ criterion: raw.criterion.trim(), scores });
@@ -173,29 +215,37 @@ function normalizeDecisionMatrixRows(value: unknown): KaiDecisionMatrixRow[] {
  * when Gemini's self-reported "intent" is missing or not one of the
  * known values — never left undefined, so analytics/debugging always
  * has a value to key off. */
-export function normalizeIntent(value: unknown, fallback: KaiMessageIntent = "general_question"): KaiMessageIntent {
-  return typeof value === "string" && INTENT_SET.has(value) ? (value as KaiMessageIntent) : fallback;
+export function normalizeIntent(
+  value: unknown,
+  fallback: KaiMessageIntent = "general_question",
+): KaiMessageIntent {
+  return typeof value === "string" && INTENT_SET.has(value)
+    ? (value as KaiMessageIntent)
+    : fallback;
 }
 
 function isValidContext(value: unknown): value is KaiChatContext {
   if (typeof value !== "object" || value === null) return false;
   const candidate = value as Partial<KaiChatContext>;
-  if (typeof candidate.user?.displayName !== "string" || typeof candidate.user?.locale !== "string") {
+  if (
+    typeof candidate.user?.displayName !== "string" ||
+    typeof candidate.user?.locale !== "string"
+  ) {
     return false;
   }
-  if (!candidate.conversation || !GOALS.has(candidate.conversation.goal)) return false;
+  if (!candidate.conversation || !GOALS.has(candidate.conversation.goal))
+    return false;
   if (typeof candidate.conversation.summary !== "string") return false;
   if (!Array.isArray(candidate.conversation.recentMessages)) return false;
-  if (!candidate.memories || !Array.isArray(candidate.memories.items)) return false;
+  if (!candidate.memories || !Array.isArray(candidate.memories.items))
+    return false;
   if (typeof candidate.memories.personSummary !== "string") return false;
   return true;
 }
 
 export function validateChatRequest(
   body: unknown,
-):
-  | { ok: true; value: Required<Pick<ChatRequestBody, "kind" | "context">> & { message?: string } }
-  | { ok: false; error: string } {
+): { ok: true; value: ValidatedChatRequest } | { ok: false; error: string } {
   if (typeof body !== "object" || body === null) {
     return { ok: false, error: "Request body must be an object." };
   }
@@ -207,11 +257,59 @@ export function validateChatRequest(
   if (!isValidContext(candidate.context)) {
     return { ok: false, error: "context is missing required fields." };
   }
-  if (candidate.kind === "reply" && (typeof candidate.message !== "string" || !candidate.message.trim())) {
+  if (
+    candidate.kind === "reply" &&
+    (typeof candidate.message !== "string" || !candidate.message.trim())
+  ) {
     return { ok: false, error: "message is required when kind is 'reply'." };
   }
 
-  return { ok: true, value: { kind: candidate.kind, context: candidate.context, message: candidate.message } };
+  const persistenceIds = [
+    candidate.threadId,
+    candidate.requestId,
+    candidate.assistantMessageId,
+  ];
+  const hasPersistenceIds =
+    persistenceIds.some(Boolean) || Boolean(candidate.userMessageId);
+  if (hasPersistenceIds) {
+    if (
+      persistenceIds.some(
+        (id) => typeof id !== "string" || !UUID_PATTERN.test(id),
+      )
+    ) {
+      return {
+        ok: false,
+        error: "threadId, requestId and assistantMessageId must be UUIDs.",
+      };
+    }
+    if (
+      candidate.kind === "reply" &&
+      (typeof candidate.userMessageId !== "string" ||
+        !UUID_PATTERN.test(candidate.userMessageId))
+    ) {
+      return {
+        ok: false,
+        error: "userMessageId must be a UUID for reply requests.",
+      };
+    }
+  }
+
+  return {
+    ok: true,
+    value: {
+      kind: candidate.kind,
+      context: candidate.context,
+      message: candidate.message,
+      threadId: candidate.threadId,
+      threadTitle:
+        typeof candidate.threadTitle === "string"
+          ? candidate.threadTitle.trim().slice(0, 120)
+          : undefined,
+      requestId: candidate.requestId,
+      userMessageId: candidate.userMessageId,
+      assistantMessageId: candidate.assistantMessageId,
+    },
+  };
 }
 
 export function normalizeBlocks(value: unknown): KaiMessageBlock[] | undefined {
@@ -224,13 +322,20 @@ export function normalizeBlocks(value: unknown): KaiMessageBlock[] | undefined {
     if (typeof raw.type !== "string" || !BLOCK_TYPES.has(raw.type)) continue;
 
     const title = typeof raw.title === "string" ? raw.title : "";
-    const description = typeof raw.description === "string" ? raw.description : "";
+    const description =
+      typeof raw.description === "string" ? raw.description : "";
 
     if (raw.type === "action_plan") {
       const tasks = normalizeActionTasks(raw.tasks);
-      const durationLabel = typeof raw.duration_label === "string" ? raw.duration_label.trim() : "";
+      const durationLabel =
+        typeof raw.duration_label === "string" ? raw.duration_label.trim() : "";
       if (tasks.length > 0) {
-        blocks.push({ type: "action_plan", title, tasks, ...(durationLabel ? { durationLabel } : {}) });
+        blocks.push({
+          type: "action_plan",
+          title,
+          tasks,
+          ...(durationLabel ? { durationLabel } : {}),
+        });
       }
     } else if (raw.type === "comparison") {
       const leftPoints = Array.isArray(raw.leftPoints)
@@ -239,7 +344,10 @@ export function normalizeBlocks(value: unknown): KaiMessageBlock[] | undefined {
       const rightPoints = Array.isArray(raw.rightPoints)
         ? raw.rightPoints.filter((s): s is string => typeof s === "string")
         : [];
-      if (typeof raw.leftLabel === "string" && typeof raw.rightLabel === "string") {
+      if (
+        typeof raw.leftLabel === "string" &&
+        typeof raw.rightLabel === "string"
+      ) {
         blocks.push({
           type: "comparison",
           leftLabel: raw.leftLabel,
@@ -253,42 +361,69 @@ export function normalizeBlocks(value: unknown): KaiMessageBlock[] | undefined {
     } else if (raw.type === "career_card" || raw.type === "university_card") {
       if (title) blocks.push({ type: raw.type, title, description });
     } else if (raw.type === "memory_card") {
-      blocks.push({ type: "memory_card", title: title || "What I remember about you" });
+      blocks.push({
+        type: "memory_card",
+        title: title || "What I remember about you",
+      });
     } else if (raw.type === "recommendation_history") {
-      blocks.push({ type: "recommendation_history", title: title || "What I've suggested so far" });
+      blocks.push({
+        type: "recommendation_history",
+        title: title || "What I've suggested so far",
+      });
     } else if (raw.type === "resume_conversation") {
-      if (title) blocks.push({ type: "resume_conversation", title, description });
+      if (title)
+        blocks.push({ type: "resume_conversation", title, description });
     } else if (raw.type === "goal_card") {
       if (title) blocks.push({ type: "goal_card", title, description });
     } else if (raw.type === "milestone_card") {
-      blocks.push({ type: "milestone_card", title: title || "Your next milestone" });
+      blocks.push({
+        type: "milestone_card",
+        title: title || "Your next milestone",
+      });
     } else if (raw.type === "learning_resources") {
       const resources = Array.isArray(raw.resources)
-        ? raw.resources.map(normalizeResource).filter((r): r is KaiLearningResource => r !== null).slice(0, 3)
+        ? raw.resources
+            .map(normalizeResource)
+            .filter((r): r is KaiLearningResource => r !== null)
+            .slice(0, 3)
         : [];
       if (resources.length > 0) {
-        blocks.push({ type: "learning_resources", title: title || "Worth checking out", resources });
+        blocks.push({
+          type: "learning_resources",
+          title: title || "Worth checking out",
+          resources,
+        });
       }
     } else if (raw.type === "insight_block") {
       const body = typeof raw.body === "string" ? raw.body.trim() : "";
       if (title && body) blocks.push({ type: "insight_block", title, body });
     } else if (raw.type === "bullet_list") {
       const items = stringArray(raw.items);
-      if (items.length > 0) blocks.push({ type: "bullet_list", ...(title ? { title } : {}), items });
+      if (items.length > 0)
+        blocks.push({
+          type: "bullet_list",
+          ...(title ? { title } : {}),
+          items,
+        });
     } else if (raw.type === "checklist") {
       const items = stringArray(raw.items);
-      if (title && items.length > 0) blocks.push({ type: "checklist", title, items });
+      if (title && items.length > 0)
+        blocks.push({ type: "checklist", title, items });
     } else if (raw.type === "talking_points") {
       const points = stringArray(raw.points);
-      if (title && points.length > 0) blocks.push({ type: "talking_points", title, points });
+      if (title && points.length > 0)
+        blocks.push({ type: "talking_points", title, points });
     } else if (raw.type === "family_script") {
       const script = stringArray(raw.script);
-      if (title && script.length > 0) blocks.push({ type: "family_script", title, script });
+      if (title && script.length > 0)
+        blocks.push({ type: "family_script", title, script });
     } else if (raw.type === "objection_response_list") {
       const items = normalizeObjectionItems(raw.objections);
-      if (title && items.length > 0) blocks.push({ type: "objection_response_list", title, items });
+      if (title && items.length > 0)
+        blocks.push({ type: "objection_response_list", title, items });
     } else if (raw.type === "reflection_question") {
-      const question = typeof raw.question === "string" ? raw.question.trim() : "";
+      const question =
+        typeof raw.question === "string" ? raw.question.trim() : "";
       if (question) blocks.push({ type: "reflection_question", question });
     } else if (raw.type === "comparison_table") {
       const columns = stringArray(raw.columns);
@@ -299,7 +434,8 @@ export function normalizeBlocks(value: unknown): KaiMessageBlock[] | undefined {
     } else if (raw.type === "decision_matrix") {
       const options = stringArray(raw.options);
       const rows = normalizeDecisionMatrixRows(raw.matrix_rows);
-      const recommendation = typeof raw.recommendation === "string" ? raw.recommendation.trim() : "";
+      const recommendation =
+        typeof raw.recommendation === "string" ? raw.recommendation.trim() : "";
       if (title && options.length > 0 && rows.length > 0) {
         blocks.push({
           type: "decision_matrix",

@@ -471,6 +471,13 @@ export const STRINGS = {
     ar: "مدربتك المهنية بالذكاء الاصطناعي",
   },
   "kai.chat.suggested_next": { en: "Suggested next", ar: "اقتراحات للمتابعة" },
+  "kai.chat.history": { en: "Conversation history", ar: "سجل المحادثات" },
+  "kai.chat.new_conversation": { en: "New conversation", ar: "محادثة جديدة" },
+  "kai.chat.reply_failed": {
+    en: "Kai couldn't finish that reply. Your message is saved.",
+    ar: "لم تتمكن كاي من إكمال الرد. رسالتك محفوظة.",
+  },
+  "kai.chat.retry": { en: "Try again", ar: "حاول مرة أخرى" },
   "kai.chat.signed_out": {
     en: "Sign in to talk with Kai.",
     ar: "سجّل الدخول للتحدث مع كاي.",
@@ -705,6 +712,57 @@ export const STRINGS = {
     en: " to create your profile.",
     ar: " لإنشاء ملفك الشخصي.",
   },
+
+  // ---- Dashboard access ----
+  "dashboard.access.checking": {
+    en: "Finding your saved compass…",
+    ar: "جارٍ البحث عن بوصلتك المحفوظة…",
+  },
+  "dashboard.access.title": {
+    en: "Your profile starts with your compass",
+    ar: "ملفك يبدأ من بوصلتك",
+  },
+  "dashboard.access.body": {
+    en: "Complete the assessment to create your profile, or sign in to restore one you already completed.",
+    ar: "أكمل التقييم لإنشاء ملفك، أو سجّل الدخول لاستعادة تقييم أكملته من قبل.",
+  },
+  "dashboard.access.start": {
+    en: "Take the assessment",
+    ar: "ابدأ التقييم",
+  },
+  "dashboard.access.returning_label": {
+    en: "Returning to Tareeq",
+    ar: "العودة إلى طريق",
+  },
+  "dashboard.access.returning_title": {
+    en: "Already completed it?",
+    ar: "أكملت التقييم من قبل؟",
+  },
+  "dashboard.access.returning_body": {
+    en: "Sign in with the same email to restore your profile.",
+    ar: "سجّل الدخول بالبريد نفسه لاستعادة ملفك.",
+  },
+  "dashboard.access.no_result_title": {
+    en: "No completed assessment yet",
+    ar: "لا يوجد تقييم مكتمل بعد",
+  },
+  "dashboard.access.no_result_body": {
+    en: "This account does not have a completed Career Compass. Take the assessment to create your profile.",
+    ar: "لا يحتوي هذا الحساب على بوصلة مهنية مكتملة. ابدأ التقييم لإنشاء ملفك.",
+  },
+  "dashboard.access.different_account": {
+    en: "Use a different account",
+    ar: "استخدم حساباً آخر",
+  },
+  "dashboard.access.error_title": {
+    en: "We couldn’t open your profile",
+    ar: "تعذّر فتح ملفك",
+  },
+  "dashboard.access.error_body": {
+    en: "Your saved assessment is still safe. Check your connection and try again.",
+    ar: "تقييمك المحفوظ ما زال آمناً. تحقّق من الاتصال وحاول مرة أخرى.",
+  },
+  "dashboard.access.retry": { en: "Try again", ar: "حاول مرة أخرى" },
 
   // ---- Home feed cards (lib/home/feed.ts) ----
   "home.feed.spotlight_eyebrow": {
