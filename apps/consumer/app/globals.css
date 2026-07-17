@@ -2082,6 +2082,98 @@ button {
   }
 }
 
+/* Daybreak marketing site. The marketing pages share the dashboard's warm
+ * paper tokens, plus the night-to-day transition bands from the standalone
+ * website. Keeping these variables on the site root prevents them from
+ * leaking into the assessment and app shells. */
+.marketing-site {
+  --day-bg: #f4eee3;
+  --day-card: #fffcf6;
+  --day-elevated: #ffffff;
+  --day-inset: #efe7da;
+  --day-line: rgba(43, 36, 28, 0.1);
+  --day-ink: #2a2118;
+  --day-ink-2: #5c5142;
+  --day-ink-3: #675d4e;
+  --horizon: #f4a97c;
+  --horizon-deep: #e07a5f;
+  --dawn-violet: #6d5ba8;
+  --dawn-band: linear-gradient(
+    180deg,
+    #08051a 0%,
+    #221248 20%,
+    #6d5ba8 44%,
+    #c8b6f0 62%,
+    #f4a97c 78%,
+    #f8e9d4 90%,
+    #f4eee3 100%
+  );
+  --day-glow: radial-gradient(
+    ellipse 70% 50% at 50% 0%,
+    rgba(244, 198, 96, 0.18),
+    transparent 70%
+  );
+}
+
+.bg-dusk-band {
+  background: linear-gradient(
+    180deg,
+    #f4eee3 0%,
+    #f8e9d4 10%,
+    #f4a97c 30%,
+    #c8b6f0 50%,
+    #6d5ba8 66%,
+    #221248 84%,
+    #08051a 100%
+  );
+}
+
+.bg-dawn-band {
+  background: var(--dawn-band);
+}
+
+.text-aurora {
+  background: var(--aurora);
+  background-clip: text;
+  color: transparent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.marketing-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.65'/%3E%3C/svg%3E");
+}
+
+@keyframes marketing-marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marketing-marquee-x 36s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
 /* Inside the light "warm paper" app surface, links inherit the surrounding
  * ink color by default instead of the global brand-violet link color, so
  * card and structural links never leak violet (e.g. the hero eyebrow).

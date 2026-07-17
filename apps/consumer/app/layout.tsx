@@ -68,7 +68,7 @@ const displayItalic = Fraunces({
 export const metadata: Metadata = {
   title: "Tareeq — Discover what you're built for",
   description:
-    "12 minutes. 60 questions. One clear path. A career discovery compass for youth in MENA, built on the CORE model.",
+    "12 minutes. 54 questions. One clear path. A career discovery compass for youth in MENA, built on the CORE model.",
 };
 
 export const viewport: Viewport = {
