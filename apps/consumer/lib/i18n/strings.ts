@@ -1342,6 +1342,115 @@ export const STRINGS = {
   "results.action.save": { en: "Save", ar: "حفظ" },
   "results.action.parent_view": { en: "Parent view", ar: "عرض لولي الأمر" },
   "results.action.start_over": { en: "Start over", ar: "ابدأ من جديد" },
+  "results.save.preparing": { en: "Preparing…", ar: "جارٍ التجهيز…" },
+  "results.save.print_ready": {
+    en: "A clean copy opened. Choose “Save as PDF” in the print window.",
+    ar: "فُتحت نسخة جاهزة. اختر «حفظ كملف PDF» من نافذة الطباعة.",
+  },
+  "results.save.downloaded": {
+    en: "Your report was saved to Downloads.",
+    ar: "تم حفظ تقريرك في التنزيلات.",
+  },
+  "results.save.error": {
+    en: "We couldn’t prepare the file. Please try again.",
+    ar: "تعذّر تجهيز الملف. حاول مرة أخرى.",
+  },
+  "results.export.title": {
+    en: "{name}’s Career Compass",
+    ar: "بوصلة {name} المهنية",
+  },
+  "results.export.subtitle": {
+    en: "A portable copy of your Tareeq result, including the signals, paths, and next steps that stood out.",
+    ar: "نسخة قابلة للحفظ من نتيجة طريق، وتشمل أبرز الإشارات والمسارات والخطوات القادمة.",
+  },
+  "results.export.summary_title": {
+    en: "Your result at a glance",
+    ar: "نتيجتك في لمحة",
+  },
+  "results.export.note": {
+    en: "This result is a guide for exploration, not a fixed verdict. Use it to test possibilities and notice what fits.",
+    ar: "هذه النتيجة دليل للاستكشاف وليست حكماً نهائياً. استخدمها لتجربة الاحتمالات وملاحظة ما يناسبك.",
+  },
+  "results.export.footer": {
+    en: "Tareeq Career Compass",
+    ar: "بوصلة طريق المهنية",
+  },
+  "results.parent.eyebrow": {
+    en: "For parents and guardians",
+    ar: "لأولياء الأمور",
+  },
+  "results.parent.title": {
+    en: "{name}’s Career Compass",
+    ar: "بوصلة {name} المهنية",
+  },
+  "results.parent.intro": {
+    en: "A conversation guide for supporting exploration without turning one result into a final decision.",
+    ar: "دليل حوار يساعد على دعم الاستكشاف من دون تحويل نتيجة واحدة إلى قرار نهائي.",
+  },
+  "results.parent.cluster": { en: "Strongest interest", ar: "الاهتمام الأبرز" },
+  "results.parent.style": { en: "Work style", ar: "أسلوب العمل" },
+  "results.parent.motivation": { en: "Motivation", ar: "الدافع" },
+  "results.parent.environment": { en: "Best environment", ar: "البيئة الأنسب" },
+  "results.parent.noticed_title": {
+    en: "What the assessment noticed",
+    ar: "ما لاحظه التقييم",
+  },
+  "results.parent.paths_title": {
+    en: "Paths worth exploring",
+    ar: "مسارات تستحق الاستكشاف",
+  },
+  "results.parent.paths_intro": {
+    en: "These are starting points for research and real-world exposure, not commitments.",
+    ar: "هذه نقاط بداية للبحث والتجربة الواقعية، وليست التزامات نهائية.",
+  },
+  "results.parent.support_title": {
+    en: "How to support the next step",
+    ar: "كيف تدعم الخطوة القادمة",
+  },
+  "results.parent.support_interest": {
+    en: "Start with curiosity. Ask what feels energizing before discussing a final choice.",
+    ar: "ابدأ بالفضول. اسأل عمّا يثير الحماس قبل مناقشة الاختيار النهائي.",
+  },
+  "results.parent.support_experiment": {
+    en: "Treat each suggested path as an experiment: a conversation, a short course, a visit, or a small project.",
+    ar: "تعامل مع كل مسار مقترح كتجربة: حوار أو دورة قصيرة أو زيارة أو مشروع صغير.",
+  },
+  "results.parent.support_action": {
+    en: "Help turn the next step into one small action with a clear date, while leaving ownership with the student.",
+    ar: "ساعد في تحويل الخطوة القادمة إلى فعل صغير بموعد واضح، مع إبقاء القرار بيد الطالب.",
+  },
+  "results.parent.questions_title": {
+    en: "Questions to ask together",
+    ar: "أسئلة تناقشونها معاً",
+  },
+  "results.parent.question_one": {
+    en: "Which part of this result felt most like you?",
+    ar: "أي جزء من هذه النتيجة شعرت أنه يشبهك أكثر؟",
+  },
+  "results.parent.question_two": {
+    en: "Which path would you like to learn about first, and why?",
+    ar: "أي مسار ترغب في معرفة المزيد عنه أولاً؟ ولماذا؟",
+  },
+  "results.parent.question_three": {
+    en: "What is one small step we can help with this month?",
+    ar: "ما الخطوة الصغيرة التي يمكننا مساعدتك فيها هذا الشهر؟",
+  },
+  "results.parent.next_step_title": {
+    en: "The next step in the report",
+    ar: "الخطوة القادمة في التقرير",
+  },
+  "results.parent.note": {
+    en: "Keep this exploratory. Interests and confidence change through experience, so the best support is exposure, reflection, and room to revise.",
+    ar: "حافظوا على روح الاستكشاف. تتغيّر الاهتمامات والثقة مع التجربة، وأفضل دعم هو إتاحة الخبرات والتأمل ومساحة لتغيير الرأي.",
+  },
+  "results.parent.save": {
+    en: "Save parent guide",
+    ar: "حفظ دليل ولي الأمر",
+  },
+  "results.parent.close_aria": {
+    en: "Close parent view",
+    ar: "إغلاق عرض ولي الأمر",
+  },
   "results.share.shared": { en: "Shared.", ar: "تمت المشاركة." },
   "results.share.copied": { en: "Summary copied.", ar: "تم نسخ الملخص." },
   "results.share.cancelled": {
