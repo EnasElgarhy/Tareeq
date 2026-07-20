@@ -54,6 +54,11 @@ type AssessmentAudioContextValue = AssessmentAudioState & {
   setPlaybackRate(rate: number): void;
 };
 
+type PreloadedAudioEntry = {
+  objectUrl: string | null;
+  promise: Promise<string | null>;
+};
+
 const AssessmentAudioContext =
   createContext<AssessmentAudioContextValue | null>(null);
 
@@ -67,7 +72,7 @@ const INITIAL_STATE: AssessmentAudioState = {
   error: null,
 };
 
-const PRELOAD_CACHE_LIMIT = 6;
+const PRELOAD_CACHE_LIMIT = 4;
 
 function readInitialMuted() {
   if (typeof window === "undefined") return false;
@@ -97,7 +102,7 @@ export function AssessmentAudioProvider({ children }: { children: ReactNode }) {
   const voiceRequiresGestureRef = useRef(false);
   const voiceUnlockedRef = useRef(false);
   const playbackRateRef = useRef(1);
-  const preloadCacheRef = useRef(new Map<string, HTMLLinkElement>());
+  const preloadCacheRef = useRef(new Map<string, PreloadedAudioEntry>());
   const stateRef = useRef<AssessmentAudioState>({
     ...INITIAL_STATE,
     isMuted: readInitialMuted(),
@@ -184,6 +189,26 @@ export function AssessmentAudioProvider({ children }: { children: ReactNode }) {
     updateState({ isPlaying: false, isPreparing: false, mouthOpen: 0 });
   }, [stopLipSync, updateState]);
 
+  const resolvePreloadedSource = useCallback(
+    async (source: AssessmentAudioSource, token: number) => {
+      if (source.kind !== "static") return source.src;
+      const cache = preloadCacheRef.current;
+      const entry = cache.get(source.src);
+      if (!entry) return source.src;
+
+      // Touch the entry so the clip currently about to play is not the next
+      // one evicted by the bounded one-question-ahead cache.
+      cache.delete(source.src);
+      cache.set(source.src, entry);
+      const objectUrl = await entry.promise;
+      if (playbackTokenRef.current !== token) {
+        throw new Error("stale-playback");
+      }
+      return objectUrl ?? source.src;
+    },
+    [],
+  );
+
   const playSource = useCallback(
     async (
       request: InternalNarrationRequest,
@@ -193,10 +218,11 @@ export function AssessmentAudioProvider({ children }: { children: ReactNode }) {
       const audio = audioRef.current;
       if (!audio) throw new Error("Audio element unavailable.");
       if (playbackTokenRef.current !== token) throw new Error("stale-playback");
+      const playableSrc = await resolvePreloadedSource(source, token);
 
       audio.pause();
-      if (audio.getAttribute("src") !== source.src || audio.readyState === 0) {
-        audio.src = source.src;
+      if (audio.getAttribute("src") !== playableSrc || audio.readyState === 0) {
+        audio.src = playableSrc;
         audio.load();
       }
       audio.currentTime = 0;
@@ -240,7 +266,7 @@ export function AssessmentAudioProvider({ children }: { children: ReactNode }) {
       });
       startLipSync(token);
     },
-    [ensureLipSyncGraph, startLipSync, updateState],
+    [ensureLipSyncGraph, resolvePreloadedSource, startLipSync, updateState],
   );
 
   const beginPlayback = useCallback(
@@ -370,7 +396,7 @@ export function AssessmentAudioProvider({ children }: { children: ReactNode }) {
 
   const preloadNarration = useCallback(
     ({ audioId, locale = "en", fallbackSources }: PreloadNarrationOptions) => {
-      if (typeof document === "undefined") return;
+      if (typeof window === "undefined") return;
       const sources = resolveAssessmentNarrationSources({
         audioId,
         locale,
@@ -379,20 +405,42 @@ export function AssessmentAudioProvider({ children }: { children: ReactNode }) {
       const source = firstPreloadableAssessmentAudioSource(sources);
       if (!source || preloadCacheRef.current.has(source.src)) return;
 
-      const link = document.createElement("link");
-      link.rel = "preload";
-      link.as = "audio";
-      link.href = source.src;
-      document.head.appendChild(link);
-      preloadCacheRef.current.set(source.src, link);
+      const cache = preloadCacheRef.current;
+      const entry: PreloadedAudioEntry = {
+        objectUrl: null,
+        promise: Promise.resolve(null),
+      };
+      entry.promise = window
+        .fetch(source.src, { cache: "force-cache" })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`Unable to preload ${source.src}`);
+          }
+          return response.blob();
+        })
+        .then((blob) => {
+          const objectUrl = URL.createObjectURL(blob);
+          if (cache.get(source.src) !== entry) {
+            URL.revokeObjectURL(objectUrl);
+            return null;
+          }
+          entry.objectUrl = objectUrl;
+          return objectUrl;
+        })
+        .catch(() => {
+          if (cache.get(source.src) === entry) {
+            cache.delete(source.src);
+          }
+          return null;
+        });
+      cache.set(source.src, entry);
 
-      while (preloadCacheRef.current.size > PRELOAD_CACHE_LIMIT) {
-        const oldest = preloadCacheRef.current.keys().next().value as
-          | string
-          | undefined;
+      while (cache.size > PRELOAD_CACHE_LIMIT) {
+        const oldest = cache.keys().next().value as string | undefined;
         if (!oldest) break;
-        preloadCacheRef.current.get(oldest)?.remove();
-        preloadCacheRef.current.delete(oldest);
+        const evicted = cache.get(oldest);
+        cache.delete(oldest);
+        if (evicted?.objectUrl) URL.revokeObjectURL(evicted.objectUrl);
       }
     },
     [],
@@ -517,8 +565,8 @@ export function AssessmentAudioProvider({ children }: { children: ReactNode }) {
       audio?.pause();
       stopLipSync(false);
       void audioContextRef.current?.close();
-      for (const link of preloadCache.values()) {
-        link.remove();
+      for (const entry of preloadCache.values()) {
+        if (entry.objectUrl) URL.revokeObjectURL(entry.objectUrl);
       }
       preloadCache.clear();
     };

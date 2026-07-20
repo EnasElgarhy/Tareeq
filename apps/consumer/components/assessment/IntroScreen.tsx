@@ -20,6 +20,7 @@ export function IntroScreen() {
   const [introCopyActive, setIntroCopyActive] = useState(false);
   const [introCopyRun, setIntroCopyRun] = useState(0);
   const [introTypeSpeed, setIntroTypeSpeed] = useState(44);
+  const [kaiVideoReady, setKaiVideoReady] = useState(false);
   const {
     audioRef,
     playNarration,
@@ -64,14 +65,35 @@ export function IntroScreen() {
   }, []);
 
   useEffect(() => {
+    const controller = new AbortController();
+    void window
+      .fetch("/kai/kai-question-green-v3.mp4", {
+        cache: "force-cache",
+        signal: controller.signal,
+      })
+      .catch(() => {});
+    return () => controller.abort();
+  }, []);
+
+  useEffect(() => {
     preloadNarration({ audioId: INTRO_NARRATION_AUDIO_ID, locale });
+  }, [locale, preloadNarration]);
+
+  useEffect(() => {
+    if (!kaiVideoReady) return;
     playNarration({
       audioId: INTRO_NARRATION_AUDIO_ID,
       locale,
       ownerId: INTRO_NARRATION_OWNER_ID,
     });
     return () => stopNarration(INTRO_NARRATION_OWNER_ID);
-  }, [locale, playNarration, preloadNarration, stopNarration]);
+  }, [kaiVideoReady, locale, playNarration, stopNarration]);
+
+  useEffect(() => {
+    if (kaiVideoReady) return;
+    const timeout = window.setTimeout(() => setKaiVideoReady(true), 3500);
+    return () => window.clearTimeout(timeout);
+  }, [kaiVideoReady]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -151,9 +173,11 @@ export function IntroScreen() {
                 (same line), freezes on her closed-mouth smile when done. */}
             <KaiChromaVideo
               size={232}
-              src="/kai/kai-intro-green.mp4"
+              src="/kai/kai-intro-green-v2.mp4"
               audioRef={audioRef}
+              onReadyChange={setKaiVideoReady}
               playStart={0}
+              playEnd={7.9}
               restTime={0}
             />
           </div>

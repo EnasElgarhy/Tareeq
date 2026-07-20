@@ -3,6 +3,7 @@
 import {
   useEffect,
   useRef,
+  useState,
   type CSSProperties,
   type HTMLAttributes,
   type RefObject,
@@ -18,6 +19,10 @@ interface KaiChromaVideoProps extends HTMLAttributes<HTMLDivElement> {
   size?: number | string;
   /** Green-screen source clip. */
   src?: string;
+  /** Transparent still shown immediately and retained if video/WebGL fails. */
+  posterSrc?: string;
+  /** Signals when narration can begin without outrunning the video decoder. */
+  onReadyChange?: (ready: boolean) => void;
   /**
    * Frame-accurate audio sync. When provided, the clip plays only while
    * this <audio> element is actually playing, and freezes on `restTime`
@@ -65,7 +70,9 @@ interface KaiChromaVideoProps extends HTMLAttributes<HTMLDivElement> {
  */
 export function KaiChromaVideo({
   size = 240,
-  src = "/kai/kai-intro-green.mp4",
+  src = "/kai/kai-intro-green-v2.mp4",
+  posterSrc = "/kai/kai-rest-v2.webp",
+  onReadyChange,
   audioRef,
   playing = true,
   restTime = 0,
@@ -78,6 +85,7 @@ export function KaiChromaVideo({
 }: KaiChromaVideoProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [hasRenderedFrame, setHasRenderedFrame] = useState(false);
   // Whether the clip should currently be animating. For audio-driven
   // screens this starts false (waits for the audio to play); otherwise it
   // tracks the `playing` prop.
@@ -91,22 +99,25 @@ export function KaiChromaVideo({
     const video = videoRef.current;
     if (!canvas || !video) return;
 
+    setHasRenderedFrame(false);
+    onReadyChange?.(false);
+    const releasePlaybackGate = () => onReadyChange?.(true);
     const gl = canvas.getContext("webgl", {
       premultipliedAlpha: false,
       alpha: true,
-      antialias: true,
-      // Readable buffer (lets us scan the keyed output for fringes; the
-      // cost is negligible for a small avatar canvas).
-      preserveDrawingBuffer: true,
+      antialias: false,
+      preserveDrawingBuffer: false,
     });
 
-    // Graceful fallback: if WebGL is unavailable, just reveal the raw
-    // <video> (still better than a blank box). Very rare on modern UAs.
+    // The transparent poster remains visible if WebGL is unavailable.
+    // Revealing the raw green-screen source would be worse than a still Kai.
     if (!gl) {
-      video.style.opacity = "1";
-      void video.play().catch(() => {});
+      releasePlaybackGate();
       return;
     }
+    const canvasElement: HTMLCanvasElement = canvas;
+    const videoElement: HTMLVideoElement = video;
+    const webGl: WebGLRenderingContext = gl;
 
     const VERT = `
       attribute vec2 a_pos;
@@ -151,19 +162,42 @@ export function KaiChromaVideo({
     `;
 
     function compile(type: number, source: string) {
-      const shader = gl!.createShader(type)!;
-      gl!.shaderSource(shader, source);
-      gl!.compileShader(shader);
-      if (!gl!.getShaderParameter(shader, gl!.COMPILE_STATUS)) {
-        console.warn("KaiChromaVideo shader error:", gl!.getShaderInfoLog(shader));
+      const shader = webGl.createShader(type);
+      if (!shader) return null;
+      webGl.shaderSource(shader, source);
+      webGl.compileShader(shader);
+      if (!webGl.getShaderParameter(shader, webGl.COMPILE_STATUS)) {
+        console.warn(
+          "KaiChromaVideo shader error:",
+          webGl.getShaderInfoLog(shader),
+        );
+        webGl.deleteShader(shader);
+        return null;
       }
       return shader;
     }
 
-    const program = gl.createProgram()!;
-    gl.attachShader(program, compile(gl.VERTEX_SHADER, VERT));
-    gl.attachShader(program, compile(gl.FRAGMENT_SHADER, FRAG));
+    const vertexShader = compile(gl.VERTEX_SHADER, VERT);
+    const fragmentShader = compile(gl.FRAGMENT_SHADER, FRAG);
+    const program = gl.createProgram();
+    if (!vertexShader || !fragmentShader || !program) {
+      if (vertexShader) gl.deleteShader(vertexShader);
+      if (fragmentShader) gl.deleteShader(fragmentShader);
+      if (program) gl.deleteProgram(program);
+      releasePlaybackGate();
+      return;
+    }
+    gl.attachShader(program, vertexShader);
+    gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      console.warn("KaiChromaVideo link error:", gl.getProgramInfoLog(program));
+      gl.deleteShader(vertexShader);
+      gl.deleteShader(fragmentShader);
+      gl.deleteProgram(program);
+      releasePlaybackGate();
+      return;
+    }
     gl.useProgram(program);
 
     // Full-screen quad.
@@ -181,7 +215,7 @@ export function KaiChromaVideo({
     // Tunable key. These defaults are matched to Kai's bright-green
     // backdrop while preserving the polka-dot blouse and skin tones.
     gl.uniform1f(gl.getUniformLocation(program, "u_t0"), 0.06);
-    gl.uniform1f(gl.getUniformLocation(program, "u_t1"), 0.20);
+    gl.uniform1f(gl.getUniformLocation(program, "u_t1"), 0.2);
     gl.uniform1f(gl.getUniformLocation(program, "u_spill"), 1.0);
 
     const texture = gl.createTexture();
@@ -198,152 +232,208 @@ export function KaiChromaVideo({
     gl.disable(gl.DEPTH_TEST);
     gl.disable(gl.BLEND);
 
-    let raf = 0;
+    type FrameVideo = {
+      requestVideoFrameCallback?: (callback: () => void) => number;
+      cancelVideoFrameCallback?: (handle: number) => void;
+    };
+
+    const frameVideo = videoElement as unknown as FrameVideo;
+    let syncRaf = 0;
+    let renderRaf = 0;
+    let videoFrameHandle: number | null = null;
     let disposed = false;
     let pausedFrames = 0;
-    // Start as "true" so the first frame with want=false fires a falling
-    // edge → seek to the rest frame and pause (clean initial rest state).
-    let prevWant = true;
-
-    const tryPlay = () => {
-      if (disposed || !playingRef.current) return;
-      const p = video!.play();
-      if (p && typeof p.catch === "function") p.catch(() => {});
-    };
+    let prevWant = false;
+    let revealedFrame = false;
 
     function sizeCanvas() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const cssSize = canvas!.clientWidth || 240;
+      const cssSize = canvasElement.clientWidth || 240;
       const px = Math.round(cssSize * dpr);
-      if (canvas!.width !== px || canvas!.height !== px) {
-        canvas!.width = px;
-        canvas!.height = px;
-        gl!.viewport(0, 0, px, px);
+      if (canvasElement.width !== px || canvasElement.height !== px) {
+        canvasElement.width = px;
+        canvasElement.height = px;
+        webGl.viewport(0, 0, px, px);
       }
     }
 
-    function frame() {
-      if (disposed) return;
-      if (video!.readyState >= 2) {
-        sizeCanvas();
-        gl!.clear(gl!.COLOR_BUFFER_BIT);
-        gl!.texImage2D(
-          gl!.TEXTURE_2D,
-          0,
-          gl!.RGBA,
-          gl!.RGBA,
-          gl!.UNSIGNED_BYTE,
-          video!,
-        );
-        gl!.drawArrays(gl!.TRIANGLES, 0, 6);
+    function renderFrame() {
+      if (
+        disposed ||
+        videoElement.readyState < HTMLMediaElement.HAVE_CURRENT_DATA
+      ) {
+        return;
       }
-      // ── Deterministic playback reconciliation ──────────────────────
-      // ALL video play/pause/seek happens here, edge-detected, so there are
-      // no event-race conflicts between seeking and play().
-      const { playStart: ps, playEnd: pe, restTime: rt, loop: lp } =
-        cfgRef.current;
-      // Audio mode: gate on the audio's REAL progress, not its play/playing
-      // events. Those fire up to ~300ms before the audio pipeline actually
-      // produces sound (decode/render latency), which made Kai's mouth run
-      // ahead of the voice. currentTime only advances once sound is truly
-      // audible, so `currentTime > AUDIBLE_EPS` starts her within ~1 frame of
-      // the first audible moment. Static mode falls back to the `playing`
-      // flag set from the prop.
+      try {
+        sizeCanvas();
+        webGl.clear(webGl.COLOR_BUFFER_BIT);
+        webGl.texImage2D(
+          webGl.TEXTURE_2D,
+          0,
+          webGl.RGBA,
+          webGl.RGBA,
+          webGl.UNSIGNED_BYTE,
+          videoElement,
+        );
+        webGl.drawArrays(webGl.TRIANGLES, 0, 6);
+        if (!revealedFrame) {
+          revealedFrame = true;
+          setHasRenderedFrame(true);
+          releasePlaybackGate();
+        }
+      } catch {
+        // Keep the matching transparent poster visible on decode/context loss.
+      }
+    }
+
+    function scheduleDecodedFrame() {
+      if (
+        disposed ||
+        videoFrameHandle != null ||
+        !frameVideo.requestVideoFrameCallback
+      ) {
+        return;
+      }
+      videoFrameHandle = frameVideo.requestVideoFrameCallback(() => {
+        videoFrameHandle = null;
+        renderFrame();
+        if (!disposed && !videoElement.paused && playingRef.current) {
+          scheduleDecodedFrame();
+        }
+      });
+    }
+
+    function scheduleFallbackFrame() {
+      if (disposed || renderRaf !== 0 || frameVideo.requestVideoFrameCallback) {
+        return;
+      }
+      const tick = () => {
+        renderRaf = 0;
+        renderFrame();
+        if (!disposed && !videoElement.paused && playingRef.current) {
+          renderRaf = window.requestAnimationFrame(tick);
+        }
+      };
+      renderRaf = window.requestAnimationFrame(tick);
+    }
+
+    const tryPlay = () => {
+      if (disposed || !playingRef.current) return;
+      const playPromise = videoElement.play();
+      scheduleDecodedFrame();
+      scheduleFallbackFrame();
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(() => {});
+      }
+    };
+
+    function seekTo(time: number) {
+      try {
+        videoElement.currentTime = time;
+      } catch {
+        // Metadata is not ready yet. loadedmetadata will reconcile the seek.
+      }
+    }
+
+    function syncPlayback() {
+      if (disposed) return;
+      const {
+        playStart: ps,
+        playEnd: pe,
+        restTime: rt,
+        loop: lp,
+      } = cfgRef.current;
       const audioEl = audioRef?.current ?? null;
       const want = audioEl
         ? !audioEl.paused && !audioEl.ended && audioEl.currentTime > AUDIBLE_EPS
         : playingRef.current;
-      // Keep playingRef in sync with the live decision so tryPlay()'s guard
-      // (which bails when !playingRef.current) actually lets the clip play in
-      // audio mode — otherwise the video seeks to the talking frame and
-      // freezes there, mouth never moving.
       playingRef.current = want;
-      // A play-once clip that has finished → hold its last (smiling) frame.
-      const holding = !lp && pe == null && video!.ended;
+      const holding = !lp && pe == null && videoElement.ended;
 
       if (want && !prevWant) {
-        // Rising edge. Fresh start → jump to playStart; resume after a brief
-        // quiet gap → keep the current position (don't restart the sentence).
         const fresh =
-          video!.ended ||
-          video!.currentTime <= ps + 0.05 ||
-          (pe != null && video!.currentTime >= pe);
+          videoElement.ended ||
+          videoElement.currentTime <= ps + 0.05 ||
+          (pe != null && videoElement.currentTime >= pe);
         if (fresh) {
-          try {
-            video!.currentTime = ps;
-          } catch {
-            /* metadata not ready yet */
-          }
+          seekTo(ps);
         }
         tryPlay();
         pausedFrames = 0;
       } else if (!want && prevWant) {
-        // Falling edge: audio truly stopped (paused/ended) → freeze on the
-        // closed-mouth rest frame. `want` only drops when the audio is no
-        // longer progressing, so a mid-narration silent beat (currentTime
-        // still advancing) never triggers this.
-        video!.pause();
-        try {
-          video!.currentTime = rt;
-        } catch {
-          /* metadata not ready yet */
-        }
+        videoElement.pause();
+        seekTo(rt);
       } else if (want) {
-        // Sustained playing: loop the talking window, loop the whole clip if
-        // `loop`, otherwise play once and hold the final frame.
-        if (pe != null && video!.currentTime >= pe) {
-          try {
-            video!.currentTime = ps;
-          } catch {
-            /* ignore */
-          }
-        } else if (lp && video!.ended) {
-          try {
-            video!.currentTime = ps;
-          } catch {
-            /* ignore */
-          }
+        if (pe != null && videoElement.currentTime >= pe) {
+          seekTo(ps);
+        } else if (lp && videoElement.ended) {
+          seekTo(ps);
         }
-        if (video!.paused && video!.readyState >= 2 && !holding) {
+        if (videoElement.paused && videoElement.readyState >= 2 && !holding) {
           if (pausedFrames++ % 20 === 0) tryPlay();
         } else {
           pausedFrames = 0;
         }
-      } else if (video!.readyState >= 2) {
-        // Sustained rest: keep her frozen. Kill any stray playback that would
-        // make her mouth move after she's "done talking".
-        if (!video!.paused) {
-          video!.pause();
-          try {
-            video!.currentTime = rt;
-          } catch {
-            /* ignore */
-          }
-        }
+      } else if (videoElement.readyState >= 2 && !videoElement.paused) {
+        videoElement.pause();
+        seekTo(rt);
+      }
+
+      if (want) {
+        scheduleDecodedFrame();
+        scheduleFallbackFrame();
       }
       prevWant = want;
-      raf = requestAnimationFrame(frame);
+      syncRaf = window.requestAnimationFrame(syncPlayback);
     }
 
-    raf = requestAnimationFrame(frame);
+    const reconcileRestFrame = () => {
+      if (!playingRef.current) {
+        videoElement.pause();
+        seekTo(cfgRef.current.restTime);
+      }
+      renderFrame();
+    };
+    const handleSeeked = () => renderFrame();
+    const handleContextLost = (event: Event) => {
+      event.preventDefault();
+      revealedFrame = false;
+      setHasRenderedFrame(false);
+    };
+    const handleMediaError = () => releasePlaybackGate();
+
+    videoElement.addEventListener("loadedmetadata", reconcileRestFrame);
+    videoElement.addEventListener("loadeddata", reconcileRestFrame);
+    videoElement.addEventListener("seeked", handleSeeked);
+    videoElement.addEventListener("error", handleMediaError);
+    canvasElement.addEventListener("webglcontextlost", handleContextLost);
+
+    if (videoElement.readyState >= HTMLMediaElement.HAVE_METADATA) {
+      reconcileRestFrame();
+    }
+    syncRaf = window.requestAnimationFrame(syncPlayback);
 
     return () => {
       disposed = true;
-      cancelAnimationFrame(raf);
-      video.pause();
-      gl.deleteTexture(texture);
-      gl.deleteBuffer(buffer);
-      gl.deleteProgram(program);
+      window.cancelAnimationFrame(syncRaf);
+      if (renderRaf !== 0) window.cancelAnimationFrame(renderRaf);
+      if (videoFrameHandle != null && frameVideo.cancelVideoFrameCallback) {
+        frameVideo.cancelVideoFrameCallback(videoFrameHandle);
+      }
+      videoElement.removeEventListener("loadedmetadata", reconcileRestFrame);
+      videoElement.removeEventListener("loadeddata", reconcileRestFrame);
+      videoElement.removeEventListener("seeked", handleSeeked);
+      videoElement.removeEventListener("error", handleMediaError);
+      canvasElement.removeEventListener("webglcontextlost", handleContextLost);
+      videoElement.pause();
+      webGl.deleteTexture(texture);
+      webGl.deleteBuffer(buffer);
+      webGl.deleteProgram(program);
+      webGl.deleteShader(vertexShader);
+      webGl.deleteShader(fragmentShader);
     };
-    // audioRef is a stable ref object (read live inside the rAF loop); listing
-    // it satisfies exhaustive-deps without causing re-runs.
-  }, [src, audioRef]);
+  }, [src, audioRef, onReadyChange]);
 
-  // Static (no-audio) mode only: mirror the `playing` prop into the flag the
-  // rAF loop reads. In audio mode the loop reads the <audio> element's live
-  // currentTime/paused state directly each frame (see frame()), so no event
-  // wiring is needed — and gating on real progress rather than play/playing
-  // events is what keeps Kai's mouth aligned to the actual voice.
   useEffect(() => {
     if (audioRef) return;
     playingRef.current = playing;
@@ -356,8 +446,16 @@ export function KaiChromaVideo({
       {...rest}
       aria-hidden="true"
       className={["kai-chroma", className].filter(Boolean).join(" ")}
-      style={{ width: visualSize, height: visualSize, ...style } as CSSProperties}
+      data-frame-ready={hasRenderedFrame ? "true" : "false"}
+      style={
+        { width: visualSize, height: visualSize, ...style } as CSSProperties
+      }
     >
+      <span
+        className="kai-chroma__poster"
+        data-visible={hasRenderedFrame ? "false" : "true"}
+        style={{ backgroundImage: `url("${posterSrc}")` }}
+      />
       <video
         ref={videoRef}
         className="kai-chroma__source"
@@ -367,7 +465,11 @@ export function KaiChromaVideo({
         preload="auto"
         crossOrigin="anonymous"
       />
-      <canvas ref={canvasRef} className="kai-chroma__canvas" />
+      <canvas
+        ref={canvasRef}
+        className="kai-chroma__canvas"
+        data-visible={hasRenderedFrame ? "true" : "false"}
+      />
     </div>
   );
 }

@@ -4,7 +4,7 @@ import type { KaiMemoryUpdateCandidate } from "@/lib/kai/memory/memory-types";
 export interface KaiChatResult {
   message: KaiMessage;
   summary?: string;
-  source: "gemini" | "fallback";
+  source: "gemini" | "fallback" | "guardrail";
   memoryUpdates?: KaiMemoryUpdateCandidate[];
   personSummary?: string;
   timings?: {

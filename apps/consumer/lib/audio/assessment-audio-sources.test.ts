@@ -1,37 +1,122 @@
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { readFileSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
+import { getKaiNarrationManifest } from "./kai-narration";
+import {
+  APPROVED_KAI_ENGLISH_VOICE,
+  isPersistedAssessmentVoiceAllowed,
+} from "./assessment-voice";
 import {
   firstPreloadableAssessmentAudioSource,
   resolveAssessmentNarrationSources,
 } from "./assessment-audio-sources";
 
+type EnglishVoiceManifest = {
+  schemaVersion: number;
+  locale: string;
+  voice: {
+    id: string;
+    accent: string;
+    gender: string;
+    modelId: string;
+  };
+  clips: Array<{
+    audioId: string;
+    path: string;
+    bytes: number;
+    sha256: string;
+  }>;
+};
+
 describe("resolveAssessmentNarrationSources", () => {
-  it("keeps the approved English assessment narrator intro recording", () => {
-    const introAudio = readFileSync(
-      resolve(process.cwd(), "public/audio/kai_intro.m4a"),
+  it("rejects persisted English clips from any other voice", () => {
+    expect(
+      isPersistedAssessmentVoiceAllowed(
+        "en-GB",
+        APPROVED_KAI_ENGLISH_VOICE.id,
+      ),
+    ).toBe(true);
+    expect(isPersistedAssessmentVoiceAllowed("en", "another-voice")).toBe(
+      false,
+    );
+    expect(isPersistedAssessmentVoiceAllowed("en", null)).toBe(false);
+    expect(isPersistedAssessmentVoiceAllowed("ar", "arabic-voice")).toBe(true);
+  });
+
+  it("keeps a baked Arabic clip for every assessment question", () => {
+    const audioIds = [
+      ...Array.from({ length: 4 }, (_, index) => `QD${index + 1}`),
+      ...Array.from({ length: 40 }, (_, index) => `Q${index + 1}`),
+      ...Array.from({ length: 10 }, (_, index) => `QT${index + 1}`),
+    ];
+
+    for (const audioId of audioIds) {
+      expect(
+        statSync(resolve(process.cwd(), `public/audio/${audioId}.ar.mp3`)).size,
+      ).toBeGreaterThan(1_000);
+    }
+  });
+
+  it("locks every English narration clip to the approved British voice bake", () => {
+    const manifest = JSON.parse(
+      readFileSync(
+        resolve(
+          process.cwd(),
+          "public/audio/en-british-v1/voice-manifest.json",
+        ),
+        "utf8",
+      ),
+    ) as EnglishVoiceManifest;
+    const expectedAudioIds = getKaiNarrationManifest("en")
+      .map(({ id }) => id)
+      .sort();
+
+    expect(manifest.schemaVersion).toBe(1);
+    expect(manifest.locale).toBe("en");
+    expect(manifest.voice).toMatchObject({
+      id: APPROVED_KAI_ENGLISH_VOICE.id,
+      accent: APPROVED_KAI_ENGLISH_VOICE.accent,
+      gender: APPROVED_KAI_ENGLISH_VOICE.gender,
+      modelId: APPROVED_KAI_ENGLISH_VOICE.modelId,
+    });
+    expect(manifest.clips.map(({ audioId }) => audioId).sort()).toEqual(
+      expectedAudioIds,
     );
 
-    expect(createHash("sha256").update(introAudio).digest("hex")).toBe(
-      "956a785c3642a7405575f9d6ac8fa2a73696e3031700047c99436b51c78e7b50",
-    );
+    for (const clip of manifest.clips) {
+      const audio = readFileSync(
+        resolve(process.cwd(), "public", clip.path.replace(/^\//, "")),
+      );
+      expect(audio.byteLength).toBe(clip.bytes);
+      expect(createHash("sha256").update(audio).digest("hex")).toBe(
+        clip.sha256,
+      );
+      expect(
+        resolveAssessmentNarrationSources({
+          audioId: clip.audioId,
+          locale: "en",
+        })[0],
+      ).toEqual({ kind: "static", src: clip.path });
+    }
   });
 
   it("prefers baked English question audio before the TTS API", () => {
     expect(
       resolveAssessmentNarrationSources({ audioId: "Q12", locale: "en" }),
     ).toEqual([
-      { kind: "static", src: "/audio/Q12.m4a" },
-      { kind: "static", src: "/audio/Q12.mp3" },
+      { kind: "static", src: "/audio/en-british-v1/Q12.mp3" },
       { kind: "api", src: "/api/kai-tts/Q12?locale=en" },
     ]);
   });
 
-  it("does not preload generic question audio for Arabic", () => {
+  it("prefers baked Arabic question audio before the TTS API", () => {
     expect(
       resolveAssessmentNarrationSources({ audioId: "Q12", locale: "ar" }),
-    ).toEqual([{ kind: "api", src: "/api/kai-tts/Q12?locale=ar" }]);
+    ).toEqual([
+      { kind: "static", src: "/audio/Q12.ar.mp3" },
+      { kind: "api", src: "/api/kai-tts/Q12?locale=ar" },
+    ]);
   });
 
   it("never uses unlocalized static narration for Arabic", () => {
@@ -60,15 +145,29 @@ describe("resolveAssessmentNarrationSources", () => {
     ]);
   });
 
-  it("uses the assessment narrator for English and localized Arabic intro", () => {
+  it("uses the canonical English voice for interstitials", () => {
+    expect(
+      resolveAssessmentNarrationSources({
+        audioId: "kai_after_10",
+        locale: "en",
+      }),
+    ).toEqual([
+      {
+        kind: "static",
+        src: "/audio/en-british-v1/kai_after_10.mp3",
+      },
+      { kind: "api", src: "/api/kai-tts/kai_after_10?locale=en" },
+    ]);
+  });
+
+  it("uses the canonical English voice and localized Arabic intro", () => {
     expect(
       resolveAssessmentNarrationSources({
         audioId: "kai_intro",
         locale: "en",
       }),
     ).toEqual([
-      { kind: "static", src: "/audio/kai_intro.m4a" },
-      { kind: "static", src: "/audio/kai_intro.mp3" },
+      { kind: "static", src: "/audio/en-british-v1/kai_intro.mp3" },
       { kind: "api", src: "/api/kai-tts/kai_intro?locale=en" },
     ]);
 
@@ -94,9 +193,9 @@ describe("resolveAssessmentNarrationSources", () => {
         ],
       }),
     ).toEqual([
+      { kind: "static", src: "/audio/en-british-v1/Q3.mp3" },
       { kind: "static", src: "/audio/custom-q3.m4a" },
       { kind: "static", src: "/audio/Q3.m4a" },
-      { kind: "static", src: "/audio/Q3.mp3" },
       { kind: "api", src: "/api/kai-tts/Q3?locale=en-US" },
     ]);
   });
@@ -109,7 +208,7 @@ describe("resolveAssessmentNarrationSources", () => {
 
     expect(firstPreloadableAssessmentAudioSource(sources)).toEqual({
       kind: "static",
-      src: "/audio/Q7.m4a",
+      src: "/audio/en-british-v1/Q7.mp3",
     });
   });
 });

@@ -24,6 +24,7 @@ import {
 } from "@/lib/kai/chat-repository";
 import {
   fallbackMessage,
+  medicalScopeRedirect,
   normalizeBlocks,
   normalizeComparisonRecoveryBlock,
   normalizeIntent,
@@ -339,6 +340,39 @@ export async function POST(request: Request) {
         const { kind, context, message } = validated.value;
         const apiKey = process.env.GEMINI_API_KEY;
         const coachingModel = process.env.GEMINI_MODEL || DEFAULT_MODEL;
+        const scopeRedirect =
+          kind === "reply" && message
+            ? medicalScopeRedirect(message, context.user.locale)
+            : null;
+
+        if (scopeRedirect) {
+          const result: KaiChatResult = {
+            message: scopeRedirect,
+            summary: context.conversation.summary,
+            source: "guardrail",
+            timings: {
+              firstTextMs: Math.round(
+                performance.now() - requestStartedAt,
+              ),
+              modelMs: 0,
+              totalMs: Math.round(performance.now() - requestStartedAt),
+              attempts: 0,
+            },
+          };
+          if (repositoryAvailable) {
+            try {
+              await completeKaiRun(supabase, validated.value, result);
+            } catch (error) {
+              console.error(
+                "[kai/chat] Failed to persist scope redirect",
+                error,
+              );
+            }
+          }
+          send({ type: "complete", data: result });
+          close();
+          return;
+        }
 
         if (!apiKey) {
           const result: KaiChatResult = {

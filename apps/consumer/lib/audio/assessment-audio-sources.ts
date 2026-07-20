@@ -11,16 +11,11 @@ export type ResolveAssessmentNarrationSourcesOptions = {
   fallbackSources?: Array<string | AssessmentAudioSource>;
 };
 
-const STATIC_EXTENSIONS = ["m4a", "mp3"] as const;
 const LOCALIZED_STATIC_IDS = new Set([
   "kai_after_10",
   "kai_after_20",
   "kai_after_30",
   "kai_after_40",
-  "kai_intro",
-  "kai_results",
-]);
-const ENGLISH_ASSESSMENT_VOICE_STATIC_IDS = new Set([
   "kai_intro",
   "kai_results",
 ]);
@@ -63,38 +58,28 @@ export function resolveAssessmentNarrationSources({
   const shortLocale = shortLocaleOf(locale);
   const sources: AssessmentAudioSource[] = [];
 
+  const usesCanonicalEnglishVoice =
+    shortLocale === "en" &&
+    (LOCALIZED_STATIC_IDS.has(audioId) || isQuestionStaticAudioId(audioId));
+  if (usesCanonicalEnglishVoice) {
+    sources.push(
+      staticSource(`/audio/en-british-v1/${audioId}.mp3`),
+    );
+  }
+
   for (const source of fallbackSources) {
     sources.push(normalizeFallbackSource(source));
   }
 
   if (
-    shortLocale === "en" &&
-    ENGLISH_ASSESSMENT_VOICE_STATIC_IDS.has(audioId)
-  ) {
-    for (const extension of STATIC_EXTENSIONS) {
-      sources.push(staticSource(`/audio/${audioId}.${extension}`));
-    }
-  } else if (
     LOCALIZED_STATIC_IDS.has(audioId) &&
-    (shortLocale === "en" || shortLocale === "ar")
+    shortLocale === "ar"
   ) {
     sources.push(staticSource(`/audio/${audioId}.${shortLocale}.mp3`));
   }
 
-  if (isQuestionStaticAudioId(audioId) && shortLocale === "en") {
-    for (const extension of STATIC_EXTENSIONS) {
-      sources.push(staticSource(`/audio/${audioId}.${extension}`));
-    }
-  }
-
-  if (
-    shortLocale === "en" &&
-    !LOCALIZED_STATIC_IDS.has(audioId) &&
-    !isQuestionStaticAudioId(audioId)
-  ) {
-    for (const extension of STATIC_EXTENSIONS) {
-      sources.push(staticSource(`/audio/${audioId}.${extension}`));
-    }
+  if (isQuestionStaticAudioId(audioId) && shortLocale === "ar") {
+    sources.push(staticSource(`/audio/${audioId}.ar.mp3`));
   }
 
   sources.push(apiSource(audioId, locale));

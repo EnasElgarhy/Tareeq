@@ -1,0 +1,432 @@
+{
+  "version": "core-v4-2026-07-20",
+  "defaultAnswer": "A",
+  "notes": [
+    "Each profile answers every scored question Q1-Q40. Questions omitted from overrides use defaultAnswer.",
+    "Demographic and free-text questions do not affect scoring and are intentionally excluded.",
+    "The signed methodology asks Profile 1 to select Technology in 10+ questions, but the locked questionnaire offers Technology in only Q1, Q4, Q5, Q9, and Q15. This executable profile selects all five Technology options and records the engine's exact attainable result."
+  ],
+  "profiles": [
+    {
+      "id": "profile-1-maximum-technology",
+      "title": "Maximum Technology signal",
+      "overrides": {
+        "Q1": "D",
+        "Q2": "C",
+        "Q3": "C",
+        "Q4": "D",
+        "Q5": "D",
+        "Q6": "B",
+        "Q7": "D",
+        "Q8": "B",
+        "Q9": "B",
+        "Q10": "B",
+        "Q11": "B",
+        "Q12": "B",
+        "Q13": "B",
+        "Q14": "C",
+        "Q15": "A",
+        "Q16": "B",
+        "Q17": "B",
+        "Q18": "B",
+        "Q19": "B",
+        "Q20": "B",
+        "Q35": "B",
+        "Q36": "B",
+        "Q37": "B"
+      },
+      "expected": {
+        "topCluster": "TECH",
+        "primaryClusterScore": 6,
+        "confidencePercentage": 38,
+        "confidenceLabel": "Moderate",
+        "isMultiCurious": false,
+        "multiCuriousClusters": [],
+        "archetype": "Explorer",
+        "ecosystemFit": "Solo Sprinter",
+        "clusterRaw": {
+          "TECH": 5,
+          "ENG": 4,
+          "SCI": 4,
+          "ART": 1,
+          "BUS": 2,
+          "LAW": 0,
+          "PPL": 0,
+          "ENV": 0
+        },
+        "clusterBonus": {
+          "TECH": 1,
+          "ENG": 0,
+          "SCI": 0,
+          "ART": 0.5,
+          "BUS": 0,
+          "LAW": 0,
+          "PPL": 0,
+          "ENV": 0.5
+        },
+        "clusterFinal": {
+          "TECH": 6,
+          "ENG": 4,
+          "SCI": 4,
+          "ART": 1.5,
+          "BUS": 2,
+          "LAW": 0,
+          "PPL": 0,
+          "ENV": 0.5
+        },
+        "driver": {
+          "REC": 3,
+          "IMP": 0,
+          "AUT": 1,
+          "MAS": 3,
+          "STA": 3
+        },
+        "primaryDrivers": ["REC", "MAS", "STA"],
+        "axes": {
+          "processing": "FLEX",
+          "scope": "DEEP",
+          "social": {
+            "collaborative": 0,
+            "independent": 3
+          },
+          "environment": {
+            "dynamic": 3,
+            "predictable": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "profile-2-distributed",
+      "title": "Distributed interests",
+      "overrides": {
+        "Q1": "D",
+        "Q2": "D",
+        "Q3": "D",
+        "Q4": "D",
+        "Q5": "D",
+        "Q6": "D",
+        "Q7": "D",
+        "Q8": "D",
+        "Q9": "D",
+        "Q10": "D",
+        "Q11": "D",
+        "Q12": "D",
+        "Q13": "D",
+        "Q14": "D",
+        "Q15": "D",
+        "Q16": "D",
+        "Q17": "B",
+        "Q18": "B",
+        "Q19": "B",
+        "Q20": "B",
+        "Q21": "B",
+        "Q22": "B",
+        "Q23": "B",
+        "Q24": "B",
+        "Q25": "B",
+        "Q26": "B",
+        "Q27": "B",
+        "Q28": "B",
+        "Q29": "B",
+        "Q30": "B",
+        "Q31": "B",
+        "Q32": "B",
+        "Q33": "B",
+        "Q34": "B",
+        "Q35": "B",
+        "Q36": "B",
+        "Q37": "B",
+        "Q38": "B",
+        "Q39": "B",
+        "Q40": "B"
+      },
+      "expected": {
+        "topCluster": "PPL",
+        "primaryClusterScore": 3.5,
+        "confidencePercentage": 22,
+        "confidenceLabel": "Low",
+        "isMultiCurious": true,
+        "multiCuriousClusters": ["PPL", "TECH", "BUS"],
+        "archetype": "Catalyst",
+        "ecosystemFit": "Solo Specialist",
+        "clusterRaw": {
+          "TECH": 3,
+          "ENG": 1,
+          "SCI": 2,
+          "ART": 2,
+          "BUS": 3,
+          "LAW": 2,
+          "PPL": 3,
+          "ENV": 0
+        },
+        "clusterBonus": {
+          "TECH": 0,
+          "ENG": 0,
+          "SCI": 0.5,
+          "ART": 0.5,
+          "BUS": 0,
+          "LAW": 0,
+          "PPL": 0.5,
+          "ENV": 0.5
+        },
+        "clusterFinal": {
+          "TECH": 3,
+          "ENG": 1,
+          "SCI": 2.5,
+          "ART": 2.5,
+          "BUS": 3,
+          "LAW": 2,
+          "PPL": 3.5,
+          "ENV": 0.5
+        },
+        "driver": {
+          "REC": 2,
+          "IMP": 4,
+          "AUT": 3,
+          "MAS": 1,
+          "STA": 0
+        },
+        "primaryDrivers": ["IMP"],
+        "axes": {
+          "processing": "FLEX",
+          "scope": "BROAD",
+          "social": {
+            "collaborative": 0,
+            "independent": 3
+          },
+          "environment": {
+            "dynamic": 0,
+            "predictable": 3
+          }
+        }
+      }
+    },
+    {
+      "id": "profile-3-operations-tie",
+      "title": "Operations tie resolved by documented tiebreakers",
+      "overrides": {
+        "Q19": "B",
+        "Q20": "B",
+        "Q23": "B",
+        "Q24": "B"
+      },
+      "expected": {
+        "topCluster": "LAW",
+        "primaryClusterScore": 7,
+        "confidencePercentage": 44,
+        "confidenceLabel": "High",
+        "isMultiCurious": false,
+        "multiCuriousClusters": [],
+        "archetype": "Precisionist",
+        "ecosystemFit": "High-Energy Team Player",
+        "clusterRaw": {
+          "TECH": 1,
+          "ENG": 0,
+          "SCI": 0,
+          "ART": 2,
+          "BUS": 3,
+          "LAW": 7,
+          "PPL": 2,
+          "ENV": 1
+        },
+        "clusterBonus": {
+          "TECH": 0,
+          "ENG": 0.5,
+          "SCI": 0.5,
+          "ART": 0,
+          "BUS": 0.5,
+          "LAW": 0,
+          "PPL": 0.5,
+          "ENV": 0
+        },
+        "clusterFinal": {
+          "TECH": 1,
+          "ENG": 0.5,
+          "SCI": 0.5,
+          "ART": 2,
+          "BUS": 3.5,
+          "LAW": 7,
+          "PPL": 2.5,
+          "ENV": 1
+        },
+        "driver": {
+          "REC": 3,
+          "IMP": 0,
+          "AUT": 1,
+          "MAS": 3,
+          "STA": 3
+        },
+        "primaryDrivers": ["REC", "MAS", "STA"],
+        "axes": {
+          "processing": "STRUCT",
+          "scope": "DEEP",
+          "social": {
+            "collaborative": 3,
+            "independent": 0
+          },
+          "environment": {
+            "dynamic": 3,
+            "predictable": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "profile-4-stability",
+      "title": "Stability is the sole primary reward driver",
+      "overrides": {
+        "Q26": "B",
+        "Q29": "B",
+        "Q30": "B",
+        "Q31": "B",
+        "Q34": "B"
+      },
+      "expected": {
+        "topCluster": "LAW",
+        "primaryClusterScore": 7,
+        "confidencePercentage": 44,
+        "confidenceLabel": "High",
+        "isMultiCurious": false,
+        "multiCuriousClusters": [],
+        "archetype": "Precisionist",
+        "ecosystemFit": "High-Energy Team Player",
+        "clusterRaw": {
+          "TECH": 1,
+          "ENG": 0,
+          "SCI": 0,
+          "ART": 2,
+          "BUS": 3,
+          "LAW": 7,
+          "PPL": 2,
+          "ENV": 1
+        },
+        "clusterBonus": {
+          "TECH": 0,
+          "ENG": 0.5,
+          "SCI": 0.5,
+          "ART": 0,
+          "BUS": 0.5,
+          "LAW": 0,
+          "PPL": 0.5,
+          "ENV": 0
+        },
+        "clusterFinal": {
+          "TECH": 1,
+          "ENG": 0.5,
+          "SCI": 0.5,
+          "ART": 2,
+          "BUS": 3.5,
+          "LAW": 7,
+          "PPL": 2.5,
+          "ENV": 1
+        },
+        "driver": {
+          "REC": 2,
+          "IMP": 1,
+          "AUT": 2,
+          "MAS": 2,
+          "STA": 3
+        },
+        "primaryDrivers": ["STA"],
+        "axes": {
+          "processing": "STRUCT",
+          "scope": "DEEP",
+          "social": {
+            "collaborative": 3,
+            "independent": 0
+          },
+          "environment": {
+            "dynamic": 3,
+            "predictable": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "profile-5-bonuses",
+      "title": "Science stays first after Technology bonuses",
+      "overrides": {
+        "Q1": "D",
+        "Q2": "C",
+        "Q3": "C",
+        "Q4": "D",
+        "Q5": "D",
+        "Q7": "B",
+        "Q9": "D",
+        "Q10": "B",
+        "Q12": "B",
+        "Q14": "B",
+        "Q15": "B",
+        "Q16": "B",
+        "Q17": "B",
+        "Q18": "B",
+        "Q19": "B",
+        "Q20": "B",
+        "Q35": "B",
+        "Q36": "B",
+        "Q37": "B"
+      },
+      "expected": {
+        "topCluster": "SCI",
+        "primaryClusterScore": 5,
+        "confidencePercentage": 31,
+        "confidenceLabel": "Moderate",
+        "isMultiCurious": false,
+        "multiCuriousClusters": [],
+        "archetype": "Explorer",
+        "ecosystemFit": "Solo Sprinter",
+        "clusterRaw": {
+          "TECH": 3,
+          "ENG": 2,
+          "SCI": 5,
+          "ART": 1,
+          "BUS": 2,
+          "LAW": 2,
+          "PPL": 0,
+          "ENV": 1
+        },
+        "clusterBonus": {
+          "TECH": 1,
+          "ENG": 0,
+          "SCI": 0,
+          "ART": 0.5,
+          "BUS": 0,
+          "LAW": 0,
+          "PPL": 0,
+          "ENV": 0.5
+        },
+        "clusterFinal": {
+          "TECH": 4,
+          "ENG": 2,
+          "SCI": 5,
+          "ART": 1.5,
+          "BUS": 2,
+          "LAW": 2,
+          "PPL": 0,
+          "ENV": 1.5
+        },
+        "driver": {
+          "REC": 3,
+          "IMP": 0,
+          "AUT": 1,
+          "MAS": 3,
+          "STA": 3
+        },
+        "primaryDrivers": ["REC", "MAS", "STA"],
+        "axes": {
+          "processing": "FLEX",
+          "scope": "DEEP",
+          "social": {
+            "collaborative": 0,
+            "independent": 3
+          },
+          "environment": {
+            "dynamic": 3,
+            "predictable": 0
+          }
+        }
+      }
+    }
+  ]
+}

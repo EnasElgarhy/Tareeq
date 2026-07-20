@@ -39,6 +39,30 @@ export interface ValidatedChatRequest {
   assistantMessageId?: string;
 }
 
+const PERSONAL_MEDICAL_ADVICE_PATTERN =
+  /(\b(?:diagnos(?:e|is)|treat(?:ment)?|medication|dosage|what (?:medicine|medication) should i take|should i take (?:medicine|medication)|i (?:have|feel|am experiencing)|i've got|my (?:head|chest|stomach|back|throat|arm|leg) (?:hurt|hurts|aches)|chest pain|shortness of breath|rash|high fever)\b|(?:شخ[ّ]?ص|تشخيص|علاج|جرعة|ما (?:الدواء|العلاج) الذي (?:آخذه|أتناوله)|هل آخذ (?:دواء|علاج)|عندي (?:ألم|حمى|طفح|ضيق تنفس)|أشعر ب(?:ألم|دوخة|غثيان)|صدري يؤلمني|بطني يؤلمني))/i;
+
+export function medicalScopeRedirect(
+  message: string,
+  locale: string,
+): KaiMessage | null {
+  if (!PERSONAL_MEDICAL_ADVICE_PATTERN.test(message.trim())) return null;
+
+  const arabic = locale === "ar" || /[\u0600-\u06ff]/.test(message);
+  return {
+    id: `kai-scope-${Date.now()}`,
+    role: "kai",
+    createdAt: new Date().toISOString(),
+    text: arabic
+      ? "دوري هو الإرشاد المهني والتعليمي، لذلك لا أستطيع تشخيص الأعراض أو اقتراح علاج. تحدث مع مختص صحي مؤهل، وإذا كانت الحالة عاجلة فاتصل بخدمات الطوارئ المحلية."
+      : "My role is career and education guidance, so I can’t diagnose symptoms or recommend treatment. Please speak with a qualified healthcare professional, and contact local emergency services if it feels urgent.",
+    quickReplies: arabic
+      ? ["العودة إلى مساري المهني", "استكشاف تخصصات الرعاية الصحية"]
+      : ["Return to my career path", "Explore healthcare careers"],
+    intent: "general_question",
+  };
+}
+
 const GOALS = new Set([
   "explain_results",
   "find_majors",

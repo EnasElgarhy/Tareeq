@@ -51,6 +51,9 @@ let audioContextMock: ReturnType<typeof vi.fn>;
 let playSpy: MockInstance<HTMLMediaElement["play"]>;
 let pauseSpy: MockInstance<HTMLMediaElement["pause"]>;
 let loadSpy: MockInstance<HTMLMediaElement["load"]>;
+let fetchMock: ReturnType<typeof vi.fn>;
+let createObjectUrlSpy: MockInstance<typeof URL.createObjectURL>;
+let revokeObjectUrlSpy: MockInstance<typeof URL.revokeObjectURL>;
 
 function Probe({ onReady }: { onReady(api: AssessmentAudioApi): void }) {
   const audio = useAssessmentAudio();
@@ -87,16 +90,9 @@ async function renderProvider() {
 }
 
 async function flushPlayback() {
-  await Promise.resolve();
-  await Promise.resolve();
-}
-
-function preloadLinks() {
-  return Array.from(
-    document.head.querySelectorAll<HTMLLinkElement>(
-      'link[rel="preload"][as="audio"]',
-    ),
-  );
+  for (let index = 0; index < 6; index += 1) {
+    await Promise.resolve();
+  }
 }
 
 describe("AssessmentAudioProvider", () => {
@@ -151,6 +147,21 @@ describe("AssessmentAudioProvider", () => {
     loadSpy = vi
       .spyOn(HTMLMediaElement.prototype, "load")
       .mockImplementation(() => {});
+    fetchMock = vi.fn(async () => {
+      return new Response(new Blob(["audio"]), {
+        status: 200,
+        headers: { "content-type": "audio/mpeg" },
+      });
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    createObjectUrlSpy = vi
+      .spyOn(URL, "createObjectURL")
+      .mockImplementation(
+        () => `blob:assessment-${createObjectUrlSpy.mock.calls.length}`,
+      );
+    revokeObjectUrlSpy = vi
+      .spyOn(URL, "revokeObjectURL")
+      .mockImplementation(() => {});
   });
 
   afterEach(async () => {
@@ -163,9 +174,7 @@ describe("AssessmentAudioProvider", () => {
     container?.remove();
     container = null;
     latestApi = null;
-    document.head
-      .querySelectorAll('link[rel="preload"][as="audio"]')
-      .forEach((link) => link.remove());
+    vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
 
@@ -253,7 +262,7 @@ describe("AssessmentAudioProvider", () => {
 
     expect(playSpy).toHaveBeenCalledTimes(2);
     expect(document.querySelector("audio")?.getAttribute("src")).toBe(
-      "/audio/kai_intro.m4a",
+      "/audio/en-british-v1/kai_intro.mp3",
     );
   });
 
@@ -322,37 +331,52 @@ describe("AssessmentAudioProvider", () => {
     expect(playSpy.mock.calls.length).toBeGreaterThan(firstPlayCount + 1);
   });
 
-  it("preloads only static candidates and keeps the cache bounded", async () => {
+  it("preloads static candidates for both locales and reuses the cached blob", async () => {
     const api = await renderProvider();
 
     await act(async () => {
       api.preloadNarration({ audioId: "Q2", locale: "en" });
       api.preloadNarration({ audioId: "Q2", locale: "en" });
       api.preloadNarration({ audioId: "Q3", locale: "ar" });
+      await flushPlayback();
     });
 
-    expect(preloadLinks().map((link) => link.getAttribute("href"))).toEqual([
-      "/audio/Q2.m4a",
+    expect(fetchMock.mock.calls.map(([url]) => url)).toEqual([
+      "/audio/en-british-v1/Q2.mp3",
+      "/audio/Q3.ar.mp3",
     ]);
+    expect(createObjectUrlSpy).toHaveBeenCalledTimes(2);
 
     await act(async () => {
-      for (let question = 3; question <= 10; question += 1) {
+      getApi().playNarration({
+        audioId: "Q2",
+        locale: "en",
+        ownerId: "question:Q2",
+      });
+      await flushPlayback();
+    });
+
+    expect(document.querySelector("audio")?.getAttribute("src")).toBe(
+      "blob:assessment-1",
+    );
+  });
+
+  it("keeps the real preload cache bounded and revokes evicted blobs", async () => {
+    await renderProvider();
+
+    await act(async () => {
+      for (let question = 1; question <= 7; question += 1) {
         getApi().preloadNarration({ audioId: `Q${question}`, locale: "en" });
+        await flushPlayback();
       }
     });
 
-    expect(preloadLinks()).toHaveLength(6);
-    expect(preloadLinks().map((link) => link.getAttribute("href"))).toEqual([
-      "/audio/Q5.m4a",
-      "/audio/Q6.m4a",
-      "/audio/Q7.m4a",
-      "/audio/Q8.m4a",
-      "/audio/Q9.m4a",
-      "/audio/Q10.m4a",
-    ]);
+    expect(fetchMock).toHaveBeenCalledTimes(7);
+    expect(createObjectUrlSpy).toHaveBeenCalledTimes(7);
+    expect(revokeObjectUrlSpy).toHaveBeenCalledTimes(3);
   });
 
-  it("cleans up the provider-owned audio context and preloads on unmount", async () => {
+  it("cleans up the provider-owned audio context and cached blobs on unmount", async () => {
     const api = await renderProvider();
 
     await act(async () => {
@@ -365,7 +389,7 @@ describe("AssessmentAudioProvider", () => {
       await flushPlayback();
     });
 
-    expect(preloadLinks()).toHaveLength(1);
+    expect(createObjectUrlSpy).toHaveBeenCalledTimes(1);
     expect(audioContexts[0]?.close).not.toHaveBeenCalled();
 
     await act(async () => {
@@ -374,7 +398,7 @@ describe("AssessmentAudioProvider", () => {
     root = null;
 
     expect(audioContexts[0]?.close).toHaveBeenCalledTimes(1);
-    expect(preloadLinks()).toHaveLength(0);
+    expect(revokeObjectUrlSpy).toHaveBeenCalledWith("blob:assessment-1");
     expect(loadSpy).toHaveBeenCalled();
   });
 });

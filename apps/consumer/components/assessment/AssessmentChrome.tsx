@@ -141,7 +141,7 @@ export function AssessmentChrome({
         <header
           className={
             hasQuestion
-              ? "relative z-10 grid grid-cols-[2rem_minmax(0,1fr)] items-center gap-1.5"
+              ? "relative z-10 grid grid-cols-[2.5rem_minmax(0,1fr)] items-center gap-2 lg:mx-auto lg:w-full lg:max-w-[900px]"
               : "relative z-10 flex h-10 items-center justify-between gap-2"
           }
         >
@@ -149,11 +149,11 @@ export function AssessmentChrome({
             type="button"
             onClick={goBack}
             aria-label="Go back"
-            className={`inline-flex shrink-0 items-center justify-center rounded-full transition active:scale-95 ${
+            className={`shrink-0 ${
               isLightSurface
-                ? "border border-carbon/10 bg-carbon/[0.04] text-carbon hover:bg-carbon/[0.08]"
-                : "glass-tile text-sand hover:text-sand"
-            } ${hasQuestion ? "size-8" : "size-9"}`}
+                ? "inline-flex size-10 items-center justify-center rounded-full border border-carbon/10 bg-carbon/[0.04] text-carbon transition hover:bg-carbon/[0.08] active:scale-95"
+                : "assessment-icon-button size-10"
+            }`}
           >
             <TareeqArrowLeft size={15} className="flip-rtl" />
           </button>
@@ -240,12 +240,12 @@ function QuestionCompassPanel({
 
   return (
     <section
-      className="min-w-0 rounded-[18px] border border-sand/10 bg-sand/[0.07] px-2 py-1.5 shadow-[0_10px_24px_rgba(0,0,0,0.22)] backdrop-blur-md"
+      className="assessment-progress-panel min-w-0 px-2.5 py-1.5"
       aria-label="CORE compass progress"
       aria-live="polite"
     >
       <div className="flex min-w-0 items-center gap-2">
-        <div className="grid size-12 shrink-0 place-items-center rounded-full border border-sand/10 bg-night/35 shadow-inner shadow-black/20">
+        <div className="grid size-12 shrink-0 place-items-center rounded-[14px] border border-sand/10 bg-night/45">
           <CompassProgress
             snapshot={snapshot}
             size={42}
@@ -257,10 +257,10 @@ function QuestionCompassPanel({
         <div className="min-w-0 flex-1 pr-1">
           <div className="flex min-w-0 items-center justify-between gap-2">
             <div className="min-w-0">
-              <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-sand/42">
+              <p className="text-[9px] font-bold uppercase text-sand/48">
                 {t("chrome.compass_label")}
               </p>
-              <p className="truncate text-[13px] font-semibold leading-tight text-sand">
+              <p className="daybreak-heading truncate text-[14px] leading-tight text-sand">
                 {activeMeta ? activeMeta.name : t("chrome.about_you")}
               </p>
             </div>

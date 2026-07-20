@@ -1,7 +1,15 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  type CSSProperties,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { ArrowRight, Pause, RotateCcw, Volume2, VolumeX } from "lucide-react";
 import { TareeqArrowLeft } from "@/components/brand/icons";
 import { type KaiMood } from "@/components/brand/Kai";
 import { KaiChromaVideo } from "@/components/brand/KaiChromaVideo";
@@ -111,6 +119,7 @@ export function QuestionScreen({
   const [exiting, setExiting] = useState<ExitDirection>(null);
   const [pendingInterstitial, setPendingInterstitial] =
     useState<Interstitial | null>(null);
+  const [kaiVideoReady, setKaiVideoReady] = useState(false);
 
   const [speed, setSpeed] = useState(1);
 
@@ -126,7 +135,6 @@ export function QuestionScreen({
     isPlaying,
     isPreparing,
     isMuted,
-    mouthOpen,
     activeOwnerId: playbackOwnerId,
     error: audioError,
   } = useAssessmentAudio();
@@ -203,7 +211,10 @@ export function QuestionScreen({
       if (hasLeftQuestionRef.current) return;
       hasLeftQuestionRef.current = true;
       const timeSpentMs = Date.now() - questionViewStartRef.current;
-      trackEvent("question_time_spent", questionContext({ timeSpentMs, direction }));
+      trackEvent(
+        "question_time_spent",
+        questionContext({ timeSpentMs, direction }),
+      );
       if (direction === "forward" && initialAnswerRef.current) {
         trackEvent("question_completed", questionContext({ timeSpentMs }));
       }
@@ -259,7 +270,9 @@ export function QuestionScreen({
       hasLeftQuestionRef.current = true;
       trackEvent(
         "question_abandoned",
-        questionContext({ timeSpentMs: Date.now() - questionViewStartRef.current }),
+        questionContext({
+          timeSpentMs: Date.now() - questionViewStartRef.current,
+        }),
       );
     }
     window.addEventListener("pagehide", handlePageHide);
@@ -290,12 +303,15 @@ export function QuestionScreen({
       uiSounds.confirm();
 
       recordAnswer(letter);
-      trackEvent("question_auto_advanced", questionContext({ selectedAnswer: letter }));
+      trackEvent(
+        "question_auto_advanced",
+        questionContext({ selectedAnswer: letter }),
+      );
 
       const progress = saveLocalAnswer(question.externalId, letter, index);
       const reduced = prefersReducedMotion();
-      const confirmDelay = reduced ? 90 : 380;
-      const exitDelay = reduced ? 60 : 240;
+      const confirmDelay = reduced ? 70 : 180;
+      const exitDelay = reduced ? 50 : 120;
 
       // Always show at milestones (ignore the per-key "seen" flag) so the
       // "Did you know?" beats are reliably testable on any run/server.
@@ -424,7 +440,7 @@ export function QuestionScreen({
   // ---------- Audio ----------
 
   useEffect(() => {
-    if (exiting) return;
+    if (exiting || !kaiVideoReady) return;
     playNarration({
       audioId: activeNarrationId,
       locale,
@@ -435,10 +451,17 @@ export function QuestionScreen({
     activeNarrationId,
     activeOwnerId,
     exiting,
+    kaiVideoReady,
     locale,
     playNarration,
     stopNarration,
   ]);
+
+  useEffect(() => {
+    if (kaiVideoReady) return;
+    const timeout = window.setTimeout(() => setKaiVideoReady(true), 3500);
+    return () => window.clearTimeout(timeout);
+  }, [kaiVideoReady]);
 
   useEffect(() => {
     setPlaybackRate(speed);
@@ -447,6 +470,7 @@ export function QuestionScreen({
   useEffect(() => {
     const nextQuestion = questions[index + 1];
     if (nextQuestion) {
+      router.prefetch(getQuestionPath(index + 1));
       preloadNarration({ audioId: nextQuestion.externalId, locale });
     }
 
@@ -458,7 +482,23 @@ export function QuestionScreen({
     interstitialAudioIds.forEach((audioId) => {
       preloadNarration({ audioId, locale });
     });
-  }, [index, locale, preloadNarration, questions]);
+  }, [index, locale, preloadNarration, questions, router]);
+
+  useEffect(() => {
+    if (index !== 7) return;
+
+    const controller = new AbortController();
+    const options = {
+      cache: "force-cache" as const,
+      signal: controller.signal,
+    };
+    void Promise.allSettled([
+      window.fetch("/kai/kai-did-you-know-v3.mp4", options),
+      window.fetch("/kai/kai-did-you-know-rest-v3.webp", options),
+    ]);
+
+    return () => controller.abort();
+  }, [index]);
 
   function toggleSound() {
     const nextMuted = soundOn;
@@ -474,8 +514,6 @@ export function QuestionScreen({
       : exiting === "back"
         ? "anim-screen-exit-back"
         : "anim-screen-enter";
-  const displayedMouthOpen =
-    audioState === "playing" ? Math.max(mouthOpen, 0.1) : mouthOpen;
 
   // Shared between the mobile audio-controls row and the desktop right
   // column below — same buttons, same state, just rendered in two
@@ -485,49 +523,16 @@ export function QuestionScreen({
       <button
         type="button"
         onClick={toggleSound}
-        className={[
-          "inline-flex size-9 items-center justify-center rounded-full transition active:scale-95",
-          soundOn
-            ? "bg-gold-gradient text-carbon shadow-gold-glow"
-            : "glass-tile text-sand/80 hover:text-sand",
-        ].join(" ")}
+        className="assessment-icon-button size-10"
+        data-active={soundOn}
         aria-label={soundOn ? t("audio.mute") : t("audio.unmute")}
+        title={soundOn ? t("audio.mute") : t("audio.unmute")}
       >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
-          {soundOn ? (
-            <>
-              <path
-                d="M4 9.5 H7.5 L12 6 V18 L7.5 14.5 H4 Z"
-                fill="currentColor"
-                fillOpacity="0.12"
-                stroke="currentColor"
-                strokeWidth="1.75"
-              />
-              <path
-                d="M15 9.5 a3.8 3.8 0 0 1 0 5"
-                stroke="currentColor"
-                strokeWidth="1.75"
-                strokeLinecap="round"
-              />
-            </>
-          ) : (
-            <>
-              <path
-                d="M4 9.5 H7.5 L12 6 V18 L7.5 14.5 H4 Z"
-                fill="currentColor"
-                fillOpacity="0.12"
-                stroke="currentColor"
-                strokeWidth="1.75"
-              />
-              <path
-                d="M15.5 9.5 L20.5 14.5 M20.5 9.5 L15.5 14.5"
-                stroke="currentColor"
-                strokeWidth="1.75"
-                strokeLinecap="round"
-              />
-            </>
-          )}
-        </svg>
+        {soundOn ? (
+          <Volume2 size={16} strokeWidth={1.9} aria-hidden="true" />
+        ) : (
+          <VolumeX size={16} strokeWidth={1.9} aria-hidden="true" />
+        )}
       </button>
       <button
         type="button"
@@ -539,32 +544,21 @@ export function QuestionScreen({
           replayNarration(activeOwnerId);
         }}
         disabled={!soundOn}
-        className="glass-tile inline-flex size-8 items-center justify-center rounded-full text-sand/75 transition hover:text-sand active:scale-95 disabled:opacity-40"
-        aria-label={audioState === "playing" ? t("audio.pause") : t("audio.replay")}
+        className="assessment-icon-button size-10 disabled:opacity-40"
+        aria-label={
+          audioState === "playing" ? t("audio.pause") : t("audio.replay")
+        }
+        title={audioState === "playing" ? t("audio.pause") : t("audio.replay")}
       >
         {audioState === "playing" ? (
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-            <rect x="6.5" y="5" width="3.5" height="14" rx="1.4" />
-            <rect x="14" y="5" width="3.5" height="14" rx="1.4" />
-          </svg>
+          <Pause
+            size={16}
+            fill="currentColor"
+            strokeWidth={1.8}
+            aria-hidden="true"
+          />
         ) : (
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
-            <path
-              d="M17.5 7.1 C15.9 5.8 13.9 5 11.8 5 C7.5 5 4 8.5 4 12.8 C4 17.1 7.5 20.6 11.8 20.6 C15.5 20.6 18.6 18 19.4 14.6"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <path
-              d="M18.2 3.8 V7.8 H14.2"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <RotateCcw size={16} strokeWidth={1.9} aria-hidden="true" />
         )}
       </button>
       <button
@@ -574,8 +568,9 @@ export function QuestionScreen({
           const next = cycle[(cycle.indexOf(speed) + 1) % cycle.length];
           if (next != null) setSpeed(next);
         }}
-        className="glass-tile inline-flex h-8 items-center justify-center rounded-full px-2.5 text-[11px] font-semibold text-sand/80 transition hover:text-sand"
+        className="assessment-icon-button h-10 min-w-10 px-2.5 text-[11px] font-bold tabular-nums"
         aria-label={t("audio.speed_control").replace("{speed}", String(speed))}
+        title={t("audio.speed_control").replace("{speed}", String(speed))}
       >
         {speed}×
       </button>
@@ -587,8 +582,6 @@ export function QuestionScreen({
       {pendingInterstitial ? (
         <DidYouKnow
           interstitial={pendingInterstitial}
-          audioState={audioState}
-          mouthOpen={displayedMouthOpen}
           soundOn={soundOn}
           audioRef={audioRef}
           onReplay={() => replayNarration(activeOwnerId)}
@@ -601,9 +594,7 @@ export function QuestionScreen({
         key={question.externalId}
         aria-labelledby="question-text"
         aria-busy={Boolean(exiting)}
-        className={`flex flex-1 flex-col ${
-          isDenseChoice ? "gap-2" : "gap-3"
-        } ${exitClass}`}
+        className={`flex flex-1 flex-col ${isDenseChoice ? "gap-2" : "gap-3"} ${exitClass}`}
       >
         {/* Desktop (lg:) layout — Kai on top, question stretched wider
          *  now that there's real width to use, answers below. `lg:flex-1`
@@ -614,7 +605,7 @@ export function QuestionScreen({
          *  footer then just follows naturally near the bottom since this
          *  block has already claimed most of the height. Below lg: this
          *  is the original single column, unchanged. */}
-        <div className="flex flex-1 flex-col gap-3 lg:mx-auto lg:w-full lg:max-w-[760px] lg:justify-center lg:gap-5">
+        <div className="flex flex-1 flex-col gap-4 lg:mx-auto lg:w-full lg:max-w-[860px] lg:justify-center lg:gap-6">
           {/* Kai + question bubble — centered, bubble free to use more
            *  width at lg: instead of staying capped at its phone size. */}
           <div className="flex flex-col items-center gap-2.5">
@@ -637,11 +628,12 @@ export function QuestionScreen({
                       mouth beat), loops within it while she speaks, then
                       freezes on the closed frame when the audio finishes. */}
                   <KaiChromaVideo
-                    src="/kai/kai-question-green.mp4"
+                    src="/kai/kai-question-green-v3.mp4"
                     size={isDenseChoice ? 176 : 200}
                     audioRef={audioRef}
-                    playStart={1.3}
-                    playEnd={3.2}
+                    onReadyChange={setKaiVideoReady}
+                    playStart={0.125}
+                    playEnd={1.95}
                     restTime={0}
                   />
                 </div>
@@ -650,7 +642,7 @@ export function QuestionScreen({
 
             {/* Question bubble */}
             <div
-              className={`bubble anim-bubble-in w-full max-w-[420px] !px-4 lg:max-w-[640px] lg:!px-6 ${
+              className={`bubble assessment-question-card anim-bubble-in w-full max-w-[440px] !px-5 lg:max-w-[700px] lg:!px-7 ${
                 isDenseChoice ? "!py-2.5" : "!py-3"
               }`}
               data-surface="night"
@@ -660,22 +652,18 @@ export function QuestionScreen({
               <span className="bubble__tail" aria-hidden="true" />
               <p
                 id="question-text"
-                className="text-carbon m-0 italic"
-                style={{
-                  fontFamily: "var(--font-question-stack)",
-                  fontSize: isDenseChoice
-                    ? "clamp(15px, 0.92rem + 0.9vw, 20px)"
-                    : "clamp(16px, 0.95rem + 1.1vw, 22px)",
-                  lineHeight: 1.28,
-                  letterSpacing: "-0.005em",
-                }}
+                className={`m-0 font-question font-semibold leading-[1.35] text-carbon ${
+                  isDenseChoice
+                    ? "text-[16px] sm:text-[17px] lg:text-[19px]"
+                    : "text-[17px] sm:text-[18px] lg:text-[21px]"
+                }`}
               >
                 {title}
               </p>
             </div>
 
             {/* Audio controls */}
-            <div className="flex items-center justify-center gap-1.5">
+            <div className="flex items-center justify-center gap-2">
               {audioControlsButtons}
             </div>
           </div>
@@ -683,160 +671,161 @@ export function QuestionScreen({
           {/* Answers — flex-1 lets a short option list still push the
            *  footer to the bottom of a phone screen; off at lg: since the
            *  outer block already centers within the section's height. */}
-          <div className="flex flex-1 flex-col gap-1.5 min-h-0 lg:flex-none lg:gap-3">
-          {isSelect ? (
-            <select
-              value={selected}
-              onChange={(e) => chooseFromSelect(e.target.value)}
-              className="h-14 w-full rounded-pill bg-sand px-5 text-carbon font-semibold text-[15px] shadow-sand-md focus:outline-none focus-visible:ring-2 focus-visible:ring-gold"
-              aria-label={t("question.select_country_aria")}
-            >
-              <option value="" disabled>
-                {t("question.select_country_placeholder")}
-              </option>
-              {countryOptions.map((group) => (
-                <optgroup key={group.groupLabel} label={group.groupLabel}>
-                  {group.options.map((o) => (
-                    <option key={o.value} value={o.value}>
-                      {o.label}
-                    </option>
-                  ))}
-                </optgroup>
-              ))}
-            </select>
-          ) : isText ? (
-            <div className="flex flex-1 flex-col gap-2">
-              <textarea
+          <div className="flex min-h-0 flex-1 flex-col gap-2 lg:flex-none lg:gap-3">
+            {isSelect ? (
+              <select
                 value={selected}
-                onChange={(e) => setSelected(e.target.value)}
-                placeholder={t("question.reflect_placeholder")}
-                rows={5}
-                maxLength={600}
-                className="glass-card w-full flex-1 resize-none !rounded-xl !px-4 !py-3 text-[15px] leading-relaxed text-sand placeholder:text-sand/50 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
-                autoFocus
-              />
-              <p className="flex items-center justify-between text-eyebrow text-sand/50">
-                <span>{t("question.text_helper")}</span>
-                <span className="tabular-nums">{selected.length}/600</span>
-              </p>
-            </div>
-          ) : (
-            <div className="grid gap-1.5 lg:grid-cols-2 lg:gap-4">
-              <p className="flex items-center justify-between px-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-sand/45 lg:col-span-2">
-                <span>{t("question.choose_n_of").replace("{n}", String(optionCount))}</span>
-                <span>
-                  {optionCount === 2 ? t("question.two_paths") : optionRangeLabel}
-                </span>
-              </p>
-              {question.options.map((option, optionIdx) => {
-                const palette =
-                  OPTION_PALETTE[optionIdx % OPTION_PALETTE.length] ??
-                  OPTION_PALETTE[0]!;
-                const active = option.letter === selected;
-                const isConfirming = option.letter === confirming;
-                const isHovered = hoveredIdx === optionIdx;
-                const disabled = Boolean(confirming) && !isConfirming;
-                return (
-                  <button
-                    type="button"
-                    key={option.letter}
-                    onClick={() => commitAndAdvance(option.letter)}
-                    onMouseEnter={() => setHoveredIdx(optionIdx)}
-                    onMouseLeave={() =>
-                      setHoveredIdx((v) => (v === optionIdx ? null : v))
-                    }
-                    onFocus={() => setHoveredIdx(optionIdx)}
-                    onBlur={() =>
-                      setHoveredIdx((v) => (v === optionIdx ? null : v))
-                    }
-                    disabled={disabled}
-                    aria-pressed={active}
-                    style={{
-                      animationDelay: `${optionIdx * 70}ms`,
-                      boxShadow:
-                        isConfirming || active
-                          ? `inset 0 0 0 1.5px ${palette.accent}, 0 8px 24px rgba(244,198,96,0.22)`
-                          : isHovered
-                            ? `inset 0 0 0 1.5px ${palette.accent}80`
-                            : `inset 0 0 0 1px rgba(245,238,230,0.10)`,
-                    }}
-                    className={[
-                      `anim-option-in group relative flex items-center gap-2.5 rounded-xl px-3 text-start transition lg:px-4 ${
-                        isDenseChoice
-                          ? "min-h-[42px] py-1.5 lg:min-h-[54px] lg:py-2.5"
-                          : "min-h-[44px] py-2 lg:min-h-[58px] lg:py-3"
-                      }`,
-                      "disabled:opacity-45 disabled:pointer-events-none active:scale-[0.99]",
-                      isConfirming
-                        ? "anim-option-confirm bg-grad-warm text-sand shadow-warm-glow"
-                        : active
-                          ? "bg-grad-warm text-sand shadow-warm-glow"
-                          : "glass-card !p-3 !rounded-xl text-sand",
-                    ].join(" ")}
-                  >
-                    <span
-                      aria-hidden="true"
-                      className={[
-                        "grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-bold transition",
-                        isConfirming || active
-                          ? "bg-carbon/15 text-carbon"
-                          : "text-sand/85",
-                      ].join(" ")}
-                      style={
-                        !isConfirming && !active
-                          ? { backgroundColor: `${palette.accent}1f` }
-                          : undefined
+                onChange={(e) => chooseFromSelect(e.target.value)}
+                className="assessment-input h-14 px-4 text-[15px] font-semibold"
+                aria-label={t("question.select_country_aria")}
+              >
+                <option value="" disabled>
+                  {t("question.select_country_placeholder")}
+                </option>
+                {countryOptions.map((group) => (
+                  <optgroup key={group.groupLabel} label={group.groupLabel}>
+                    {group.options.map((o) => (
+                      <option key={o.value} value={o.value}>
+                        {o.label}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
+            ) : isText ? (
+              <div className="flex flex-1 flex-col gap-2">
+                <textarea
+                  value={selected}
+                  onChange={(e) => setSelected(e.target.value)}
+                  placeholder={t("question.reflect_placeholder")}
+                  rows={5}
+                  maxLength={600}
+                  className="assessment-input flex-1 resize-none px-4 py-3 text-[15px] leading-relaxed placeholder:text-sand/50"
+                  autoFocus
+                />
+                <p className="assessment-choice-label flex items-center justify-between px-1">
+                  <span>{t("question.text_helper")}</span>
+                  <span className="tabular-nums">{selected.length}/600</span>
+                </p>
+              </div>
+            ) : (
+              <div className="grid gap-2 lg:grid-cols-2 lg:gap-3">
+                <p className="assessment-choice-label flex items-center justify-between px-1 lg:col-span-2">
+                  <span>
+                    {t("question.choose_n_of").replace(
+                      "{n}",
+                      String(optionCount),
+                    )}
+                  </span>
+                  <span>
+                    {optionCount === 2
+                      ? t("question.two_paths")
+                      : optionRangeLabel}
+                  </span>
+                </p>
+                {question.options.map((option, optionIdx) => {
+                  const palette =
+                    OPTION_PALETTE[optionIdx % OPTION_PALETTE.length] ??
+                    OPTION_PALETTE[0]!;
+                  const active = option.letter === selected;
+                  const isConfirming = option.letter === confirming;
+                  const isHovered = hoveredIdx === optionIdx;
+                  const disabled = Boolean(confirming) && !isConfirming;
+                  return (
+                    <button
+                      type="button"
+                      key={option.letter}
+                      onClick={() => commitAndAdvance(option.letter)}
+                      onMouseEnter={() => setHoveredIdx(optionIdx)}
+                      onMouseLeave={() =>
+                        setHoveredIdx((v) => (v === optionIdx ? null : v))
                       }
-                    >
-                      {option.letter}
-                    </span>
-                    <span className="flex-1 text-[13.5px] leading-snug">
-                      {getLocalizedText(option.text, locale)}
-                    </span>
-                    <span
-                      aria-hidden="true"
+                      onFocus={() => setHoveredIdx(optionIdx)}
+                      onBlur={() =>
+                        setHoveredIdx((v) => (v === optionIdx ? null : v))
+                      }
+                      disabled={disabled}
+                      aria-pressed={active}
+                      data-active={isConfirming || active}
+                      style={
+                        {
+                          animationDelay: `${optionIdx * 70}ms`,
+                          "--answer-accent": palette.accent,
+                        } as CSSProperties
+                      }
                       className={[
-                        "transition-all",
-                        isConfirming || active
-                          ? "text-carbon/70 opacity-100 translate-x-0"
-                          : isHovered
-                            ? "text-sand/70 opacity-100 translate-x-0"
-                            : "text-sand/30 opacity-0 -translate-x-1",
+                        `assessment-answer anim-option-in group relative flex items-center gap-3 px-3.5 text-start lg:px-4 ${
+                          isDenseChoice
+                            ? "min-h-[46px] py-2 lg:min-h-[56px] lg:py-2.5"
+                            : "min-h-[50px] py-2.5 lg:min-h-[60px] lg:py-3"
+                        }`,
+                        "disabled:pointer-events-none disabled:opacity-45 active:scale-[0.995]",
+                        isConfirming ? "anim-option-confirm" : "",
                       ].join(" ")}
                     >
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        aria-hidden
+                      <span
+                        aria-hidden="true"
+                        className={[
+                          "grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-bold transition",
+                          isConfirming || active
+                            ? "bg-carbon/15 text-carbon"
+                            : "text-sand/85",
+                        ].join(" ")}
+                        style={
+                          !isConfirming && !active
+                            ? { backgroundColor: `${palette.accent}1f` }
+                            : undefined
+                        }
                       >
-                        <path
-                          d="M5 12h14M13 6l6 6-6 6"
-                          stroke="currentColor"
-                          strokeWidth="2.2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
+                        {option.letter}
+                      </span>
+                      <span className="min-w-0 flex-1 text-[14px] leading-snug lg:text-[14.5px]">
+                        {getLocalizedText(option.text, locale)}
+                      </span>
+                      <span
+                        aria-hidden="true"
+                        className={[
+                          "transition-all",
+                          isConfirming || active
+                            ? "text-carbon/70 opacity-100 translate-x-0"
+                            : isHovered
+                              ? "text-sand/70 opacity-100 translate-x-0"
+                              : "text-sand/30 opacity-0 -translate-x-1",
+                        ].join(" ")}
+                      >
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          aria-hidden
+                        >
+                          <path
+                            d="M5 12h14M13 6l6 6-6 6"
+                            stroke="currentColor"
+                            strokeWidth="2.2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
 
         {/* Footer */}
         {isExplicit ? (
-          <footer className="flex items-center gap-2">
+          <footer className="mx-auto flex w-full max-w-[860px] items-center gap-2">
             <button
               type="button"
               onClick={goPrevious}
               aria-label={t("question.previous_aria")}
               disabled={Boolean(exiting)}
-              className="glass-tile inline-flex size-11 shrink-0 items-center justify-center rounded-full text-sand transition hover:text-sand active:scale-95 disabled:opacity-40"
+              className="assessment-icon-button size-11 disabled:opacity-40"
             >
               <TareeqArrowLeft size={16} className="flip-rtl" />
             </button>
@@ -844,37 +833,25 @@ export function QuestionScreen({
               type="button"
               onClick={goNextExplicit}
               disabled={!selected.trim() || Boolean(exiting)}
-              className="btn-v2 btn-v2--primary flex-1"
+              className="btn-v2 btn-v2--primary assessment-primary-action flex-1"
               data-size="lg"
             >
               {isLastQuestion ? t("nav.finish") : t("nav.next")}
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden
-              >
-                <path
-                  d="M5 12h14M13 6l6 6-6 6"
-                  stroke="currentColor"
-                  strokeWidth="2.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <ArrowRight size={18} strokeWidth={2} aria-hidden="true" />
             </button>
           </footer>
         ) : (
-          <p className="flex items-center justify-between gap-2 text-eyebrow text-sand/45">
+          <p className="assessment-choice-label mx-auto flex min-h-10 w-full max-w-[860px] items-center justify-between gap-2 px-1">
             <span className="truncate">
-              {confirming ? t("question.saving") : t("question.tap_to_continue")}
+              {confirming
+                ? t("question.saving")
+                : t("question.tap_to_continue")}
             </span>
             <button
               type="button"
               onClick={goPrevious}
               disabled={Boolean(exiting)}
-              className="inline-flex items-center gap-1 text-sand/55 transition hover:text-sand disabled:opacity-40"
+              className="inline-flex min-h-10 items-center gap-1.5 rounded-full px-2 text-sand/65 transition hover:text-sand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold disabled:opacity-40"
             >
               <TareeqArrowLeft
                 size={11}

@@ -1,0 +1,379 @@
+{
+  "schemaVersion": 1,
+  "locale": "en",
+  "voice": {
+    "id": "ZF6FPAbjXT4488VcRRnw",
+    "name": "Amelia - young and enthusiastic",
+    "accent": "british",
+    "gender": "female",
+    "modelId": "eleven_multilingual_v2",
+    "settings": {
+      "stability": 0.48,
+      "similarity_boost": 0.84,
+      "style": 0.28,
+      "speed": 1
+    }
+  },
+  "clips": [
+    {
+      "audioId": "QD1",
+      "path": "/audio/en-british-v1/QD1.mp3",
+      "bytes": 19688,
+      "sha256": "940f1c3ef405cb6e2b7e4fc4a2e902ecaa9dde60a518898b5c96c2c5073e1a7c"
+    },
+    {
+      "audioId": "QD2",
+      "path": "/audio/en-british-v1/QD2.mp3",
+      "bytes": 34316,
+      "sha256": "17db8d104dbe28d2889033a43abe60a3ac3debad8899a92379014217a67acb56"
+    },
+    {
+      "audioId": "QD3",
+      "path": "/audio/en-british-v1/QD3.mp3",
+      "bytes": 43511,
+      "sha256": "c50fdb0d035f434083b0de3ecb5ddb5192524b8906328000cbb177f8e453d073"
+    },
+    {
+      "audioId": "QD4",
+      "path": "/audio/en-british-v1/QD4.mp3",
+      "bytes": 27211,
+      "sha256": "9e4431c324fb0e0c6170abd7766a8cedbd6bb992f26108dbdd456f0be1e41ca3"
+    },
+    {
+      "audioId": "Q1",
+      "path": "/audio/en-british-v1/Q1.mp3",
+      "bytes": 65663,
+      "sha256": "dd163ad195ddfc6e509af0a0ee5fb890f171b67b5e854c55cdc2e4d493e2d224"
+    },
+    {
+      "audioId": "Q2",
+      "path": "/audio/en-british-v1/Q2.mp3",
+      "bytes": 77784,
+      "sha256": "479eb4bbbcdd5e38468c37476516d97b4f5938901cc560783c3a4846245d1029"
+    },
+    {
+      "audioId": "Q3",
+      "path": "/audio/en-british-v1/Q3.mp3",
+      "bytes": 91577,
+      "sha256": "7d5ef14438fbc195fbadf8352814c097c38313c64f93dbea678328dc1c2e4cf7"
+    },
+    {
+      "audioId": "Q4",
+      "path": "/audio/en-british-v1/Q4.mp3",
+      "bytes": 95338,
+      "sha256": "ba4e319257aa736f2b2a31cd686c59484636d275e47f9b45e6993e438c6297dd"
+    },
+    {
+      "audioId": "Q5",
+      "path": "/audio/en-british-v1/Q5.mp3",
+      "bytes": 57722,
+      "sha256": "baae8019e0d960b26db81656691bd727354cf6a1abcee1a4955341c88110533d"
+    },
+    {
+      "audioId": "Q6",
+      "path": "/audio/en-british-v1/Q6.mp3",
+      "bytes": 79038,
+      "sha256": "3cbd96d2f753a35d670a87821cd54d33b61d25d32d48e53e9209855291a110bd"
+    },
+    {
+      "audioId": "Q7",
+      "path": "/audio/en-british-v1/Q7.mp3",
+      "bytes": 44765,
+      "sha256": "41f16f2bb0e855d11acba2f3a3b33f2dfb91dcefefeaf155889b43f2039e0578"
+    },
+    {
+      "audioId": "Q8",
+      "path": "/audio/en-british-v1/Q8.mp3",
+      "bytes": 106623,
+      "sha256": "899386aa2999a08ad768d0c814c53c22a309e5b9c915510adc49e7daa24e6d22"
+    },
+    {
+      "audioId": "Q9",
+      "path": "/audio/en-british-v1/Q9.mp3",
+      "bytes": 84471,
+      "sha256": "8fa8ba9e94681a42f9a18109d756c19987813d7b440103fa3a8b7e2af851ca5f"
+    },
+    {
+      "audioId": "Q10",
+      "path": "/audio/en-british-v1/Q10.mp3",
+      "bytes": 109549,
+      "sha256": "1e505a72816434771aa3c677d8d76d0449080458b459fa8c37e0ea2a4aa3f379"
+    },
+    {
+      "audioId": "Q11",
+      "path": "/audio/en-british-v1/Q11.mp3",
+      "bytes": 94084,
+      "sha256": "60b81b8e38d9461e3a75187f73a6dc06c510e64adede0c254877739fce12cf4b"
+    },
+    {
+      "audioId": "Q12",
+      "path": "/audio/en-british-v1/Q12.mp3",
+      "bytes": 81128,
+      "sha256": "cd0d88c34093651cff10373c369cd022ac196bd2ebad0f0be442236aaf39fda4"
+    },
+    {
+      "audioId": "Q13",
+      "path": "/audio/en-british-v1/Q13.mp3",
+      "bytes": 67335,
+      "sha256": "8f705458b930b9380c748d0991cbb7f6eee30e537dbffb7d9e3917447371e368"
+    },
+    {
+      "audioId": "Q14",
+      "path": "/audio/en-british-v1/Q14.mp3",
+      "bytes": 60648,
+      "sha256": "6e9532874d1c097f3f35500eb2768e5e4a6f6c27110aa7fa6861d8ee102c1e15"
+    },
+    {
+      "audioId": "Q15",
+      "path": "/audio/en-british-v1/Q15.mp3",
+      "bytes": 60648,
+      "sha256": "11bd3b45b6ae14ff877ef0f5ba234a5e3b873433a6a3f2bf7ab4f65a3bad980b"
+    },
+    {
+      "audioId": "Q16",
+      "path": "/audio/en-british-v1/Q16.mp3",
+      "bytes": 79874,
+      "sha256": "12d7655ae539adaad5441a4ccc56320c7459de87d7a55ec0077e5c345c418def"
+    },
+    {
+      "audioId": "Q17",
+      "path": "/audio/en-british-v1/Q17.mp3",
+      "bytes": 134208,
+      "sha256": "cb8f3623bb15e52d486b26268f01038c548a24540a2de01daa0aeac00c43f964"
+    },
+    {
+      "audioId": "Q18",
+      "path": "/audio/en-british-v1/Q18.mp3",
+      "bytes": 61066,
+      "sha256": "82ac04d0f838dc11573e3064b41546ff0cccc209656ab087bf1ec65a37ba1e6f"
+    },
+    {
+      "audioId": "Q19",
+      "path": "/audio/en-british-v1/Q19.mp3",
+      "bytes": 74022,
+      "sha256": "d6f6beada912c697aa988d8dfd3ed130aee24af99b0ac676d4170726934455d6"
+    },
+    {
+      "audioId": "Q20",
+      "path": "/audio/en-british-v1/Q20.mp3",
+      "bytes": 64827,
+      "sha256": "4eafedefa7ad577f9e1a7e9ceb575f4ea0e07da083b34d2fccb92408f8bd5352"
+    },
+    {
+      "audioId": "Q21",
+      "path": "/audio/en-british-v1/Q21.mp3",
+      "bytes": 46437,
+      "sha256": "e032c5326add97e37b2052e7695fe7d6cfac7128a1e0f94aeeeda8729fc99ebb"
+    },
+    {
+      "audioId": "Q22",
+      "path": "/audio/en-british-v1/Q22.mp3",
+      "bytes": 84889,
+      "sha256": "cdf78d8b88c863b74c7cf1dc358c705d7db7b30f9397a831ed4b1942fb283f7c"
+    },
+    {
+      "audioId": "Q23",
+      "path": "/audio/en-british-v1/Q23.mp3",
+      "bytes": 60648,
+      "sha256": "31efb7470a2f9100202638aeebc716bb268b2dec6de8c7b9d32d035b01087ec0"
+    },
+    {
+      "audioId": "Q24",
+      "path": "/audio/en-british-v1/Q24.mp3",
+      "bytes": 47273,
+      "sha256": "d016d19e972ef81705abbf1acdf423318436b29a6cd3084c86a0137dd6b08e3c"
+    },
+    {
+      "audioId": "Q25",
+      "path": "/audio/en-british-v1/Q25.mp3",
+      "bytes": 38078,
+      "sha256": "aff42c47cdaa0d16d6e146ccc777d6174a312de93557631134fc08cbe898f7b0"
+    },
+    {
+      "audioId": "Q26",
+      "path": "/audio/en-british-v1/Q26.mp3",
+      "bytes": 60648,
+      "sha256": "4fc9762cc6d6b8293b1e0510b9c15cbdfa3704605750fe42768b2c25a988511c"
+    },
+    {
+      "audioId": "Q27",
+      "path": "/audio/en-british-v1/Q27.mp3",
+      "bytes": 54378,
+      "sha256": "1a241334d6000a96178b3f0f2960b0604ad159a2d475559dc786094cb2a83ae6"
+    },
+    {
+      "audioId": "Q28",
+      "path": "/audio/en-british-v1/Q28.mp3",
+      "bytes": 71097,
+      "sha256": "63babb9d0b175a8882da39bb66534b51f7e6e7bfa4b6aaf9e78de58f99b8a7b8"
+    },
+    {
+      "audioId": "Q29",
+      "path": "/audio/en-british-v1/Q29.mp3",
+      "bytes": 69425,
+      "sha256": "f27aa8d14869eb75585b30b4d890bd710daf1d5e2eb5d23b5cf506b922c2d502"
+    },
+    {
+      "audioId": "Q30",
+      "path": "/audio/en-british-v1/Q30.mp3",
+      "bytes": 84889,
+      "sha256": "5ff280b6f99b1419e3e791cad00d355b6da1771413a39dbe66c5d1f53f2207cd"
+    },
+    {
+      "audioId": "Q31",
+      "path": "/audio/en-british-v1/Q31.mp3",
+      "bytes": 63573,
+      "sha256": "557de168eab5c652ff519fa4a331e6765f3ae332b53e21d2fe4537ac7b6a8656"
+    },
+    {
+      "audioId": "Q32",
+      "path": "/audio/en-british-v1/Q32.mp3",
+      "bytes": 58976,
+      "sha256": "dd72a706e086d866a0b116b6515a9b8ab265890f78250a6f7c05736e413abf98"
+    },
+    {
+      "audioId": "Q33",
+      "path": "/audio/en-british-v1/Q33.mp3",
+      "bytes": 91159,
+      "sha256": "cc2fc9250ab3bb416ddd26b2a2050edc5e213cf4b9381e4a8fbd99d582efa44e"
+    },
+    {
+      "audioId": "Q34",
+      "path": "/audio/en-british-v1/Q34.mp3",
+      "bytes": 57722,
+      "sha256": "44c4ff02f15c11babf0e2fb88a30a7a932ff37b49e0132902a9ae923c83becf5"
+    },
+    {
+      "audioId": "Q35",
+      "path": "/audio/en-british-v1/Q35.mp3",
+      "bytes": 78202,
+      "sha256": "63ce08d320ea182ae844c2db778a1294ee0d2f085ee8d6dc6e32f70ee867aa93"
+    },
+    {
+      "audioId": "Q36",
+      "path": "/audio/en-british-v1/Q36.mp3",
+      "bytes": 56050,
+      "sha256": "7fea822becdc54b370ae4d458bd455a74cca298463dc4d0f5fc1e83c03e68a79"
+    },
+    {
+      "audioId": "Q37",
+      "path": "/audio/en-british-v1/Q37.mp3",
+      "bytes": 53960,
+      "sha256": "f9254efcbfe41be5272d7df2f9d43dacef50e49f5d542981c70b5076c1daf239"
+    },
+    {
+      "audioId": "Q38",
+      "path": "/audio/en-british-v1/Q38.mp3",
+      "bytes": 71515,
+      "sha256": "f06eeeec247b5f3d588e99caf2affe7f5baf1f685d6afa9a7b60bd9ccf86b0c0"
+    },
+    {
+      "audioId": "Q39",
+      "path": "/audio/en-british-v1/Q39.mp3",
+      "bytes": 54378,
+      "sha256": "1d80dd21e9c9de7507bcdd8c87f8a2046e07a20886a7fed66cfb709f38db208d"
+    },
+    {
+      "audioId": "Q40",
+      "path": "/audio/en-british-v1/Q40.mp3",
+      "bytes": 65663,
+      "sha256": "e2a22ac24648afe255c90efdd727391396dd8af8f9e68b4802b1c7f61f56af88"
+    },
+    {
+      "audioId": "QT1",
+      "path": "/audio/en-british-v1/QT1.mp3",
+      "bytes": 74022,
+      "sha256": "15c6349e45ff1a6e7e957cd78bb1ea657604b56d8c09ec16a8b467c8d05d6c45"
+    },
+    {
+      "audioId": "QT2",
+      "path": "/audio/en-british-v1/QT2.mp3",
+      "bytes": 73186,
+      "sha256": "cd8571ae29b1dee5dffe628c7db04fc32a0ebd5d56701ddd20c378dec68a0f84"
+    },
+    {
+      "audioId": "QT3",
+      "path": "/audio/en-british-v1/QT3.mp3",
+      "bytes": 45601,
+      "sha256": "0651cbf83d57910dc1d735e2c8a4230c929a751e1a3cd0852b011dc3de090825"
+    },
+    {
+      "audioId": "QT4",
+      "path": "/audio/en-british-v1/QT4.mp3",
+      "bytes": 85725,
+      "sha256": "4ee9f2081f14ef71dda611710623c29bf9bc1dcae2d56803c7474fcb109ac437"
+    },
+    {
+      "audioId": "QT5",
+      "path": "/audio/en-british-v1/QT5.mp3",
+      "bytes": 50199,
+      "sha256": "5c6224e8e48bc548d67e5839a2f76b7e4fdc57fb53942f9d45a679fb68e2fde0"
+    },
+    {
+      "audioId": "QT6",
+      "path": "/audio/en-british-v1/QT6.mp3",
+      "bytes": 70261,
+      "sha256": "7e45e512cea1c2a8ea9a310a3ee4e03f3f5dbca1915861857868131dc80ced91"
+    },
+    {
+      "audioId": "QT7",
+      "path": "/audio/en-british-v1/QT7.mp3",
+      "bytes": 44765,
+      "sha256": "2ef90e4c9ab29bd8e2627b1085ab3d25abb5384a841d9a5609d1a96d9bf29396"
+    },
+    {
+      "audioId": "QT8",
+      "path": "/audio/en-british-v1/QT8.mp3",
+      "bytes": 52288,
+      "sha256": "fcfaa058d1f4845f40c4fef1049b983d425bb9a3a3d89097f13f8ab7d349eea7"
+    },
+    {
+      "audioId": "QT9",
+      "path": "/audio/en-british-v1/QT9.mp3",
+      "bytes": 67753,
+      "sha256": "98d756fa0d9ee658ecdf15790444d22dc92652eb7e9b78e34d4178be3900c49c"
+    },
+    {
+      "audioId": "QT10",
+      "path": "/audio/en-british-v1/QT10.mp3",
+      "bytes": 87397,
+      "sha256": "65fccd25a2c19fe379845c6f5d775a8c3274254329e4d25d26fa4bd449cfa984"
+    },
+    {
+      "audioId": "kai_after_10",
+      "path": "/audio/en-british-v1/kai_after_10.mp3",
+      "bytes": 102026,
+      "sha256": "bc7d9cf7683a918b4f4dc528e0928ce06a8fa74a90c7e8fdf7d6927e82f7511a"
+    },
+    {
+      "audioId": "kai_after_20",
+      "path": "/audio/en-british-v1/kai_after_20.mp3",
+      "bytes": 93248,
+      "sha256": "7ad98bb481fe8da867ee2d62fa354fb0a7ab14881a70fb110eeeeb57563f944a"
+    },
+    {
+      "audioId": "kai_after_30",
+      "path": "/audio/en-british-v1/kai_after_30.mp3",
+      "bytes": 94084,
+      "sha256": "01c080704ade6843972656dd74694f885e070d9bf29aafb2c5428f556141f39f"
+    },
+    {
+      "audioId": "kai_after_40",
+      "path": "/audio/en-british-v1/kai_after_40.mp3",
+      "bytes": 98264,
+      "sha256": "93e28f64704868c2593db90f38d86e647bb0d93dd20a83fa80ece675e4a5b15a"
+    },
+    {
+      "audioId": "kai_intro",
+      "path": "/audio/en-british-v1/kai_intro.mp3",
+      "bytes": 185199,
+      "sha256": "1cd65fd6ab093d0e9d37b5976a9594b7fd19b28406b381311615c1868d446425"
+    },
+    {
+      "audioId": "kai_results",
+      "path": "/audio/en-british-v1/kai_results.mp3",
+      "bytes": 131283,
+      "sha256": "9847eb564d205f173c5932e25c98026cfd069616d3b7b1c7cc327a168c6b3af7"
+    }
+  ]
+}

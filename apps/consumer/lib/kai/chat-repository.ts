@@ -69,7 +69,12 @@ function cachedResult(row: MessageRow, summary: string): KaiChatResult {
   return {
     message: messageFromRow(row),
     summary,
-    source: meta.source === "fallback" ? "fallback" : "gemini",
+    source:
+      meta.source === "fallback"
+        ? "fallback"
+        : meta.source === "guardrail"
+          ? "guardrail"
+          : "gemini",
     memoryUpdates: Array.isArray(meta.memoryUpdates)
       ? (meta.memoryUpdates as KaiChatResult["memoryUpdates"])
       : undefined,

@@ -145,7 +145,7 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
         <div aria-hidden="true" className="anim-kai-drop relative z-10">
           <div className="anim-kai-drop-bob">
             <KaiChromaVideo
-              src="/kai/kai-intro-green.mp4"
+              src="/kai/kai-intro-green-v2.mp4"
               size={220}
               playing={false}
               restTime={0}
@@ -197,7 +197,7 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
                   frame (she won't "murmur" silently); the CSS float keeps her
                   subtly alive. */}
               <KaiChromaVideo
-                src="/kai/kai-intro-green.mp4"
+                src="/kai/kai-intro-green-v2.mp4"
                 size={200}
                 playing={false}
                 restTime={0}
