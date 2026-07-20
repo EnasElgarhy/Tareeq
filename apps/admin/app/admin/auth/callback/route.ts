@@ -17,11 +17,11 @@ function redirectToAcceptInvite(hasError = false): NextResponse {
 }
 
 /**
- * Auth callback for the Supabase invite link (PKCE). Exchanges the `?code=`
- * for a session (writing the session cookies from this route handler, where
- * cookies are writable), then forwards to the accept-invite page — which now
- * sees an authenticated user. Exempted from the middleware auth-bounce so the
- * exchange can happen before a session cookie exists.
+ * Auth callback for Supabase invite links. PKCE links are exchanged here;
+ * implicit invite links carry their session in the browser-only URL fragment,
+ * which survives the relative redirect and is consumed by the acceptance page.
+ * This route is exempt from the middleware auth bounce so either flow can
+ * establish a session before admin authorization runs.
  */
 export async function GET(request: Request) {
   const url = new URL(request.url);

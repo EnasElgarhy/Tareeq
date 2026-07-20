@@ -1,51 +1,84 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { type FormEvent, useEffect, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/admin/ui/Button";
 import { Field, Input } from "@/components/admin/ui/Field";
 import { InlineStatus } from "@/components/admin/ui/Toast";
 import { finalizeInvite } from "@/lib/admin/team/accept-actions";
+import { parseInviteHash } from "@/lib/auth/invite-hash";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 type Phase = "checking" | "ready" | "submitting" | "done" | "error";
 
 /**
- * Invite acceptance. The Supabase invite link → /admin/auth/callback (exchanges
- * the code, sets the session) → here. The invitee sets a password, then we
- * finalize their team membership and drop them into the admin.
+ * Invite acceptance. The Supabase invite link reaches /admin/auth/callback,
+ * which forwards its hash-based session here. The invitee sets a password,
+ * then we finalize their team membership and drop them into the admin.
  */
 export default function AcceptInvitePage() {
   const router = useRouter();
+  const verificationStarted = useRef(false);
   const [phase, setPhase] = useState<Phase>("checking");
   const [email, setEmail] = useState<string | null>(null);
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (
-      new URLSearchParams(window.location.search).get("error") ===
-      "invalid_or_expired"
-    ) {
-      setError(
-        "This invitation link is invalid or has expired. Ask an admin to resend it.",
-      );
-      setPhase("error");
-      return;
-    }
+    if (verificationStarted.current) return;
+    verificationStarted.current = true;
 
-    const supabase = createSupabaseBrowserClient();
-    supabase.auth.getUser().then(({ data }) => {
+    async function verifyInvitation() {
+      const inviteHash = parseInviteHash(window.location.hash);
+      if (inviteHash.kind !== "none") {
+        window.history.replaceState(
+          window.history.state,
+          "",
+          `${window.location.pathname}${window.location.search}`,
+        );
+      }
+
+      if (
+        new URLSearchParams(window.location.search).get("error") ===
+          "invalid_or_expired" ||
+        inviteHash.kind === "error"
+      ) {
+        setError(
+          "This invitation link is invalid or has expired. Ask an admin to resend it.",
+        );
+        setPhase("error");
+        return;
+      }
+
+      const supabase = createSupabaseBrowserClient();
+      if (inviteHash.kind === "session") {
+        const { error: sessionError } = await supabase.auth.setSession({
+          access_token: inviteHash.accessToken,
+          refresh_token: inviteHash.refreshToken,
+        });
+        if (sessionError) {
+          setError(
+            "This invitation link is invalid or has expired. Ask an admin to resend it.",
+          );
+          setPhase("error");
+          return;
+        }
+      }
+
+      const { data } = await supabase.auth.getUser();
       if (data.user?.email) {
         setEmail(data.user.email);
         setPhase("ready");
-      } else {
-        setError(
-          "We couldn't verify your invitation. Open the link directly from your invitation email.",
-        );
-        setPhase("error");
+        return;
       }
-    });
+
+      setError(
+        "We couldn't verify your invitation. Open the link directly from your invitation email.",
+      );
+      setPhase("error");
+    }
+
+    void verifyInvitation();
   }, []);
 
   async function onSubmit(e: FormEvent) {
