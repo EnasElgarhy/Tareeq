@@ -48,8 +48,11 @@ function splitAroundPlaceholder(
  * IntroScreen/AssessmentStart hero patterns.
  */
 export function CompassCard({ result }: { result: CompassCardResult }) {
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
   const { name, clusterCode, archetype, driverCode, ecosystemFit } = result;
+  const isArabic = locale === "ar";
+  const track = (value: string) => (isArabic ? 0 : value);
+  const displayFont = isArabic ? "var(--font-arabic-stack)" : "var(--font-display)";
 
   const clusterColor = getClusterColor(clusterCode);
   const clusterLabel = getClusterLabel(clusterCode, t);
@@ -81,7 +84,7 @@ export function CompassCard({ result }: { result: CompassCardResult }) {
           "linear-gradient(170deg, #0E0A28 0%, #1B1240 52%, #3D2270 100%)",
         overflow: "hidden",
         color: "#fff",
-        fontFamily: "var(--font-sans)",
+        fontFamily: isArabic ? "var(--font-arabic-stack)" : "var(--font-sans)",
       }}
     >
       {/* Aurora glow — dominant blob tinted by the result's curiosity
@@ -153,7 +156,7 @@ export function CompassCard({ result }: { result: CompassCardResult }) {
             fontFamily: "var(--font-display)",
             fontWeight: 700,
             fontSize: 17,
-            letterSpacing: "0.02em",
+            letterSpacing: track("0.02em"),
           }}
         >
           tareeq
@@ -162,7 +165,7 @@ export function CompassCard({ result }: { result: CompassCardResult }) {
           style={{
             fontSize: 9,
             fontWeight: 700,
-            letterSpacing: "0.26em",
+            letterSpacing: track("0.26em"),
             color: "rgba(255,255,255,.55)",
           }}
         >
@@ -262,7 +265,7 @@ export function CompassCard({ result }: { result: CompassCardResult }) {
             transform: "translate(-50%, -100%)",
             fontSize: 8.5,
             fontWeight: 700,
-            letterSpacing: "0.22em",
+            letterSpacing: track("0.22em"),
             color: "#F4C660",
             textShadow: "0 0 12px rgba(244,198,96,.8)",
           }}
@@ -278,7 +281,7 @@ export function CompassCard({ result }: { result: CompassCardResult }) {
             transform: "translate(100%, -50%)",
             fontSize: 8.5,
             fontWeight: 700,
-            letterSpacing: "0.22em",
+            letterSpacing: track("0.22em"),
             color: "#6FE0C0",
             writingMode: "vertical-rl",
           }}
@@ -294,7 +297,7 @@ export function CompassCard({ result }: { result: CompassCardResult }) {
             transform: "translate(-50%, 100%)",
             fontSize: 8.5,
             fontWeight: 700,
-            letterSpacing: "0.22em",
+            letterSpacing: track("0.22em"),
             color: "#F2A8B3",
           }}
         >
@@ -309,7 +312,7 @@ export function CompassCard({ result }: { result: CompassCardResult }) {
             transform: "translate(-100%, -50%) rotate(180deg)",
             fontSize: 8.5,
             fontWeight: 700,
-            letterSpacing: "0.22em",
+            letterSpacing: track("0.22em"),
             color: "#9D7FF0",
             writingMode: "vertical-rl",
           }}
@@ -327,7 +330,7 @@ export function CompassCard({ result }: { result: CompassCardResult }) {
           style={{
             fontSize: 10,
             fontWeight: 600,
-            letterSpacing: "0.3em",
+            letterSpacing: track("0.3em"),
             color: "rgba(255,255,255,.6)",
           }}
         >
@@ -338,9 +341,9 @@ export function CompassCard({ result }: { result: CompassCardResult }) {
         <div
           className="compass-card-archetype"
           style={{
-            fontFamily: "var(--font-display)",
+            fontFamily: displayFont,
             fontWeight: 600,
-            fontStyle: "italic",
+            fontStyle: isArabic ? "normal" : "italic",
             fontSize: 44,
             lineHeight: 1.02,
             color: "#F4C660",
@@ -353,14 +356,16 @@ export function CompassCard({ result }: { result: CompassCardResult }) {
         <div
           className="compass-card-cluster-line"
           style={{
-            fontFamily: "var(--font-display)",
+            fontFamily: displayFont,
             fontSize: 19,
             color: "rgba(255,255,255,.9)",
             marginTop: 8,
           }}
         >
           {inClusterBefore}
-          <span style={{ fontStyle: "italic", color: clusterColor }}>{clusterLabel}</span>
+          <span style={{ fontStyle: isArabic ? "normal" : "italic", color: clusterColor }}>
+            {clusterLabel}
+          </span>
           {inClusterAfter}
         </div>
       </div>
@@ -377,7 +382,7 @@ export function CompassCard({ result }: { result: CompassCardResult }) {
           justifyContent: "center",
           gap: 22,
           fontSize: 9.5,
-          letterSpacing: "0.06em",
+          letterSpacing: track("0.06em"),
           color: "rgba(255,255,255,.7)",
         }}
       >
@@ -419,7 +424,7 @@ export function CompassCard({ result }: { result: CompassCardResult }) {
           bottom: 20,
           textAlign: "center",
           fontSize: 9,
-          letterSpacing: "0.2em",
+          letterSpacing: track("0.2em"),
           color: "rgba(255,255,255,.4)",
         }}
       >

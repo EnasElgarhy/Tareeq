@@ -108,6 +108,11 @@ function rtlWords(text: string, isArabic: boolean): string {
   return isArabic ? text.split(" ").reverse().join(" ") : text;
 }
 
+function displayNameForRenderer(name: string, isArabic: boolean): string {
+  const containsArabic = /[\u0600-\u06ff]/.test(name);
+  return containsArabic ? rtlWords(name, isArabic) : name;
+}
+
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const params = url.searchParams;
@@ -149,6 +154,7 @@ export async function GET(request: Request) {
   // Arabic face entirely and never goes italic.
   const displayFont = isArabic ? "IBM Plex Sans Arabic" : "Fraunces";
   const bodyFont = isArabic ? "IBM Plex Sans Arabic" : "Plus Jakarta Sans";
+  const displayName = displayNameForRenderer(name.toUpperCase(), isArabic);
 
   const clusterColor = getClusterColor(clusterCode);
   const clusterLabel = rtlWords(getClusterLabel(clusterCode, t), isArabic);
@@ -421,7 +427,7 @@ export async function GET(request: Request) {
           >
             <span>{eyebrowBefore}</span>
             {eyebrowBefore ? <span>{" "}</span> : null}
-            <span>{name.toUpperCase()}</span>
+            <span>{displayName}</span>
             {/* eyebrowAfter (", YOUR PATH POINTS TO" / "، طريقك...") starts
              *  with punctuation in both locales' templates, so it gets no
              *  leading space. */}

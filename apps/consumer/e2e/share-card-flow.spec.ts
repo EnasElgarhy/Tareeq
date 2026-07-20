@@ -104,3 +104,38 @@ test("Compass Card visual regression (reduced motion — end state)", async ({ p
   await expect(card).toBeVisible();
   await expect(card).toHaveScreenshot("compass-card-live-en.png");
 });
+
+test("Arabic Compass Card keeps connected glyphs in the live preview", async ({ page }) => {
+  await page.goto("/");
+  await page.evaluate(
+    ({ regKey, localeKey }) => {
+      const registration = JSON.parse(
+        window.localStorage.getItem(regKey) ?? "{}",
+      ) as Record<string, unknown>;
+      window.localStorage.setItem(
+        regKey,
+        JSON.stringify({ ...registration, name: "سارة أحمد" }),
+      );
+      window.localStorage.setItem(localeKey, "ar");
+    },
+    {
+      regKey: resultRegistrationStorageKey,
+      localeKey: localeStorageKey,
+    },
+  );
+
+  await page.goto("/results");
+  await page.getByRole("button", { name: "شارك النتيجة" }).click();
+
+  const card = page.locator(".compass-card");
+  await expect(card).toBeVisible();
+  await expect(card.locator(".compass-card-eyebrow")).toHaveCSS(
+    "letter-spacing",
+    "normal",
+  );
+  await expect(card.locator(".compass-card-archetype")).toHaveCSS(
+    "font-style",
+    "normal",
+  );
+  await expect(card).toHaveScreenshot("compass-card-live-ar.png");
+});

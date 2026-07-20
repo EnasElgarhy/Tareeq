@@ -27,7 +27,7 @@ test("renders the English share card as a 1080x1920 PNG", async ({ request }) =>
 
 test("renders the Arabic share card as a 1080x1920 PNG", async ({ request }) => {
   const res = await request.get("/api/results/share-card", {
-    params: { ...BASE_PARAMS, name: "سارة", locale: "ar" },
+    params: { ...BASE_PARAMS, name: "سارة أحمد", locale: "ar", v: "2" },
   });
   expect(res.status()).toBe(200);
   expect(res.headers()["content-type"]).toBe("image/png");

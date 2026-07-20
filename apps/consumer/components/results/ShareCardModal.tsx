@@ -20,6 +20,9 @@ interface ShareCardModalProps {
 const CARD_SCALE = 2 / 3;
 const CARD_WIDTH = 360 * CARD_SCALE;
 const CARD_HEIGHT = 640 * CARD_SCALE;
+// ImageResponse marks generated PNGs immutable for a year. Bump this when
+// rendering changes so clients do not reuse an older card from browser cache.
+const SHARE_CARD_RENDER_VERSION = "2";
 
 /**
  * Opens the animated CompassCard over the results screen with a single
@@ -63,6 +66,7 @@ export function ShareCardModal({
         driver: result.driverCode,
         ecosystem: result.ecosystemFit,
         locale,
+        v: SHARE_CARD_RENDER_VERSION,
       });
       const response = await fetch(`/api/results/share-card?${params.toString()}`);
       if (!response.ok) throw new Error("share-card export failed");
