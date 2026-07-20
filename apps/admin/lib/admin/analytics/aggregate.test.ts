@@ -188,6 +188,8 @@ describe("ageFromBirthYear", () => {
 
 describe("ageBandFromAge", () => {
   it.each([
+    [10, "under-16"],
+    [15, "under-16"],
     [16, "16-17"],
     [17, "16-17"],
     [18, "18-19"],

@@ -4,12 +4,14 @@ import { AssessmentTabs } from "@/components/admin/AssessmentTabs";
 import { CustomCategoriesPanel } from "@/components/admin/CustomCategoriesPanel";
 import { CustomQuestionsEditor } from "@/components/admin/CustomQuestionsEditor";
 import PageHeader from "@/components/admin/PageHeader";
+import { VersionGovernancePanel } from "@/components/admin/VersionGovernancePanel";
 import { getAssessmentForVersion } from "@/lib/admin/catalog";
 import { getContentVersion } from "@/lib/admin/content";
 import {
   listAssessmentCategories,
   listCustomQuestions,
 } from "@/lib/admin/custom-content";
+import { getVersionResponseStats } from "@/lib/admin/responses";
 
 export const dynamic = "force-dynamic";
 
@@ -36,6 +38,9 @@ export default async function CustomEditorPage({
 
   const title = assessment.name.en ?? version.label;
   const editable = !version.is_active;
+  const responseStats = editable
+    ? null
+    : await getVersionResponseStats(version.id);
 
   return (
     <>
@@ -70,9 +75,15 @@ export default async function CustomEditorPage({
           />
         </>
       ) : (
-        <p className="rounded-adm-md border border-adm-gold/50 bg-adm-gold/15 px-4 py-3 text-[13px] font-medium text-adm-gold-ink">
-          This version is live and read-only. Clone it to a draft to make changes.
-        </p>
+        responseStats && (
+          <VersionGovernancePanel
+            label={version.label}
+            createdAt={version.created_at}
+            responseCount={responseStats.total}
+            completedCount={responseStats.completed}
+            questionCount={questions.length}
+          />
+        )
       )}
     </>
   );

@@ -17,6 +17,7 @@ export const VERY_LONG_THRESHOLD_SECONDS = 30 * 60;
 export const ALL_SAME_ANSWER_MIN_COUNT = 5;
 
 export const AGE_BAND_LABELS: Record<AgeBand, string> = {
+  "under-16": "Under 16",
   "16-17": "16–17",
   "18-19": "18–19",
   "20-21": "20–21",
@@ -104,6 +105,7 @@ export function ageFromBirthYear(
 
 export function ageBandFromAge(age: number | null): AgeBand {
   if (age === null) return "unknown";
+  if (age < 16) return "under-16";
   if (age <= 17) return "16-17";
   if (age <= 19) return "18-19";
   if (age <= 21) return "20-21";

@@ -23,7 +23,7 @@ export default async function AdminShellLayout({
         Skip to content
       </a>
       <div className="flex min-h-screen bg-adm-paper">
-        <AdminSidebar email={admin.email} />
+        <AdminSidebar email={admin.email} permissions={admin.permissions} />
         <main id="adm-main" className="min-w-0 flex-1">
           <div className="mx-auto max-w-6xl px-8 py-8">{children}</div>
         </main>

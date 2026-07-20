@@ -26,6 +26,10 @@ import {
 import { generateInsights } from "@/lib/admin/analytics/insights";
 import { driverLabel } from "@/lib/admin/analytics/labels";
 import {
+  type DemoLabelMap,
+  resolveDemographicsFromAnswers,
+} from "@/lib/admin/analytics/demographics";
+import {
   buildAverageSeries,
   buildCountSeries,
   buildRatioSeries,
@@ -157,6 +161,38 @@ async function fetchProfiles(
   return map;
 }
 
+/**
+ * Per-version letter→label maps for the coded demographic questions (QD3
+ * academic stage, QD4 gender), so Audience shows the version's own option
+ * wording. Degrades to an empty map on any error — the resolver then falls
+ * back to the seed labels. QD1 (age) is keyed by fixed AgeBand, and QD2
+ * (country) is free text, so neither needs a label map.
+ */
+async function fetchDemographicLabelMaps(): Promise<Map<string, DemoLabelMap>> {
+  const sb = createSupabaseAdminClient();
+  const { data, error } = await sb
+    .from("questions")
+    .select("version_id,external_id,question_options(letter,text)")
+    .in("external_id", ["QD3", "QD4"]);
+  const map = new Map<string, DemoLabelMap>();
+  if (error) return map;
+  for (const row of data ?? []) {
+    const r = row as {
+      version_id: string;
+      external_id: string;
+      question_options: Array<{ letter: string; text: Record<string, string> | null }>;
+    };
+    const entry = map.get(r.version_id) ?? { QD3: {}, QD4: {} };
+    const target = r.external_id === "QD3" ? entry.QD3 : entry.QD4;
+    for (const opt of r.question_options ?? []) {
+      const label = opt.text?.en ?? Object.values(opt.text ?? {})[0];
+      if (label && opt.letter) target[opt.letter.trim().toUpperCase()] = label;
+    }
+    map.set(r.version_id, entry);
+  }
+  return map;
+}
+
 /** Account-creation timestamps for the "new users over time" Growth chart. */
 async function fetchProfileCreatedDates(): Promise<string[]> {
   const sb = createSupabaseAdminClient();
@@ -173,6 +209,7 @@ function deriveRow(
   raw: RawAssessmentRow,
   profile: RawProfileRow | undefined,
   versionMeta: Map<string, VersionMeta>,
+  demoLabels: Map<string, DemoLabelMap>,
   referenceYear: number,
 ): DerivedRow {
   const meta = versionMeta.get(raw.version_id);
@@ -183,7 +220,12 @@ function deriveRow(
   const rushed = isRushed(duration);
   const veryLong = isVeryLong(duration);
   const allSame = isAllSameAnswerPattern(raw.answers);
-  const age = ageFromBirthYear(profile?.birth_year ?? null, referenceYear);
+
+  // Demographics come from the onboarding answers (QD1..QD4) — the real
+  // source. Profile columns are a defensive fallback for any legacy row that
+  // happened to record them (in practice they're empty; see demographics.ts).
+  const demo = resolveDemographicsFromAnswers(raw.answers, demoLabels.get(raw.version_id));
+  const profileAge = ageFromBirthYear(profile?.birth_year ?? null, referenceYear);
 
   return {
     id: raw.id,
@@ -207,10 +249,10 @@ function deriveRow(
       allSameAnswer: allSame,
       missingCount,
     }),
-    country: profile?.country ?? null,
-    ageBand: ageBandFromAge(age),
-    gender: profile?.gender ?? null,
-    educationLevel: profile?.education_level ?? null,
+    country: demo.country ?? profile?.country ?? null,
+    ageBand: demo.ageBand !== "unknown" ? demo.ageBand : ageBandFromAge(profileAge),
+    gender: demo.gender ?? profile?.gender ?? null,
+    educationLevel: demo.educationLevel ?? profile?.education_level ?? null,
     consentResearch: raw.consent_research ?? null,
     coreResult: extractCoreResult(raw.result),
   };
@@ -518,13 +560,14 @@ export async function getAnalyticsViewModel(
   filters: AnalyticsFilters,
   range: TimeRange = "30d",
 ): Promise<AnalyticsViewModel> {
-  const [versionMeta, raw, userCounts, catalogOptions, userCreatedDates] =
+  const [versionMeta, raw, userCounts, catalogOptions, userCreatedDates, demoLabels] =
     await Promise.all([
       buildVersionMeta(),
       fetchRawAssessments(),
       getUserCounts(),
       getCatalogOptions(),
       fetchProfileCreatedDates(),
+      fetchDemographicLabelMaps(),
     ]);
 
   const userIds = [
@@ -535,7 +578,7 @@ export async function getAnalyticsViewModel(
   const referenceYear = now.getFullYear();
 
   const allDerived = raw.map((r) =>
-    deriveRow(r, profiles.get(r.user_id ?? ""), versionMeta, referenceYear),
+    deriveRow(r, profiles.get(r.user_id ?? ""), versionMeta, demoLabels, referenceYear),
   );
   const matched = allDerived.filter((row) => matchesFilters(row, filters));
 

@@ -7,7 +7,7 @@ import type {
 } from "@/lib/admin/analytics/types";
 
 const FLAGGED_MODES: FlaggedFilterMode[] = ["include", "only", "exclude"];
-const AGE_BANDS: AgeBand[] = ["16-17", "18-19", "20-21", "22+", "unknown"];
+const AGE_BANDS: AgeBand[] = ["under-16", "16-17", "18-19", "20-21", "22+", "unknown"];
 const TIME_RANGES: TimeRange[] = ["7d", "30d", "90d", "12m"];
 const DEFAULT_RANGE: TimeRange = "30d";
 

@@ -115,6 +115,32 @@ async function resolveVersionLabel(
 }
 
 /**
+ * Response counts + first-response time for a single version. Used by the
+ * version-governance panel to show "N responses depend on this version".
+ * Degrades to zeroes on error so the content page never fails to render.
+ */
+export async function getVersionResponseStats(
+  versionId: string,
+): Promise<{ total: number; completed: number; firstAt: string | null }> {
+  const sb = createSupabaseAdminClient();
+  const { data, error } = await sb
+    .from("assessments")
+    .select("started_at,completed_at")
+    .eq("version_id", versionId);
+  if (error) return { total: 0, completed: 0, firstAt: null };
+  let total = 0;
+  let completed = 0;
+  let firstAt: string | null = null;
+  for (const row of data ?? []) {
+    const r = row as { started_at: string; completed_at: string | null };
+    total += 1;
+    if (r.completed_at) completed += 1;
+    if (r.started_at && (!firstAt || r.started_at < firstAt)) firstAt = r.started_at;
+  }
+  return { total, completed, firstAt };
+}
+
+/**
  * One summary row per assessment version that has at least one response, with
  * started/completed counts and last activity. Powers the Responses index.
  */

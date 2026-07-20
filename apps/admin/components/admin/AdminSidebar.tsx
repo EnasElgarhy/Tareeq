@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import type { AdminPermission } from "@/lib/admin/team/permissions";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 /* Compass mark — Tareeq's wayfinding signature, gold needle on night. */
@@ -22,6 +23,8 @@ interface NavEntry {
   label: string;
   icon: React.ReactNode;
   exact?: boolean;
+  /** When set, the entry only renders for viewers who hold this permission. */
+  permission?: AdminPermission;
 }
 
 const stroke = {
@@ -80,6 +83,18 @@ const NAV: NavEntry[] = [
       </svg>
     ),
   },
+  {
+    href: "/admin/team",
+    label: "Team",
+    permission: "team.manage",
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" aria-hidden="true">
+        <circle cx="8" cy="9" r="2.6" {...stroke} />
+        <circle cx="16" cy="9" r="2.6" {...stroke} />
+        <path d="M3.5 19c.5-2.7 2.2-4 4.5-4s3.8 1.3 4.5 4M14 15c2.1-.2 4 1 4.5 4" {...stroke} />
+      </svg>
+    ),
+  },
 ];
 
 function NavItem({ entry }: { entry: NavEntry }) {
@@ -114,9 +129,16 @@ function NavItem({ entry }: { entry: NavEntry }) {
   );
 }
 
-export function AdminSidebar({ email }: { email: string | null }) {
+export function AdminSidebar({
+  email,
+  permissions = [],
+}: {
+  email: string | null;
+  permissions?: readonly AdminPermission[];
+}) {
   const router = useRouter();
   const initial = (email?.trim()?.[0] ?? "A").toUpperCase();
+  const nav = NAV.filter((e) => !e.permission || permissions.includes(e.permission));
 
   async function signOut() {
     const supabase = createSupabaseBrowserClient();
@@ -139,7 +161,7 @@ export function AdminSidebar({ email }: { email: string | null }) {
       </div>
 
       <nav aria-label="Admin sections" className="flex-1 space-y-1 px-4">
-        {NAV.map((entry) => (
+        {nav.map((entry) => (
           <NavItem key={entry.href} entry={entry} />
         ))}
       </nav>
