@@ -1,22 +1,14 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { AssessmentTabs } from "@/components/admin/AssessmentTabs";
-import { PublishPanel } from "@/components/admin/PublishPanel";
+import { CustomCategoriesPanel } from "@/components/admin/CustomCategoriesPanel";
 import { ResultProfilesPanel } from "@/components/admin/ResultProfilesPanel";
 import { RuleBuilder } from "@/components/admin/RuleBuilder";
 import { ScoringPreview } from "@/components/admin/ScoringPreview";
 import PageHeader from "@/components/admin/PageHeader";
+import { loadAssessmentWorkspace } from "@/lib/admin/assessment-workspace.server";
 import { getAssessmentForVersion } from "@/lib/admin/catalog";
 import { getContentVersion } from "@/lib/admin/content";
-import {
-  listAssessmentCategories,
-  listCustomQuestions,
-} from "@/lib/admin/custom-content";
-import {
-  getScoringStrategy,
-  listProfileRules,
-  listResultProfiles,
-} from "@/lib/admin/scoring-content";
 
 export const dynamic = "force-dynamic";
 
@@ -35,19 +27,21 @@ export default async function ScoringPage({
     redirect(`/admin/content/${versionId}`);
   }
 
-  const [categories, questions, profiles, rules, strategy] = await Promise.all([
-    listAssessmentCategories(assessment.id),
-    listCustomQuestions(versionId),
-    listResultProfiles(assessment.id),
-    listProfileRules(assessment.id),
-    getScoringStrategy(assessment.id),
-  ]);
+  const { categories, questions, profiles, rules, strategy, readiness } =
+    await loadAssessmentWorkspace(
+      assessment.id,
+      versionId,
+      assessment.supported_languages,
+    );
 
   const title = assessment.name.en ?? version.label;
 
   return (
     <>
-      <nav aria-label="Breadcrumb" className="mb-4 text-[13px] text-adm-ink-muted">
+      <nav
+        aria-label="Breadcrumb"
+        className="mb-4 text-[13px] text-adm-ink-muted"
+      >
         <Link
           href="/admin/content"
           className="font-semibold text-adm-violet hover:text-adm-deep"
@@ -70,12 +64,21 @@ export default async function ScoringPage({
       </nav>
 
       <PageHeader
-        kicker="Custom assessment · Scoring"
+        kicker="Custom assessment · Results"
         title={title}
-        description="Define result profiles, the rules that select them, and preview the outcome."
+        description="Define the possible outcomes first, then choose how answers lead to them."
       />
 
-      <AssessmentTabs versionId={versionId} active="scoring" />
+      <AssessmentTabs
+        versionId={versionId}
+        active="scoring"
+        readiness={readiness}
+      />
+
+      <CustomCategoriesPanel
+        catalogId={assessment.id}
+        categories={categories}
+      />
 
       <ResultProfilesPanel
         catalogId={assessment.id}
@@ -83,6 +86,7 @@ export default async function ScoringPage({
         categories={categories}
         profiles={profiles}
         strategy={strategy}
+        supportedLanguages={assessment.supported_languages}
       />
 
       <RuleBuilder
@@ -100,17 +104,6 @@ export default async function ScoringPage({
         profiles={profiles}
         rules={rules}
         strategy={strategy}
-      />
-
-      <PublishPanel
-        catalogId={assessment.id}
-        versionId={versionId}
-        status={assessment.status}
-        strategy={strategy}
-        categoryCodes={categories.map((c) => c.code)}
-        profiles={profiles.map((p) => ({ id: p.id, categoryCode: p.category_code }))}
-        ruleCount={rules.length}
-        questionCount={questions.length}
       />
     </>
   );

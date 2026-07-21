@@ -58,6 +58,10 @@ export async function createAssessment(
       supported_languages: supported,
       assessment_type: input.assessmentType,
       creation_method: input.creationMethod,
+      scoring_strategy:
+        input.assessmentType === "custom" && input.creationMethod === "manual"
+          ? "highest_score_wins"
+          : "first_match",
       status: "draft",
       created_by: admin.id,
     })

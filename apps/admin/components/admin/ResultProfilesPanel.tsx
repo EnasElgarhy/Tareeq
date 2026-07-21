@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { Check, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/admin/ui/Button";
 import { Input, Label, Select, Textarea } from "@/components/admin/ui/Field";
@@ -12,7 +13,7 @@ import {
 } from "@/lib/admin/profile-actions";
 import { validateResultProfile } from "@/lib/admin/profile-validation";
 import type { ResultProfileRow } from "@/lib/admin/scoring-content";
-import { type Locale, LOCALE_LABELS, SUPPORTED_LOCALES } from "@/lib/admin/locales";
+import { type Locale, LOCALE_LABELS } from "@/lib/admin/locales";
 import type { ScoringStrategy } from "@/lib/scoring/spec-types";
 
 type ListField = "majors" | "careers" | "strengths" | "development";
@@ -70,6 +71,7 @@ interface PanelProps {
   categories: AssessmentCategory[];
   profiles: ResultProfileRow[];
   strategy: ScoringStrategy;
+  supportedLanguages: Locale[];
 }
 
 export function ResultProfilesPanel({
@@ -78,6 +80,7 @@ export function ResultProfilesPanel({
   categories,
   profiles,
   strategy,
+  supportedLanguages,
 }: PanelProps) {
   const [adding, setAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -86,9 +89,9 @@ export function ResultProfilesPanel({
     <section className="mb-8">
       <div className="mb-3 flex items-center justify-between">
         <div>
-          <h2 className="text-sm font-bold text-adm-ink">Result profiles</h2>
+          <h2 className="text-sm font-bold text-adm-ink">Possible results</h2>
           <p className="text-[12px] text-adm-ink-muted">
-            The outcomes an assessment can produce.
+            The outcomes students can receive after completing the assessment.
             {strategy === "highest_score_wins"
               ? " In highest-score mode, set each profile's category."
               : ""}
@@ -109,6 +112,7 @@ export function ResultProfilesPanel({
             categories={categories}
             existingCodes={profiles.map((p) => p.code ?? "").filter(Boolean)}
             strategy={strategy}
+            supportedLanguages={supportedLanguages}
             initial={blankDraft()}
             onDone={() => setAdding(false)}
             onCancel={() => setAdding(false)}
@@ -135,6 +139,7 @@ export function ResultProfilesPanel({
                 .map((x) => x.code ?? "")
                 .filter(Boolean)}
               strategy={strategy}
+              supportedLanguages={supportedLanguages}
               profileId={p.id}
               initial={toDraft(p)}
               onDone={() => setEditingId(null)}
@@ -198,7 +203,9 @@ function ProfileCard({
           </span>
           <span className="truncate text-[14px] font-semibold text-adm-ink">
             {profile.name?.en || (
-              <span className="text-adm-error-ink">⚠ missing English title</span>
+              <span className="text-adm-error-ink">
+                ⚠ missing English title
+              </span>
             )}
           </span>
           {profile.is_fallback ? (
@@ -232,6 +239,7 @@ function ProfileForm({
   categories,
   existingCodes,
   strategy,
+  supportedLanguages,
   profileId,
   initial,
   onDone,
@@ -242,6 +250,7 @@ function ProfileForm({
   categories: AssessmentCategory[];
   existingCodes: string[];
   strategy: ScoringStrategy;
+  supportedLanguages: Locale[];
   profileId?: string;
   initial: ProfileDraft;
   onDone: () => void;
@@ -306,18 +315,28 @@ function ProfileForm({
     <div className="rounded-adm-lg border border-adm-violet/40 bg-adm-card p-4 shadow-adm-sm">
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <div className="flex gap-1">
-          {SUPPORTED_LOCALES.map((l) => (
+          {supportedLanguages.map((l) => (
             <button
               key={l}
               type="button"
               onClick={() => setLocale(l)}
-              className={`rounded-adm-sm px-3 py-1 text-[13px] font-semibold transition-colors ${
+              className={`flex min-h-9 items-center gap-1.5 rounded-adm-sm px-3 py-1 text-[13px] font-semibold transition-colors ${
                 locale === l
                   ? "bg-adm-violet text-white"
                   : "bg-adm-sand text-adm-ink-muted hover:text-adm-ink"
               }`}
             >
               {LOCALE_LABELS[l]}
+              {draft.title[l]?.trim() ? (
+                <Check className="size-3" aria-label="Complete" />
+              ) : (
+                <span
+                  className={`size-1.5 rounded-full ${
+                    locale === l ? "bg-white/70" : "bg-adm-error"
+                  }`}
+                  aria-label="Incomplete"
+                />
+              )}
             </button>
           ))}
         </div>
@@ -325,7 +344,9 @@ function ProfileForm({
           <input
             type="checkbox"
             checked={draft.isFallback}
-            onChange={(e) => setDraft((d) => ({ ...d, isFallback: e.target.checked }))}
+            onChange={(e) =>
+              setDraft((d) => ({ ...d, isFallback: e.target.checked }))
+            }
             className="h-4 w-4 rounded border-adm-line-strong text-adm-violet focus:ring-2 focus:ring-adm-violet/25"
           />
           Fallback (when nothing matches)
@@ -345,12 +366,17 @@ function ProfileForm({
         </div>
         <div>
           <Label htmlFor="p-cat">
-            Category {strategy === "highest_score_wins" ? "(required for highest-score)" : "(optional)"}
+            Connected result category{" "}
+            {strategy === "highest_score_wins"
+              ? "(required for highest-score)"
+              : "(optional)"}
           </Label>
           <Select
             id="p-cat"
             value={draft.categoryCode}
-            onChange={(e) => setDraft((d) => ({ ...d, categoryCode: e.target.value }))}
+            onChange={(e) =>
+              setDraft((d) => ({ ...d, categoryCode: e.target.value }))
+            }
           >
             <option value="">— none —</option>
             {categories.map((c) => (
@@ -385,22 +411,31 @@ function ProfileForm({
         />
       </div>
 
-      <div className="mt-3 grid gap-3 sm:grid-cols-2">
-        {(Object.keys(LIST_LABELS) as ListField[]).map((field) => (
-          <div key={field}>
-            <Label htmlFor={`p-${field}`}>
-              {LIST_LABELS[field]} ({LOCALE_LABELS[locale]}) — one per line
-            </Label>
-            <Textarea
-              id={`p-${field}`}
-              value={(draft[field][locale] ?? []).join("\n")}
-              onChange={(e) => setList(field, e.target.value)}
-              dir={rtl ? "rtl" : undefined}
-              className="min-h-[72px]"
-            />
-          </div>
-        ))}
-      </div>
+      <details className="group mt-4 rounded-adm-md border border-adm-line bg-adm-sand/50">
+        <summary className="flex cursor-pointer list-none items-center justify-between px-3 py-2.5 text-[12px] font-bold text-adm-ink-soft">
+          Additional report content
+          <ChevronDown
+            className="size-4 transition-transform group-open:rotate-180"
+            aria-hidden="true"
+          />
+        </summary>
+        <div className="grid gap-3 border-t border-adm-line p-3 sm:grid-cols-2">
+          {(Object.keys(LIST_LABELS) as ListField[]).map((field) => (
+            <div key={field}>
+              <Label htmlFor={`p-${field}`}>
+                {LIST_LABELS[field]} ({LOCALE_LABELS[locale]}) — one per line
+              </Label>
+              <Textarea
+                id={`p-${field}`}
+                value={(draft[field][locale] ?? []).join("\n")}
+                onChange={(e) => setList(field, e.target.value)}
+                dir={rtl ? "rtl" : undefined}
+                className="min-h-[72px]"
+              />
+            </div>
+          ))}
+        </div>
+      </details>
 
       {errors.length > 0 ? (
         <ul className="mt-3 space-y-0.5">
@@ -412,9 +447,14 @@ function ProfileForm({
         </ul>
       ) : null}
 
-      <div className="mt-4 flex gap-2">
-        <Button size="sm" onClick={save} loading={saving} disabled={errors.length > 0}>
-          {profileId ? "Save profile" : "Add profile"}
+      <div className="sticky bottom-0 -mx-4 mt-4 flex gap-2 border-t border-adm-line bg-adm-card/95 px-4 py-3 backdrop-blur-sm">
+        <Button
+          size="sm"
+          onClick={save}
+          loading={saving}
+          disabled={errors.length > 0}
+        >
+          {profileId ? "Save result" : "Add result"}
         </Button>
         <Button size="sm" variant="ghost" onClick={onCancel} disabled={saving}>
           Cancel

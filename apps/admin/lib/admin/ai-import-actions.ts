@@ -264,6 +264,18 @@ export async function applyExtractedDraft(
     ruleCount++;
   }
 
+  // Direct-score assessments usually have no conditional rules: each answer
+  // contributes to a category and the strongest mapped profile wins. Imported
+  // rule sets keep the explicit first-match strategy instead.
+  const { error: strategyError } = await sb
+    .from("assessments_catalog")
+    .update({
+      scoring_strategy:
+        draft.rules.length > 0 ? "first_match" : "highest_score_wins",
+    })
+    .eq("id", catalogId);
+  if (strategyError) throw new Error(strategyError.message);
+
   revalidatePath(`/admin/content/${versionId}/custom`);
   revalidatePath(`/admin/content/${versionId}/scoring`);
   trackEvent("assessment_import_generated", {

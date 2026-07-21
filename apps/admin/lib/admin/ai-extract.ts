@@ -173,6 +173,36 @@ export function normalizeExtractedDraft(raw: unknown): ExtractedDraft {
   };
 }
 
+/**
+ * Recover the common direct-score shape when extraction returns scored
+ * categories but omits the matching outcomes. Conditional-rule assessments
+ * are never changed by this fallback.
+ */
+export function withDirectScoreProfileFallback(
+  draft: ExtractedDraft,
+): ExtractedDraft {
+  if (draft.profiles.length > 0 || draft.rules.length > 0) return draft;
+
+  const scoredCategories = new Set(
+    draft.questions.flatMap((question) =>
+      question.options.flatMap((option) =>
+        option.categoryCode ? [option.categoryCode] : [],
+      ),
+    ),
+  );
+  const profiles = draft.categories
+    .filter((category) => scoredCategories.has(category.code))
+    .map((category) => ({
+      code: category.code,
+      title: category.name,
+      categoryCode: category.code,
+    }));
+
+  return profiles.length > 0
+    ? { ...draft, profiles, confidence: Math.min(draft.confidence, 0.5) }
+    : draft;
+}
+
 // ── Gemini extractor (server-only; document text in, draft out) ───────────────
 
 const GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models";
@@ -255,6 +285,9 @@ const EXTRACT_SCHEMA = {
 const SYSTEM = `You convert career-assessment source material into a structured assessment draft.
 Output ONLY the schema: categories (scoring dimensions), questions (with answer options mapping to a category + points), result profiles, and rules.
 You are NOT scoring anyone — you only structure the author's material. Preserve bilingual text (en/ar) when present; never invent translations.
+Every explicitly named possible outcome, result, archetype, or profile in the source MUST appear in profiles.
+When answers award points directly to named outcomes, create matching categories for those score dimensions and one profile per named outcome, with categoryCode pointing to its matching category.
+Do not put a named outcome only in categories and omit it from profiles.
 Use SHORT uppercase codes for categories and profiles (e.g. LEAD, TECH).`;
 
 export interface ExtractInput {
@@ -264,28 +297,21 @@ export interface ExtractInput {
   scoringText?: string;
 }
 
-export async function extractAssessmentDraft(
-  input: ExtractInput,
+async function requestExtraction(
+  key: string,
+  model: string,
+  userContent: string,
+  systemInstruction: string,
+  temperature: number,
 ): Promise<ExtractedDraft> {
-  const key = (process.env.GEMINI_API_KEY ?? "").trim();
-  if (!key) throw new Error("GEMINI_API_KEY is not configured.");
-  const model = (process.env.GEMINI_MODEL ?? "").trim() || "gemini-2.5-flash";
-
-  const userContent = [
-    "QUESTIONS SOURCE:",
-    input.questionsText.slice(0, 24000),
-    input.scoringText ? "\n\nSCORING / RUBRIC SOURCE:" : "",
-    input.scoringText ? input.scoringText.slice(0, 12000) : "",
-  ].join("\n");
-
   const response = await fetch(`${GEMINI_ENDPOINT}/${model}:generateContent`, {
     method: "POST",
     headers: { "content-type": "application/json", "x-goog-api-key": key },
     body: JSON.stringify({
-      systemInstruction: { parts: [{ text: SYSTEM }] },
+      systemInstruction: { parts: [{ text: systemInstruction }] },
       contents: [{ role: "user", parts: [{ text: userContent }] }],
       generationConfig: {
-        temperature: 0.2,
+        temperature,
         maxOutputTokens: 8192,
         responseMimeType: "application/json",
         responseSchema: EXTRACT_SCHEMA,
@@ -314,4 +340,42 @@ export async function extractAssessmentDraft(
     throw new Error("Extraction returned malformed JSON.");
   }
   return normalizeExtractedDraft(parsed);
+}
+
+export async function extractAssessmentDraft(
+  input: ExtractInput,
+): Promise<ExtractedDraft> {
+  const key = (process.env.GEMINI_API_KEY ?? "").trim();
+  if (!key) throw new Error("GEMINI_API_KEY is not configured.");
+  const model = (process.env.GEMINI_MODEL ?? "").trim() || "gemini-2.5-flash";
+
+  const userContent = [
+    "QUESTIONS SOURCE:",
+    input.questionsText.slice(0, 24000),
+    input.scoringText ? "\n\nSCORING / RUBRIC SOURCE:" : "",
+    input.scoringText ? input.scoringText.slice(0, 12000) : "",
+  ].join("\n");
+
+  const draft = await requestExtraction(key, model, userContent, SYSTEM, 0.2);
+  if (
+    draft.profiles.length > 0 ||
+    draft.categories.length === 0 ||
+    draft.questions.length === 0
+  ) {
+    return draft;
+  }
+
+  const repairInstruction = `${SYSTEM}
+The previous extraction found questions and scoring categories but omitted every result profile. Re-read the source and ensure every named result is present in profiles. For direct-score assessments, create one profile per scored outcome and map it to the matching category.`;
+  const repaired = await requestExtraction(
+    key,
+    model,
+    userContent,
+    repairInstruction,
+    0,
+  );
+
+  return repaired.profiles.length > 0
+    ? repaired
+    : withDirectScoreProfileFallback(draft);
 }

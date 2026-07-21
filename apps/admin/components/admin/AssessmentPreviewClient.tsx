@@ -40,7 +40,7 @@ export function AssessmentPreviewClient({
   const isLast = index === total - 1;
 
   const categoryMap = Object.fromEntries(
-    categories.map((c) => [c.code, localized(c.name, locale)])
+    categories.map((c) => [c.code, localized(c.name, locale)]),
   );
 
   function goNext() {
@@ -116,7 +116,8 @@ export function AssessmentPreviewClient({
       <div
         className="relative w-full max-w-[420px] overflow-hidden rounded-[2rem] p-6 shadow-adm-lg"
         style={{
-          background: "linear-gradient(180deg, #221248 0%, #100a24 38%, #08051a 100%)",
+          background:
+            "linear-gradient(180deg, #221248 0%, #100a24 38%, #08051a 100%)",
           minHeight: 520,
           display: "flex",
           flexDirection: "column",
@@ -143,8 +144,7 @@ export function AssessmentPreviewClient({
             className="m-0 italic"
             dir={locale === "ar" ? "rtl" : "ltr"}
             style={{
-              fontFamily:
-                '"Noto Serif", "Georgia", ui-serif, serif',
+              fontFamily: '"Noto Serif", "Georgia", ui-serif, serif',
               fontSize: "clamp(15px, 1rem + 0.5vw, 19px)",
               lineHeight: 1.3,
               color: "#f5eee6",
@@ -160,7 +160,7 @@ export function AssessmentPreviewClient({
             className="mt-1 text-[10px] font-semibold uppercase tracking-widest"
             style={{ color: "rgba(245,238,230,0.35)" }}
           >
-            Q{question.position} · {question.kind}
+            Q{index + 1} · {question.kind}
           </p>
         </div>
 
@@ -178,11 +178,15 @@ export function AssessmentPreviewClient({
                 index={i}
                 locale={locale}
                 isSelected={selected === option.letter}
-                categoryName={option.categoryCode ? (categoryMap[option.categoryCode] ?? option.categoryCode) : null}
+                categoryName={
+                  option.categoryCode
+                    ? (categoryMap[option.categoryCode] ?? option.categoryCode)
+                    : null
+                }
                 showAdminMeta={showAdminMeta}
                 onSelect={() =>
                   setSelected((prev) =>
-                    prev === option.letter ? null : option.letter
+                    prev === option.letter ? null : option.letter,
                   )
                 }
               />
@@ -273,9 +277,7 @@ function OptionCard({
         background: isSelected
           ? "linear-gradient(95deg, #ff3d83 0%, #ff6b3d 55%, #ffa53d 100%)"
           : "rgba(255,255,255,0.07)",
-        border: isSelected
-          ? "none"
-          : `1px solid ${accent}33`,
+        border: isSelected ? "none" : `1px solid ${accent}33`,
         boxShadow: isSelected
           ? `0 8px 24px rgba(244,198,96,0.22)`
           : `inset 0 0 0 1px rgba(245,238,230,0.10)`,
@@ -333,7 +335,9 @@ function OptionCard({
       {/* Arrow */}
       <span
         className="mt-1 shrink-0 text-[11px] transition-opacity"
-        style={{ color: isSelected ? "rgba(20,16,31,0.6)" : "rgba(245,238,230,0.3)" }}
+        style={{
+          color: isSelected ? "rgba(20,16,31,0.6)" : "rgba(245,238,230,0.3)",
+        }}
       >
         →
       </span>
@@ -362,12 +366,13 @@ function SelectPreview({ locale }: { locale: string }) {
   return (
     <div
       className="flex h-14 w-full items-center rounded-full px-5 text-[14px] font-semibold"
+      dir={locale === "ar" ? "rtl" : "ltr"}
       style={{
         background: "#f5eee6",
         color: "#14101f",
       }}
     >
-      Select an option…
+      {locale === "ar" ? "اختر إجابة…" : "Select an option…"}
     </div>
   );
 }
