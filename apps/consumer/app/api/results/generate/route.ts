@@ -1,4 +1,4 @@
-import { assessmentQuestions } from "@/lib/assessment/questions";
+import { loadAssessmentContentForReference } from "@/lib/assessment/content.server";
 import { trackEvent } from "@/lib/analytics/track";
 import { computeScore } from "@/lib/scoring";
 import {
@@ -22,6 +22,8 @@ type GenerateResultBody = {
   email?: string;
   answers?: Record<string, string>;
   locale?: string;
+  versionId?: string | null;
+  versionLabel?: string;
 };
 
 function isAnswerRecord(value: unknown): value is Record<string, string> {
@@ -72,7 +74,19 @@ export async function POST(request: Request) {
   }
 
   const locale: Locale = isLocale(body.locale) ? body.locale : "en";
-  const result = computeScore(body.answers, assessmentQuestions);
+  const content = await loadAssessmentContentForReference({
+    versionId: typeof body.versionId === "string" ? body.versionId : null,
+    versionLabel:
+      typeof body.versionLabel === "string" ? body.versionLabel : undefined,
+  });
+  if (!content) {
+    return Response.json(
+      { error: "Assessment version unavailable." },
+      { status: 409 },
+    );
+  }
+  const questions = content.questions;
+  const result = computeScore(body.answers, questions);
   const fallback = buildFallbackReport({
     result,
     name: body.name,
@@ -84,7 +98,10 @@ export async function POST(request: Request) {
   const model = process.env.GEMINI_MODEL || DEFAULT_MODEL;
 
   if (!apiKey) {
-    trackEvent("results_generated", { source: "fallback", reason: "missing_api_key" });
+    trackEvent("results_generated", {
+      source: "fallback",
+      reason: "missing_api_key",
+    });
     return Response.json({
       report: {
         ...fallback,
@@ -96,7 +113,7 @@ export async function POST(request: Request) {
 
   const ecosystemFit = getEcosystemFit(result);
   const multiCuriousCodes = getMultiCuriousClusters(result);
-  const answerDigest = createAnswerDigest(body.answers, assessmentQuestions);
+  const answerDigest = createAnswerDigest(body.answers, questions);
   // Cluster context sent to Gemini stays in English regardless of the
   // target output language — it's reasoning input, not user-facing text;
   // the system prompt below separately instructs the output language.
@@ -149,7 +166,11 @@ export async function POST(request: Request) {
     },
   };
 
-  trackEvent("ai_generation_started", { kind: "results_narrative", model });
+  trackEvent("ai_generation_started", {
+    kind: "results_narrative",
+    model,
+    assessmentVersion: content.versionLabel,
+  });
 
   const systemPrompt = `You generate CORE Assessment career guidance for Tareeq. Follow these rules exactly: provide guidance, not personality labels; never present the top cluster as a fixed destiny, diagnosis, or prescription; use language like 'your answers point to high curiosity for...' or 'your curiosity compass is pointing toward...'; write in Kai's voice; use direct second-person language; avoid hedge words, corporate speak, and inspirational cliches. Reveal information in this order: career families or job directions first, then university types/majors, then high-school subject choices. Include all guidance as exploration, not a single path. Include concrete school subjects, university majors, career families/job titles, less obvious paths, a reality check, and next steps. In the reality check, recommend watching YouTube searches such as 'day in the life of [role]' before choosing. Use regional school wording such as A-Levels, Tawjihi, Mathematics, Physics, Chemistry. Keep total narrative tight and useful for a 17-year-old in the Middle East. Write every field in the requested JSON shape — including every item in the school-subject, university-major, career, and less-obvious-path arrays — entirely in ${promptPayload.outputLanguage}${locale === "ar" ? ", using natural Modern Standard Arabic career and academic terminology (school-subject and regional-exam names like Tawjihi or A-Levels may stay as commonly written)" : ""}. Return only valid JSON with the requested shape.`;
 
@@ -195,7 +216,10 @@ export async function POST(request: Request) {
       model,
       status: response.status,
     });
-    trackEvent("results_generated", { source: "fallback", reason: "gemini_error" });
+    trackEvent("results_generated", {
+      source: "fallback",
+      reason: "gemini_error",
+    });
     return Response.json({
       report: {
         ...fallback,
@@ -264,7 +288,10 @@ export async function POST(request: Request) {
       model,
       reason: "unparseable_response",
     });
-    trackEvent("results_generated", { source: "fallback", reason: "parse_error" });
+    trackEvent("results_generated", {
+      source: "fallback",
+      reason: "parse_error",
+    });
     return Response.json({
       report: {
         ...fallback,

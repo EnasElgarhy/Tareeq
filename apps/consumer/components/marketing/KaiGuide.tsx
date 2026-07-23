@@ -56,7 +56,7 @@ export const KaiFigure = ({
       />
       <Image
         src={KAI_SRC}
-        alt="Kai, Tareeq’s AI guide — a young woman with curly hair, round glasses and gold earrings"
+        alt="Kai, Tareeq’s AI guide, a young woman with curly hair, round glasses and gold earrings"
         width={size}
         height={size}
         priority={priority}

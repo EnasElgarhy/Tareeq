@@ -66,7 +66,7 @@ export function DashboardAccessGate({ children }: { children: ReactNode }) {
         supabase
           .from("assessments")
           .select(
-            "id, answers, completed_at, started_at, locale, respondent_name, respondent_email",
+            "id, answers, result, version_id, completed_at, started_at, locale, respondent_name, respondent_email",
           )
           .eq("user_id", user.id)
           .not("completed_at", "is", null)

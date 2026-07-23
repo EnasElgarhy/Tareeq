@@ -8,6 +8,7 @@ export type AssessmentAudioSource = {
 export type ResolveAssessmentNarrationSourcesOptions = {
   audioId: string;
   locale?: string;
+  versionId?: string | null;
   fallbackSources?: Array<string | AssessmentAudioSource>;
 };
 
@@ -24,10 +25,16 @@ function shortLocaleOf(locale = "en") {
   return locale.split("-", 1)[0]?.toLowerCase() || "en";
 }
 
-function apiSource(audioId: string, locale = "en"): AssessmentAudioSource {
+function apiSource(
+  audioId: string,
+  locale = "en",
+  versionId?: string | null,
+): AssessmentAudioSource {
+  const params = new URLSearchParams({ locale });
+  if (versionId) params.set("versionId", versionId);
   return {
     kind: "api",
-    src: `/api/kai-tts/${encodeURIComponent(audioId)}?locale=${encodeURIComponent(locale)}`,
+    src: `/api/kai-tts/${encodeURIComponent(audioId)}?${params.toString()}`,
   };
 }
 
@@ -53,36 +60,33 @@ export function isQuestionStaticAudioId(audioId: string) {
 export function resolveAssessmentNarrationSources({
   audioId,
   locale = "en",
+  versionId,
   fallbackSources = [],
 }: ResolveAssessmentNarrationSourcesOptions): AssessmentAudioSource[] {
   const shortLocale = shortLocaleOf(locale);
   const sources: AssessmentAudioSource[] = [];
 
   const usesCanonicalEnglishVoice =
+    !versionId &&
     shortLocale === "en" &&
     (LOCALIZED_STATIC_IDS.has(audioId) || isQuestionStaticAudioId(audioId));
   if (usesCanonicalEnglishVoice) {
-    sources.push(
-      staticSource(`/audio/en-british-v1/${audioId}.mp3`),
-    );
+    sources.push(staticSource(`/audio/en-british-v1/${audioId}.mp3`));
   }
 
   for (const source of fallbackSources) {
     sources.push(normalizeFallbackSource(source));
   }
 
-  if (
-    LOCALIZED_STATIC_IDS.has(audioId) &&
-    shortLocale === "ar"
-  ) {
+  if (LOCALIZED_STATIC_IDS.has(audioId) && shortLocale === "ar") {
     sources.push(staticSource(`/audio/${audioId}.${shortLocale}.mp3`));
   }
 
-  if (isQuestionStaticAudioId(audioId) && shortLocale === "ar") {
+  if (!versionId && isQuestionStaticAudioId(audioId) && shortLocale === "ar") {
     sources.push(staticSource(`/audio/${audioId}.ar.mp3`));
   }
 
-  sources.push(apiSource(audioId, locale));
+  sources.push(apiSource(audioId, locale, versionId));
 
   const seen = new Set<string>();
   return sources.filter((source) => {
@@ -95,5 +99,5 @@ export function resolveAssessmentNarrationSources({
 export function firstPreloadableAssessmentAudioSource(
   sources: AssessmentAudioSource[],
 ) {
-  return sources.find((source) => source.kind === "static") ?? null;
+  return sources[0] ?? null;
 }

@@ -15,11 +15,27 @@ describe("local assessment progress", () => {
       }),
     ).toEqual({
       assessmentId: "local-test",
+      versionId: null,
       versionLabel: "v4",
       answers: {},
       currentIndex: 0,
       startedAt: "2026-05-11T12:00:00.000Z",
       updatedAt: "2026-05-11T12:00:00.000Z",
+    });
+  });
+
+  it("pins a draft to the published CMS version", () => {
+    expect(
+      createLocalAssessment({
+        assessmentId: "local-cms",
+        versionId: "version-123",
+        versionLabel: "CORE 2026.2",
+        now: new Date("2026-05-11T12:00:00.000Z"),
+      }),
+    ).toMatchObject({
+      assessmentId: "local-cms",
+      versionId: "version-123",
+      versionLabel: "CORE 2026.2",
     });
   });
 

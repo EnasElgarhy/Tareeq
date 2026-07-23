@@ -38,6 +38,7 @@
     "next": "^15.0.0",
     "next-intl": "^4.6.1",
     "postgres": "^3.4.7",
+    "posthog-js": "^1.406.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "three": "^0.181.2",
@@ -66,6 +67,7 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
+      "core-js",
       "esbuild",
       "sharp",
       "unrs-resolver"

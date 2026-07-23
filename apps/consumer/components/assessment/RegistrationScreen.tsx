@@ -45,6 +45,8 @@ async function persistAssessment(name: string, locale: string) {
         locale,
         name,
         startedAt: progress.startedAt,
+        versionId: progress.versionId,
+        versionLabel: progress.versionLabel,
       }),
     });
   } catch {

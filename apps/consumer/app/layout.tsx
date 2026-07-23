@@ -7,6 +7,7 @@ import {
   Plus_Jakarta_Sans,
 } from "next/font/google";
 import localFont from "next/font/local";
+import { PostHogSessionReplay } from "@/components/analytics/PostHogSessionReplay";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -36,10 +37,26 @@ const arabic = localFont({
   variable: "--font-arabic",
   display: "swap",
   src: [
-    { path: "./fonts/ibm-plex-arabic-400.woff2", weight: "400", style: "normal" },
-    { path: "./fonts/ibm-plex-arabic-500.woff2", weight: "500", style: "normal" },
-    { path: "./fonts/ibm-plex-arabic-600.woff2", weight: "600", style: "normal" },
-    { path: "./fonts/ibm-plex-arabic-700.woff2", weight: "700", style: "normal" },
+    {
+      path: "./fonts/ibm-plex-arabic-400.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "./fonts/ibm-plex-arabic-500.woff2",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "./fonts/ibm-plex-arabic-600.woff2",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "./fonts/ibm-plex-arabic-700.woff2",
+      weight: "700",
+      style: "normal",
+    },
   ],
 });
 
@@ -65,10 +82,52 @@ const displayItalic = Fraunces({
   display: "swap",
 });
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://staging.tareek.me";
+const siteTitle = "Tareeq: Discover what you're built for";
+const siteDescription =
+  "Discover your strengths, direction, and next step with a career compass built for students and young adults across MENA.";
+
 export const metadata: Metadata = {
-  title: "Tareeq — Discover what you're built for",
-  description:
-    "12 minutes. 54 questions. One clear path. A career discovery compass for youth in MENA, built on the CORE model.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: siteTitle,
+    template: "%s | Tareeq",
+  },
+  description: siteDescription,
+  applicationName: "Tareeq",
+  alternates: {
+    canonical: "/",
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "64x64" },
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+    ],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180" }],
+  },
+  openGraph: {
+    type: "website",
+    url: "/",
+    siteName: "Tareeq",
+    title: siteTitle,
+    description: siteDescription,
+    locale: "en_US",
+    images: [
+      {
+        url: "/opengraph-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Kai holds a glowing compass on the path toward your future.",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteTitle,
+    description: siteDescription,
+    images: ["/twitter-image.jpg"],
+  },
 };
 
 export const viewport: Viewport = {
@@ -89,7 +148,10 @@ export default function RootLayout({
       dir="ltr"
       className={`${jakarta.variable} ${bricolage.variable} ${caveat.variable} ${arabic.variable} ${question.variable} ${displayItalic.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        {children}
+        <PostHogSessionReplay />
+      </body>
     </html>
   );
 }

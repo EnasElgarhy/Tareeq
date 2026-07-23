@@ -3,18 +3,20 @@ import { AssessmentAudioProvider } from "@/components/assessment/AssessmentAudio
 import { AssessmentChrome } from "@/components/assessment/AssessmentChrome";
 import { LanguageGate } from "@/components/i18n/LanguageGate";
 import { LocaleProvider } from "@/components/i18n/LocaleProvider";
-import { totalAssessmentQuestions } from "@/lib/assessment/questions";
+import { loadAttemptAssessmentContent } from "@/lib/assessment/content.server";
 
-export default function AssessmentLayout({
+export default async function AssessmentLayout({
   children,
 }: Readonly<{
   children: ReactNode;
 }>) {
+  const content = await loadAttemptAssessmentContent();
+
   return (
     <LocaleProvider>
       <LanguageGate>
         <AssessmentAudioProvider>
-          <AssessmentChrome totalQuestions={totalAssessmentQuestions}>
+          <AssessmentChrome questions={content.questions}>
             {children}
           </AssessmentChrome>
         </AssessmentAudioProvider>

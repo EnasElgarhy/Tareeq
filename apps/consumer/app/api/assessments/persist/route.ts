@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { trackEvent } from "@/lib/analytics/track";
-import { contentVersion } from "@/lib/content/seed";
+import { loadAssessmentContentForReference } from "@/lib/assessment/content.server";
+import { computeScore } from "@/lib/scoring";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { resolveContentVersionId } from "@/lib/supabase/content-version";
 
 export const runtime = "nodejs";
 
@@ -22,6 +22,8 @@ interface PersistBody {
   locale: string;
   name?: string;
   startedAt?: string;
+  versionId: string | null;
+  versionLabel?: string;
 }
 
 function parseBody(json: unknown): PersistBody | null {
@@ -38,6 +40,9 @@ function parseBody(json: unknown): PersistBody | null {
     locale: typeof b.locale === "string" ? b.locale : "en",
     name: typeof b.name === "string" ? b.name : undefined,
     startedAt: typeof b.startedAt === "string" ? b.startedAt : undefined,
+    versionId: typeof b.versionId === "string" ? b.versionId : null,
+    versionLabel:
+      typeof b.versionLabel === "string" ? b.versionLabel : undefined,
   };
 }
 
@@ -62,13 +67,18 @@ export async function POST(request: Request) {
   }
 
   const admin = createSupabaseAdminClient();
-  const versionId = await resolveContentVersionId(admin);
-  if (!versionId) {
+  const content = await loadAssessmentContentForReference({
+    versionId: body.versionId,
+    versionLabel: body.versionLabel,
+  });
+  const versionId = content?.versionId;
+  if (!content || !versionId) {
     return NextResponse.json(
-      { error: "No content version available." },
-      { status: 500 },
+      { error: "Assessment version unavailable." },
+      { status: 409 },
     );
   }
+  const result = computeScore(body.answers, content.questions);
 
   if (body.name) {
     await admin
@@ -92,7 +102,7 @@ export async function POST(request: Request) {
       started_at: body.startedAt ?? new Date().toISOString(),
       completed_at: new Date().toISOString(),
       answers: body.answers,
-      result: body.result ?? null,
+      result,
       respondent_name: body.name ?? null,
       respondent_email: user.email ?? null,
     })
@@ -104,7 +114,7 @@ export async function POST(request: Request) {
 
   trackEvent("assessment_completed", {
     assessmentId: inserted?.id as string | undefined,
-    assessmentVersion: contentVersion.label,
+    assessmentVersion: content.versionLabel,
     userId: user.id,
     locale: body.locale,
     questionCount: Object.keys(body.answers).length,

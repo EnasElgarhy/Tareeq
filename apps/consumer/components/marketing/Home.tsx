@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
-import { motion, useInView } from "framer-motion";
+import { X } from "@phosphor-icons/react";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { Container, FadeIn, GoldButton, GhostButton } from "./Shared";
@@ -33,7 +33,7 @@ const STATS = [
 const PAINS = [
   "Built for Western job markets",
   "Assume years of work experience",
-  "Measure interests — and nothing else",
+  "Measure interests, and nothing else",
 ];
 
 const PILLARS = [
@@ -71,7 +71,7 @@ const DIFFERENT = [
   {
     icon: WayChat,
     title: "Real situations, not abstractions",
-    body: "Questions about things you’re already doing — no work experience needed.",
+    body: "Questions about things you’re already doing, with no work experience needed.",
   },
   {
     icon: WayCompass,
@@ -85,14 +85,6 @@ const DIFFERENT = [
   },
 ];
 
-const DayEyebrow = ({ children }: { children: ReactNode }) => (
-  <p className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.28em] font-semibold text-[#B07A18] mb-5">
-    <span aria-hidden>✦ </span>
-    {children}
-  </p>
-);
-
-/** Counts up when scrolled into view. */
 interface StatProps {
   value: number;
   prefix?: string;
@@ -101,32 +93,14 @@ interface StatProps {
 }
 
 const Stat = ({ value, prefix = "", label, delay = 0 }: StatProps) => {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
-  const [n, setN] = useState(0);
-
-  useEffect(() => {
-    if (!inView) return;
-    const t0 = performance.now();
-    const DURATION = 1200;
-    let raf = 0;
-    const tick = (t: number) => {
-      const p = Math.min(1, (t - t0) / DURATION);
-      setN(Math.round(value * (1 - Math.pow(1 - p, 3))));
-      if (p < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [inView, value]);
-
   return (
     <FadeIn delay={delay}>
-      <div ref={ref} className="text-center">
-        <p className="font-heading text-5xl sm:text-6xl font-semibold tracking-tighter text-[var(--day-ink)]">
+      <div className="text-center">
+        <p className="font-heading text-4xl sm:text-5xl font-semibold text-[var(--day-ink)]">
           {prefix}
-          {n}
+          {value}
         </p>
-        <p className="mt-2 text-sm uppercase tracking-[0.18em] text-[var(--day-ink-3)]">
+        <p className="mt-2 text-sm font-medium text-[var(--day-ink-3)]">
           {label}
         </p>
       </div>
@@ -142,9 +116,20 @@ export const Home = () => (
     {/* DAY — clarity */}
     <div className="bg-[var(--day-bg)] text-[var(--day-ink)]">
       {/* Stat band */}
-      <section className="py-16 sm:py-20 border-b border-[var(--day-line)]">
-        <Container>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-10">
+      <section
+        className="relative overflow-hidden border-b border-[var(--day-line)] py-12 sm:py-16"
+        data-testid="daybreak-stats"
+      >
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 -top-24 h-72"
+          style={{
+            background:
+              "radial-gradient(ellipse 42% 90% at 64% 0%, rgba(244,198,96,0.32) 0%, rgba(244,169,124,0.12) 42%, transparent 74%)",
+          }}
+        />
+        <Container className="relative">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4 md:gap-8">
             {STATS.map((s, i) => (
               <Stat key={s.label} {...s} delay={i * 0.08} />
             ))}
@@ -158,7 +143,7 @@ export const Home = () => (
           <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-14 items-center">
             <FadeIn>
               <Chapter n="Three" title="The Wrong Maps" className="mb-5" />
-              <h2 className="font-heading text-4xl sm:text-6xl tracking-tighter leading-[1.06] font-semibold">
+              <h2 className="font-heading text-4xl sm:text-6xl leading-[1.06] font-semibold">
                 Career tools were built
                 <span className="text-[#6D5BA8]"> for someone else.</span>
               </h2>
@@ -166,8 +151,8 @@ export const Home = () => (
                 {PAINS.map((p, i) => (
                   <FadeIn key={p} delay={0.1 + i * 0.08}>
                     <li className="flex items-center gap-3 text-lg text-[var(--day-ink-2)]">
-                      <span className="w-6 h-6 rounded-full bg-[#C96F63]/10 border border-[#C96F63]/40 text-[#C96F63] flex items-center justify-center text-sm leading-none">
-                        ✕
+                      <span className="flex size-6 shrink-0 items-center justify-center rounded-full border border-[#C96F63]/40 bg-[#C96F63]/10 text-[#C96F63]">
+                        <X size={13} weight="bold" aria-hidden />
                       </span>
                       {p}
                     </li>
@@ -189,20 +174,24 @@ export const Home = () => (
       <WaveDivider fill="var(--day-inset)" />
       <section className="py-14 md:py-20 bg-[var(--day-inset)]">
         <Container>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 border-y border-[var(--day-line)] md:grid-cols-[1.15fr_1fr_1fr] md:divide-x md:divide-[var(--day-line)]">
             {DIFFERENT.map((d, i) => {
               const Icon = d.icon;
               return (
-                <FadeIn key={d.title} delay={i * 0.1}>
+                <FadeIn
+                  key={d.title}
+                  delay={i * 0.1}
+                  className="border-b border-[var(--day-line)] last:border-b-0 md:border-b-0"
+                >
                   <motion.article
-                    whileHover={{ y: -6 }}
+                    whileHover={{ x: 4 }}
                     transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                    className="h-full bg-[var(--day-card)] border border-[var(--day-line)] rounded-story p-8 shadow-[0_10px_36px_rgba(42,33,24,0.06)] hover:shadow-[0_18px_48px_rgba(42,33,24,0.1)] transition-shadow duration-500"
+                    className="h-full px-1 py-8 md:px-7 md:py-10"
                   >
-                    <div className="w-14 h-14 rounded-2xl bg-[#FFF9EE] border border-[#F4C660]/40 flex items-center justify-center">
+                    <div className="flex size-12 items-center justify-center rounded-xl border border-[#F4C660]/40 bg-[#FFF9EE]">
                       <Icon size={26} />
                     </div>
-                    <h3 className="mt-6 font-heading text-xl font-semibold">
+                    <h3 className="mt-5 font-heading text-xl font-semibold">
                       {d.title}
                     </h3>
                     <p className="mt-2 text-[15px] text-[var(--day-ink-2)] leading-relaxed">
@@ -218,24 +207,24 @@ export const Home = () => (
 
       {/* CORE — letter-forward tiles */}
       <WaveDivider fill="var(--day-bg)" className="bg-[var(--day-inset)]" />
-      <section id="how" className="py-20 md:py-28 relative overflow-hidden">
+      <section
+        id="how"
+        className="relative scroll-mt-24 overflow-hidden py-20 md:py-28"
+      >
         <div
           className="absolute inset-0 pointer-events-none"
           style={{ background: "var(--day-glow)" }}
         />
         <Container className="relative">
           <FadeIn className="max-w-2xl mx-auto text-center">
-            <div className="flex justify-center">
-              <Chapter n="Four" title="The Map of You" className="mb-5" />
-            </div>
-            <h2 className="font-heading text-4xl sm:text-6xl tracking-tighter leading-tight font-semibold">
-              Four questions.
+            <h2 className="font-heading text-4xl sm:text-6xl leading-tight font-semibold">
+              Four dimensions.
               <br />
               One honest <span className="text-[#6D5BA8]">map of you.</span>
             </h2>
           </FadeIn>
 
-          <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="mt-12 grid grid-cols-2 gap-3 sm:mt-16 sm:gap-5 lg:grid-cols-4">
             {PILLARS.map((p, i) => {
               const Icon = p.icon;
               return (
@@ -243,27 +232,27 @@ export const Home = () => (
                   <motion.div
                     whileHover={{ y: -6 }}
                     transition={{ type: "spring", stiffness: 250, damping: 20 }}
-                    className="relative h-full overflow-hidden bg-[var(--day-card)] border border-[var(--day-line)] rounded-story px-7 pt-8 pb-24 shadow-[0_10px_36px_rgba(42,33,24,0.06)]"
+                    className="relative min-h-[190px] h-full overflow-hidden bg-[var(--day-card)] border border-[var(--day-line)] rounded-story px-5 pt-6 pb-16 shadow-[0_10px_36px_rgba(42,33,24,0.06)] sm:min-h-[210px] sm:px-7 sm:pt-8 sm:pb-20"
                   >
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col items-start gap-3 min-[480px]:flex-row min-[480px]:items-center">
                       <div
-                        className="w-11 h-11 rounded-xl bg-[#FFF9EE] border border-[var(--day-line)] flex items-center justify-center"
+                        className="w-10 h-10 shrink-0 rounded-xl bg-[#FFF9EE] border border-[var(--day-line)] flex items-center justify-center sm:w-11 sm:h-11"
                         style={{ color: p.accent }}
                       >
                         <Icon size={22} />
                       </div>
                       <span
-                        className="font-heading text-lg font-semibold"
+                        className="font-heading text-base font-semibold sm:text-lg"
                         style={{ color: p.accent }}
                       >
                         {p.name}
                       </span>
                     </div>
-                    <p className="mt-5 text-[15px] leading-relaxed text-[var(--day-ink-2)]">
+                    <p className="mt-5 text-sm leading-relaxed text-[var(--day-ink-2)] sm:text-[15px]">
                       {p.q}
                     </p>
                     <span
-                      className="absolute -bottom-10 -right-3 font-heading font-extrabold text-[10rem] leading-none select-none pointer-events-none"
+                      className="absolute -bottom-7 -right-2 font-heading font-extrabold text-[7rem] leading-none select-none pointer-events-none sm:-bottom-9 sm:text-[9rem]"
                       style={{ color: `${p.accent}1f` }}
                     >
                       {p.letter}
@@ -276,8 +265,8 @@ export const Home = () => (
 
           <FadeIn delay={0.14} className="mt-12 max-w-xl mx-auto">
             <KaiChip tone="day">
-              You answer. I turn it into a map — no jargon, no scores without
-              meaning.
+              You answer. I turn it into a map with no jargon and no scores
+              without meaning.
             </KaiChip>
           </FadeIn>
 
@@ -303,6 +292,7 @@ export const Home = () => (
             return (
               <span
                 key={`${c.label}-${i}`}
+                aria-hidden={i >= CAREER_CLUSTERS.length ? true : undefined}
                 className="shrink-0 rounded-full bg-[var(--day-card)] border border-[var(--day-line)] px-6 py-2.5 text-sm text-[var(--day-ink-2)] flex items-center gap-2.5"
               >
                 <Icon size={16} className="text-[#8A6210]" />
@@ -316,12 +306,16 @@ export const Home = () => (
       {/* What you get */}
       <section className="py-24 md:py-28">
         <Container>
-          <FadeIn className="max-w-2xl">
-            <DayEyebrow>What you get</DayEyebrow>
-            <h2 className="font-heading text-4xl sm:text-5xl tracking-tight leading-tight font-semibold">
-              Three things,{" "}
-              <span className="text-[#6D5BA8]">yours to keep.</span>
+          <FadeIn className="max-w-2xl text-left">
+            <h2 className="font-heading text-4xl sm:text-5xl leading-tight font-semibold">
+              More than a score.
+              <br />
+              <span className="text-[#6D5BA8]">Yours to use.</span>
             </h2>
+            <p className="mt-5 max-w-xl text-lg leading-relaxed text-[var(--day-ink-2)]">
+              A clear compass, a practical report, and a summary you can share
+              with the people helping you choose.
+            </p>
           </FadeIn>
           <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto items-start">
             {PRODUCT_SHOTS.map((d, i) => {
@@ -361,17 +355,12 @@ export const Home = () => (
                 “
               </span>
               <blockquote className="font-heading text-2xl sm:text-4xl font-medium leading-snug text-[var(--day-ink)]">
-                I knew I needed fast-paced environments — I just didn’t have
+                I knew I needed fast-paced environments. I just didn’t have
                 language for it. Now I’m choosing with confidence.
               </blockquote>
-              <figcaption className="mt-6 flex items-center justify-center gap-3">
-                <span className="w-10 h-10 rounded-full bg-aurora flex items-center justify-center font-heading font-bold text-sm text-[#14101F]">
-                  S
-                </span>
-                <p className="text-sm text-[var(--day-ink-2)]">
-                  Salma ·{" "}
-                  <span className="text-[#6D5BA8]">Student, 16 · UAE</span>
-                </p>
+              <figcaption className="mt-7 flex items-center justify-center gap-3 text-sm text-[var(--day-ink-2)]">
+                <span className="h-px w-8 bg-[#B07A18]" aria-hidden />
+                Salma, student, 16, UAE
               </figcaption>
             </figure>
           </FadeIn>
@@ -390,13 +379,7 @@ export const Home = () => (
           <div className="text-center lg:text-left">
             <FadeIn>
               <Constellation className="w-64 h-auto text-[#C8B6F0]/70 mx-auto lg:mx-0 mb-8" />
-              <Chapter
-                n="Six"
-                title="Where Your Story Begins"
-                tone="night"
-                className="mb-4"
-              />
-              <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-[1.08] font-semibold">
+              <h2 className="font-heading text-4xl sm:text-5xl lg:text-6xl leading-[1.08] font-semibold">
                 Understand yourself.
                 <br />
                 Choose with <span className="text-aurora">confidence.</span>
@@ -407,9 +390,9 @@ export const Home = () => (
                   data-testid="final-cta-start"
                   className="px-10"
                 >
-                  Start the Assessment
+                  Start assessment
                 </GoldButton>
-                <GhostButton href="/model">How CORE works</GhostButton>
+                <GhostButton href="/model">How it works</GhostButton>
               </div>
               <p className="mt-6 text-sm text-[#F5EEE6]/40">
                 Free to start. No account needed to begin.

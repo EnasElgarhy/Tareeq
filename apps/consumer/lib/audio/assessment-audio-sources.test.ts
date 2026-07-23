@@ -32,10 +32,7 @@ type EnglishVoiceManifest = {
 describe("resolveAssessmentNarrationSources", () => {
   it("rejects persisted English clips from any other voice", () => {
     expect(
-      isPersistedAssessmentVoiceAllowed(
-        "en-GB",
-        APPROVED_KAI_ENGLISH_VOICE.id,
-      ),
+      isPersistedAssessmentVoiceAllowed("en-GB", APPROVED_KAI_ENGLISH_VOICE.id),
     ).toBe(true);
     expect(isPersistedAssessmentVoiceAllowed("en", "another-voice")).toBe(
       false,
@@ -116,6 +113,21 @@ describe("resolveAssessmentNarrationSources", () => {
     ).toEqual([
       { kind: "static", src: "/audio/Q12.ar.mp3" },
       { kind: "api", src: "/api/kai-tts/Q12?locale=ar" },
+    ]);
+  });
+
+  it("uses versioned CMS narration instead of a potentially stale seed bake", () => {
+    expect(
+      resolveAssessmentNarrationSources({
+        audioId: "Q12",
+        locale: "en",
+        versionId: "version-123",
+      }),
+    ).toEqual([
+      {
+        kind: "api",
+        src: "/api/kai-tts/Q12?locale=en&versionId=version-123",
+      },
     ]);
   });
 

@@ -7,20 +7,18 @@ import { TareeqArrowLeft } from "@/components/brand/icons";
 import { CompassProgress } from "@/components/brand/CompassProgress";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { uiSounds } from "@/lib/audio/ui-sounds";
-import {
-  assessmentQuestions,
-  getQuestionPath,
-} from "@/lib/assessment/questions";
+import { getQuestionPath } from "@/lib/assessment/questions";
 import {
   buildCompassSnapshot,
   PILLAR_META,
   type CompassSnapshot,
 } from "@/lib/assessment/pillar-progress";
 import { useAnimatedSnapshot } from "@/lib/assessment/use-animated-snapshot";
+import type { Question } from "@/lib/scoring";
 
 interface AssessmentChromeProps {
   children: ReactNode;
-  totalQuestions: number;
+  questions: Question[];
 }
 
 function getIndexFromPathname(pathname: string) {
@@ -38,8 +36,9 @@ function getIndexFromPathname(pathname: string) {
  */
 export function AssessmentChrome({
   children,
-  totalQuestions,
+  questions,
 }: AssessmentChromeProps) {
+  const totalQuestions = questions.length;
   const pathname = usePathname();
   const router = useRouter();
   const questionIndex = getIndexFromPathname(pathname);
@@ -98,7 +97,7 @@ export function AssessmentChrome({
   // When no question is active we feed an empty snapshot — the compass
   // simply isn't rendered, but the hook keeps a consistent call site.
   const rawSnapshot = buildCompassSnapshot({
-    questions: assessmentQuestions,
+    questions,
     completedCount: hasQuestion ? questionIndex : 0,
     activeIndex: hasQuestion ? questionIndex : null,
   });

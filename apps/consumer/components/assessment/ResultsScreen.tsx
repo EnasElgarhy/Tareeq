@@ -79,10 +79,16 @@ export function ResultsScreen() {
 
     try {
       const registration = readResultRegistration();
+      const progress = readLocalAssessment();
       const response = await fetch("/api/assessments/share", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ report, name: registration?.name }),
+        body: JSON.stringify({
+          report,
+          name: registration?.name,
+          versionId: progress?.versionId,
+          versionLabel: progress?.versionLabel,
+        }),
       });
       if (!response.ok) return null;
       const data = (await response.json()) as { url?: unknown };

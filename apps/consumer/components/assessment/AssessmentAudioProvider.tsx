@@ -115,16 +115,19 @@ export function AssessmentAudioProvider({ children }: { children: ReactNode }) {
     setState(next);
   }, []);
 
-  const stopLipSync = useCallback((updateMouthState = true) => {
-    if (lipSyncFrameRef.current != null) {
-      window.cancelAnimationFrame(lipSyncFrameRef.current);
-      lipSyncFrameRef.current = null;
-    }
-    lipSyncLevelRef.current = 0;
-    if (updateMouthState) {
-      updateState({ mouthOpen: 0 });
-    }
-  }, [updateState]);
+  const stopLipSync = useCallback(
+    (updateMouthState = true) => {
+      if (lipSyncFrameRef.current != null) {
+        window.cancelAnimationFrame(lipSyncFrameRef.current);
+        lipSyncFrameRef.current = null;
+      }
+      lipSyncLevelRef.current = 0;
+      if (updateMouthState) {
+        updateState({ mouthOpen: 0 });
+      }
+    },
+    [updateState],
+  );
 
   const ensureLipSyncGraph = useCallback((audio: HTMLAudioElement) => {
     if (!audioContextRef.current) {
@@ -191,7 +194,6 @@ export function AssessmentAudioProvider({ children }: { children: ReactNode }) {
 
   const resolvePreloadedSource = useCallback(
     async (source: AssessmentAudioSource, token: number) => {
-      if (source.kind !== "static") return source.src;
       const cache = preloadCacheRef.current;
       const entry = cache.get(source.src);
       if (!entry) return source.src;
@@ -343,6 +345,7 @@ export function AssessmentAudioProvider({ children }: { children: ReactNode }) {
       audioId,
       locale = "en",
       ownerId,
+      versionId,
       fallbackSources,
       playbackRate,
     }: PlayNarrationOptions): InternalNarrationRequest => {
@@ -356,6 +359,7 @@ export function AssessmentAudioProvider({ children }: { children: ReactNode }) {
         sources: resolveAssessmentNarrationSources({
           audioId,
           locale,
+          versionId,
           fallbackSources,
         }),
       };
@@ -395,11 +399,17 @@ export function AssessmentAudioProvider({ children }: { children: ReactNode }) {
   );
 
   const preloadNarration = useCallback(
-    ({ audioId, locale = "en", fallbackSources }: PreloadNarrationOptions) => {
+    ({
+      audioId,
+      locale = "en",
+      versionId,
+      fallbackSources,
+    }: PreloadNarrationOptions) => {
       if (typeof window === "undefined") return;
       const sources = resolveAssessmentNarrationSources({
         audioId,
         locale,
+        versionId,
         fallbackSources,
       });
       const source = firstPreloadableAssessmentAudioSource(sources);
@@ -550,7 +560,9 @@ export function AssessmentAudioProvider({ children }: { children: ReactNode }) {
       }
     };
     const cleanup = () => {
-      events.forEach((event) => document.removeEventListener(event, trigger, opts));
+      events.forEach((event) =>
+        document.removeEventListener(event, trigger, opts),
+      );
     };
     events.forEach((event) => document.addEventListener(event, trigger, opts));
     return cleanup;

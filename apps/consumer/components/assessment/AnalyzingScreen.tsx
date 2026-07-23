@@ -114,6 +114,8 @@ export function AnalyzingScreen() {
             email: registration?.email,
             answers: progress?.answers,
             locale,
+            versionId: progress?.versionId,
+            versionLabel: progress?.versionLabel,
           }),
         });
         if (!response.ok) throw new Error("Generation request failed.");

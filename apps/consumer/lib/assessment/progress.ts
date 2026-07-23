@@ -1,10 +1,12 @@
 import type { CompassResult } from "@/lib/scoring";
+import type { AssessmentVersionRef } from "@/lib/assessment/content";
 
 export const assessmentStorageKey = "tareeq.assessment.v4";
 
 export type LocalAssessmentProgress = {
   assessmentId: string;
-  versionLabel: "v4";
+  versionId: string | null;
+  versionLabel: string;
   answers: Record<string, string>;
   currentIndex: number;
   startedAt: string;
@@ -16,6 +18,8 @@ export type LocalAssessmentProgress = {
 type CreateLocalAssessmentOptions = {
   assessmentId?: string;
   now?: Date;
+  versionId?: string | null;
+  versionLabel?: string;
 };
 
 function createAssessmentId() {
@@ -36,30 +40,39 @@ function isAnswerRecord(value: unknown): value is Record<string, string> {
   );
 }
 
-function isStoredAssessment(value: unknown): value is LocalAssessmentProgress {
-  if (typeof value !== "object" || value === null) return false;
+function parseStoredAssessment(value: unknown): LocalAssessmentProgress | null {
+  if (typeof value !== "object" || value === null) return null;
 
   const candidate = value as Partial<LocalAssessmentProgress>;
 
-  return (
+  const valid =
     typeof candidate.assessmentId === "string" &&
-    candidate.versionLabel === "v4" &&
+    typeof candidate.versionLabel === "string" &&
     isAnswerRecord(candidate.answers) &&
     typeof candidate.currentIndex === "number" &&
     typeof candidate.startedAt === "string" &&
-    typeof candidate.updatedAt === "string"
-  );
+    typeof candidate.updatedAt === "string";
+  if (!valid) return null;
+
+  return {
+    ...(candidate as LocalAssessmentProgress),
+    versionId:
+      typeof candidate.versionId === "string" ? candidate.versionId : null,
+  };
 }
 
 export function createLocalAssessment({
   assessmentId = createAssessmentId(),
   now = new Date(),
+  versionId = null,
+  versionLabel = "v4",
 }: CreateLocalAssessmentOptions = {}): LocalAssessmentProgress {
   const timestamp = now.toISOString();
 
   return {
     assessmentId,
-    versionLabel: "v4",
+    versionId,
+    versionLabel,
     answers: {},
     currentIndex: 0,
     startedAt: timestamp,
@@ -113,7 +126,7 @@ export function readLocalAssessment() {
 
   try {
     const parsed: unknown = JSON.parse(raw);
-    return isStoredAssessment(parsed) ? parsed : null;
+    return parseStoredAssessment(parsed);
   } catch {
     return null;
   }
@@ -126,20 +139,38 @@ export function writeLocalAssessment(progress: LocalAssessmentProgress) {
   return progress;
 }
 
-export function ensureLocalAssessment() {
+export function ensureLocalAssessment(version?: AssessmentVersionRef) {
   const existing = readLocalAssessment();
-  if (existing) return existing;
+  if (existing) {
+    if (!version) return existing;
+    if (
+      existing.versionId === version.versionId &&
+      existing.versionLabel === version.versionLabel
+    ) {
+      return existing;
+    }
+    if (
+      existing.versionId === null &&
+      existing.versionLabel === version.versionLabel
+    ) {
+      return writeLocalAssessment({
+        ...existing,
+        versionId: version.versionId,
+      });
+    }
+  }
 
-  return writeLocalAssessment(createLocalAssessment());
+  return writeLocalAssessment(createLocalAssessment(version));
 }
 
 export function saveLocalAnswer(
   questionExternalId: string,
   value: string,
   index: number,
+  version?: AssessmentVersionRef,
 ) {
   const next = mergeLocalAnswer(
-    ensureLocalAssessment(),
+    ensureLocalAssessment(version),
     questionExternalId,
     value,
     index,
@@ -151,10 +182,11 @@ export function saveLocalAnswer(
 export function completeLocalAssessment(
   result: CompassResult,
   currentIndex: number,
+  version?: AssessmentVersionRef,
 ) {
   const now = new Date().toISOString();
   const next: LocalAssessmentProgress = {
-    ...ensureLocalAssessment(),
+    ...ensureLocalAssessment(version),
     currentIndex,
     completedAt: now,
     updatedAt: now,

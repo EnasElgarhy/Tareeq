@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { Sparkle } from "@phosphor-icons/react";
+import { motion, useReducedMotion } from "framer-motion";
 
 interface ChapterProps {
   n: string;
@@ -27,6 +28,7 @@ export const Chapter = ({
   tone = "day",
   className = "",
 }: ChapterProps) => {
+  const reduce = useReducedMotion();
   const color =
     tone === "night"
       ? "text-[#F4C660]"
@@ -35,14 +37,14 @@ export const Chapter = ({
         : "text-[#B07A18]";
   return (
     <motion.p
-      initial={{ opacity: 0, y: 14 }}
+      initial={reduce ? false : { opacity: 0, y: 14 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ type: "spring", stiffness: 80, damping: 14 }}
-      className={`text-xs sm:text-sm uppercase tracking-[0.28em] font-semibold leading-none ${color} ${className}`}
+      className={`inline-flex items-center gap-2 text-[11px] font-semibold uppercase leading-none tracking-[0.18em] sm:text-xs ${color} ${className}`}
     >
-      <span aria-hidden>✦ </span>
-      Chapter {n} — {title}
+      <Sparkle size={13} weight="fill" aria-hidden />
+      Chapter {n} · {title}
     </motion.p>
   );
 };

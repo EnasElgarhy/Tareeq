@@ -1,17 +1,17 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { Check, Sparkle } from "@phosphor-icons/react";
+import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { Container, FadeIn } from "./Shared";
-import { Chapter } from "./Storybook";
 import { KAI_SRC_SM } from "./KaiGuide";
 import { WayCatalyst } from "./WayIcons";
 
 const PLAN_ITEMS: ReadonlyArray<[string, string, boolean]> = [
   ["Watch", "a day in the life of a product manager", true],
-  ["Try", "redesign your school’s app — mini project", true],
-  ["Meet", "Amal, PM in Dubai — intro drafted", false],
+  ["Try", "redesign your school’s app as a mini project", true],
+  ["Meet", "Amal, PM in Dubai, intro drafted", false],
 ];
 
 /**
@@ -152,6 +152,20 @@ const Moment = ({
   </div>
 );
 
+const ProfileProgress = () => {
+  const reduce = useReducedMotion();
+
+  return (
+    <motion.div
+      initial={reduce ? false : { width: 0 }}
+      whileInView={{ width: "84%" }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 1.1, ease: "easeOut" }}
+      className="h-full rounded-full bg-[#6D5BA8]"
+    />
+  );
+};
+
 export const KaiShowcase = () => (
   <section
     className="py-24 md:py-32 relative overflow-hidden"
@@ -159,17 +173,14 @@ export const KaiShowcase = () => (
   >
     <Container>
       <FadeIn className="max-w-2xl mx-auto text-center mb-16 sm:mb-20">
-        <div className="flex justify-center">
-          <Chapter n="Five" title="Walking With Kai" className="mb-5" />
-        </div>
         <h2
           id="kai-showcase-heading"
-          className="font-heading text-4xl sm:text-5xl tracking-tight leading-tight font-semibold"
+          className="font-heading text-4xl sm:text-5xl leading-tight font-semibold"
         >
           You never read the map <span className="text-[#6D5BA8]">alone.</span>
         </h2>
         <p className="mt-5 text-lg text-[var(--day-ink-2)] leading-relaxed">
-          A real walk with Kai — from result to plan.
+          A real walk with Kai, from result to plan.
         </p>
       </FadeIn>
 
@@ -199,8 +210,8 @@ export const KaiShowcase = () => (
               <KaiAvatar />
               <div className="rounded-story bg-[var(--day-card)] border border-[var(--day-line)] shadow-[0_10px_30px_rgba(42,33,24,0.08)] px-5 py-4">
                 <p className="font-hand text-xl leading-snug text-[var(--day-ink)]">
-                  Your Catalyst result — want to see what it means for choosing
-                  a major?
+                  Your Catalyst result: want to see what it means for choosing a
+                  major?
                 </p>
               </div>
             </div>
@@ -228,7 +239,7 @@ export const KaiShowcase = () => (
                 <KaiAvatar />
                 <div className="rounded-story bg-[var(--day-card)] border border-[var(--day-line)] shadow-[0_10px_30px_rgba(42,33,24,0.08)] px-5 py-4">
                   <p className="font-hand text-xl leading-snug text-[var(--day-ink)]">
-                    You don’t have to pick — product roles blend both. Here’s
+                    You don’t have to pick. Product roles blend both. Here’s
                     your plan:
                   </p>
                 </div>
@@ -236,12 +247,12 @@ export const KaiShowcase = () => (
               <div className="relative ml-11 -rotate-2 hover:rotate-0 transition-transform duration-300 rounded-xl bg-white border border-[var(--day-line)] shadow-[0_16px_40px_rgba(42,33,24,0.12)] overflow-hidden">
                 <span
                   aria-hidden
-                  className="absolute -top-0.5 left-1/2 -translate-x-1/2 text-[#B07A18] text-lg leading-none"
+                  className="absolute -top-1 left-1/2 -translate-x-1/2 text-[#B07A18]"
                 >
-                  ✦
+                  <Sparkle size={18} weight="fill" />
                 </span>
                 <p className="px-4 pt-4 pb-2 text-[10px] uppercase tracking-[0.16em] font-bold text-[#B07A18] border-b border-[var(--day-line)]">
-                  Layla’s 2-week plan
+                  Example 2-week plan
                 </p>
                 <ul className="px-4 py-3 space-y-2">
                   {PLAN_ITEMS.map(([verb, rest, done]) => (
@@ -253,10 +264,10 @@ export const KaiShowcase = () => (
                         className={`mt-0.5 w-4 h-4 shrink-0 rounded-full border flex items-center justify-center text-[9px] ${
                           done
                             ? "bg-[#3D8A73] border-[#3D8A73] text-white"
-                            : "border-[var(--day-ink-3)]/50 text-transparent"
+                            : "border-[var(--day-ink-3)]/50"
                         }`}
                       >
-                        ✓
+                        {done ? <Check size={10} weight="bold" /> : null}
                       </span>
                       <span className="text-[var(--day-ink-2)]">
                         <strong className="text-[var(--day-ink)]">
@@ -287,7 +298,7 @@ export const KaiShowcase = () => (
           <Moment side="right" delay={0.05}>
             <div className="max-w-sm rotate-1 rounded-story-alt bg-[var(--day-elevated)] border border-[var(--day-line)] shadow-[0_16px_40px_rgba(42,33,24,0.1)] p-5">
               <p className="text-[10px] uppercase tracking-[0.16em] font-bold text-[var(--day-ink-3)]">
-                Three months later · her living profile
+                Three months later · example profile
               </p>
               <div className="mt-3 flex items-center gap-3">
                 <LaylaAvatar
@@ -312,13 +323,7 @@ export const KaiShowcase = () => (
                   </span>
                 </div>
                 <div className="h-2 rounded-full bg-[var(--day-inset)] overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    whileInView={{ width: "84%" }}
-                    viewport={{ once: true, margin: "-40px" }}
-                    transition={{ duration: 1.1, ease: "easeOut" }}
-                    className="h-full rounded-full bg-[#6D5BA8]"
-                  />
+                  <ProfileProgress />
                 </div>
               </div>
               <div className="mt-4 rounded-xl bg-[#FFF9EE] border border-[#F4C660]/40 px-4 py-3 flex items-center justify-between">
@@ -330,7 +335,7 @@ export const KaiShowcase = () => (
                 </span>
               </div>
               <p className="mt-3 font-hand text-lg text-[#B07A18] -rotate-1">
-                told you the 2am feeling was data. — Kai
+                told you the 2am feeling was data. · Kai
               </p>
             </div>
           </Moment>

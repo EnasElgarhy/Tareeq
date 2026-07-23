@@ -1,4 +1,6 @@
 import { getKaiNarrationText } from "@/lib/audio/kai-narration";
+import { getLocalizedText } from "@/lib/assessment/questions";
+import { loadPublishedAssessmentContent } from "@/lib/assessment/content.server";
 import {
   APPROVED_KAI_ENGLISH_VOICE,
   isPersistedAssessmentVoiceAllowed,
@@ -33,6 +35,7 @@ function resolveVoiceId(locale: string): string {
 async function fetchPersistedAudio(
   audioId: string,
   locale: string,
+  versionId: string,
 ): Promise<Response | null> {
   try {
     const supabase = createSupabaseAdminClient();
@@ -40,6 +43,7 @@ async function fetchPersistedAudio(
     const { data: question } = await supabase
       .from("questions")
       .select("id")
+      .eq("version_id", versionId)
       .eq("external_id", audioId)
       .maybeSingle();
     if (!question) return null;
@@ -85,8 +89,19 @@ export async function GET(request: Request, context: RouteContext) {
   const { audioId } = await context.params;
   const url = new URL(request.url);
   const locale = url.searchParams.get("locale") || "en";
+  const versionId = url.searchParams.get("versionId");
   const decodedAudioId = decodeURIComponent(audioId);
-  const text = getKaiNarrationText(decodedAudioId, locale);
+  const content = versionId
+    ? await loadPublishedAssessmentContent(versionId)
+    : null;
+  const question = content?.questions.find(
+    (entry) => entry.externalId === decodedAudioId,
+  );
+  const text = versionId
+    ? question
+      ? getLocalizedText(question.title, locale)
+      : null
+    : getKaiNarrationText(decodedAudioId, locale);
 
   if (!text) {
     return Response.json(
@@ -95,7 +110,9 @@ export async function GET(request: Request, context: RouteContext) {
     );
   }
 
-  const persisted = await fetchPersistedAudio(decodedAudioId, locale);
+  const persisted = versionId
+    ? await fetchPersistedAudio(decodedAudioId, locale, versionId)
+    : null;
   if (persisted) return persisted;
 
   const apiKey = process.env.ELEVENLABS_API_KEY || process.env.ELEVEN_API_KEY;

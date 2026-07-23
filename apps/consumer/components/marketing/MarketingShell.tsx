@@ -1,10 +1,16 @@
 "use client";
 
 import { List, X } from "@phosphor-icons/react";
-import { AnimatePresence, motion } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValueEvent,
+  useReducedMotion,
+  useScroll,
+} from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { IconDefs } from "@/components/marketing/Icons";
 import { KaiOrb } from "@/components/marketing/KaiOrb";
 import { Container } from "@/components/marketing/Shared";
@@ -20,23 +26,33 @@ const NAV_LINKS = [
 
 export function MarketingShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const reduce = useReducedMotion();
+  const { scrollY } = useScroll();
+  const scrolledRef = useRef(false);
+  const hasMountedRef = useRef(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 24);
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const next = latest > 24;
+    if (next === scrolledRef.current) return;
+    scrolledRef.current = next;
+    setIsScrolled(next);
+  });
 
   useEffect(() => {
     setIsMenuOpen(false);
+
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true;
+      return;
+    }
+
     window.scrollTo({ top: 0, behavior: "auto" });
   }, [pathname]);
 
   const navClassName =
-    "mx-auto flex max-w-6xl items-center justify-between rounded-full border px-5 py-3 transition-all duration-500 sm:px-7 " +
+    "mx-auto flex min-h-14 max-w-7xl items-center justify-between rounded-full border px-4 py-2.5 transition-all duration-500 sm:px-6 " +
     (isScrolled
       ? "border-white/10 bg-[#100A24]/85 shadow-[0_8px_32px_rgba(8,5,26,0.35)] backdrop-blur-xl"
       : "border-white/[0.07] bg-[#100A24]/55 backdrop-blur-lg");
@@ -47,7 +63,7 @@ export function MarketingShell({ children }: { children: ReactNode }) {
       <IconDefs />
 
       <motion.header
-        initial={{ y: -60, opacity: 0 }}
+        initial={reduce ? false : { y: -60, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: "spring", stiffness: 90, damping: 18 }}
         className="fixed inset-x-0 top-0 z-50 px-4 pt-4"
@@ -60,7 +76,7 @@ export function MarketingShell({ children }: { children: ReactNode }) {
           <Link
             href="/"
             data-testid="nav-logo"
-            className="flex items-center gap-3"
+            className="flex items-center gap-3 rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F4C660]"
           >
             <KaiOrb size={30} speed={18} />
             <span className="font-heading text-xl font-bold text-[#F5EEE6]">
@@ -68,11 +84,11 @@ export function MarketingShell({ children }: { children: ReactNode }) {
             </span>
           </Link>
 
-          <div className="hidden items-center gap-7 lg:flex">
+          <div className="hidden items-center gap-5 xl:flex 2xl:gap-7">
             {NAV_LINKS.map((link) => {
               const isActive = pathname === link.href;
               const linkClassName =
-                "text-sm font-medium transition-colors " +
+                "rounded-md text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F4C660] " +
                 (isActive
                   ? "text-[#F4C660]"
                   : "text-[#F5EEE6]/65 hover:text-[#F5EEE6]");
@@ -95,16 +111,16 @@ export function MarketingShell({ children }: { children: ReactNode }) {
             <Link
               href="/signin"
               data-testid="nav-signin"
-              className="hidden rounded-full border border-white/15 px-4 py-2.5 text-sm font-medium text-[#F5EEE6]/80 transition-colors hover:border-white/30 hover:text-[#F5EEE6] sm:inline-flex"
+              className="hidden whitespace-nowrap rounded-full border border-white/15 px-4 py-2.5 text-sm font-medium text-[#F5EEE6]/80 transition-colors hover:border-white/30 hover:text-[#F5EEE6] active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F4C660] md:inline-flex"
             >
               Sign in
             </Link>
             <Link
               href="/start"
               data-testid="nav-cta-start"
-              className="hidden rounded-full bg-gold-gradient px-5 py-2.5 text-sm font-semibold text-[#14101F] shadow-lg shadow-[#F4C660]/25 transition-transform hover:scale-[1.03] sm:inline-flex"
+              className="hidden whitespace-nowrap rounded-full bg-gold-gradient px-5 py-2.5 text-sm font-semibold text-[#14101F] shadow-lg shadow-[#F4C660]/25 transition-transform hover:scale-[1.02] active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F4C660] md:inline-flex"
             >
-              Start the Assessment
+              Start assessment
             </Link>
             <button
               type="button"
@@ -112,7 +128,7 @@ export function MarketingShell({ children }: { children: ReactNode }) {
               aria-expanded={isMenuOpen}
               aria-controls="marketing-mobile-menu"
               onClick={() => setIsMenuOpen((value) => !value)}
-              className="flex size-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-[#F5EEE6] lg:hidden"
+              className="flex size-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-[#F5EEE6] active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F4C660] xl:hidden"
             >
               {isMenuOpen ? <X size={20} /> : <List size={20} />}
             </button>
@@ -126,28 +142,28 @@ export function MarketingShell({ children }: { children: ReactNode }) {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="mx-auto mt-2 flex max-w-6xl flex-col gap-4 rounded-3xl border border-white/10 bg-[#100A24]/95 p-6 shadow-xl backdrop-blur-xl lg:hidden"
+              className="mx-auto mt-2 flex max-w-7xl flex-col gap-4 rounded-2xl border border-white/10 bg-[#100A24]/95 p-6 shadow-xl backdrop-blur-xl xl:hidden"
             >
               {NAV_LINKS.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-base font-medium text-[#F5EEE6]/75 hover:text-[#F5EEE6]"
+                  className="rounded-md text-base font-medium text-[#F5EEE6]/75 hover:text-[#F5EEE6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F4C660]"
                 >
                   {link.label}
                 </Link>
               ))}
               <Link
                 href="/signin"
-                className="rounded-full border border-white/15 px-5 py-3 text-center text-sm font-medium text-[#F5EEE6]/85"
+                className="rounded-full border border-white/15 px-5 py-3 text-center text-sm font-medium text-[#F5EEE6]/85 active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F4C660]"
               >
                 Sign in
               </Link>
               <Link
                 href="/start"
-                className="rounded-full bg-gold-gradient px-5 py-3 text-center text-sm font-semibold text-[#14101F]"
+                className="rounded-full bg-gold-gradient px-5 py-3 text-center text-sm font-semibold text-[#14101F] active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F4C660]"
               >
-                Start the Assessment
+                Start assessment
               </Link>
             </motion.div>
           ) : null}

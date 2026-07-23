@@ -13,10 +13,11 @@
 
 # testing
 /coverage
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
+**/coverage/
+**/test-results/
+**/playwright-report/
+**/blob-report/
+**/playwright/.cache/
 
 # next.js
 /.next/
@@ -60,3 +61,7 @@ next-env.d.ts
 # embed everything they need, so keep these locally for reference only.
 docs/screenshots/
 **/docs/screenshots/
+
+# Local QA captures and one-off maintenance utilities
+/output/
+**/_catclean.mjs

@@ -1,4 +1,6 @@
-import { motion } from "framer-motion";
+"use client";
+
+import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import type { ComponentType, ReactNode } from "react";
 import { KAI_SRC_SM } from "./KaiGuide";
@@ -38,42 +40,50 @@ const COMPASS_DETAILS: ReadonlyArray<
  * animated on scroll, always on-brand).
  */
 
-const Frame = ({ children, tilt = 0, className = "" }: FrameProps) => (
-  <motion.div
-    whileHover={{ y: -6, rotate: 0 }}
-    transition={{ type: "spring", stiffness: 200, damping: 18 }}
-    style={{ rotate: tilt }}
-    className={`rounded-story border border-[var(--day-line)] bg-[var(--day-elevated)] shadow-[0_24px_60px_rgba(42,33,24,0.14)] p-2.5 ${className}`}
-  >
-    <div className="rounded-[1.6rem] overflow-hidden">{children}</div>
-  </motion.div>
-);
+const Frame = ({ children, tilt = 0, className = "" }: FrameProps) => {
+  const reduce = useReducedMotion();
 
-const Bar = ({ label, value, color, delay = 0 }: BarProps) => (
-  <div className="mb-3.5">
-    <div className="flex justify-between text-xs text-[var(--day-ink-2)] mb-1">
-      <span className="font-medium">{label}</span>
-      <span>{value}% fit</span>
+  return (
+    <motion.div
+      whileHover={reduce ? undefined : { y: -6, rotate: 0 }}
+      transition={{ type: "spring", stiffness: 200, damping: 18 }}
+      style={{ rotate: tilt }}
+      className={`rounded-story border border-[var(--day-line)] bg-[var(--day-elevated)] shadow-[0_24px_60px_rgba(42,33,24,0.14)] p-2.5 ${className}`}
+    >
+      <div className="rounded-[1.6rem] overflow-hidden">{children}</div>
+    </motion.div>
+  );
+};
+
+const Bar = ({ label, value, color, delay = 0 }: BarProps) => {
+  const reduce = useReducedMotion();
+
+  return (
+    <div className="mb-3.5">
+      <div className="flex justify-between text-xs text-[var(--day-ink-2)] mb-1">
+        <span className="font-medium">{label}</span>
+        <span>{value}% fit</span>
+      </div>
+      <div className="h-2 rounded-full bg-[var(--day-inset)] overflow-hidden">
+        <motion.div
+          initial={reduce ? false : { width: 0 }}
+          whileInView={{ width: `${value}%` }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 1.1, delay, ease: "easeOut" }}
+          className="h-full rounded-full"
+          style={{ background: color }}
+        />
+      </div>
     </div>
-    <div className="h-2 rounded-full bg-[var(--day-inset)] overflow-hidden">
-      <motion.div
-        initial={{ width: 0 }}
-        whileInView={{ width: `${value}%` }}
-        viewport={{ once: true, margin: "-40px" }}
-        transition={{ duration: 1.1, delay, ease: "easeOut" }}
-        className="h-full rounded-full"
-        style={{ background: color }}
-      />
-    </div>
-  </div>
-);
+  );
+};
 
 /** 1 — Career Compass dashboard */
 export const CompassShot = () => (
   <div className="bg-[#FDFAF3] p-5 min-h-[400px] flex flex-col">
     <div className="flex items-center justify-between mb-5">
       <p className="text-[11px] uppercase tracking-[0.18em] text-[var(--day-ink-3)] font-semibold">
-        Your Career Compass
+        Example career compass
       </p>
       <span className="w-7 h-7 rounded-full overflow-hidden ring-1 ring-[#F4C660]/60">
         <Image
@@ -128,7 +138,7 @@ export const ReportShot = () => (
   <div className="bg-[#FDFAF3] p-6 min-h-[400px] flex flex-col">
     <div className="flex items-center justify-between mb-5">
       <p className="text-[11px] uppercase tracking-[0.18em] text-[var(--day-ink-3)] font-semibold">
-        Narrative Report
+        Example narrative report
       </p>
       <span className="text-[10px] text-[var(--day-ink-3)]">p. 2 of 6</span>
     </div>
@@ -141,8 +151,8 @@ export const ReportShot = () => (
       Your answers show a clear pattern: you commit deeply once something earns
       your attention, but rigid routines drain you.{" "}
       <mark className="bg-[#F4C660]/40 text-[var(--day-ink)] rounded px-0.5">
-        Careers that reward adaptability — startups, product teams, newsrooms —
-        will keep you engaged
+        Careers that reward adaptability, including startups, product teams, and
+        newsrooms, will keep you engaged
       </mark>{" "}
       far longer than roles built on repetition.
     </p>
@@ -167,7 +177,7 @@ export const ReportShot = () => (
         />
       </span>
       <p className="font-hand text-lg leading-snug text-[#B07A18] -rotate-1">
-        the 2am-project feeling? That’s this paragraph. — Kai
+        the 2am-project feeling? That’s this paragraph. · Kai
       </p>
     </div>
   </div>
@@ -182,7 +192,7 @@ export const CardShot = () => (
           Layla’s Path
         </p>
         <p className="mt-1 text-[10px] uppercase tracking-[0.2em] text-[#F5EEE6]/70">
-          Tareeq result card · 17 · UAE
+          Example result · 17 · UAE
         </p>
       </div>
       <div className="bg-white px-4 py-4">
@@ -245,7 +255,7 @@ export const PRODUCT_SHOTS: ReadonlyArray<ProductShot> = [
     tilt: -1.5,
     lift: "md:mt-10",
     title: "Career Compass",
-    body: "Your top clusters, archetype, and drivers — at a glance.",
+    body: "Your top clusters, archetype, and drivers at a glance.",
   },
   {
     shot: ReportShot,

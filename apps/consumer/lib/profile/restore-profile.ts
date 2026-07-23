@@ -13,6 +13,7 @@ import {
   writeResultRegistration,
 } from "@/lib/results/storage";
 import { computeScore } from "@/lib/scoring";
+import type { CompassResult } from "@/lib/scoring";
 
 export interface SavedAssessmentRecord {
   id: string;
@@ -22,6 +23,22 @@ export interface SavedAssessmentRecord {
   locale: string | null;
   respondent_name: string | null;
   respondent_email: string | null;
+  version_id?: string | null;
+  result?: unknown;
+}
+
+function readStoredResult(value: unknown): CompassResult | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const candidate = value as Partial<CompassResult>;
+  if (
+    typeof candidate.topCluster !== "string" ||
+    typeof candidate.archetype !== "string" ||
+    typeof candidate.confidencePercentage !== "number" ||
+    !candidate.axes
+  ) {
+    return null;
+  }
+  return candidate as CompassResult;
 }
 
 function readAnswers(value: unknown): Record<string, string> | null {
@@ -50,7 +67,9 @@ export function restoreProfileFromAssessment({
   const answers = readAnswers(assessment.answers);
   if (!answers || !assessment.id || !assessment.completed_at) return null;
 
-  const result = computeScore(answers, assessmentQuestions);
+  const result =
+    readStoredResult(assessment.result) ??
+    computeScore(answers, assessmentQuestions);
   const completedAt = assessment.completed_at;
   const startedAt = assessment.started_at ?? completedAt;
   const savedRegistration = readResultRegistration();
@@ -68,9 +87,10 @@ export function restoreProfileFromAssessment({
 
   const progress: LocalAssessmentProgress = {
     assessmentId: assessment.id,
+    versionId: assessment.version_id ?? null,
     versionLabel: "v4",
     answers,
-    currentIndex: Math.max(assessmentQuestions.length - 1, 0),
+    currentIndex: Math.max(Object.keys(answers).length - 1, 0),
     startedAt,
     updatedAt: completedAt,
     completedAt,

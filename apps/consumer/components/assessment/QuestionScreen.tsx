@@ -33,7 +33,6 @@ import { useLocale } from "@/components/i18n/LocaleProvider";
 import { getLocalizedText, getQuestionPath } from "@/lib/assessment/questions";
 import { computeScore, type Question } from "@/lib/scoring";
 import { trackEvent } from "@/lib/analytics/track";
-import { contentVersion } from "@/lib/content/seed";
 
 type AudioState =
   | "idle"
@@ -49,6 +48,8 @@ interface QuestionScreenProps {
   questions: Question[];
   index: number;
   totalQuestions: number;
+  versionId: string | null;
+  versionLabel: string;
   menaCountries: string[];
   restOfWorldCountries: string[];
 }
@@ -95,6 +96,8 @@ export function QuestionScreen({
   questions,
   index,
   totalQuestions,
+  versionId,
+  versionLabel,
   menaCountries,
   restOfWorldCountries,
 }: QuestionScreenProps) {
@@ -124,6 +127,10 @@ export function QuestionScreen({
   const [speed, setSpeed] = useState(1);
 
   const { locale, t } = useLocale();
+  const assessmentVersion = useMemo(
+    () => ({ versionId, versionLabel }),
+    [versionId, versionLabel],
+  );
   const {
     audioRef,
     playNarration,
@@ -175,13 +182,13 @@ export function QuestionScreen({
   const questionContext = useCallback(
     (extra: Record<string, unknown> = {}) => ({
       assessmentId: readLocalAssessment()?.assessmentId ?? null,
-      assessmentVersion: contentVersion.label,
+      assessmentVersion: versionLabel,
       questionId: question.externalId,
       questionPosition: question.position,
       pillar: question.pillar,
       ...extra,
     }),
-    [question.externalId, question.pillar, question.position],
+    [question.externalId, question.pillar, question.position, versionLabel],
   );
 
   /** Fires question_answered / question_answer_changed, but only when the
@@ -230,7 +237,7 @@ export function QuestionScreen({
   );
 
   useEffect(() => {
-    ensureLocalAssessment();
+    ensureLocalAssessment(assessmentVersion);
     const progress = readLocalAssessment();
     const previousAnswer = progress?.answers[question.externalId] ?? "";
     const isRevisit = previousAnswer !== "";
@@ -255,7 +262,7 @@ export function QuestionScreen({
     // question_skipped is intentionally not fired here — this consumer app
     // has no UI concept of skipping a required question (every kind must
     // be answered to advance; see QUESTION_ANALYTICS_ARCHITECTURE.md).
-  }, [question.externalId, questionContext]);
+  }, [assessmentVersion, question.externalId, questionContext]);
 
   // Best-effort question_abandoned: fires only on a true page
   // unload/close/navigate-away (pagehide), not on ordinary tab-switching
@@ -308,7 +315,12 @@ export function QuestionScreen({
         questionContext({ selectedAnswer: letter }),
       );
 
-      const progress = saveLocalAnswer(question.externalId, letter, index);
+      const progress = saveLocalAnswer(
+        question.externalId,
+        letter,
+        index,
+        assessmentVersion,
+      );
       const reduced = prefersReducedMotion();
       const confirmDelay = reduced ? 70 : 180;
       const exitDelay = reduced ? 50 : 120;
@@ -336,7 +348,7 @@ export function QuestionScreen({
             return;
           }
           const result = computeScore(progress.answers, questions);
-          completeLocalAssessment(result, index);
+          completeLocalAssessment(result, index, assessmentVersion);
           router.push("/register");
         }, exitDelay);
       }, confirmDelay);
@@ -354,6 +366,7 @@ export function QuestionScreen({
       recordAnswer,
       router,
       activeOwnerId,
+      assessmentVersion,
       stopNarration,
     ],
   );
@@ -390,7 +403,12 @@ export function QuestionScreen({
     stopNarration(activeOwnerId);
     uiSounds.advance();
     recordAnswer(selected);
-    const progress = saveLocalAnswer(question.externalId, selected, index);
+    const progress = saveLocalAnswer(
+      question.externalId,
+      selected,
+      index,
+      assessmentVersion,
+    );
     setExiting("forward");
     window.setTimeout(
       () => {
@@ -400,7 +418,7 @@ export function QuestionScreen({
           return;
         }
         const result = computeScore(progress.answers, questions);
-        completeLocalAssessment(result, index);
+        completeLocalAssessment(result, index, assessmentVersion);
         router.push("/register");
       },
       prefersReducedMotion() ? 60 : 220,
@@ -411,7 +429,7 @@ export function QuestionScreen({
     setSelected(value);
     uiSounds.select();
     recordAnswer(value);
-    saveLocalAnswer(question.externalId, value, index);
+    saveLocalAnswer(question.externalId, value, index, assessmentVersion);
   }
 
   // ---------- Keyboard ----------
@@ -445,6 +463,7 @@ export function QuestionScreen({
       audioId: activeNarrationId,
       locale,
       ownerId: activeOwnerId,
+      versionId: pendingInterstitial ? null : versionId,
     });
     return () => stopNarration(activeOwnerId);
   }, [
@@ -453,8 +472,10 @@ export function QuestionScreen({
     exiting,
     kaiVideoReady,
     locale,
+    pendingInterstitial,
     playNarration,
     stopNarration,
+    versionId,
   ]);
 
   useEffect(() => {
@@ -471,7 +492,11 @@ export function QuestionScreen({
     const nextQuestion = questions[index + 1];
     if (nextQuestion) {
       router.prefetch(getQuestionPath(index + 1));
-      preloadNarration({ audioId: nextQuestion.externalId, locale });
+      preloadNarration({
+        audioId: nextQuestion.externalId,
+        locale,
+        versionId,
+      });
     }
 
     const interstitialAudioIds = new Set(
@@ -482,7 +507,7 @@ export function QuestionScreen({
     interstitialAudioIds.forEach((audioId) => {
       preloadNarration({ audioId, locale });
     });
-  }, [index, locale, preloadNarration, questions, router]);
+  }, [index, locale, preloadNarration, questions, router, versionId]);
 
   useEffect(() => {
     if (index !== 7) return;

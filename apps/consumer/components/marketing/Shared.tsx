@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, type HTMLMotionProps } from "framer-motion";
+import { motion, useReducedMotion, type HTMLMotionProps } from "framer-motion";
 import Link from "next/link";
 import type { AnchorHTMLAttributes, HTMLAttributes, ReactNode } from "react";
 
@@ -37,9 +37,11 @@ export function FadeIn({
   className = "",
   ...rest
 }: FadeInProps) {
+  const reduce = useReducedMotion();
+
   return (
     <motion.div
-      initial={{ opacity: 0, y }}
+      initial={reduce ? false : { opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ type: "spring", stiffness: 90, damping: 20, delay }}
@@ -84,7 +86,7 @@ export function GoldButton({
   return (
     <Link
       href={href}
-      className={`inline-flex items-center justify-center gap-2 rounded-full bg-gold-gradient px-8 py-4 font-semibold text-[#14101F] shadow-[0_12px_40px_rgba(244,198,96,0.3)] transition-transform hover:scale-[1.03] ${className}`}
+      className={`inline-flex min-h-[3.25rem] items-center justify-center gap-2 whitespace-nowrap rounded-full bg-gold-gradient px-8 py-4 font-semibold text-[#14101F] shadow-[0_12px_40px_rgba(244,198,96,0.3)] transition-[transform,box-shadow] hover:scale-[1.02] active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F4C660] ${className}`}
       {...rest}
     >
       {children}
@@ -101,7 +103,7 @@ export function GhostButton({
   return (
     <Link
       href={href}
-      className={`inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.05] px-8 py-4 font-medium text-[#F5EEE6] transition-all hover:border-white/30 hover:bg-white/[0.08] ${className}`}
+      className={`inline-flex min-h-[3.25rem] items-center justify-center gap-2 whitespace-nowrap rounded-full border border-white/15 bg-white/[0.05] px-8 py-4 font-medium text-[#F5EEE6] transition-[transform,background-color,border-color] hover:border-white/30 hover:bg-white/[0.08] active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F4C660] ${className}`}
       {...rest}
     >
       {children}
