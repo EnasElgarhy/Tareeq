@@ -3,7 +3,7 @@
 The complete visual system for the Tareeq web app. One source of
 truth. When tokens, components, or screens change, this file changes.
 
-`design.md v2.0 · 2026-05-13 · maintained on redesign/mystical-v2`
+`design.md v2.1 · 2026-07-29`
 
 ---
 
@@ -303,6 +303,18 @@ numbered station nodes. Used on Contract and onboarding flows.
 brand-color signature dot. Tiles rotate through brand colors so lists
 read with rhythm.
 
+### 5.9 New-feature visual gate
+
+Every new user-facing feature that introduces a product concept must
+ship with one feature-specific Tareeq visual artifact. This may be a
+narrative illustration, scene, bespoke data glyph, or coherent icon
+family. It must help explain the feature's meaning, state, or journey.
+
+Standard interface actions continue to use the shared icon library.
+Close, back, payment, lock, download, and similar controls do not need
+custom artwork. A generic card grid with stock icons alone is not a
+finished Tareeq feature design.
+
 ---
 
 ## 6. Surface specs
@@ -543,6 +555,7 @@ mirror via `.flip-rtl` or `data-flip-rtl`.
 | Use gold for body text | Gold is CTAs and short emphasis only |
 | Add micro-animations on every element | One memorable moment per screen |
 | Center every headline | Editorial defaults to left-aligned; center only on celebratory reveals |
+| Launch a new product concept with generic cards and stock icons only | New concepts need a Tareeq visual artifact that explains their meaning |
 
 ---
 
@@ -583,4 +596,4 @@ or screen spec changes:
 
 ---
 
-`design.md v2.0 · 2026-05-13 · maintained on redesign/mystical-v2`
+`design.md v2.1 · 2026-07-29`
