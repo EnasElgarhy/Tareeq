@@ -12,6 +12,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { trackEvent } from "@/lib/analytics/track";
 import { readLocalAssessment } from "@/lib/assessment/progress";
 import type { StringKey } from "@/lib/i18n/strings";
 import { buildFallbackReport } from "@/lib/results/framework";
@@ -103,6 +104,10 @@ export function AnalyzingScreen() {
     }
 
     const startedAt = Date.now();
+    trackEvent("report_generation_started", {
+      assessmentId: progress.assessmentId,
+      assessmentVersion: progress.versionLabel,
+    });
 
     async function generateReport() {
       try {
@@ -122,6 +127,11 @@ export function AnalyzingScreen() {
         const data = await response.json();
         if (!data?.report) throw new Error("Missing report.");
         writeGeneratedReport(data.report);
+        trackEvent("report_generation_completed", {
+          assessmentId: progress?.assessmentId,
+          assessmentVersion: progress?.versionLabel,
+          source: data.report.source,
+        });
         setStatus("done");
       } catch {
         if (progress?.result) {
@@ -133,6 +143,11 @@ export function AnalyzingScreen() {
               locale,
             }),
           );
+          trackEvent("report_generation_completed", {
+            assessmentId: progress.assessmentId,
+            assessmentVersion: progress.versionLabel,
+            source: "fallback",
+          });
         }
         setStatus("error");
       } finally {

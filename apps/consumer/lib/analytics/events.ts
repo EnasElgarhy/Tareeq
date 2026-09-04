@@ -23,6 +23,18 @@ export const ASSESSMENT_EVENT_NAMES = [
 ] as const;
 
 export const RESULTS_EVENT_NAMES = [
+  "report_generation_started",
+  "report_generation_completed",
+  "report_preview_viewed",
+  "paywall_viewed",
+  "unlock_cta_clicked",
+  "checkout_opened",
+  "checkout_closed",
+  "payment_started",
+  "payment_succeeded",
+  "payment_failed",
+  "report_unlocked",
+  "pdf_downloaded",
   "results_generated",
   "results_viewed",
   "results_downloaded",

@@ -31,6 +31,7 @@ export interface ResultRegistration {
   email: string;
   verifiedAt: string;
   consent: ResultConsent;
+  assessmentId?: string;
 }
 
 export interface PersonalizedCompassReport {

@@ -36,7 +36,7 @@ async function persistAssessment(name: string, locale: string) {
   try {
     const progress = readLocalAssessment();
     if (!progress?.result) return;
-    await fetch("/api/assessments/persist", {
+    const response = await fetch("/api/assessments/persist", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -48,6 +48,23 @@ async function persistAssessment(name: string, locale: string) {
         versionId: progress.versionId,
         versionLabel: progress.versionLabel,
       }),
+    });
+    if (!response.ok) return;
+
+    const json: unknown = await response.json();
+    if (
+      typeof json !== "object" ||
+      json === null ||
+      typeof (json as { assessmentId?: unknown }).assessmentId !== "string"
+    ) {
+      return;
+    }
+
+    const registration = readResultRegistration();
+    if (!registration) return;
+    writeResultRegistration({
+      ...registration,
+      assessmentId: (json as { assessmentId: string }).assessmentId,
     });
   } catch {
     // fail-open — the result still shows from local state.

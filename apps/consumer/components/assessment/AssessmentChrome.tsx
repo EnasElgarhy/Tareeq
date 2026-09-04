@@ -53,7 +53,8 @@ export function AssessmentChrome({
   // Results is a long-form report, not a form or a lesson — it just
   // needs more reading width than the 640px form-screen bucket without
   // going as wide as the hero/question layouts.
-  const isResults = pathname === "/results";
+  const isResults =
+    pathname === "/results" || pathname === "/deep-dive-preview";
   // Registration uses the same wider desktop canvas for its Kai/form split.
   const isRegistration = pathname === "/register";
   // The Kai conversation is a deliberate light "you've landed" surface —
@@ -114,16 +115,16 @@ export function AssessmentChrome({
       )}
 
       <div
-        className={`relative z-10 mx-auto flex h-full w-full max-w-[480px] flex-1 flex-col px-5 md:max-w-[560px] ${
+        className={`relative z-10 mx-auto flex h-full w-full max-w-[480px] flex-1 flex-col px-5 ${
           isHero
-            ? "lg:max-w-[960px]"
+            ? "md:max-w-[560px] lg:max-w-[960px]"
             : hasQuestion
-              ? "lg:max-w-[1040px]"
+              ? "md:max-w-[560px] lg:max-w-[1040px]"
               : isResults
-                ? "lg:max-w-[860px]"
+                ? "md:max-w-[840px] lg:max-w-[1180px] xl:max-w-[1240px]"
                 : isRegistration
-                  ? "lg:max-w-[960px]"
-                  : "lg:max-w-[640px]"
+                  ? "md:max-w-[560px] lg:max-w-[960px]"
+                  : "md:max-w-[560px] lg:max-w-[640px]"
         } ${
           hasQuestion
             ? "gap-2 pb-3 pt-[max(env(safe-area-inset-top),0.625rem)]"

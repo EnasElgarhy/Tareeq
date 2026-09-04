@@ -103,6 +103,9 @@ export function readResultRegistration() {
         consent: isResultConsent(candidate.consent)
           ? candidate.consent
           : createEmptyResultConsent(),
+        ...(typeof candidate.assessmentId === "string"
+          ? { assessmentId: candidate.assessmentId }
+          : {}),
       } as ResultRegistration;
     }
   } catch {

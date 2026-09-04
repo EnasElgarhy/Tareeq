@@ -8,6 +8,7 @@ import { ReportBody } from "@/components/assessment/report-parts";
 import type { CompassCardResult } from "@/components/results/CompassCard";
 import { ParentViewModal } from "@/components/results/ParentViewModal";
 import { ShareCardModal } from "@/components/results/ShareCardModal";
+import { ReportAccessExperience } from "@/components/results/report-access/ReportAccessExperience";
 import { trackEvent } from "@/lib/analytics/track";
 import {
   readLocalAssessment,
@@ -149,6 +150,12 @@ export function ResultsScreen() {
         assessmentId: readLocalAssessment()?.assessmentId,
         method: `${variant}_${method}`,
       });
+      if (variant === "full") {
+        trackEvent("pdf_downloaded", {
+          assessmentId: readLocalAssessment()?.assessmentId,
+          method,
+        });
+      }
       setSaveStatus(
         method === "print"
           ? t("results.save.print_ready")
@@ -165,9 +172,13 @@ export function ResultsScreen() {
 
   return (
     <section className="anim-screen-enter flex flex-1 flex-col gap-4 pb-2">
-      <ReportBody report={report} t={t} />
+      <ReportAccessExperience
+        report={report}
+        email={readResultRegistration()?.email ?? ""}
+      >
+        <ReportBody report={report} t={t} />
 
-      <div className="grid gap-2">
+        <div className="mt-4 grid gap-2">
         <button
           type="button"
           onClick={handleShare}
@@ -234,9 +245,9 @@ export function ResultsScreen() {
             {saveStatus}
           </p>
         ) : null}
-      </div>
+        </div>
 
-      <p className="text-center text-[11px] leading-snug text-sand/38">
+        <p className="text-center text-[11px] leading-snug text-sand/38">
         {report.source !== "fallback"
           ? t("results.footer.generated_with").replace(
               "{model}",
@@ -246,9 +257,9 @@ export function ResultsScreen() {
               "{reason}",
               report.fallbackReason ?? "",
             )}
-      </p>
+        </p>
 
-      {shareCard ? (
+        {shareCard ? (
         <ShareCardModal
           result={shareCard}
           shareUrl={shareUrl}
@@ -259,9 +270,9 @@ export function ResultsScreen() {
           assessmentId={readLocalAssessment()?.assessmentId}
           onClose={() => setShareCard(null)}
         />
-      ) : null}
+        ) : null}
 
-      {parentViewOpen ? (
+        {parentViewOpen ? (
         <ParentViewModal
           report={report}
           studentName={studentName}
@@ -270,7 +281,8 @@ export function ResultsScreen() {
           onSave={() => handleSave("parent")}
           onClose={() => setParentViewOpen(false)}
         />
-      ) : null}
+        ) : null}
+      </ReportAccessExperience>
     </section>
   );
 }

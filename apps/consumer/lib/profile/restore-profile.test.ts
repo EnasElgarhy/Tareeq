@@ -68,6 +68,7 @@ describe("restoreProfileFromAssessment", () => {
       name: "Sarah Gouda",
       email: "sarah@example.com",
       verifiedAt: "2026-07-15T21:00:00.000Z",
+      assessmentId: "assessment-123",
     });
     expect(report).toMatchObject({
       generatedAt: "2026-07-15T21:00:00.000Z",

@@ -1665,32 +1665,32 @@ export const STRINGS = {
 
   // ---- Analyzing screen (components/assessment/AnalyzingScreen.tsx) ----
   "analyzing.step1.title": {
-    en: "Reviewing every answer",
-    ar: "مراجعة كل إجابة",
+    en: "Analyzing your responses",
+    ar: "تحليل إجاباتك",
   },
   "analyzing.step1.detail": {
     en: "Reading across the choices you made throughout the assessment.",
     ar: "نقرأ الاختيارات التي اتخذتها خلال التقييم.",
   },
   "analyzing.step2.title": {
-    en: "Looking for repeated patterns",
-    ar: "البحث عن الأنماط المتكررة",
+    en: "Identifying your strongest patterns",
+    ar: "تحديد أقوى أنماطك",
   },
   "analyzing.step2.detail": {
     en: "Comparing what draws you in with how you prefer to work.",
     ar: "نقارن ما يجذب اهتمامك بالطريقة التي تفضّل العمل بها.",
   },
   "analyzing.step3.title": {
-    en: "Connecting the signals",
-    ar: "ربط الإشارات ببعضها",
+    en: "Matching suitable career directions",
+    ar: "مطابقة الاتجاهات المهنية المناسبة",
   },
   "analyzing.step3.detail": {
     en: "Thinking through how your interests, motivations, and environment fit together.",
     ar: "نفكّر في كيفية تكامل اهتماماتك ودوافعك والبيئة المناسبة لك.",
   },
   "analyzing.step4.title": {
-    en: "Building your personal report",
-    ar: "بناء تقريرك الشخصي",
+    en: "Preparing your personal roadmap",
+    ar: "إعداد خريطة طريقك الشخصية",
   },
   "analyzing.step4.detail": {
     en: "Turning those connections into clear, practical guidance.",
@@ -1706,16 +1706,16 @@ export const STRINGS = {
     ar: "نعمل على تقريرك",
   },
   "analyzing.headline_working": {
-    en: "We’re analyzing your answers.",
-    ar: "نحلّل إجاباتك الآن.",
+    en: "Your Tareeq profile is being prepared",
+    ar: "يجري إعداد ملفك الشخصي في طريق",
   },
   "analyzing.headline_ready": {
     en: "Your report is ready.",
     ar: "تقريرك أصبح جاهزاً.",
   },
   "analyzing.subtitle": {
-    en: "We’re reading, comparing, and thinking through your responses before building your report.",
-    ar: "نقرأ إجاباتك ونقارن بينها ونفكّر في دلالاتها قبل بناء تقريرك.",
+    en: "Kai is connecting your answers to identify how you think, work, and make decisions.",
+    ar: "تربط كاي بين إجاباتك لفهم طريقة تفكيرك وعملك واتخاذك للقرارات.",
   },
   "analyzing.subtitle_ready": {
     en: "We’ve finished connecting the patterns across your responses.",
@@ -1767,6 +1767,125 @@ export const STRINGS = {
     en: "Couldn't share right now. Try again.",
     ar: "تعذّرت المشاركة الآن. حاول مرة أخرى.",
   },
+
+  // ---- Report preview and payment wall ----
+  "paywall.preview.label": { en: "Your Tareeq report", ar: "تقريرك من طريق" },
+  "paywall.preview.ready": { en: "Your profile is ready", ar: "ملفك الشخصي جاهز" },
+  "paywall.preview.illustration_alt": {
+    en: "Kai reveals your personal compass across an unfolding map.",
+    ar: "كاي تكشف بوصلتك الشخصية على خريطة ممتدة.",
+  },
+  "paywall.preview.reveal_label": {
+    en: "Your compass points to",
+    ar: "تشير بوصلتك إلى",
+  },
+  "paywall.preview.traits": { en: "Your key traits", ar: "سماتك الأساسية" },
+  "paywall.preview.direction_label": {
+    en: "Your strongest direction",
+    ar: "اتجاهك الأقوى",
+  },
+  "paywall.locked.title": { en: "Your complete report", ar: "تقريرك الكامل" },
+  "paywall.locked.subtitle": {
+    en: "We've already built these sections from your answers.",
+    ar: "بنينا هذه الأقسام بالفعل من إجاباتك.",
+  },
+  "paywall.locked.accessible": {
+    en: "Report sections requiring payment",
+    ar: "أقسام التقرير التي تتطلب الدفع",
+  },
+  "paywall.locked.map_label": {
+    en: "Inside your report",
+    ar: "داخل تقريرك",
+  },
+  "paywall.locked.personality": { en: "How your strengths work together", ar: "كيف تعمل نقاط قوتك معاً" },
+  "paywall.locked.decisions": { en: "How you make decisions", ar: "كيف تتخذ قراراتك" },
+  "paywall.locked.environments": { en: "Your strongest work environments", ar: "بيئات العمل الأنسب لك" },
+  "paywall.locked.careers": { en: "Top career matches", ar: "أفضل المسارات المهنية المناسبة" },
+  "paywall.locked.drainers": { en: "Careers that may drain you", ar: "مسارات قد تستنزف طاقتك" },
+  "paywall.locked.growth": { en: "Where to stretch next", ar: "مجالات يمكنك أن تتطور فيها" },
+  "paywall.locked.skills": { en: "Skills worth building next", ar: "مهارات تستحق أن تطورها الآن" },
+  "paywall.locked.action_plan": { en: "Your next-step plan", ar: "خطة خطوتك التالية" },
+  "paywall.locked.pdf": { en: "Downloadable PDF report", ar: "تقرير PDF قابل للتنزيل" },
+  "paywall.product": { en: "Tareeq Complete Report", ar: "تقرير طريق الكامل" },
+  "paywall.title": {
+    en: "Turn your result into choices you can act on.",
+    ar: "حوّل نتيجتك إلى قرارات يمكنك تنفيذها.",
+  },
+  "paywall.description": {
+    en: "See why these paths fit you, where you may thrive, what could drain you, and what to try next.",
+    ar: "اكتشف لماذا تناسبك هذه المسارات، وأين يمكنك أن تتألق، وما قد يستنزف طاقتك، وما الذي يمكنك تجربته بعد ذلك.",
+  },
+  "paywall.benefit.analysis": { en: "How your strengths work together", ar: "كيف تعمل نقاط قوتك معاً" },
+  "paywall.benefit.careers": { en: "Career matches ranked by fit", ar: "مسارات مهنية مرتبة حسب الملاءمة" },
+  "paywall.benefit.environments": { en: "Work and study settings that fit you", ar: "بيئات عمل ودراسة تناسبك" },
+  "paywall.benefit.advice": { en: "Advice based on your response pattern", ar: "نصائح مبنية على نمط إجاباتك" },
+  "paywall.benefit.skills": { en: "Skills worth building next", ar: "مهارات تستحق أن تطورها الآن" },
+  "paywall.benefit.action_plan": { en: "A practical next-step plan", ar: "خطة عملية لخطوتك التالية" },
+  "paywall.benefit.pdf": { en: "Downloadable report", ar: "تقرير قابل للتنزيل" },
+  "paywall.benefit.permanent": { en: "Permanent access", ar: "وصول دائم" },
+  "paywall.complete_report": { en: "Complete report", ar: "التقرير الكامل" },
+  "paywall.price": { en: "One payment of {price}", ar: "دفعة واحدة بقيمة {price}" },
+  "paywall.one_time": { en: "One-time purchase", ar: "شراء لمرة واحدة" },
+  "paywall.cta": { en: "Unlock my full report", ar: "افتح تقريري الكامل" },
+  "paywall.cta.short": { en: "Unlock report", ar: "افتح التقرير" },
+  "paywall.cta.loading": { en: "Opening secure checkout...", ar: "جارٍ فتح الدفع الآمن..." },
+  "paywall.reassurance": {
+    en: "One-time payment · No subscription · Secure checkout",
+    ar: "دفعة واحدة · بلا اشتراك · دفع آمن",
+  },
+  "paywall.saved": { en: "We save your report automatically", ar: "نحفظ تقريرك تلقائياً" },
+  "paywall.success": { en: "Your complete report is unlocked", ar: "تم فتح تقريرك الكامل" },
+  "paywall.success.description": {
+    en: "Your career matches, best-fit environments, and next steps are ready.",
+    ar: "مساراتك المهنية وبيئات العمل المناسبة لك وخطواتك التالية جاهزة.",
+  },
+  "paywall.error": {
+    en: "We couldn't complete the payment. Your report is still saved.",
+    ar: "لم نتمكن من إتمام الدفع. لا يزال تقريرك محفوظاً.",
+  },
+  "paywall.error.sign_in": {
+    en: "Your session expired. Sign in again to finish your purchase.",
+    ar: "انتهت جلستك. سجّل الدخول مجدداً لإتمام عملية الشراء.",
+  },
+  "paywall.error.forbidden": {
+    en: "We couldn't match this report to your account. Refresh the page and try again.",
+    ar: "تعذّر ربط هذا التقرير بحسابك. حدّث الصفحة ثم حاول مرة أخرى.",
+  },
+  "paywall.error.unavailable": {
+    en: "We couldn't reach the payment service. Check your connection and try again.",
+    ar: "تعذّر الوصول إلى خدمة الدفع. تحقّق من اتصالك ثم حاول مرة أخرى.",
+  },
+  "paywall.error.pending": {
+    en: "Your payment went through. We're still confirming it — refresh this page in a moment.",
+    ar: "تمت عملية الدفع بنجاح. ما زلنا نؤكدها — حدّث الصفحة بعد قليل.",
+  },
+  "paywall.checkout.label": { en: "Secure checkout", ar: "دفع آمن" },
+  "paywall.checkout.title": { en: "Unlock your complete report", ar: "افتح تقريرك الكامل" },
+  "paywall.checkout.description": {
+    en: "One payment unlocks your complete report for good — no subscription.",
+    ar: "دفعة واحدة تفتح تقريرك الكامل إلى الأبد — بدون اشتراك.",
+  },
+  "paywall.checkout.preparing": {
+    en: "Preparing secure checkout…",
+    ar: "جارٍ تجهيز الدفع الآمن…",
+  },
+  "paywall.checkout.confirming": {
+    en: "Confirming your payment…",
+    ar: "جارٍ تأكيد عملية الدفع…",
+  },
+  "paywall.checkout.confirming_note": {
+    en: "Keep this window open. We're checking with our servers, which takes a moment.",
+    ar: "أبقِ هذه النافذة مفتوحة. نتحقق من خوادمنا، وسيستغرق ذلك لحظات.",
+  },
+  "paywall.checkout.unavailable": {
+    en: "Payments aren't available right now. Please try again in a moment.",
+    ar: "الدفع غير متاح حالياً. يرجى المحاولة بعد قليل.",
+  },
+  "paywall.checkout.retry": { en: "Try again", ar: "حاول مرة أخرى" },
+  "paywall.checkout.security": { en: "Your answers are never sent to the payment provider", ar: "لا يتم إرسال إجاباتك إلى مزود الدفع" },
+  "paywall.checkout.close": { en: "Close checkout", ar: "إغلاق الدفع" },
+  "paywall.checkout.terms": { en: "Terms", ar: "الشروط" },
+  "paywall.checkout.privacy": { en: "Privacy", ar: "الخصوصية" },
 } as const satisfies Record<string, Entry>;
 
 export type StringKey = keyof typeof STRINGS;
