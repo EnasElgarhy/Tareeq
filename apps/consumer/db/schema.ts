@@ -329,3 +329,40 @@ export const audioClips = pgTable(
   },
   (table) => [index("audio_clips_q_idx").on(table.questionId, table.locale)],
 );
+
+export const reportEntitlements = pgTable(
+  "report_entitlements",
+  {
+    id: uuid("id")
+      .default(sql`gen_random_uuid()`)
+      .primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => authUsers.id, { onDelete: "cascade" }),
+    assessmentId: uuid("assessment_id")
+      .notNull()
+      .references(() => assessments.id, { onDelete: "cascade" }),
+    status: text("status").default("active").notNull(),
+    stripeSessionId: text("stripe_session_id").unique(
+      "report_entitlements_stripe_session_unique",
+    ),
+    stripePaymentIntentId: text("stripe_payment_intent_id"),
+    amountMinor: integer("amount_minor"),
+    currency: text("currency"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
+  },
+  (table) => [
+    check(
+      "report_entitlements_status_check",
+      sql`${table.status} in ('active','revoked')`,
+    ),
+    unique("report_entitlements_user_assessment_unique").on(
+      table.userId,
+      table.assessmentId,
+    ),
+    index("report_entitlements_assessment_idx").on(table.assessmentId),
+  ],
+);
