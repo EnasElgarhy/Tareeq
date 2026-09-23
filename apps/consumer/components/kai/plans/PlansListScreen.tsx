@@ -4,7 +4,12 @@ import { ArrowRight, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ActionPlanIcon } from "@/components/brand/DomainIcons";
+import {
+  PaidAccessChecking,
+  PaidFeatureLock,
+} from "@/components/access/PaidFeatureLock";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { usePaidAccess } from "@/lib/payments/use-paid-access";
 import { readPlans } from "@/lib/kai/plans/plan-storage";
 import type { KaiPlan } from "@/lib/kai/plans/plan-types";
 
@@ -18,12 +23,25 @@ function completionOf(plan: KaiPlan): { done: number; total: number } {
 export function PlansListScreen() {
   const { t } = useLocale();
   const [plans, setPlans] = useState<KaiPlan[] | null>(null);
+  const { state: access } = usePaidAccess();
 
   useEffect(() => {
     setPlans(readPlans());
   }, []);
 
   if (!plans) return null;
+
+  if (access !== "paid") {
+    return (
+      <section className="flex flex-1 flex-col justify-center pb-6">
+        {access === "checking" ? (
+          <PaidAccessChecking />
+        ) : (
+          <PaidFeatureLock feature="plans" />
+        )}
+      </section>
+    );
+  }
 
   return (
     <section className="daybreak-reveal mx-auto flex w-full max-w-[900px] flex-1 flex-col gap-5 pb-6">

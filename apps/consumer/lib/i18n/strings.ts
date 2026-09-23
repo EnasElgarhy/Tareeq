@@ -661,6 +661,21 @@ export const STRINGS = {
     ar: "الإشارات التي تُكوّن بوصلتك — الأقوى أولاً.",
   },
 
+  // ---- Compass tab (components/home/CompassScreen.tsx + CompassReportView.tsx) ----
+  "home.compass.title": { en: "Your Career Compass", ar: "بوصلة مسارك المهني" },
+  "home.compass.subtitle": {
+    en: "Everything your answers revealed.",
+    ar: "كل ما كشفت عنه إجاباتك.",
+  },
+  "home.compass.empty_title": {
+    en: "Your profile starts with your Compass",
+    ar: "ملفك يبدأ من بوصلتك",
+  },
+  "home.compass.empty_description": {
+    en: "Take the CORE Compass to create your profile, or sign in to restore one you've already completed.",
+    ar: "أكمل التقييم لإنشاء ملفك، أو سجّل الدخول لاستعادة تقييم أكملته من قبل.",
+  },
+
   // ---- Explore tab ----
   "home.explore.empty_title": {
     en: "Your map lives here",
@@ -978,6 +993,7 @@ export const STRINGS = {
   "home.progress.next": { en: "Next: {module}", ar: "التالي: {module}" },
 
   "home.tab.overview": { en: "Overview", ar: "نظرة عامة" },
+  "home.tab.compass": { en: "Compass", ar: "البوصلة" },
   "home.tab.kai": { en: "Kai", ar: "كاي" },
   "home.tab.nav_label": { en: "Primary", ar: "التنقل الرئيسي" },
 
@@ -994,6 +1010,9 @@ export const STRINGS = {
 
   "home.tile.career_path": { en: "Career path", ar: "مسار مهني" },
   "home.tile.day_in_life": { en: "Day in the life", ar: "يوم في الحياة" },
+
+  "home.carousel.next": { en: "Next", ar: "التالي" },
+  "home.carousel.previous": { en: "Previous", ar: "السابق" },
 
   // ---- Kai chat starter prompts (lib/kai/starter-prompts.ts) ----
   "kai.starters.explore_cluster": {
@@ -1051,6 +1070,28 @@ export const STRINGS = {
     en: "Career Pulse",
     ar: "نبض المسار المهني",
   },
+  // Taglines + durations are separate keys so the module data can keep English
+  // source values (lib/profile/journey.ts) and still render in either language.
+  "journey.module.core_compass.tagline": {
+    en: "Your career direction in 40 questions.",
+    ar: "اتجاهك المهني في 40 سؤالاً.",
+  },
+  "journey.module.core_compass.duration": { en: "12 min", ar: "12 دقيقة" },
+  "journey.module.deep_dive.tagline": {
+    en: "A 1-on-1 conversation with Kai, voiced.",
+    ar: "محادثة فردية مع كاي، بالصوت.",
+  },
+  "journey.module.deep_dive.duration": { en: "~25 min", ar: "~25 دقيقة" },
+  "journey.module.skills_audit.tagline": {
+    en: "What you already have, what you're missing.",
+    ar: "ما تملكه بالفعل وما ينقصك.",
+  },
+  "journey.module.skills_audit.duration": { en: "~15 min", ar: "~15 دقيقة" },
+  "journey.module.career_pulse.tagline": {
+    en: "A monthly check-in on where you're heading.",
+    ar: "متابعة شهرية لما تتجه إليه.",
+  },
+  "journey.module.career_pulse.duration": { en: "5 min", ar: "5 دقائق" },
 
   // ---- Email OTP sign-in (components/auth/OtpSignIn.tsx) ----
   "auth.otp.invalid_email": {
@@ -1199,8 +1240,8 @@ export const STRINGS = {
   // ---- Kai plans screens (app/(app)/kai/plans/*) ----
   "kai.plans.title": { en: "Your plans", ar: "خططك" },
   "kai.plans.subtitle": {
-    en: "Saved action plans from your conversations with Kai.",
-    ar: "خطط العمل المحفوظة من محادثاتك مع كاي.",
+    en: "Personalized day-by-day plans to help you reach your goals.",
+    ar: "خطط يومية مخصصة لمساعدتك على تحقيق أهدافك.",
   },
   "kai.plans.empty_title": { en: "No plans yet", ar: "لا توجد خطط بعد" },
   "kai.plans.empty_description": {
@@ -1665,32 +1706,32 @@ export const STRINGS = {
 
   // ---- Analyzing screen (components/assessment/AnalyzingScreen.tsx) ----
   "analyzing.step1.title": {
-    en: "Reviewing every answer",
-    ar: "مراجعة كل إجابة",
+    en: "Analyzing your responses",
+    ar: "تحليل إجاباتك",
   },
   "analyzing.step1.detail": {
     en: "Reading across the choices you made throughout the assessment.",
     ar: "نقرأ الاختيارات التي اتخذتها خلال التقييم.",
   },
   "analyzing.step2.title": {
-    en: "Looking for repeated patterns",
-    ar: "البحث عن الأنماط المتكررة",
+    en: "Identifying your strongest patterns",
+    ar: "تحديد أقوى أنماطك",
   },
   "analyzing.step2.detail": {
     en: "Comparing what draws you in with how you prefer to work.",
     ar: "نقارن ما يجذب اهتمامك بالطريقة التي تفضّل العمل بها.",
   },
   "analyzing.step3.title": {
-    en: "Connecting the signals",
-    ar: "ربط الإشارات ببعضها",
+    en: "Matching suitable career directions",
+    ar: "مطابقة الاتجاهات المهنية المناسبة",
   },
   "analyzing.step3.detail": {
     en: "Thinking through how your interests, motivations, and environment fit together.",
     ar: "نفكّر في كيفية تكامل اهتماماتك ودوافعك والبيئة المناسبة لك.",
   },
   "analyzing.step4.title": {
-    en: "Building your personal report",
-    ar: "بناء تقريرك الشخصي",
+    en: "Preparing your personal roadmap",
+    ar: "إعداد خريطة طريقك الشخصية",
   },
   "analyzing.step4.detail": {
     en: "Turning those connections into clear, practical guidance.",
@@ -1706,16 +1747,16 @@ export const STRINGS = {
     ar: "نعمل على تقريرك",
   },
   "analyzing.headline_working": {
-    en: "We’re analyzing your answers.",
-    ar: "نحلّل إجاباتك الآن.",
+    en: "Your Tareeq profile is being prepared",
+    ar: "يجري إعداد ملفك الشخصي في طريق",
   },
   "analyzing.headline_ready": {
     en: "Your report is ready.",
     ar: "تقريرك أصبح جاهزاً.",
   },
   "analyzing.subtitle": {
-    en: "We’re reading, comparing, and thinking through your responses before building your report.",
-    ar: "نقرأ إجاباتك ونقارن بينها ونفكّر في دلالاتها قبل بناء تقريرك.",
+    en: "Kai is connecting your answers to identify how you think, work, and make decisions.",
+    ar: "تربط كاي بين إجاباتك لفهم طريقة تفكيرك وعملك واتخاذك للقرارات.",
   },
   "analyzing.subtitle_ready": {
     en: "We’ve finished connecting the patterns across your responses.",
@@ -1766,6 +1807,483 @@ export const STRINGS = {
   "share_card.modal.error_status": {
     en: "Couldn't share right now. Try again.",
     ar: "تعذّرت المشاركة الآن. حاول مرة أخرى.",
+  },
+
+  // ---- Report preview and payment wall ----
+  "paywall.preview.label": { en: "Your Tareeq report", ar: "تقريرك من طريق" },
+  "paywall.preview.ready": {
+    en: "Your profile is ready",
+    ar: "ملفك الشخصي جاهز",
+  },
+  "paywall.preview.illustration_alt": {
+    en: "Kai reveals your personal compass across an unfolding map.",
+    ar: "كاي تكشف بوصلتك الشخصية على خريطة ممتدة.",
+  },
+  "paywall.preview.reveal_label": {
+    en: "Your compass points to",
+    ar: "تشير بوصلتك إلى",
+  },
+  "paywall.preview.traits": { en: "Your key traits", ar: "سماتك الأساسية" },
+  "paywall.preview.direction_label": {
+    en: "Your strongest direction",
+    ar: "اتجاهك الأقوى",
+  },
+  "paywall.locked.title": { en: "Your complete report", ar: "تقريرك الكامل" },
+  "paywall.locked.subtitle": {
+    en: "We've already built these sections from your answers.",
+    ar: "بنينا هذه الأقسام بالفعل من إجاباتك.",
+  },
+  "paywall.locked.accessible": {
+    en: "Report sections requiring payment",
+    ar: "أقسام التقرير التي تتطلب الدفع",
+  },
+  "paywall.locked.map_label": {
+    en: "Inside your report",
+    ar: "داخل تقريرك",
+  },
+  "paywall.locked.personality": {
+    en: "How your strengths work together",
+    ar: "كيف تعمل نقاط قوتك معاً",
+  },
+  "paywall.locked.decisions": {
+    en: "How you make decisions",
+    ar: "كيف تتخذ قراراتك",
+  },
+  "paywall.locked.environments": {
+    en: "Your strongest work environments",
+    ar: "بيئات العمل الأنسب لك",
+  },
+  "paywall.locked.careers": {
+    en: "Top career matches",
+    ar: "أفضل المسارات المهنية المناسبة",
+  },
+  "paywall.locked.drainers": {
+    en: "Careers that may drain you",
+    ar: "مسارات قد تستنزف طاقتك",
+  },
+  "paywall.locked.growth": {
+    en: "Where to stretch next",
+    ar: "مجالات يمكنك أن تتطور فيها",
+  },
+  "paywall.locked.skills": {
+    en: "Skills worth building next",
+    ar: "مهارات تستحق أن تطورها الآن",
+  },
+  "paywall.locked.action_plan": {
+    en: "Your next-step plan",
+    ar: "خطة خطوتك التالية",
+  },
+  "paywall.locked.pdf": {
+    en: "Downloadable PDF report",
+    ar: "تقرير PDF قابل للتنزيل",
+  },
+  "paywall.product": { en: "Tareeq Complete Report", ar: "تقرير طريق الكامل" },
+  "paywall.title": {
+    en: "Turn your result into choices you can act on.",
+    ar: "حوّل نتيجتك إلى قرارات يمكنك تنفيذها.",
+  },
+  "paywall.description": {
+    en: "See why these paths fit you, where you may thrive, what could drain you, and what to try next.",
+    ar: "اكتشف لماذا تناسبك هذه المسارات، وأين يمكنك أن تتألق، وما قد يستنزف طاقتك، وما الذي يمكنك تجربته بعد ذلك.",
+  },
+  "paywall.benefit.analysis": {
+    en: "How your strengths work together",
+    ar: "كيف تعمل نقاط قوتك معاً",
+  },
+  "paywall.benefit.careers": {
+    en: "Career matches ranked by fit",
+    ar: "مسارات مهنية مرتبة حسب الملاءمة",
+  },
+  "paywall.benefit.environments": {
+    en: "Work and study settings that fit you",
+    ar: "بيئات عمل ودراسة تناسبك",
+  },
+  "paywall.benefit.advice": {
+    en: "Advice based on your response pattern",
+    ar: "نصائح مبنية على نمط إجاباتك",
+  },
+  "paywall.benefit.skills": {
+    en: "Skills worth building next",
+    ar: "مهارات تستحق أن تطورها الآن",
+  },
+  "paywall.benefit.action_plan": {
+    en: "A practical next-step plan",
+    ar: "خطة عملية لخطوتك التالية",
+  },
+  "paywall.benefit.pdf": {
+    en: "Downloadable report",
+    ar: "تقرير قابل للتنزيل",
+  },
+  "paywall.benefit.permanent": { en: "Permanent access", ar: "وصول دائم" },
+  "paywall.complete_report": { en: "Complete report", ar: "التقرير الكامل" },
+  "paywall.price": {
+    en: "One payment of {price}",
+    ar: "دفعة واحدة بقيمة {price}",
+  },
+  "paywall.one_time": { en: "One-time purchase", ar: "شراء لمرة واحدة" },
+  "paywall.cta": { en: "Unlock my full report", ar: "افتح تقريري الكامل" },
+  "paywall.cta.short": { en: "Unlock report", ar: "افتح التقرير" },
+  "paywall.cta.loading": {
+    en: "Opening secure checkout...",
+    ar: "جارٍ فتح الدفع الآمن...",
+  },
+  "paywall.reassurance": {
+    en: "One-time payment · No subscription · Secure checkout",
+    ar: "دفعة واحدة · بلا اشتراك · دفع آمن",
+  },
+  "paywall.saved": {
+    en: "We save your report automatically",
+    ar: "نحفظ تقريرك تلقائياً",
+  },
+  "paywall.success": {
+    en: "Your complete report is unlocked",
+    ar: "تم فتح تقريرك الكامل",
+  },
+  "paywall.success.description": {
+    en: "Your career matches, best-fit environments, and next steps are ready.",
+    ar: "مساراتك المهنية وبيئات العمل المناسبة لك وخطواتك التالية جاهزة.",
+  },
+  "paywall.success.dismiss_aria": { en: "Dismiss", ar: "إغلاق" },
+  // ---- Payments & Invoices ----
+  "payments.title": { en: "Payments & invoices", ar: "المدفوعات والفواتير" },
+  "payments.subtitle": {
+    en: "View your Tareeq purchases and access your Stripe invoices and receipts.",
+    ar: "استعرض مشترياتك في Tareeq واطّلع على فواتير وإيصالات Stripe.",
+  },
+  "payments.section_label": { en: "Purchase history", ar: "سجل المشتريات" },
+  "payments.product.report": {
+    en: "Career Discovery Report",
+    ar: "تقرير اكتشاف المسار المهني",
+  },
+  "payments.type.premium_unlock": { en: "Premium unlock", ar: "فتح مميز" },
+  "payments.status.paid": { en: "Paid", ar: "مدفوع" },
+  "payments.status.refunded": { en: "Refunded", ar: "مسترد" },
+  "payments.view_invoice": { en: "View invoice", ar: "عرض الفاتورة" },
+  "payments.view_invoice_aria": {
+    en: "View invoice for {product} in a new tab",
+    ar: "عرض فاتورة {product} في تبويب جديد",
+  },
+  "payments.empty_title": { en: "No payments yet", ar: "لا توجد مدفوعات بعد" },
+  "payments.empty_body": {
+    en: "Your Tareeq purchases and invoices will appear here once you make a payment.",
+    ar: "ستظهر هنا مشترياتك وفواتيرك في Tareeq بمجرد إتمام عملية دفع.",
+  },
+  "payments.error_title": {
+    en: "We couldn't load your payment history",
+    ar: "تعذّر تحميل سجل مدفوعاتك",
+  },
+  "payments.error_body": {
+    en: "Please try again in a moment.",
+    ar: "يرجى المحاولة مرة أخرى بعد قليل.",
+  },
+  "payments.retry": { en: "Try again", ar: "حاول مرة أخرى" },
+  "payments.signin_title": {
+    en: "Sign in to view your payments",
+    ar: "سجّل الدخول لعرض مدفوعاتك",
+  },
+  "payments.signin_body": {
+    en: "Your payment history is tied to your Tareeq account.",
+    ar: "يرتبط سجل مدفوعاتك بحسابك في Tareeq.",
+  },
+  "payments.status.free": { en: "Free access", ar: "وصول مجاني" },
+  // ---- Free-access invites ----
+  "invite.title": {
+    en: "Your report is unlocked",
+    ar: "تم فتح تقريرك",
+  },
+  "invite.subtitle": {
+    en: "Your Tareeq team gave you free access to your Career Discovery Report — no payment needed.",
+    ar: "منحك فريق Tareeq وصولاً مجانياً إلى تقرير اكتشاف مسارك المهني — دون الحاجة إلى الدفع.",
+  },
+  "invite.cta": { en: "View my report", ar: "عرض تقريري" },
+  "invite.signin_title": {
+    en: "Sign in to claim your free access",
+    ar: "سجّل الدخول للحصول على وصولك المجاني",
+  },
+  "invite.signin_body": {
+    en: "This link is tied to your Tareeq account. Sign in, then open the link again.",
+    ar: "هذا الرابط مرتبط بحسابك في Tareeq. سجّل الدخول ثم افتح الرابط مرة أخرى.",
+  },
+  "invite.signin_cta": { en: "Sign in", ar: "تسجيل الدخول" },
+  "invite.invalid_title": {
+    en: "This link doesn't work",
+    ar: "هذا الرابط لا يعمل",
+  },
+  "invite.invalid_body": {
+    en: "It may have expired, been revoked, or belong to a different account.",
+    ar: "ربما انتهت صلاحيته أو تم إلغاؤه أو كان مخصصاً لحساب آخر.",
+  },
+  "invite.expired_title": {
+    en: "This link has expired",
+    ar: "انتهت صلاحية هذا الرابط",
+  },
+  "invite.expired_body": {
+    en: "Ask your Tareeq team for a new link.",
+    ar: "اطلب رابطاً جديداً من فريق Tareeq.",
+  },
+  "invite.redeemed_title": {
+    en: "Your report is already unlocked",
+    ar: "تقريرك مفتوح مسبقاً",
+  },
+  "invite.redeemed_body": {
+    en: "This link was already used. Your report is waiting for you.",
+    ar: "تم استخدام هذا الرابط مسبقاً. تقريرك بانتظارك.",
+  },
+  "invite.notready_title": {
+    en: "Finish your assessment first",
+    ar: "أكمل التقييم أولاً",
+  },
+  "invite.notready_body": {
+    en: "Your free access is reserved — it unlocks as soon as you complete your assessment. This link stays valid, so come back after finishing.",
+    ar: "وصولك المجاني محفوظ — سيُفتح بمجرد إكمال التقييم. يبقى هذا الرابط صالحاً، فعد إليه بعد الانتهاء.",
+  },
+  "invite.notready_cta": { en: "Back to home", ar: "عودة إلى الرئيسية" },
+  "invite.pay_title": {
+    en: "Unlock your premium report",
+    ar: "افتح تقريرك المميز",
+  },
+  "invite.pay_body_report": {
+    en: "Your report is ready — continue to unlock it with payment, like any Tareeq student.",
+    ar: "تقريرك جاهز — تابع لفتحه بالدفع كأي طالب في Tareeq.",
+  },
+  "invite.pay_body_start": {
+    en: "Take the assessment first — you will unlock your premium report with payment when you finish, like any Tareeq student.",
+    ar: "أكمل التقييم أولاً — ستفتح تقريرك المميز بالدفع عند الانتهاء كأي طالب في Tareeq.",
+  },
+  "invite.pay_cta_report": {
+    en: "Continue to my report",
+    ar: "المتابعة إلى تقريري",
+  },
+  "invite.pay_cta_start": { en: "Start the assessment", ar: "ابدأ التقييم" },
+  "paywall.error": {
+    en: "We couldn't complete the payment. Your report is still saved.",
+    ar: "لم نتمكن من إتمام الدفع. لا يزال تقريرك محفوظاً.",
+  },
+  "paywall.error.sign_in": {
+    en: "Your session expired. Sign in again to finish your purchase.",
+    ar: "انتهت جلستك. سجّل الدخول مجدداً لإتمام عملية الشراء.",
+  },
+  "paywall.error.forbidden": {
+    en: "We couldn't match this report to your account. Refresh the page and try again.",
+    ar: "تعذّر ربط هذا التقرير بحسابك. حدّث الصفحة ثم حاول مرة أخرى.",
+  },
+  "paywall.error.unavailable": {
+    en: "We couldn't reach the payment service. Check your connection and try again.",
+    ar: "تعذّر الوصول إلى خدمة الدفع. تحقّق من اتصالك ثم حاول مرة أخرى.",
+  },
+  "paywall.error.pending": {
+    en: "Your payment went through. We're still confirming it — refresh this page in a moment.",
+    ar: "تمت عملية الدفع بنجاح. ما زلنا نؤكدها — حدّث الصفحة بعد قليل.",
+  },
+  "paywall.checkout.label": { en: "Secure checkout", ar: "دفع آمن" },
+  "paywall.checkout.title": {
+    en: "Unlock your complete report",
+    ar: "افتح تقريرك الكامل",
+  },
+  "paywall.checkout.description": {
+    en: "One payment unlocks your complete report for good — no subscription.",
+    ar: "دفعة واحدة تفتح تقريرك الكامل إلى الأبد — بدون اشتراك.",
+  },
+  "paywall.checkout.preparing": {
+    en: "Preparing secure checkout…",
+    ar: "جارٍ تجهيز الدفع الآمن…",
+  },
+  "paywall.checkout.confirming": {
+    en: "Confirming your payment…",
+    ar: "جارٍ تأكيد عملية الدفع…",
+  },
+  "paywall.checkout.confirming_note": {
+    en: "Keep this window open. We're checking with our servers, which takes a moment.",
+    ar: "أبقِ هذه النافذة مفتوحة. نتحقق من خوادمنا، وسيستغرق ذلك لحظات.",
+  },
+  "paywall.checkout.unavailable": {
+    en: "Payments aren't available right now. Please try again in a moment.",
+    ar: "الدفع غير متاح حالياً. يرجى المحاولة بعد قليل.",
+  },
+  "paywall.checkout.retry": { en: "Try again", ar: "حاول مرة أخرى" },
+  "paywall.checkout.security": {
+    en: "Your answers are never sent to the payment provider",
+    ar: "لا يتم إرسال إجاباتك إلى مزود الدفع",
+  },
+  "paywall.checkout.close": { en: "Close checkout", ar: "إغلاق الدفع" },
+  "paywall.checkout.terms": { en: "Terms", ar: "الشروط" },
+  "paywall.checkout.privacy": { en: "Privacy", ar: "الخصوصية" },
+
+  // ---- Locked Compass story (components/results/report-access/story/*).
+  // English copy is the Figma frame text (file 7xRXQDTxrVi52vz4Ag7bar, node
+  // 3:661); the stop titles reuse the wording already used for the same
+  // sections elsewhere in the report. ----
+  "paywall.v2.eyebrow": { en: "Your Career Compass", ar: "بوصلة مسارك المهني" },
+  "paywall.v2.headline": {
+    en: "Your direction is becoming clear.",
+    ar: "اتجاهك بدأ يتّضح.",
+  },
+  "paywall.v2.sub": {
+    en: "Your answers point toward a few strong ways of working and learning.",
+    ar: "إجاباتك تشير إلى طرق قوية للعمل والتعلّم.",
+  },
+  "paywall.chapter1.eyebrow": {
+    en: "Chapter 01 · Included",
+    ar: "الفصل 01 · مضمّن",
+  },
+  "paywall.routes.eyebrow": { en: "Possible Routes", ar: "مسارات محتملة" },
+  "paywall.routes.title": {
+    en: "Your compass points toward several paths.",
+    ar: "بوصلتك تشير إلى عدة مسارات.",
+  },
+  "paywall.routes.route_label": { en: "Route {n}", ar: "المسار {n}" },
+  "paywall.routes.signal": { en: "{percent}% signal", ar: "إشارة {percent}%" },
+  "paywall.routes.r1.title": { en: "The Builder", ar: "الصانع" },
+  "paywall.routes.r1.tags": {
+    en: "Product · Engineering · Architecture · Entrepreneurship",
+    ar: "منتج · هندسة · عمارة · ريادة",
+  },
+  "paywall.routes.r2.title": { en: "The Explorer", ar: "المستكشف" },
+  "paywall.routes.r2.tags": {
+    en: "Research · Strategy · Science · Consulting",
+    ar: "بحث · استراتيجية · علوم · استشارات",
+  },
+  "paywall.routes.r3.title": { en: "The Connector", ar: "الموصِّل" },
+  "paywall.routes.r3.tags": {
+    en: "Marketing · Community · Partnerships · Education",
+    ar: "تسويق · مجتمع · شراكات · تعليم",
+  },
+  "paywall.explore.eyebrow": {
+    en: "There's More to Explore",
+    ar: "هناك المزيد لتستكشفه",
+  },
+  "paywall.explore.title": {
+    en: "Where each route could lead.",
+    ar: "إلى أين قد يقودك كل مسار.",
+  },
+  "paywall.explore.sub": {
+    en: "Your compass gives you the direction. The full report shows you the destinations.",
+    ar: "بوصلتك تمنحك الاتجاه، التقرير الكامل يريك الوجهات.",
+  },
+  "paywall.explore.locked": { en: "Locked", ar: "مقفل" },
+  "paywall.explore.stop1": {
+    en: "Career Matches",
+    ar: "مسارات مهنية مطابقة",
+  },
+  "paywall.explore.stop2": {
+    en: "University Majors",
+    ar: "التخصصات الجامعية",
+  },
+  "paywall.explore.stop3": {
+    en: "High-School Subjects",
+    ar: "مواد الثانوية",
+  },
+  "paywall.explore.stop4": {
+    en: "Why These Careers Fit",
+    ar: "لماذا تناسبك هذه المسارات المهنية",
+  },
+  "paywall.explore.stop5": {
+    en: "Study → Career Path",
+    ar: "من الدراسة إلى المسار المهني",
+  },
+  "paywall.explore.stop6": {
+    en: "Less Obvious Paths",
+    ar: "مسارات أقل وضوحاً",
+  },
+  "paywall.explore.stop7": { en: "Reality Check", ar: "فحص الواقع" },
+  "paywall.explore.stop8": { en: "Your Work Style", ar: "أسلوب عملك" },
+  "paywall.explore.stop9": { en: "Next Steps", ar: "الخطوات القادمة" },
+  "paywall.v2.title_before": {
+    en: "Your map is only ",
+    ar: "لم يُستكشف من خريطتك سوى ",
+  },
+  "paywall.v2.title_emphasis": { en: "partially explored.", ar: "جزء بسيط." },
+  "paywall.v2.body": {
+    en: "Unlock your complete career compass and see where your strongest signals can take you.",
+    ar: "افتح بوصلة مسارك الكاملة واكتشف إلى أين قد تأخذك أقوى إشاراتك.",
+  },
+  "paywall.v2.check1": {
+    en: "Personalized career matches",
+    ar: "مسارات مهنية مخصصة",
+  },
+  "paywall.v2.check2": {
+    en: "University & study routes",
+    ar: "مسارات جامعية ودراسية",
+  },
+  "paywall.v2.check3": {
+    en: "Subjects worth exploring",
+    ar: "مواد تستحق الاستكشاف",
+  },
+  "paywall.v2.check4": {
+    en: "Alternative career paths",
+    ar: "مسارات مهنية بديلة",
+  },
+  "paywall.v2.check5": {
+    en: "Personalized next steps",
+    ar: "خطوات قادمة مخصصة",
+  },
+  "paywall.v2.parent_summary": {
+    en: "Parent summary included",
+    ar: "يشمل ملخصاً لولي الأمر",
+  },
+  "paywall.v2.cta": { en: "Unlock My Full Compass", ar: "افتح بوصلتي الكاملة" },
+  "paywall.v2.secure": {
+    en: "One-time purchase · Secure checkout",
+    ar: "دفعة واحدة · دفع آمن",
+  },
+  "paywall.offer.percent_off": { en: "{percent}% off", ar: "خصم {percent}%" },
+  "paywall.offer.full_price": {
+    en: "Full price {price}",
+    ar: "السعر الكامل {price}",
+  },
+  "paywall.reveal.compass_alt": {
+    en: "{cluster} compass",
+    ar: "بوصلة {cluster}",
+  },
+
+  // ---- Paid feature locks (components/access/PaidFeatureLock.tsx). Shown on
+  // the paid surfaces outside the Compass tab: Kai, Explore and Plans. The
+  // "what's included" lists reuse the section/capability names already used
+  // elsewhere rather than restating them. ----
+  "access.lock.includes": { en: "In your full report", ar: "في تقريرك الكامل" },
+  "access.lock.note": {
+    en: "Already bought it? Sign in with the account you paid from and it unlocks by itself.",
+    ar: "دفعت من قبل؟ سجّل الدخول بالحساب الذي دفعت منه وسيُفتح تلقائياً.",
+  },
+  "access.lock.checking": {
+    en: "Checking your access…",
+    ar: "نتحقق من وصولك…",
+  },
+  "access.kai.title": {
+    en: "Kai is part of your full report",
+    ar: "كاي جزء من تقريرك الكامل",
+  },
+  "access.kai.sub": {
+    en: "Unlock your full report to start chatting with Kai — get personalized guidance, action plans, and deep career insights.",
+    ar: "افتح تقريرك الكامل لبدء المحادثة مع كاي — احصل على إرشاد مخصص وخطط عملية ورؤى مهنية عميقة.",
+  },
+  "access.explore.title": {
+    en: "The full map is inside your report",
+    ar: "الخريطة الكاملة داخل تقريرك",
+  },
+  "access.explore.sub": {
+    en: "Everything your compass points at, written out — not just the headline direction.",
+    ar: "كل ما تشير إليه بوصلتك مكتوباً بالتفصيل، لا الاتجاه العام وحده.",
+  },
+  "access.plans.title": {
+    en: "Plans are built from your full report",
+    ar: "الخطط تُبنى من تقريرك الكامل",
+  },
+  "access.plans.sub": {
+    en: "Unlock your full report to get personalized day-by-day plans you can follow and tick off.",
+    ar: "افتح تقريرك الكامل للحصول على خطط يومية مخصصة يمكنك اتباعها وإنجازها.",
+  },
+  "access.overview.title": {
+    en: "Your full career picture is locked",
+    ar: "صورتك المهنية الكاملة مقفلة",
+  },
+  "access.overview.sub": {
+    en: "Unlock your complete report to see career matches, personality insights, and decision patterns — everything your compass reveals.",
+    ar: "افتح تقريرك الكامل لرؤية المسارات المهنية ورؤى الشخصية وأنماط القرارات — كل ما تكشفه بوصلتك.",
+  },
+  "access.lock.badge": {
+    en: "Locked",
+    ar: "مقفل",
   },
 } as const satisfies Record<string, Entry>;
 

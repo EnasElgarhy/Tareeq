@@ -4,6 +4,7 @@ const PRIVATE_REPLAY_ROUTES = [
   "/register",
   "/signin",
   "/results",
+  "/compass",
   "/share/",
   "/home",
   "/explore",

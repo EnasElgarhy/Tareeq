@@ -44,6 +44,11 @@ import {
 } from "@/lib/kai/gemini-stream";
 import { buildMemoryCandidates } from "@/lib/kai/memory/memory-builder";
 import { detectDegenerateOutput } from "@/lib/kai/repetition";
+import {
+  hasPaidReportAccess,
+  paidAccessError,
+} from "@/app/api/payments/_lib/entitlements";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
@@ -295,6 +300,12 @@ export async function POST(request: Request) {
   } = await supabase.auth.getUser();
   if (!user)
     return Response.json({ error: "Not authenticated." }, { status: 401 });
+
+  // Kai is part of the paid report. Gating here (not only in the browser) is
+  // what makes it a real lock: every call spends AI credits.
+  const access = await hasPaidReportAccess(createSupabaseAdminClient(), user.id);
+  const denied = paidAccessError(access);
+  if (denied) return denied;
 
   let repositoryAvailable = false;
   try {

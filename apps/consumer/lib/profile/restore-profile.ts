@@ -103,6 +103,7 @@ export function restoreProfileFromAssessment({
     email: resolvedEmail,
     verifiedAt: completedAt,
     consent: savedRegistration?.consent ?? createEmptyResultConsent(),
+    assessmentId: assessment.id,
   });
   writeGeneratedReport({
     ...buildFallbackReport({

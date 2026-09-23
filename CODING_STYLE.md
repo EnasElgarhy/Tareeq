@@ -175,6 +175,17 @@ Prettier is authoritative for mechanical formatting:
   compact interfaces.
 - Use the icon library already used by the owning app. Do not add a dependency or
   draw a replacement SVG for an icon that already exists.
+- Every new user-facing feature that introduces a product concept must have a
+  feature-specific Tareeq visual artifact: a narrative illustration, scene,
+  bespoke data glyph, or coherent icon family. A generic card grid with stock
+  icons is not a finished feature design.
+- Product visuals must explain the concept, state, or journey. They are not
+  filler decoration. Reuse existing brand primitives first, then extend the
+  illustrated language in `components/brand` or `public/illustrations` when the
+  concept is genuinely new.
+- Keep conventional controls conventional. Use the established icon library for
+  actions such as close, back, download, lock, and payment; reserve bespoke
+  visuals for the product's meaning and story.
 - Use semantic HTML first. Interactive elements must be keyboard reachable, have
   visible focus, and expose an accessible name.
 - Keep layout dimensions stable so loading states, translated text, icons, and

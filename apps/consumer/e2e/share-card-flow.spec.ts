@@ -4,18 +4,25 @@ import {
   localeStorageKey,
   makeReport,
   makeResultRegistration,
+  makeUnlockedAccess,
+  reportAccessStoragePrefix,
   resultRegistrationStorageKey,
 } from "./fixtures/report";
 
 /**
  * Critical-flow test for the shareable Compass Card: seeds the same
  * localStorage contract lib/results/storage.ts reads (no auth/DB needed —
- * /results is a pure client read of these two keys), then drives the real
- * ResultsScreen -> ShareCardModal -> CompassCard flow. /api/assessments/share
+ * the Compass tab is a pure client read of these keys, plus the unlocked
+ * access record that opens the complete report), then drives the real
+ * CompassReportView -> ShareCardModal -> CompassCard flow. /api/assessments/share
  * is mocked so the run never writes to the real backend; the PNG-export
  * endpoint (/api/results/share-card) is hit for real — it's a stateless
  * render.
  */
+
+const report = makeReport();
+const reportIdOf = (r: { generatedAt: string }) =>
+  `core-${r.generatedAt.replace(/[^a-zA-Z0-9]/g, "")}`;
 
 test.beforeEach(async ({ page }) => {
   await page.route("**/api/assessments/share", async (route) => {
@@ -28,13 +35,21 @@ test.beforeEach(async ({ page }) => {
 
   // Seed localStorage on the app's origin before the SPA's mount effect
   // reads it — a bare navigation establishes the origin without tripping
-  // the /register or /analyzing redirects ResultsScreen issues when either
-  // key is absent.
+  // the redirects the app issues when a key is absent.
   await page.goto("/");
   await page.evaluate(
-    ({ regKey, reportKey, localeKey, registration, report }) => {
+    ({
+      regKey,
+      reportKey,
+      localeKey,
+      accessKey,
+      registration,
+      report,
+      access,
+    }) => {
       window.localStorage.setItem(regKey, JSON.stringify(registration));
       window.localStorage.setItem(reportKey, JSON.stringify(report));
+      window.localStorage.setItem(accessKey, JSON.stringify(access));
       // Skip the (assessment)/(app) layouts' LanguageGate — it otherwise
       // intercepts every route behind those layouts (including /results)
       // until a language is explicitly chosen.
@@ -44,14 +59,18 @@ test.beforeEach(async ({ page }) => {
       regKey: resultRegistrationStorageKey,
       reportKey: generatedReportStorageKey,
       localeKey: localeStorageKey,
+      accessKey: reportAccessStoragePrefix + reportIdOf(report),
       registration: makeResultRegistration(),
-      report: makeReport(),
+      report,
+      access: makeUnlockedAccess(report.generatedAt),
     },
   );
 });
 
-test("opens the Compass Card share modal from the results screen", async ({ page }) => {
-  await page.goto("/results");
+test("opens the Compass Card share modal from the results screen", async ({
+  page,
+}) => {
+  await page.goto("/compass");
 
   await page.getByRole("button", { name: "Share result" }).click();
 
@@ -66,7 +85,7 @@ test("shares the card via the download fallback (no Web Share support in headles
   context,
 }) => {
   await context.grantPermissions(["clipboard-write"]);
-  await page.goto("/results");
+  await page.goto("/compass");
   await page.getByRole("button", { name: "Share result" }).click();
 
   const dialog = page.getByRole("dialog");
@@ -82,9 +101,11 @@ test("shares the card via the download fallback (no Web Share support in headles
   await expect(dialog.getByText("Image saved and link copied.")).toBeVisible();
 });
 
-test("the modal fits inside a 375px-wide viewport without horizontal overflow", async ({ page }) => {
+test("the modal fits inside a 375px-wide viewport without horizontal overflow", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 375, height: 812 });
-  await page.goto("/results");
+  await page.goto("/compass");
   await page.getByRole("button", { name: "Share result" }).click();
 
   const dialog = page.getByRole("dialog");
@@ -95,9 +116,11 @@ test("the modal fits inside a 375px-wide viewport without horizontal overflow", 
   expect(box!.x + box!.width).toBeLessThanOrEqual(375);
 });
 
-test("Compass Card visual regression (reduced motion — end state)", async ({ page }) => {
+test("Compass Card visual regression (reduced motion — end state)", async ({
+  page,
+}) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/results");
+  await page.goto("/compass");
   await page.getByRole("button", { name: "Share result" }).click();
 
   const card = page.locator(".compass-card");
@@ -105,7 +128,9 @@ test("Compass Card visual regression (reduced motion — end state)", async ({ p
   await expect(card).toHaveScreenshot("compass-card-live-en.png");
 });
 
-test("Arabic Compass Card keeps connected glyphs in the live preview", async ({ page }) => {
+test("Arabic Compass Card keeps connected glyphs in the live preview", async ({
+  page,
+}) => {
   await page.goto("/");
   await page.evaluate(
     ({ regKey, localeKey }) => {
@@ -124,7 +149,7 @@ test("Arabic Compass Card keeps connected glyphs in the live preview", async ({ 
     },
   );
 
-  await page.goto("/results");
+  await page.goto("/compass");
   await page.getByRole("button", { name: "شارك النتيجة" }).click();
 
   const card = page.locator(".compass-card");

@@ -9,6 +9,7 @@ import { CareerCompassIcon } from "@/components/brand/DomainIcons";
 import { SettingsPanel } from "@/components/assessment/SettingsPanel";
 import { JourneyModuleCard } from "@/components/assessment/JourneyModuleCard";
 import { NoCompassEmptyState } from "@/components/home/NoCompassEmptyState";
+import { PaymentsSection } from "@/components/home/PaymentsScreen";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { signOut } from "@/lib/auth/otp";
 import { useKaiProfile } from "@/lib/kai/useKaiProfile";
@@ -84,6 +85,8 @@ export function YouScreen() {
           description={t("home.you.empty_description")}
         />
       )}
+
+      <PaymentsSection />
 
       <div className="grid gap-2.5">
         <p className="daybreak-eyebrow ps-0.5">

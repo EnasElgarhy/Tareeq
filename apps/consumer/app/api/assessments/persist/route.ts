@@ -120,5 +120,5 @@ export async function POST(request: Request) {
     questionCount: Object.keys(body.answers).length,
   });
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, assessmentId: inserted.id });
 }

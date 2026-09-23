@@ -44,10 +44,10 @@ export function CollectionTile({
         boxShadow: `inset 0 4px 0 ${color}, 0 16px 38px rgba(8,5,26,0.16)`,
       }}
     >
-      {/* Scene motif — bleeds off bottom-right */}
+      {/* Scene motif — bleeds off the inline-end corner */}
       <span
         aria-hidden
-        className="pointer-events-none absolute -bottom-5 -right-5 opacity-80"
+        className="pointer-events-none absolute -bottom-5 -end-5 opacity-80"
       >
         <Scene size={132} tone="cream" />
       </span>

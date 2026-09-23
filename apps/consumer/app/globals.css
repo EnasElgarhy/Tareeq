@@ -2400,8 +2400,12 @@ button {
  * ink color by default instead of the global brand-violet link color, so
  * card and structural links never leak violet (e.g. the hero eyebrow).
  * Components opt into a specific link color explicitly where they need one. */
-.surface-day a,
-.surface-day a:hover {
+/* Zero-specificity scope (`:where`) so a link that sets its own colour —
+ * a utility class or an action class — always wins over this default;
+ * with a plain `.surface-day a` the default outranked them and links
+ * dressed as buttons rendered ink-on-purple. */
+:where(.surface-day) a,
+:where(.surface-day) a:hover {
   color: inherit;
 }
 

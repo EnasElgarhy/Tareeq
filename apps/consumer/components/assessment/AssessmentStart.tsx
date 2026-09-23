@@ -188,7 +188,7 @@ export function AssessmentStart({
   function continueCompleted() {
     uiSounds.advance();
     if (readGeneratedReport()) {
-      router.push("/results");
+      router.push("/compass");
       return;
     }
     if (readResultRegistration()) {

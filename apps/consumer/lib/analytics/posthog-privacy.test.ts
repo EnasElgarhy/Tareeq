@@ -11,6 +11,7 @@ describe("PostHog replay privacy", () => {
     "/kai",
     "/kai/thread/abc",
     "/results",
+    "/compass",
     "/share/example",
     "/home",
     "/signin",
