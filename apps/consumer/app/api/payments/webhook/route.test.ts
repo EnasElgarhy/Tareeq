@@ -30,10 +30,13 @@ interface EntitlementRow {
   user_id: string;
   assessment_id: string;
   status: "active" | "revoked";
-  stripe_session_id: string;
+  source: string;
+  stripe_session_id: string | null;
   stripe_payment_intent_id: string | null;
   amount_minor: number | null;
   currency: string | null;
+  granted_by: string | null;
+  granted_invite_id: string | null;
   created_at: string;
   revoked_at: string | null;
 }
@@ -48,6 +51,7 @@ class EntitlementDatabase {
       upsert: (purchase: Record<string, unknown>) => ({
         select: async () => this.upsert(purchase),
       }),
+      select: () => this.createSelectQuery(),
       update: (values: Record<string, unknown>) =>
         this.createUpdateQuery(values),
     };
@@ -62,10 +66,13 @@ class EntitlementDatabase {
       user_id: USER_ID,
       assessment_id: ASSESSMENT_ID,
       status: "active",
+      source: "stripe",
       stripe_session_id: "cs_existing",
       stripe_payment_intent_id: PAYMENT_INTENT_ID,
       amount_minor: 999,
       currency: "usd",
+      granted_by: null,
+      granted_invite_id: null,
       created_at: "2026-09-01T09:00:00.000Z",
       revoked_at: null,
       ...overrides,
@@ -114,6 +121,27 @@ class EntitlementDatabase {
     });
     this.writeCount += 1;
     return { data: [{ id: row.id }], error: null };
+  }
+
+  private createSelectQuery() {
+    const filters = new Map<string, unknown>();
+    const query = {
+      eq: (column: string, value: unknown) => {
+        filters.set(column, value);
+        return query;
+      },
+      maybeSingle: async () => {
+        const found =
+          this.rows.find((row) =>
+            [...filters].every(
+              ([column, value]) =>
+                (row as unknown as Record<string, unknown>)[column] === value,
+            ),
+          ) ?? null;
+        return { data: found, error: null };
+      },
+    };
+    return query;
   }
 
   private createUpdateQuery(values: Record<string, unknown>) {
@@ -227,7 +255,7 @@ describe("POST /api/payments/webhook", () => {
     expect(database.writeCount).toBe(1);
   });
 
-  it("treats a user-assessment conflict on an active row as a no-op", async () => {
+  it("never overwrites a different active paid transaction", async () => {
     const row = database.seed();
     const before = { ...row };
 
@@ -236,10 +264,74 @@ describe("POST /api/payments/webhook", () => {
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual({
       received: true,
-      outcome: "already_active",
+      outcome: "conflicting_paid_transaction",
     });
     expect(database.rows).toEqual([before]);
     expect(database.writeCount).toBe(0);
+  });
+
+  it("upgrades an active admin grant to paid while preserving grant audit", async () => {
+    database.seed({
+      status: "active",
+      source: "admin_grant",
+      stripe_session_id: null,
+      stripe_payment_intent_id: null,
+      amount_minor: null,
+      currency: null,
+      granted_by: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      granted_invite_id: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+    });
+
+    const response = await deliver(
+      checkoutCompletedEvent("cs_paid_after_grant"),
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      received: true,
+      outcome: "upgraded_to_paid",
+    });
+    expect(database.rows).toHaveLength(1);
+    expect(database.rows[0]).toMatchObject({
+      status: "active",
+      source: "stripe",
+      stripe_session_id: "cs_paid_after_grant",
+      stripe_payment_intent_id: PAYMENT_INTENT_ID,
+      amount_minor: 999,
+      currency: "usd",
+      granted_by: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      granted_invite_id: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+    });
+    expect(database.writeCount).toBe(1);
+  });
+
+  it("records source stripe when reactivating a revoked admin grant", async () => {
+    database.seed({
+      status: "revoked",
+      source: "admin_grant",
+      revoked_at: "2026-09-01T09:30:00.000Z",
+      stripe_session_id: null,
+      granted_invite_id: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+    });
+
+    const response = await deliver(
+      checkoutCompletedEvent("cs_repurchase_grant"),
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      received: true,
+      outcome: "reactivated",
+    });
+    expect(database.rows).toHaveLength(1);
+    expect(database.rows[0]).toMatchObject({
+      status: "active",
+      source: "stripe",
+      revoked_at: null,
+      stripe_session_id: "cs_repurchase_grant",
+      granted_invite_id: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+    });
+    expect(database.writeCount).toBe(1);
   });
 
   it("reactivates a revoked row after a new purchase conflicts on user-assessment", async () => {
@@ -258,6 +350,7 @@ describe("POST /api/payments/webhook", () => {
     expect(database.rows).toHaveLength(1);
     expect(database.rows[0]).toMatchObject({
       status: "active",
+      source: "stripe",
       revoked_at: null,
       stripe_session_id: "cs_repurchase",
       stripe_payment_intent_id: PAYMENT_INTENT_ID,

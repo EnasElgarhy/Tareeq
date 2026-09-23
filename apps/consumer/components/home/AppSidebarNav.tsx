@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { TareeqCompass } from "@/components/brand/icons";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { NAV_ITEMS, isNavItemActive } from "@/components/home/nav-items";
 
@@ -21,11 +20,26 @@ export function AppSidebarNav() {
       aria-label={t("home.tab.nav_label")}
       className="rounded-story hidden h-fit shrink-0 flex-col gap-1 bg-[#100A24] p-3 text-[#F5EEE6] shadow-[0_22px_48px_rgba(8,5,26,0.18)] lg:sticky lg:top-0 lg:flex lg:w-[224px]"
     >
-      <div className="mb-5 flex items-center gap-2.5 px-3 py-2 text-[#F5EEE6]">
-        <span className="grid size-8 place-items-center rounded-full bg-[#F4C660] text-[#100A24]">
-          <TareeqCompass size={19} />
-        </span>
-        <span className="font-heading text-[17px] font-bold">Tareeq</span>
+      <div className="mb-5 flex items-center px-3 py-2">
+        <Link href="/" aria-label="Tareeq home" className="inline-flex items-center gap-1.5">
+          <span
+            aria-hidden="true"
+            className="inline-block size-6 bg-aurora"
+            style={{
+              WebkitMaskImage: "url('/logo/tareeq-mark.svg')",
+              maskImage: "url('/logo/tareeq-mark.svg')",
+              WebkitMaskRepeat: "no-repeat",
+              maskRepeat: "no-repeat",
+              WebkitMaskPosition: "center",
+              maskPosition: "center",
+              WebkitMaskSize: "contain",
+              maskSize: "contain",
+            }}
+          />
+          <span className="text-[16px] font-bold leading-none tracking-[-0.025em] lowercase text-sand">
+            tareeq
+          </span>
+        </Link>
       </div>
 
       {NAV_ITEMS.map((item) => {

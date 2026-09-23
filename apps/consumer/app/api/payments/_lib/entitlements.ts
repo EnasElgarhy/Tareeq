@@ -79,3 +79,66 @@ export async function findActiveEntitlement(
     },
   };
 }
+
+/** Why a paid surface was refused, so callers never conflate the two. */
+export type PaidReportAccess =
+  | { paid: true; assessmentId: string }
+  | {
+      paid: false;
+      reason: "no_assessment" | "not_entitled" | "lookup_failed";
+      message?: string;
+    };
+
+/**
+ * Whether this user owns an active entitlement for their current report.
+ *
+ * Used by the paid surfaces outside the Compass tab (Kai chat and threads),
+ * which cannot be gated by the browser alone — they spend AI credits on every
+ * call. The assessment is resolved from the session's user, never from the
+ * request, so a caller cannot point the check at someone else's report.
+ */
+export async function hasPaidReportAccess(
+  admin: SupabaseClient,
+  userId: string,
+): Promise<PaidReportAccess> {
+  const { data, error } = await admin
+    .from("assessments")
+    .select("id")
+    .eq("user_id", userId)
+    // A row only counts once it is complete; `completed_at` is null while the
+    // visitor is still answering, and nulls sort first on a descending order.
+    .not("completed_at", "is", null)
+    .order("completed_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) return { paid: false, reason: "lookup_failed", message: error.message };
+  if (!data) return { paid: false, reason: "no_assessment" };
+
+  const assessmentId = String(data.id);
+  const lookup = await findActiveEntitlement(admin, userId, assessmentId);
+  if (!lookup.ok) {
+    return { paid: false, reason: "lookup_failed", message: lookup.message };
+  }
+
+  return lookup.entitlement
+    ? { paid: true, assessmentId }
+    : { paid: false, reason: "not_entitled" };
+}
+
+/**
+ * The one response every paid route returns when the check fails.
+ *
+ * `upgrade_required` (402) means the answer is "not paid" — a product state,
+ * so the client shows the lock rather than an error. `access_check_unavailable`
+ * (503) means we could not tell, and is deliberately distinct: answering 402
+ * on a database fault would tell a paying customer to buy something they
+ * already own.
+ */
+export function paidAccessError(access: PaidReportAccess): NextResponse | null {
+  if (access.paid) return null;
+  if (access.reason === "lookup_failed") {
+    return paymentError("access_check_unavailable", 503);
+  }
+  return paymentError("upgrade_required", 402);
+}

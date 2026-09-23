@@ -10,6 +10,12 @@ import { createPortal } from "react-dom";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import type { ReportOffer } from "@/lib/payments/report-access";
 import { getStripe, isStripeConfigured } from "@/lib/payments/stripe-client";
+import {
+  fill,
+  formatOfferListPrice,
+  formatOfferPrice,
+  hasOfferDiscount,
+} from "@/components/results/report-access/story/story-data";
 
 /**
  * Where the checkout sheet is in the payment flow.
@@ -46,10 +52,9 @@ export function CheckoutSheet({
   const closeRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLElement>(null);
   const [mounted, setMounted] = useState(false);
-  const price = new Intl.NumberFormat(locale === "ar" ? "ar" : "en", {
-    style: "currency",
-    currency: offer.currency,
-  }).format(offer.amountMinor / 100);
+  const price = formatOfferPrice(offer, locale);
+  const listPrice = formatOfferListPrice(offer, locale);
+  const showDiscount = hasOfferDiscount(offer);
 
   // Locked while the server is being asked whether the payment landed.
   const isBusy = stage === "confirming";
@@ -130,7 +135,10 @@ export function CheckoutSheet({
             <p className="text-[11px] font-semibold text-violet-soft">
               {t("paywall.checkout.label")}
             </p>
-            <h2 id="checkout-title" className="mt-1 text-[22px] font-bold leading-tight">
+            <h2
+              id="checkout-title"
+              className="mt-1 text-[22px] font-bold leading-tight"
+            >
               {t("paywall.checkout.title")}
             </h2>
           </div>
@@ -149,13 +157,38 @@ export function CheckoutSheet({
         <div className="overflow-y-auto px-5 py-5 sm:px-6">
           <div className="flex items-center justify-between gap-4 rounded-[14px] border border-sand/10 bg-sand/[0.045] p-4">
             <div>
-              <p className="text-[14px] font-bold text-sand">{t("paywall.product")}</p>
-              <p className="mt-1 text-[11px] text-sand/50">{t("paywall.one_time")}</p>
+              <p className="text-[14px] font-bold text-sand">
+                {t("paywall.product")}
+              </p>
+              <p className="mt-1 text-[11px] text-sand/50">
+                {t("paywall.one_time")}
+              </p>
             </div>
-            <p className="text-[20px] font-bold text-sand">{price}</p>
+            <div className="text-end">
+              <p className="text-[20px] font-bold text-sand">{price}</p>
+              {showDiscount ? (
+                <p className="mt-0.5 text-[11px] font-semibold text-sand/55">
+                  <s>
+                    <span className="sr-only">
+                      {fill(t("paywall.offer.full_price"), {
+                        price: listPrice,
+                      })}
+                    </span>
+                    <span aria-hidden="true">{listPrice}</span>
+                  </s>
+                  {" · "}
+                  {fill(t("paywall.offer.percent_off"), {
+                    percent: String(offer.discountPercent),
+                  })}
+                </p>
+              ) : null}
+            </div>
           </div>
 
-          <p id="checkout-description" className="mt-4 text-[13px] leading-6 text-sand/62">
+          <p
+            id="checkout-description"
+            className="mt-4 text-[13px] leading-6 text-sand/62"
+          >
             {t("paywall.checkout.description")}
           </p>
 
@@ -169,7 +202,10 @@ export function CheckoutSheet({
           </div>
 
           {error ? (
-            <p role="alert" className="mt-4 rounded-[12px] border border-error/25 bg-error/10 p-3 text-[12px] leading-5 text-sand/75">
+            <p
+              role="alert"
+              className="mt-4 rounded-[12px] border border-error/25 bg-error/10 p-3 text-[12px] leading-5 text-sand/75"
+            >
               {error}
             </p>
           ) : null}
@@ -182,9 +218,19 @@ export function CheckoutSheet({
 
         <footer className="border-t border-sand/10 bg-[#17102f] px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 sm:px-6">
           <p className="text-center text-[10px] leading-4 text-sand/38">
-            <a href="/terms" className="text-inherit underline underline-offset-2">{t("paywall.checkout.terms")}</a>
+            <a
+              href="/terms"
+              className="text-inherit underline underline-offset-2"
+            >
+              {t("paywall.checkout.terms")}
+            </a>
             {" · "}
-            <a href="/privacy" className="text-inherit underline underline-offset-2">{t("paywall.checkout.privacy")}</a>
+            <a
+              href="/privacy"
+              className="text-inherit underline underline-offset-2"
+            >
+              {t("paywall.checkout.privacy")}
+            </a>
           </p>
         </footer>
       </section>
@@ -213,7 +259,9 @@ function PaymentArea({
   const { t } = useLocale();
 
   if (!isStripeConfigured()) {
-    return <StatusPanel tone="error" title={t("paywall.checkout.unavailable")} />;
+    return (
+      <StatusPanel tone="error" title={t("paywall.checkout.unavailable")} />
+    );
   }
 
   if (stage === "confirming") {
@@ -318,7 +366,9 @@ function StatusPanel({
         <p className="text-[12px] font-bold">{title}</p>
       </div>
       {note ? (
-        <p className="max-w-[38ch] text-[11px] leading-5 text-sand/50">{note}</p>
+        <p className="max-w-[38ch] text-[11px] leading-5 text-sand/50">
+          {note}
+        </p>
       ) : null}
     </div>
   );

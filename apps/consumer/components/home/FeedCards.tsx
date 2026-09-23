@@ -138,7 +138,7 @@ function NextStepCardView({
     <article className="daybreak-story-card rounded-story relative overflow-hidden p-5">
       <span
         aria-hidden
-        className="absolute inset-y-4 left-0 w-1 rounded-r-full"
+        className="absolute inset-y-4 start-0 w-1 rounded-e-full"
         style={{ background: vivid }}
       />
       <span
@@ -285,7 +285,7 @@ function InsightCardView({ card }: { card: InsightCard }) {
     <article className="daybreak-story-card rounded-story-alt relative overflow-hidden p-5">
       <span
         aria-hidden
-        className="absolute inset-y-4 left-0 w-1 rounded-r-full"
+        className="absolute inset-y-4 start-0 w-1 rounded-e-full"
         style={{ background: ACCENT_VIVID.violet }}
       />
       <p className="daybreak-eyebrow">

@@ -26,7 +26,7 @@ export function CompassHero({
   const { t } = useLocale();
   return (
     <Link
-      href="/results"
+      href="/compass"
       aria-label={t("home.hero.view_report_aria")}
       className="rounded-story daybreak-reveal relative block min-h-[228px] overflow-hidden shadow-[0_24px_56px_rgba(8,5,26,0.2)] transition active:scale-[0.99] sm:min-h-[250px]"
       style={{
@@ -36,7 +36,7 @@ export function CompassHero({
     >
       <span
         aria-hidden
-        className="pointer-events-none absolute -right-4 -top-4 opacity-75 sm:right-4 sm:top-1"
+        className="pointer-events-none absolute -end-4 -top-4 opacity-75 sm:end-4 sm:top-1"
       >
         <CompassScene size={210} tone="cream" />
       </span>
@@ -44,8 +44,7 @@ export function CompassHero({
         aria-hidden
         className="pointer-events-none absolute inset-0"
         style={{
-          background:
-            `linear-gradient(120deg, ${clusterColor}22 0%, transparent 45%), linear-gradient(to top, rgba(8,5,26,0.72), transparent 72%)`,
+          background: `linear-gradient(120deg, ${clusterColor}22 0%, transparent 45%), linear-gradient(to top, rgba(8,5,26,0.72), transparent 72%)`,
         }}
       />
 
@@ -74,7 +73,7 @@ export function CompassHero({
           </span>
           <span className="col-span-2 inline-flex w-fit shrink-0 items-center gap-1 rounded-xl bg-[#F5EEE6] px-3 py-2 text-[12px] font-bold text-[#100A24]">
             {t("home.hero.view_report")}
-            <ArrowRight size={14} />
+            <ArrowRight size={14} className="flip-rtl" />
           </span>
         </div>
       </div>

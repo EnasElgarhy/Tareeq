@@ -17,7 +17,7 @@ STRIPE_WEBHOOK_SECRET=                            # filled by `stripe listen` in
 ```
 
 Price is **server-authoritative**: never accept an amount from the client.
-`NEXT_PUBLIC_REPORT_PRICE_MINOR` / `NEXT_PUBLIC_REPORT_CURRENCY` are display-only.
+`NEXT_PUBLIC_REPORT_LIST_PRICE_MINOR` (default 45000), `NEXT_PUBLIC_REPORT_OFFER_PERCENT` (default 20) and `NEXT_PUBLIC_REPORT_CURRENCY` (default AED) are display-only: the client shows the list price struck through, the percentage, and the resulting pay price (AED 450 → AED 360). The charge must be kept in step in Stripe — either a Price at the list amount plus a percentage coupon in `STRIPE_REPORT_COUPON_ID` (applied to every session as `discounts`), or a Price already at the pay amount with no coupon.
 
 ## Table: `public.report_entitlements`
 
@@ -49,6 +49,7 @@ and persists the assessment before routing to `/results`. Do not add a new auth 
 ## Routes
 
 ### `POST /api/payments/checkout-session`
+
 Auth required (`createSupabaseServerClient().auth.getUser()`), else 401.
 Body: `{ assessmentId: string }`. Verify the row belongs to the caller, else 403.
 If an active entitlement already exists → `409 { error: "already_owned" }`.
@@ -61,16 +62,23 @@ Creates a session with `ui_mode: "embedded"`, `mode: "payment"`,
 Returns `200 { clientSecret: string }`.
 
 ### `GET /api/payments/entitlement?assessmentId=…`
+
 Auth required. Returns `200 { status: "active" | "none", unlockedAt?: string }`.
 This is the **only** source of truth for unlock. Never trust the browser.
 
 ### `POST /api/payments/webhook`
+
 `export const runtime = "nodejs"`. Read the **raw** body (`await request.text()`) and verify
 with `stripe.webhooks.constructEvent(raw, sig, process.env.STRIPE_WEBHOOK_SECRET)`.
 Return 400 on bad signature. Handle:
 
-- `checkout.session.completed` (only when `payment_status === "paid"`) → upsert entitlement
-  `status='active'`, on conflict `stripe_session_id` do nothing (idempotent).
+- `checkout.session.completed` (only when `payment_status === "paid"`) → record the
+  paid entitlement: insert with `status='active', source='stripe'`; on conflict
+  `stripe_session_id` do nothing (idempotent replay). On conflict
+  `(user_id, assessment_id)`: reactivate a revoked row as paid, upgrade an active
+  `admin_grant` row to paid (keeping `granted_by`/`granted_invite_id` audit), and
+  never overwrite a different active paid transaction (acknowledge for manual
+  reconciliation).
 - `charge.refunded` → set `status='revoked'`, `revoked_at=now()`.
 - `charge.dispute.created` → same revoke.
 

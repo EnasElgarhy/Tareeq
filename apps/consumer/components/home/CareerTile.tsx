@@ -23,6 +23,10 @@ const GOLD_INK = "#6B4D00";
  * A light career-path tile for the "Paths to explore" carousel: a
  * cluster-tinted illustration zone over a warm-paper card, with the
  * career name and a "day in the life" affordance.
+ *
+ * Responsive width (no duplicate mobile component): one comfortable card
+ * plus a peek of the next on phones, back to the compact 190px tile where
+ * the row shows several cards (md+).
  */
 export function CareerTile({
   career,
@@ -32,7 +36,7 @@ export function CareerTile({
 }: CareerTileProps) {
   const { t } = useLocale();
   return (
-    <article className="daybreak-story-card rounded-story-alt flex w-[190px] shrink-0 snap-start flex-col overflow-hidden">
+    <article className="daybreak-story-card rounded-story-alt flex w-[270px] shrink-0 snap-start flex-col overflow-hidden min-[390px]:w-[320px] md:w-[190px]">
       {/* Illustration zone — cluster-tinted */}
       <div
         className="relative grid h-[126px] place-items-center overflow-hidden border-b border-[color:var(--day-line)]"

@@ -67,6 +67,14 @@ export function getStripePriceId(): string {
   return requireStripeEnv("STRIPE_PRICE_ID");
 }
 
+/**
+ * The offer's Stripe coupon (e.g. 20% off the list Price), applied to every
+ * checkout when set. Optional: without it the Price is charged as is.
+ */
+export function getStripeCouponId(): string | null {
+  return process.env.STRIPE_REPORT_COUPON_ID?.trim() || null;
+}
+
 /** The signing secret used to verify inbound webhook payloads. */
 export function getStripeWebhookSecret(): string {
   return requireStripeEnv("STRIPE_WEBHOOK_SECRET");

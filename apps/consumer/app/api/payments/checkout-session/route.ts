@@ -6,6 +6,7 @@ import {
 } from "@/app/api/payments/_lib/entitlements";
 import {
   getStripeClient,
+  getStripeCouponId,
   getStripePriceId,
 } from "@/lib/payments/stripe-server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -98,14 +99,18 @@ export async function POST(request: Request) {
   let clientSecret: string | null;
   try {
     const stripe = getStripeClient();
+    const couponId = getStripeCouponId();
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
-      ui_mode: "embedded",
+      // `embedded` was renamed to `embedded_page` in the API version this
+      // client pins (2026-08-26.dahlia); the old value is rejected outright.
+      ui_mode: "embedded_page",
       // No `return_url`: the embedded component reports completion through
       // its own event and the client then re-reads /api/payments/entitlement.
       // Stripe only allows the URL to be omitted when redirect is disabled.
       redirect_on_completion: "never",
       line_items: [{ price: getStripePriceId(), quantity: 1 }],
+      ...(couponId ? { discounts: [{ coupon: couponId }] } : {}),
       client_reference_id: body.assessmentId,
       // The webhook's only link back to our records — it is signed by Stripe
       // and echoed verbatim on `checkout.session.completed`.

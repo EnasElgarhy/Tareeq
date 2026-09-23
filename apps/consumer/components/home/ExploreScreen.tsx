@@ -2,8 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { CompassReport } from "@/components/assessment/CompassReport";
+import {
+  PaidAccessChecking,
+  PaidFeatureLock,
+} from "@/components/access/PaidFeatureLock";
 import { NoCompassEmptyState } from "@/components/home/NoCompassEmptyState";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { usePaidAccess } from "@/lib/payments/use-paid-access";
 import { readProfileSnapshot, type ProfileSnapshot } from "@/lib/profile/journey";
 
 /**
@@ -11,11 +16,16 @@ import { readProfileSnapshot, type ProfileSnapshot } from "@/lib/profile/journey
  * and non-obvious paths from the deterministic CORE report. Deliberately
  * skips repeating the hero result Home already shows up top; this tab is
  * the deep-dive reference material.
+ *
+ * The map is part of what the report purchase buys, so an unpaid visitor sees
+ * the tab's own header and a locked panel naming the sections — the shape of
+ * what is behind the lock, never its content.
  */
 export function ExploreScreen() {
   const { t } = useLocale();
   const [snapshot, setSnapshot] = useState<ProfileSnapshot | null>(null);
   const [ready, setReady] = useState(false);
+  const { state: access } = usePaidAccess();
 
   useEffect(() => {
     setSnapshot(readProfileSnapshot());
@@ -44,7 +54,13 @@ export function ExploreScreen() {
         </p>
       </header>
 
-      <CompassReport report={report} kaiHref="/kai?goal=explain_results" />
+      {access === "paid" ? (
+        <CompassReport report={report} kaiHref="/kai?goal=explain_results" />
+      ) : access === "checking" ? (
+        <PaidAccessChecking />
+      ) : (
+        <PaidFeatureLock feature="explore" />
+      )}
     </section>
   );
 }

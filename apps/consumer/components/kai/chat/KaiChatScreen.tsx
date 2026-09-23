@@ -19,6 +19,11 @@ import { LoadingMessage } from "@/components/kai/chat/LoadingMessage";
 import { QuickReplies } from "@/components/kai/chat/QuickReplies";
 import { SystemDivider } from "@/components/kai/chat/SystemDivider";
 import { useKaiChat } from "@/components/kai/chat/KaiChatProvider";
+import {
+  PaidAccessChecking,
+  PaidFeatureLock,
+} from "@/components/access/PaidFeatureLock";
+import { usePaidAccess } from "@/lib/payments/use-paid-access";
 import { trackEvent } from "@/lib/analytics/track";
 import type { KaiConversationGoal } from "@/lib/kai/chat-types";
 import {
@@ -44,7 +49,7 @@ function parseGoal(requested: string | null): KaiConversationGoal | null {
     : null;
 }
 
-export function KaiChatScreen() {
+function KaiChatExperience() {
   const { t } = useLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -468,4 +473,25 @@ function KaiConversationEmptyState() {
       </p>
     </div>
   );
+}
+
+/**
+ * Kai is part of the paid report.
+ *
+ * The gate decides before the chat mounts: mounting it first and locking
+ * afterwards would let an unpaid visitor type a message that could only fail.
+ * The chat route enforces the same rule server-side.
+ */
+export function KaiChatScreen() {
+  const { state: access } = usePaidAccess();
+
+  if (access === "checking") return <PaidAccessChecking className="min-h-full" />;
+  if (access === "unpaid") {
+    return (
+      <section className="flex flex-1 flex-col justify-center pb-6">
+        <PaidFeatureLock feature="kai" />
+      </section>
+    );
+  }
+  return <KaiChatExperience />;
 }

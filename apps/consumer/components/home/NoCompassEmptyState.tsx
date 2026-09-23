@@ -28,7 +28,7 @@ export function NoCompassEmptyState({
       </div>
       <Link href="/start" className="btn-v2 btn-v2--primary" data-size="lg">
         {t("home.empty.start_cta")}
-        <ArrowRight size={18} />
+        <ArrowRight size={18} className="flip-rtl" />
       </Link>
     </section>
   );

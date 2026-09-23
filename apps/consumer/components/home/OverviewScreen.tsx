@@ -23,6 +23,8 @@ import { FeedCarousel } from "@/components/home/FeedCarousel";
 import { NoCompassEmptyState } from "@/components/home/NoCompassEmptyState";
 import { ProgressRingCard } from "@/components/home/ProgressRingCard";
 import { StreakCard } from "@/components/home/StreakCard";
+import { PaidFeatureLock, PaidAccessChecking } from "@/components/access/PaidFeatureLock";
+import { usePaidAccess } from "@/lib/payments/use-paid-access";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { buildHomeFeed, type NextLockedModule } from "@/lib/home/feed";
 import { readActiveConversation } from "@/lib/kai/chat-storage";
@@ -34,7 +36,7 @@ import { daysSince, markSeenNow, readLastSeenAt } from "@/lib/kai/proactive/last
 import { buildProactiveContext } from "@/lib/kai/proactive/proactive-context";
 import { proactiveMomentHref, renderProactiveMomentText } from "@/lib/kai/proactive/proactive-render";
 import { deriveAchievements } from "@/lib/profile/activity";
-import { readProfileSnapshot, type ProfileSnapshot } from "@/lib/profile/journey";
+import { getModuleDurationKey, getModuleNameKey, getModuleTaglineKey, readProfileSnapshot, type ProfileSnapshot } from "@/lib/profile/journey";
 import { computeStreak, recordVisitToday } from "@/lib/profile/streak";
 import { CLUSTER_VISUALS, getClusterLabel, getClusterTagline } from "@/lib/results/cluster-visuals";
 import { getConfidenceLabelKey } from "@/lib/results/report-labels";
@@ -77,6 +79,7 @@ function youtubeSearchUrl(query: string): string {
  */
 export function OverviewScreen() {
   const { locale, t } = useLocale();
+  const { state: access } = usePaidAccess();
   const [snapshot, setSnapshot] = useState<ProfileSnapshot | null>(null);
   const [ready, setReady] = useState(false);
   const [seed, setSeed] = useState(0);
@@ -102,16 +105,19 @@ export function OverviewScreen() {
 
   const report = snapshot?.coreReport ?? null;
 
+  // The next locked module, resolved to localized copy here so every
+  // consumer (the feed's unlock card and the progress ring) renders Arabic
+  // in the Arabic UI — the module data itself keeps English source values.
   const nextModule: NextLockedModule | null = useMemo(() => {
     const locked = snapshot?.modules.find((m) => m.status === "locked");
     return locked
       ? {
-          name: locked.name,
-          tagline: locked.tagline,
-          durationLabel: locked.durationLabel,
+          name: t(getModuleNameKey(locked.id)),
+          tagline: t(getModuleTaglineKey(locked.id)),
+          durationLabel: t(getModuleDurationKey(locked.id)),
         }
       : null;
-  }, [snapshot]);
+  }, [snapshot, t]);
 
   const kaiContext = useMemo(
     () =>
@@ -160,6 +166,14 @@ export function OverviewScreen() {
   }, [report, snapshot, seed, nextModule, proactiveMomentForFeed, t]);
 
   if (!ready) return null;
+  if (access === "checking") return <PaidAccessChecking className="min-h-full" />;
+  if (access === "unpaid") {
+    return (
+      <section className="flex flex-1 flex-col justify-center pb-6">
+        <PaidFeatureLock feature="overview" />
+      </section>
+    );
+  }
   if (!report || !snapshot) {
     return (
       <NoCompassEmptyState
@@ -226,6 +240,8 @@ export function OverviewScreen() {
             <FeedCarousel
               title={t("home.overview.paths_title")}
               subtitle={t("home.overview.paths_subtitle")}
+              hasControls
+              arrowAnchor="media"
             >
               {careers.map((career, i) => (
                 <CareerTile
@@ -251,6 +267,7 @@ export function OverviewScreen() {
             <FeedCarousel
               title={t("home.overview.clusters_title")}
               subtitle={t("home.overview.clusters_subtitle")}
+              hasControls
             >
               {topClusters.map(([code], i) => {
                 const cv = CLUSTER_VISUALS[code];

@@ -22,9 +22,19 @@ async function seed(
   },
 ) {
   await page.addInitScript(
-    ({ reportKey, registrationKey, localeKey, seededReport, seededRegistration, seededLocale }) => {
+    ({
+      reportKey,
+      registrationKey,
+      localeKey,
+      seededReport,
+      seededRegistration,
+      seededLocale,
+    }) => {
       window.localStorage.setItem(reportKey, JSON.stringify(seededReport));
-      window.localStorage.setItem(registrationKey, JSON.stringify(seededRegistration));
+      window.localStorage.setItem(
+        registrationKey,
+        JSON.stringify(seededRegistration),
+      );
       window.localStorage.setItem(localeKey, seededLocale);
     },
     {
@@ -73,7 +83,9 @@ async function stubPayments(
   });
 }
 
-test("previews a report and unlocks only once the server confirms it", async ({ page }) => {
+test("previews a report and unlocks only once the server confirms it", async ({
+  page,
+}) => {
   const report = makeReport({
     generatedAt: "2026-07-28T12:00:00.000Z",
     headline: "The Strategic Creator",
@@ -88,28 +100,64 @@ test("previews a report and unlocks only once the server confirms it", async ({ 
   // holds: the correct outcome is an unlock, never a second charge.
   await stubPayments(page, { status: 409, body: { error: "already_owned" } });
 
+  // The old results route is sent into the app shell's Compass tab.
   await page.goto("/results");
-  await expect(page.getByRole("heading", { name: "The Strategic Creator" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Your complete report" })).toBeVisible();
-  await expect(page.getByText("Top career matches")).toBeVisible();
+  await expect(page).toHaveURL(/\/compass$/);
+  await expect(
+    page.getByRole("link", { name: "Kai", exact: true }),
+  ).toBeVisible();
+  // The Figma redesign, in order: the paper header, the night compass
+  // card, Chapter 01 open, the route teaser, the locked rail, the offer.
+  await expect(
+    page.getByRole("heading", { name: "Your direction is becoming clear." }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Business", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "What the four CORE signals mean" }),
+  ).toBeVisible();
+  await expect(page.getByText("Career Matches", { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Your compass points toward several paths.",
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Your map is only half explored.",
+    }),
+  ).toBeVisible();
 
-  await page.getByRole("button", { name: "Unlock my full report" }).click();
-  await expect(page.getByRole("dialog", { name: "Unlock your complete report" })).toBeVisible();
+  // 409 resolves straight to the unlock: the sheet is on screen for only
+  // the round trip, so it is asserted in the failure test below, not here.
+  await page.getByRole("button", { name: "Unlock My Full Compass" }).click();
 
-  await expect(page.getByText("Your complete report is unlocked")).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Business", exact: true })).toBeVisible();
-  await expect(page).toHaveURL(/\/results$/);
+  await expect(
+    page.getByText("Your complete report is unlocked"),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Business", exact: true }),
+  ).toBeVisible();
+  await expect(page).toHaveURL(/\/compass$/);
 
   await page.reload({ waitUntil: "domcontentloaded" });
-  await expect(page.getByText("Your complete report is unlocked")).toBeVisible();
-  await expect(page.getByRole("button", { name: "Unlock my full report" })).toHaveCount(0);
+  await expect(
+    page.getByText("Your complete report is unlocked"),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Unlock My Full Compass" }),
+  ).toHaveCount(0);
 });
 
 test("relocks a report the server has no entitlement for", async ({ page }) => {
   await seed(page, {
     report: makeReport({ generatedAt: "2026-07-28T15:00:00.000Z" }),
   });
-  await stubPayments(page, { status: 502, body: { error: "checkout_unavailable" } });
+  await stubPayments(page, {
+    status: 502,
+    body: { error: "checkout_unavailable" },
+  });
 
   // A forged local unlock. The entitlement route answers "none", so the
   // cache must be corrected rather than believed.
@@ -126,25 +174,42 @@ test("relocks a report the server has no entitlement for", async ({ page }) => {
     );
   });
 
-  await page.goto("/results");
-  await expect(page.getByRole("heading", { name: "Your complete report" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Unlock my full report" })).toBeVisible();
-  await expect(page.getByText("Your complete report is unlocked")).toHaveCount(0);
+  await page.goto("/compass");
+  await expect(
+    page.getByRole("heading", {
+      name: "Where each route could lead.",
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Unlock My Full Compass" }),
+  ).toBeVisible();
+  await expect(page.getByText("Your complete report is unlocked")).toHaveCount(
+    0,
+  );
 });
 
-test("shows a recoverable failure when checkout cannot open", async ({ page }) => {
+test("shows a recoverable failure when checkout cannot open", async ({
+  page,
+}) => {
   await seed(page, {
     report: makeReport({ generatedAt: "2026-07-28T13:00:00.000Z" }),
   });
-  await stubPayments(page, { status: 502, body: { error: "checkout_unavailable" } });
+  await stubPayments(page, {
+    status: 502,
+    body: { error: "checkout_unavailable" },
+  });
 
-  await page.goto("/results");
-  await page.getByRole("button", { name: "Unlock my full report" }).click();
+  await page.goto("/compass");
+  await page.getByRole("button", { name: "Unlock My Full Compass" }).click();
 
   await expect(
-    page.getByText("We couldn't reach the payment service. Check your connection and try again."),
+    page.getByText(
+      "We couldn't reach the payment service. Check your connection and try again.",
+    ),
   ).toBeVisible();
-  await expect(page.getByRole("dialog", { name: "Unlock your complete report" })).toBeVisible();
+  await expect(
+    page.getByRole("dialog", { name: "Open your complete report" }),
+  ).toBeVisible();
   await expect(page.getByRole("button", { name: "Try again" })).toBeVisible();
 });
 
@@ -157,17 +222,24 @@ test("is RTL-safe on a 390px Arabic viewport", async ({ page }) => {
       generatedAt: "2026-07-28T14:00:00.000Z",
       headline: "المبدع الاستراتيجي",
       summary: "تجمع بين التفكير التحليلي والرغبة في بناء نتائج ذات معنى.",
-      careerLandscape: "تشير إجاباتك إلى مسارات تجمع بين الابتكار والتقنية وبناء المنتجات.",
+      careerLandscape:
+        "تشير إجاباتك إلى مسارات تجمع بين الابتكار والتقنية وبناء المنتجات.",
     }),
   });
 
-  await page.goto("/results");
+  await page.goto("/compass");
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-  await expect(page.getByRole("button", { name: "افتح التقرير" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "المبدع الاستراتيجي" })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "افتح بوصلتي الكاملة", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "اتجاهك بدأ يتّضح." }),
+  ).toBeVisible();
 
   const hasHorizontalOverflow = await page.evaluate(
-    () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+    () =>
+      document.documentElement.scrollWidth >
+      document.documentElement.clientWidth,
   );
   expect(hasHorizontalOverflow).toBe(false);
 });

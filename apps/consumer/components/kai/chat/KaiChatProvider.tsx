@@ -24,6 +24,7 @@ import {
   writeConversation,
 } from "@/lib/kai/chat-storage";
 import { readKaiChatStream } from "@/lib/kai/chat-stream";
+import { markPaidAccessUnpaid } from "@/lib/payments/use-paid-access";
 import type {
   KaiConversation,
   KaiConversationGoal,
@@ -272,6 +273,13 @@ export function KaiChatProvider({ children }: { children: ReactNode }) {
             assistantMessageId,
           }),
         });
+        if (response.status === 402) {
+          // The report is not owned (or no longer owned). Correct the shared
+          // access verdict so the screen swaps to the lock instead of leaving
+          // a message that can never succeed.
+          markPaidAccessUnpaid();
+          throw new Error("upgrade_required");
+        }
         const data = await readKaiChatStream(response, (event) => {
           if (event.type !== "text") return;
           setPendingRuns((current) => {

@@ -17,7 +17,12 @@ export interface ReportAccess {
 export interface ReportOffer {
   productId: string;
   name: string;
+  /** What the customer pays, in minor units: the list price less the offer. */
   amountMinor: number;
+  /** The full price the offer is taken from; equals `amountMinor` without one. */
+  listAmountMinor: number;
+  /** Whole percentage taken off the list price; 0 when there is no offer. */
+  discountPercent: number;
   currency: string;
 }
 
@@ -73,16 +78,41 @@ export interface PaymentResult {
   unlockedAt?: string;
 }
 
+/** AED 450 list price and a 20% offer unless the environment says otherwise. */
+const DEFAULT_LIST_PRICE_MINOR = 45_000;
+const DEFAULT_OFFER_PERCENT = 20;
+const DEFAULT_CURRENCY = "AED";
+
+function readIntegerEnv(value: string | undefined, fallback: number): number {
+  const parsed = Number.parseInt(value ?? "", 10);
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
+}
+
+/**
+ * The offer as shown to the customer. The charge itself is a Stripe Price
+ * (plus an optional coupon) resolved server-side, so these two must be
+ * kept in step with the Stripe dashboard — see docs/STRIPE_CONTRACTS.md.
+ */
 export function getReportOffer(): ReportOffer {
-  const configuredAmount = Number.parseInt(
-    process.env.NEXT_PUBLIC_REPORT_PRICE_MINOR ?? "999",
-    10,
+  const listAmountMinor = readIntegerEnv(
+    process.env.NEXT_PUBLIC_REPORT_LIST_PRICE_MINOR,
+    DEFAULT_LIST_PRICE_MINOR,
+  );
+  const discountPercent = Math.min(
+    100,
+    readIntegerEnv(
+      process.env.NEXT_PUBLIC_REPORT_OFFER_PERCENT,
+      DEFAULT_OFFER_PERCENT,
+    ),
   );
   return {
     productId: "tareeq-deep-dive-v1",
     name: "Tareeq Complete Report",
-    amountMinor: Number.isFinite(configuredAmount) ? configuredAmount : 999,
-    currency: process.env.NEXT_PUBLIC_REPORT_CURRENCY?.trim() || "USD",
+    amountMinor: Math.round((listAmountMinor * (100 - discountPercent)) / 100),
+    listAmountMinor,
+    discountPercent,
+    currency:
+      process.env.NEXT_PUBLIC_REPORT_CURRENCY?.trim() || DEFAULT_CURRENCY,
   };
 }
 

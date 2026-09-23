@@ -349,6 +349,14 @@ export const reportEntitlements = pgTable(
     stripePaymentIntentId: text("stripe_payment_intent_id"),
     amountMinor: integer("amount_minor"),
     currency: text("currency"),
+    /** 'stripe' for webhook purchases, 'admin_grant' for free-access invites. */
+    source: text("source").default("stripe").notNull(),
+    /** Admin who granted free access (null for Stripe purchases). */
+    grantedBy: uuid("granted_by").references(() => authUsers.id, {
+      onDelete: "set null",
+    }),
+    /** Invite that minted this entitlement (null for Stripe purchases). */
+    grantedInviteId: uuid("granted_invite_id"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .defaultNow()
       .notNull(),
@@ -359,10 +367,60 @@ export const reportEntitlements = pgTable(
       "report_entitlements_status_check",
       sql`${table.status} in ('active','revoked')`,
     ),
+    check(
+      "report_entitlements_source_check",
+      sql`${table.source} in ('stripe','admin_grant')`,
+    ),
     unique("report_entitlements_user_assessment_unique").on(
       table.userId,
       table.assessmentId,
     ),
     index("report_entitlements_assessment_idx").on(table.assessmentId),
+  ],
+);
+
+/**
+ * Single-use admin free-access invite links. Two flavors, exactly one per row:
+ * bound to one (user, assessment) pair, or email-open for recipients who have
+ * not signed up yet (email match + latest completed assessment at redeem).
+ * Only sha256(token) is stored. Redeemed server-side by the consumer, which
+ * mints an active `report_entitlements` row with source='admin_grant'.
+ */
+export const reportAccessInvites = pgTable(
+  "report_access_invites",
+  {
+    id: uuid("id")
+      .default(sql`gen_random_uuid()`)
+      .primaryKey(),
+    tokenHash: text("token_hash").notNull().unique(),
+    userId: uuid("user_id").references(() => authUsers.id, {
+      onDelete: "cascade",
+    }),
+    assessmentId: uuid("assessment_id").references(() => assessments.id, {
+      onDelete: "cascade",
+    }),
+    /** Invited address for the email flavor (normalized lowercase, else null). */
+    email: text("email"),
+    createdBy: uuid("created_by").references(() => authUsers.id, {
+      onDelete: "set null",
+    }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    redeemedAt: timestamp("redeemed_at", { withTimezone: true }),
+    status: text("status").default("pending").notNull(),
+  },
+  (table) => [
+    check(
+      "report_access_invites_status_check",
+      sql`${table.status} in ('pending','redeemed','revoked')`,
+    ),
+    check(
+      "report_access_invites_flavor_check",
+      sql`(${table.email} is null and ${table.userId} is not null and ${table.assessmentId} is not null) or (${table.email} is not null and ${table.userId} is null and ${table.assessmentId} is null)`,
+    ),
+    index("report_access_invites_user_idx").on(table.userId),
+    index("report_access_invites_assessment_idx").on(table.assessmentId),
   ],
 );

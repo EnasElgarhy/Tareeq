@@ -1,6 +1,10 @@
 import type { StringKey } from "@/lib/i18n/strings";
 import { buildKaiStarterPrompts } from "@/lib/kai/starter-prompts";
 import { getClusterLabel } from "@/lib/results/cluster-visuals";
+import {
+  getArchetypeKey,
+  getEcosystemFitKey,
+} from "@/lib/results/report-labels";
 import type { PersonalizedCompassReport } from "@/lib/results/types";
 
 /**
@@ -290,14 +294,14 @@ function buildInsightPool(report: PersonalizedCompassReport, t: Translate): Insi
       kind: "insight",
       id: "insight-style",
       eyebrow: t("home.feed.insight.style_eyebrow"),
-      title: report.archetype,
+      title: t(getArchetypeKey(report.archetype)),
       body: t("home.feed.insight.style_body"),
     },
     {
       kind: "insight",
       id: "insight-ecosystem",
       eyebrow: t("home.feed.insight.ecosystem_eyebrow"),
-      title: report.ecosystemFit,
+      title: t(getEcosystemFitKey(report.ecosystemFit)),
       body: t("home.feed.insight.ecosystem_body"),
     },
   ];

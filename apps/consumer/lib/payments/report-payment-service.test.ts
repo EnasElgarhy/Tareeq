@@ -62,6 +62,8 @@ describe("stripeReportPaymentService.createCheckoutSession", () => {
         productId: "p",
         name: "n",
         amountMinor: 999,
+        listAmountMinor: 999,
+        discountPercent: 0,
         currency: "USD",
       },
     });
@@ -88,7 +90,14 @@ describe("stripeReportPaymentService.createCheckoutSession", () => {
         reportId,
         assessmentId,
         email: "sara@example.com",
-        offer: { productId: "p", name: "n", amountMinor: 999, currency: "USD" },
+        offer: {
+          productId: "p",
+          name: "n",
+          amountMinor: 999,
+          listAmountMinor: 999,
+          discountPercent: 0,
+          currency: "USD",
+        },
       }),
     ).resolves.toEqual({ status: "already_owned", provider: "stripe" });
   });
@@ -105,7 +114,14 @@ describe("stripeReportPaymentService.createCheckoutSession", () => {
         reportId,
         assessmentId,
         email: "sara@example.com",
-        offer: { productId: "p", name: "n", amountMinor: 999, currency: "USD" },
+        offer: {
+          productId: "p",
+          name: "n",
+          amountMinor: 999,
+          listAmountMinor: 999,
+          discountPercent: 0,
+          currency: "USD",
+        },
       }),
     ).rejects.toMatchObject({ code });
   });
@@ -118,7 +134,14 @@ describe("stripeReportPaymentService.createCheckoutSession", () => {
         reportId,
         assessmentId,
         email: "sara@example.com",
-        offer: { productId: "p", name: "n", amountMinor: 999, currency: "USD" },
+        offer: {
+          productId: "p",
+          name: "n",
+          amountMinor: 999,
+          listAmountMinor: 999,
+          discountPercent: 0,
+          currency: "USD",
+        },
       }),
     ).rejects.toMatchObject({ code: "network" });
   });
@@ -131,7 +154,14 @@ describe("stripeReportPaymentService.createCheckoutSession", () => {
         reportId,
         assessmentId,
         email: "sara@example.com",
-        offer: { productId: "p", name: "n", amountMinor: 999, currency: "USD" },
+        offer: {
+          productId: "p",
+          name: "n",
+          amountMinor: 999,
+          listAmountMinor: 999,
+          discountPercent: 0,
+          currency: "USD",
+        },
       }),
     ).rejects.toMatchObject({ code: "checkout_unavailable" });
   });
@@ -260,7 +290,14 @@ describe("mockReportPaymentService", () => {
       reportId,
       assessmentId,
       email: "sara@example.com",
-      offer: { productId: "p", name: "n", amountMinor: 999, currency: "USD" },
+      offer: {
+        productId: "p",
+        name: "n",
+        amountMinor: 999,
+        listAmountMinor: 999,
+        discountPercent: 0,
+        currency: "USD",
+      },
     });
     expect(session).toMatchObject({ status: "ready", provider: "mock" });
 
@@ -271,10 +308,12 @@ describe("mockReportPaymentService", () => {
     await mockReportPaymentService.unlockReport(reportId, payment.paymentId);
 
     expect(
-      (await mockReportPaymentService.restorePurchase({
-        reportId,
-        assessmentId,
-      })).isPaid,
+      (
+        await mockReportPaymentService.restorePurchase({
+          reportId,
+          assessmentId,
+        })
+      ).isPaid,
     ).toBe(true);
     expect(fetchMock).not.toHaveBeenCalled();
   });
@@ -285,7 +324,14 @@ describe("mockReportPaymentService", () => {
         reportId,
         assessmentId,
         email: "sara+fail@example.com",
-        offer: { productId: "p", name: "n", amountMinor: 999, currency: "USD" },
+        offer: {
+          productId: "p",
+          name: "n",
+          amountMinor: 999,
+          listAmountMinor: 999,
+          discountPercent: 0,
+          currency: "USD",
+        },
       }),
     ).rejects.toBeInstanceOf(ReportPaymentError);
   });

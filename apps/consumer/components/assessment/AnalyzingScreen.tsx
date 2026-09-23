@@ -99,7 +99,7 @@ export function AnalyzingScreen() {
     if (existingReport) {
       setStatus("done");
       setActiveStage(ANALYSIS_STAGES.length - 1);
-      window.setTimeout(() => router.replace("/results"), 1800);
+      window.setTimeout(() => router.replace("/compass"), 1800);
       return;
     }
 
@@ -154,7 +154,7 @@ export function AnalyzingScreen() {
         // Keep the screen visible long enough for all four signals to form.
         const elapsed = Date.now() - startedAt;
         window.setTimeout(
-          () => router.replace("/results"),
+          () => router.replace("/compass"),
           Math.max(3000, 3800 - elapsed),
         );
       }

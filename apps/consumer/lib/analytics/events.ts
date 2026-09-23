@@ -112,6 +112,13 @@ export const KAI_PROACTIVE_EVENT_NAMES = [
   "kai_goal_chip_clicked",
 ] as const;
 
+/** Paid feature locks — which gated surface a visitor met, and whether the
+ * lock sent them to the paywall. */
+export const ACCESS_EVENT_NAMES = [
+  "locked_feature_viewed",
+  "locked_feature_unlock_clicked",
+] as const;
+
 /** Kai Response Engine v2 — coaching framework, intent detection, and
  * saved/trackable action plans. */
 export const KAI_COACHING_EVENT_NAMES = [
@@ -134,6 +141,7 @@ export const EVENT_NAMES = [
   ...KAI_RESOURCE_EVENT_NAMES,
   ...KAI_PROACTIVE_EVENT_NAMES,
   ...KAI_COACHING_EVENT_NAMES,
+  ...ACCESS_EVENT_NAMES,
 ] as const;
 
 export type EventName = (typeof EVENT_NAMES)[number];

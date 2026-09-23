@@ -5,6 +5,7 @@ const mocks = vi.hoisted(() => ({
   createSession: vi.fn(),
   getStripeClient: vi.fn(),
   getStripePriceId: vi.fn(),
+  getStripeCouponId: vi.fn(),
   getUser: vi.fn(),
   ownerMaybeSingle: vi.fn(),
   entitlementMaybeSingle: vi.fn(),
@@ -23,6 +24,7 @@ vi.mock("@/lib/supabase/admin", () => ({
 vi.mock("@/lib/payments/stripe-server", () => ({
   getStripeClient: mocks.getStripeClient,
   getStripePriceId: mocks.getStripePriceId,
+  getStripeCouponId: mocks.getStripeCouponId,
 }));
 
 import { POST } from "@/app/api/payments/checkout-session/route";
@@ -70,6 +72,7 @@ describe("POST /api/payments/checkout-session", () => {
       checkout: { sessions: { create: mocks.createSession } },
     });
     mocks.getStripePriceId.mockReturnValue(SERVER_PRICE_ID);
+    mocks.getStripeCouponId.mockReturnValue(null);
     mocks.getUser.mockResolvedValue({
       data: { user: { id: USER_ID, email: "sara@example.com" } },
     });
@@ -155,7 +158,9 @@ describe("POST /api/payments/checkout-session", () => {
     const sessionParams = mocks.createSession.mock.calls[0]?.[0];
     expect(sessionParams).toMatchObject({
       mode: "payment",
-      ui_mode: "embedded",
+      // `embedded` is rejected by the pinned Stripe API version; the session
+      // must be created as an embedded_page session.
+      ui_mode: "embedded_page",
       redirect_on_completion: "never",
       line_items: [{ price: SERVER_PRICE_ID, quantity: 1 }],
       client_reference_id: ASSESSMENT_ID,
@@ -170,5 +175,27 @@ describe("POST /api/payments/checkout-session", () => {
     expect(JSON.stringify(sessionParams)).not.toContain(
       "price_client_should_be_ignored",
     );
+  });
+
+  it("applies the configured offer coupon to the session, and nothing else", async () => {
+    mocks.getStripeCouponId.mockReturnValue("coupon_launch_20");
+
+    const response = await POST(
+      checkoutRequest({ assessmentId: ASSESSMENT_ID }),
+    );
+
+    expect(response.status).toBe(200);
+    const sessionParams = mocks.createSession.mock.calls[0]?.[0];
+    expect(sessionParams).toMatchObject({
+      line_items: [{ price: SERVER_PRICE_ID, quantity: 1 }],
+      discounts: [{ coupon: "coupon_launch_20" }],
+    });
+  });
+
+  it("sends no discounts when no coupon is configured", async () => {
+    await POST(checkoutRequest({ assessmentId: ASSESSMENT_ID }));
+
+    const sessionParams = mocks.createSession.mock.calls[0]?.[0];
+    expect(sessionParams).not.toHaveProperty("discounts");
   });
 });

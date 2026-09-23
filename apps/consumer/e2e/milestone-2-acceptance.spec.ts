@@ -58,6 +58,18 @@ async function installResultsState(page: Page, locale: "en" | "ar") {
     ({ localeKey, registrationKey, reportKey, selectedLocale }) => {
       window.localStorage.setItem(localeKey, selectedLocale);
       window.localStorage.setItem("tareeq:sound", "off");
+      // The complete report is paid for: the Compass tab trusts this record
+      // because the registration below carries no assessment id.
+      window.localStorage.setItem(
+        "tareeq.report.access.v1:core-20260720T000000000Z",
+        JSON.stringify({
+          reportId: "core-20260720T000000000Z",
+          status: "unlocked",
+          isPaid: true,
+          paymentId: "e2e-paid",
+          updatedAt: "2026-07-20T00:00:00.000Z",
+        }),
+      );
       window.localStorage.setItem(
         registrationKey,
         JSON.stringify({
@@ -221,19 +233,17 @@ async function findGeometryIssues(page: Page): Promise<GeometryIssue[]> {
     const candidateSource = activeDialog
       ? [activeDialog, ...Array.from(activeDialog.querySelectorAll(selector))]
       : Array.from(document.querySelectorAll(selector));
-    const candidates = candidateSource.filter(
-      (element) => {
-        const style = window.getComputedStyle(element);
-        const rect = element.getBoundingClientRect();
-        return (
-          style.display !== "none" &&
-          style.visibility !== "hidden" &&
-          style.opacity !== "0" &&
-          rect.width > 0 &&
-          rect.height > 0
-        );
-      },
-    );
+    const candidates = candidateSource.filter((element) => {
+      const style = window.getComputedStyle(element);
+      const rect = element.getBoundingClientRect();
+      return (
+        style.display !== "none" &&
+        style.visibility !== "hidden" &&
+        style.opacity !== "0" &&
+        rect.width > 0 &&
+        rect.height > 0
+      );
+    });
 
     const describe = (element: Element) =>
       element.getAttribute("aria-label") ||
@@ -262,7 +272,11 @@ async function findGeometryIssues(page: Page): Promise<GeometryIssue[]> {
       return rect.bottom > 0 && rect.top < viewportHeight;
     });
 
-    for (let firstIndex = 0; firstIndex < visibleControls.length; firstIndex++) {
+    for (
+      let firstIndex = 0;
+      firstIndex < visibleControls.length;
+      firstIndex++
+    ) {
       const first = visibleControls[firstIndex]!;
       const firstRect = first.getBoundingClientRect();
 
@@ -352,13 +366,13 @@ for (const locale of locales) {
   }, testInfo) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await installResultsState(page, locale);
-    await page.goto("/results");
+    await page.goto("/compass");
 
     const shareButton = page.getByRole("button", {
       name: locale === "ar" ? "شارك النتيجة" : "Share result",
     });
     await expect(shareButton).toBeVisible();
-    await expectCleanGeometry(page, `${locale} /results`);
+    await expectCleanGeometry(page, `${locale} /compass`);
     await captureEvidence(page, testInfo, `${locale}-results.png`);
 
     await shareButton.click();
