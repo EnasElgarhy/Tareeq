@@ -85,6 +85,21 @@ const DIFFERENT = [
   },
 ];
 
+const HOME_FAQS = [
+  {
+    q: "Is this scientifically valid?",
+    a: "CORE draws on four established frameworks in career and personality psychology — Holland’s RIASEC, Big Five, Self-Determination Theory, and Person-Environment Fit — designed by a BPS-certified assessor with 22+ years of experience, using transparent, rule-based scoring, not AI guessing. Research is ongoing to validate CORE specifically with MENA youth.",
+  },
+  {
+    q: "Is my data private?",
+    a: "Yes. Your personal information is encrypted and kept separate from your assessment responses. Your results are private — only you and people you choose to share with can see them. For research, we use anonymous data only. You have full control.",
+  },
+  {
+    q: "Is it free?",
+    a: "Free during testing.",
+  },
+];
+
 interface StatProps {
   value: number;
   prefix?: string;
@@ -317,15 +332,12 @@ export const Home = () => (
               with the people helping you choose.
             </p>
           </FadeIn>
-          <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto items-start">
+          <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto items-start">
             {PRODUCT_SHOTS.map((d, i) => {
               const Shot = d.shot;
               return (
                 <FadeIn key={d.title} delay={i * 0.12} className={d.lift}>
-                  <ShotFrame tilt={d.tilt}>
-                    <Shot />
-                  </ShotFrame>
-                  <div className="mt-5 text-center">
+                  <div className="text-center">
                     <h3 className="font-heading text-lg font-semibold">
                       {d.title}
                     </h3>
@@ -333,10 +345,50 @@ export const Home = () => (
                       {d.body}
                     </p>
                   </div>
+                  <ShotFrame tilt={d.tilt} className="mt-5">
+                    <Shot />
+                  </ShotFrame>
                 </FadeIn>
               );
             })}
           </div>
+        </Container>
+      </section>
+
+      {/* The science behind CORE */}
+      <section className="py-20 md:py-24 bg-[var(--day-inset)] border-y border-[var(--day-line)]">
+        <Container>
+          <FadeIn className="max-w-3xl mx-auto text-center">
+            <h2 className="font-heading text-3xl sm:text-4xl leading-tight font-semibold">
+              The science behind CORE
+            </h2>
+            <p className="mt-3 text-lg text-[var(--day-ink-2)]">
+              Built on decades of validated career theories, not guesswork.
+            </p>
+            <p className="mt-6 text-[15px] leading-relaxed text-[var(--day-ink-2)] text-left sm:text-center">
+              CORE draws on four established frameworks in career and
+              personality psychology: Holland’s RIASEC model for Curiosities
+              (what captures your attention), Big Five personality research
+              for Operations (how you naturally work), Self-Determination
+              Theory for Rewards (what drives you), and Person-Environment
+              Fit theory for Ecosystems (where you thrive). Scoring is
+              transparent and rule-based — no black box, no machine learning
+              guessing at you. And because these frameworks were largely
+              built and validated in the US and Europe, CORE adds context
+              specific to how the MENA job market and education system
+              actually work.
+            </p>
+            <p className="mt-6 text-sm leading-relaxed text-[var(--day-ink-3)]">
+              Designed by{" "}
+              <span className="font-semibold text-[var(--day-ink-2)]">
+                Enas Elgarhy
+              </span>
+              , a BPS-certified assessor and ICF-accredited coach, with 22+
+              years in people development and psychometric assessment —
+              including tools like Hogan, Saville, Korn Ferry, and MBTI —
+              across the MENA region.
+            </p>
+          </FadeIn>
         </Container>
       </section>
 
@@ -363,6 +415,39 @@ export const Home = () => (
                 Salma, student, 16, UAE
               </figcaption>
             </figure>
+          </FadeIn>
+        </Container>
+      </section>
+
+      {/* FAQ teaser */}
+      <section className="pb-24 md:pb-32">
+        <Container>
+          <FadeIn className="max-w-2xl mx-auto text-center">
+            <h2 className="font-heading text-3xl sm:text-4xl leading-tight font-semibold">
+              Good questions.
+            </h2>
+          </FadeIn>
+          <div className="mt-10 grid max-w-3xl mx-auto gap-4">
+            {HOME_FAQS.map((f, i) => (
+              <FadeIn key={f.q} delay={i * 0.08}>
+                <div className="rounded-story border border-[var(--day-line)] bg-[var(--day-card)] p-6">
+                  <h3 className="font-heading text-lg font-semibold">
+                    {f.q}
+                  </h3>
+                  <p className="mt-2 text-[15px] leading-relaxed text-[var(--day-ink-2)]">
+                    {f.a}
+                  </p>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+          <FadeIn delay={0.24} className="mt-8 text-center">
+            <Link
+              href="/faq"
+              className="inline-flex items-center gap-2 text-[#6D5BA8] hover:text-[#B07A18] transition-colors font-medium"
+            >
+              See all questions <WayArrow size={18} />
+            </Link>
           </FadeIn>
         </Container>
       </section>

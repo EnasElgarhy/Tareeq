@@ -12,7 +12,13 @@ import {
 } from "./PageShell";
 import { Constellation } from "./Illustrations";
 import { KaiChip } from "./KaiGuide";
-import { WayScale, WayHeart, WayPath, WaySpark, WayGauge } from "./WayIcons";
+import {
+  WayScale,
+  WayHeart,
+  WayGauge,
+  WayLeaf,
+  WaySpark,
+} from "./WayIcons";
 
 const THEORIES = [
   {
@@ -25,6 +31,15 @@ const THEORIES = [
       "Holland assumes work experience. CORE measures interests through everyday activities you’re already doing, making it accurate for youth without significant work history.",
   },
   {
+    icon: WayGauge,
+    accent: "#6D5BA8",
+    name: "Big Five personality research",
+    start:
+      "The Big Five (Openness, Conscientiousness, Extraversion, Agreeableness, Neuroticism) is the most replicated framework in personality psychology for describing how people naturally think, feel, and behave — validated across cultures and decades of research.",
+    adapted:
+      "Our Operations pillar draws on these traits to describe how you naturally function day to day — a working style, not a fixed label — so your results point toward roles that fit how you actually operate.",
+  },
+  {
     icon: WayHeart,
     accent: "#C96F63",
     name: "Self-Determination Theory (Deci & Ryan)",
@@ -34,13 +49,13 @@ const THEORIES = [
       "Our Rewards pillar maps to these needs. Impact relates to relatedness, Autonomy maps directly, Mastery relates to competence, and Recognition and Stability address the security needs that underlie motivation.",
   },
   {
-    icon: WayPath,
-    accent: "#6D5BA8",
-    name: "Career Development Theory (Super, Savickas, Krumboltz)",
+    icon: WayLeaf,
+    accent: "#3D8A73",
+    name: "Person-Environment Fit theory",
     start:
-      "Career choice isn’t a single decision — it’s an ongoing process of self-understanding and exploration. People thrive when they use self-knowledge to make intentional choices.",
+      "Satisfaction and performance depend not just on individual traits but on the match between a person and their surrounding environment — the culture, structure, and demands of where they work.",
     adapted:
-      "Each pillar illuminates a different dimension of yourself — interests, working style, values, environmental needs — a multidimensional self-portrait to guide your explorations.",
+      "Our Ecosystems pillar applies this directly: identifying the kinds of environments — team size, pace, structure, autonomy — where you’re likely to thrive, not just which job title fits.",
   },
 ];
 
@@ -106,10 +121,10 @@ export const Research = () => (
 
       <Section
         eyebrow="Foundations"
-        title="Three research traditions,"
+        title="Four research traditions,"
         accent="one framework."
       >
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {THEORIES.map((t, i) => (
             <FadeIn key={t.name} delay={i * 0.1}>
               <Card className="h-full flex flex-col">
@@ -232,7 +247,7 @@ export const Research = () => (
                     Enas Elgarhy
                   </h3>
                   <p className="text-sm text-[#6D5BA8]">
-                    Human Capital Development Consultant · 20+ years
+                    Human Capital Development Consultant · 22+ years
                   </p>
                 </div>
               </div>

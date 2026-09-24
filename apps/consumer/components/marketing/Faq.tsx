@@ -58,7 +58,7 @@ const TRUST = [
   },
   {
     q: "Is this scientifically valid?",
-    a: "CORE is grounded in established career psychology research (Holland’s RIASEC, Self-Determination Theory, career development research). It was designed by someone with 20+ years of assessment expertise and BPS certification, and uses clear, rule-based scoring — not AI guessing. Research is ongoing to validate CORE specifically with MENA youth.",
+    a: "CORE is grounded in established career psychology research (Holland’s RIASEC, Big Five, Self-Determination Theory, and Person-Environment Fit). It was designed by someone with 22+ years of assessment expertise and BPS certification, and uses clear, rule-based scoring — not AI guessing. Research is ongoing to validate CORE specifically with MENA youth.",
   },
   {
     q: "How accurate is this assessment?",
