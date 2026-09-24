@@ -8,6 +8,7 @@ import {
   UserRound,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
@@ -25,6 +26,16 @@ import {
   writeResultRegistration,
 } from "@/lib/results/storage";
 import type { ConsentAgeGate } from "@/lib/results/types";
+
+function splitLegalNotice(template: string) {
+  const [beforePrivacy, rest] = template.split("{privacy}");
+  const [betweenLinks, afterTerms] = (rest ?? "").split("{terms}");
+  return {
+    beforePrivacy: beforePrivacy ?? "",
+    betweenLinks: betweenLinks ?? "",
+    afterTerms: afterTerms ?? "",
+  };
+}
 
 function isValidEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -74,6 +85,10 @@ async function persistAssessment(name: string, locale: string) {
 export function RegistrationScreen() {
   const router = useRouter();
   const { t, locale } = useLocale();
+  const legalNotice = useMemo(
+    () => splitLegalNotice(t("register.legal_notice")),
+    [t],
+  );
   const existingRegistration = useMemo(() => readResultRegistration(), []);
   const [name, setName] = useState(existingRegistration?.name ?? "");
   const [email, setEmail] = useState(existingRegistration?.email ?? "");
@@ -333,6 +348,24 @@ export function RegistrationScreen() {
             {sending ? t("register.sending") : t("register.send_code_cta")}
             <ArrowRight size={18} />
           </button>
+
+          <p className="text-center text-[11px] leading-snug text-sand/55">
+            {legalNotice.beforePrivacy}
+            <Link
+              href="/privacy-policy"
+              className="underline underline-offset-2 hover:text-sand"
+            >
+              {t("register.legal_privacy_link")}
+            </Link>
+            {legalNotice.betweenLinks}
+            <Link
+              href="/terms-of-service"
+              className="underline underline-offset-2 hover:text-sand"
+            >
+              {t("register.legal_terms_link")}
+            </Link>
+            {legalNotice.afterTerms}
+          </p>
         </form>
       ) : (
         <form

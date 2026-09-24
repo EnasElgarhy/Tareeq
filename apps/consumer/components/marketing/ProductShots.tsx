@@ -3,7 +3,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import type { ComponentType, ReactNode } from "react";
-import { KAI_SRC_SM } from "./KaiGuide";
+import { KAI_SRC_SM, KaiBubble } from "./KaiGuide";
 import { WayCatalyst, WayLeaf, WayHeart, type WayIconProps } from "./WayIcons";
 
 interface FrameProps {
@@ -183,6 +183,47 @@ export const ReportShot = () => (
   </div>
 );
 
+/** 4 — Kai, your personalized guide */
+export const GuideShot = () => (
+  <div className="bg-[#FDFAF3] p-5 min-h-[400px] flex flex-col">
+    <div className="flex items-center justify-between mb-5">
+      <p className="text-[11px] uppercase tracking-[0.18em] text-[var(--day-ink-3)] font-semibold">
+        Example conversation with Kai
+      </p>
+      <span className="w-7 h-7 rounded-full overflow-hidden ring-1 ring-[#F4C660]/60">
+        <Image
+          src={KAI_SRC_SM}
+          alt=""
+          aria-hidden
+          width={32}
+          height={32}
+          className="w-full h-full object-cover object-top"
+        />
+      </span>
+    </div>
+
+    <div className="flex-1 flex flex-col justify-center gap-3">
+      <KaiBubble tone="day" tail="left" className="self-start max-w-[85%] !py-3 !px-4 text-base">
+        Your top cluster is Technology — want to know what that looks like
+        day-to-day?
+      </KaiBubble>
+      <div className="self-end max-w-[80%] rounded-story bg-[var(--day-inset)] px-4 py-3 text-[13px] leading-relaxed text-[var(--day-ink)]">
+        Yes — and how does that fit with wanting to work with people too?
+      </div>
+      <KaiBubble tone="day" tail="left" className="self-start max-w-[85%] !py-3 !px-4 text-base">
+        That’s your Ecosystems score talking. Let’s look at roles that blend
+        both.
+      </KaiBubble>
+    </div>
+
+    <div className="mt-auto pt-4 flex items-center gap-2.5 text-xs text-[var(--day-ink-3)]">
+      <span className="h-px flex-1 bg-[var(--day-line)]" aria-hidden />
+      always here after your results
+      <span className="h-px flex-1 bg-[var(--day-line)]" aria-hidden />
+    </div>
+  </div>
+);
+
 /** 3 — Shareable result card */
 export const CardShot = () => (
   <div className="bg-[#FDFAF3] p-5 min-h-[400px] flex flex-col">
@@ -255,7 +296,7 @@ export const PRODUCT_SHOTS: ReadonlyArray<ProductShot> = [
     tilt: -1.5,
     lift: "md:mt-10",
     title: "Career Compass",
-    body: "Your top clusters, archetype, and drivers at a glance.",
+    body: "Your top career clusters — the ones where you’d genuinely thrive.",
   },
   {
     shot: ReportShot,
@@ -270,6 +311,13 @@ export const PRODUCT_SHOTS: ReadonlyArray<ProductShot> = [
     lift: "md:mt-10",
     title: "Shareable Card",
     body: "A 3-page visual summary for family and counselors.",
+  },
+  {
+    shot: GuideShot,
+    tilt: -0.75,
+    lift: "",
+    title: "Kai, your personalized guide",
+    body: "Discusses your results with you and guides your decisions.",
   },
 ];
 

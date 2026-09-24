@@ -265,8 +265,23 @@ export const ScrollWorldHero = () => {
               n="One"
               title="The Crossroads"
               tone="night"
-              className="mb-4 sm:mb-5"
+              className="mb-3 sm:mb-4"
             />
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                type: "spring",
+                stiffness: 80,
+                damping: 18,
+                delay: 0.05,
+              }}
+              data-testid="hero-eyebrow"
+              className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#F5EEE6]/60 sm:mb-3 sm:text-xs"
+            >
+              Career assessment &amp; AI coaching for MENA students &amp; young
+              adults
+            </motion.p>
             <motion.h1
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
@@ -297,7 +312,8 @@ export const ScrollWorldHero = () => {
               }}
               className="mt-4 max-w-sm text-base leading-relaxed text-[#F5EEE6]/90 sm:mt-5 sm:text-lg"
             >
-              Career clarity for MENA youth, guided by Kai.
+              A science-based assessment that shows you which career paths
+              would fit you best.
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 24 }}
@@ -315,7 +331,7 @@ export const ScrollWorldHero = () => {
                 data-testid="hero-cta-start"
                 className="px-4 py-3 text-sm sm:px-8 sm:py-4 sm:text-base"
               >
-                Start assessment
+                Start answering the questions
               </GoldButton>
               <GhostButton
                 href="#how"
@@ -325,6 +341,20 @@ export const ScrollWorldHero = () => {
                 How it works
               </GhostButton>
             </motion.div>
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                type: "spring",
+                stiffness: 80,
+                damping: 18,
+                delay: 0.52,
+              }}
+              className="mt-3 text-xs text-[#F5EEE6]/60 sm:mt-4"
+              data-testid="hero-cta-microcopy"
+            >
+              12 minutes
+            </motion.p>
           </div>
         </motion.div>
 
