@@ -12,7 +12,7 @@ const PRACTICAL = [
   },
   {
     q: "Is it free?",
-    a: "Yes. The assessment and your results are completely free.",
+    a: "Yes, during our current testing and pilot phase — the assessment and your results are free. A paid plan will apply once Tareeq launches publicly.",
   },
   {
     q: "Can I retake it?",
