@@ -87,16 +87,16 @@ const DIFFERENT = [
 
 const HOME_FAQS = [
   {
-    q: "Is this scientifically valid?",
-    a: "CORE draws on four established frameworks in career and personality psychology — Holland’s RIASEC, Big Five, Self-Determination Theory, and Person-Environment Fit — designed by a BPS-certified assessor with 22+ years of experience, using transparent, rule-based scoring, not AI guessing. Research is ongoing to validate CORE specifically with MENA youth.",
-  },
-  {
     q: "Is my data private?",
-    a: "Yes. Your personal information is encrypted and kept separate from your assessment responses. Your results are private — only you and people you choose to share with can see them. For research, we use anonymous data only. You have full control.",
+    a: "Yes — your responses are encrypted, and you decide who sees your results.",
   },
   {
-    q: "Is it free?",
-    a: "Free during testing.",
+    q: "Is this scientifically valid?",
+    a: "Yes — CORE is built on four validated frameworks from career and organizational psychology: RIASEC, the Big Five, Self-Determination Theory, and Person-Environment Fit.",
+  },
+  {
+    q: "How much does it cost?",
+    a: "Free during our current testing phase. Pricing will apply once we launch publicly.",
   },
 ];
 
@@ -418,39 +418,6 @@ export const Home = () => (
           </FadeIn>
         </Container>
       </section>
-
-      {/* FAQ teaser */}
-      <section className="pb-24 md:pb-32">
-        <Container>
-          <FadeIn className="max-w-2xl mx-auto text-center">
-            <h2 className="font-heading text-3xl sm:text-4xl leading-tight font-semibold">
-              Good questions.
-            </h2>
-          </FadeIn>
-          <div className="mt-10 grid max-w-3xl mx-auto gap-4">
-            {HOME_FAQS.map((f, i) => (
-              <FadeIn key={f.q} delay={i * 0.08}>
-                <div className="rounded-story border border-[var(--day-line)] bg-[var(--day-card)] p-6">
-                  <h3 className="font-heading text-lg font-semibold">
-                    {f.q}
-                  </h3>
-                  <p className="mt-2 text-[15px] leading-relaxed text-[var(--day-ink-2)]">
-                    {f.a}
-                  </p>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-          <FadeIn delay={0.24} className="mt-8 text-center">
-            <Link
-              href="/faq"
-              className="inline-flex items-center gap-2 text-[#6D5BA8] hover:text-[#B07A18] transition-colors font-medium"
-            >
-              See all questions <WayArrow size={18} />
-            </Link>
-          </FadeIn>
-        </Container>
-      </section>
     </div>
 
     {/* DUSK — back to the stars for the send-off */}
@@ -509,5 +476,40 @@ export const Home = () => (
         </div>
       </Container>
     </section>
+
+    {/* FAQ teaser */}
+    <div className="bg-[var(--day-bg)] text-[var(--day-ink)]">
+      <section className="py-24 md:py-32">
+        <Container>
+          <FadeIn className="max-w-2xl mx-auto text-center">
+            <h2 className="font-heading text-3xl sm:text-4xl leading-tight font-semibold">
+              Good questions.
+            </h2>
+          </FadeIn>
+          <div className="mt-10 grid max-w-3xl mx-auto gap-4">
+            {HOME_FAQS.map((f, i) => (
+              <FadeIn key={f.q} delay={i * 0.08}>
+                <div className="rounded-story border border-[var(--day-line)] bg-[var(--day-card)] p-6">
+                  <h3 className="font-heading text-lg font-semibold">
+                    {f.q}
+                  </h3>
+                  <p className="mt-2 text-[15px] leading-relaxed text-[var(--day-ink-2)]">
+                    {f.a}
+                  </p>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+          <FadeIn delay={0.24} className="mt-8 text-center">
+            <Link
+              href="/faq"
+              className="inline-flex items-center gap-2 text-[#6D5BA8] hover:text-[#B07A18] transition-colors font-medium"
+            >
+              See all FAQs <WayArrow size={18} />
+            </Link>
+          </FadeIn>
+        </Container>
+      </section>
+    </div>
   </main>
 );
