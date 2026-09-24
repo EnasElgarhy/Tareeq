@@ -24,6 +24,11 @@ const NAV_LINKS = [
   { label: "FAQ", href: "/faq" },
 ] as const;
 
+const FOOTER_LEGAL_LINKS = [
+  { label: "Privacy Policy", href: "/privacy-policy" },
+  { label: "Terms of Service", href: "/terms-of-service" },
+] as const;
+
 export function MarketingShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const reduce = useReducedMotion();
@@ -206,6 +211,17 @@ export function MarketingShell({ children }: { children: ReactNode }) {
                 support@tareek.me
               </a>
               <p className="mt-2 text-sm text-[#F5EEE6]/40">© 2026 Tareeq</p>
+              <div className="mt-2 flex flex-wrap justify-start gap-x-4 gap-y-1 md:justify-end">
+                {FOOTER_LEGAL_LINKS.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="text-xs text-[#F5EEE6]/40 hover:text-[#F5EEE6]/70"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         </Container>
