@@ -1,14 +1,13 @@
 "use client";
 
-import { X } from "@phosphor-icons/react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { Container, FadeIn, GoldButton, GhostButton } from "./Shared";
 import { ScrollWorldHero } from "./ScrollWorldHero";
-import { KaiBubble, KaiChip } from "./KaiGuide";
-import { PathToDawn, Constellation } from "./Illustrations";
-import { Chapter, WaveDivider } from "./Storybook";
+import { KaiBubble } from "./KaiGuide";
+import { Constellation } from "./Illustrations";
+import { WaveDivider } from "./Storybook";
 import { PRODUCT_SHOTS, ShotFrame } from "./ProductShots";
 import { KaiShowcase } from "./KaiShowcase";
 import {
@@ -20,9 +19,10 @@ import {
   WayHeart,
   WayLeaf,
   WayArrow,
-  CAREER_CLUSTERS,
 } from "./WayIcons";
 
+// Not rendered on the landing page anymore — kept for reuse on the
+// assessment's own intro screen.
 const STATS = [
   { value: 54, label: "questions" },
   { value: 12, prefix: "~", label: "minutes" },
@@ -30,12 +30,18 @@ const STATS = [
   { value: 4, label: "dimensions of fit" },
 ];
 
+// Not rendered on the landing page anymore — the "Career tools were built
+// for someone else" red-X checklist may move to an "Our approach" or
+// research page later.
 const PAINS = [
   "Built for Western job markets",
   "Assume years of work experience",
   "Measure interests, and nothing else",
 ];
 
+// Not rendered on the landing page anymore — the "Four dimensions. One
+// honest map of you." section and these cards may be reused on a model or
+// report page later.
 const PILLARS = [
   {
     letter: "C",
@@ -85,6 +91,21 @@ const DIFFERENT = [
   },
 ];
 
+const HOME_FAQS = [
+  {
+    q: "Is my data private?",
+    a: "Yes — your responses are encrypted, and you decide who sees your results.",
+  },
+  {
+    q: "Is this scientifically valid?",
+    a: "Yes — CORE is built on four validated frameworks from career and organizational psychology: RIASEC, the Big Five, Self-Determination Theory, and Person-Environment Fit.",
+  },
+  {
+    q: "How much does it cost?",
+    a: "Free during our current testing phase. Pricing will apply once we launch publicly.",
+  },
+];
+
 interface StatProps {
   value: number;
   prefix?: string;
@@ -108,6 +129,35 @@ const Stat = ({ value, prefix = "", label, delay = 0 }: StatProps) => {
   );
 };
 
+// Not rendered on the landing page anymore — postponing testimonials until
+// there are more real users. Kept here to bring back easily, and as the
+// natural home for future additions (e.g. a parent/counselor quote
+// alongside this one).
+const VoicesSection = () => (
+  <section className="pb-24 md:pb-32">
+    <Container>
+      <FadeIn>
+        <figure className="relative max-w-3xl mx-auto text-center px-6">
+          <span
+            className="block font-heading font-extrabold text-[7rem] leading-[0.5] text-[#F4C660]/40 select-none"
+            aria-hidden
+          >
+            “
+          </span>
+          <blockquote className="font-heading text-2xl sm:text-4xl font-medium leading-snug text-[var(--day-ink)]">
+            I knew I needed fast-paced environments. I just didn’t have
+            language for it. Now I’m choosing with confidence.
+          </blockquote>
+          <figcaption className="mt-7 flex items-center justify-center gap-3 text-sm text-[var(--day-ink-2)]">
+            <span className="h-px w-8 bg-[#B07A18]" aria-hidden />
+            Salma, student, 16, UAE
+          </figcaption>
+        </figure>
+      </FadeIn>
+    </Container>
+  </section>
+);
+
 export const Home = () => (
   <main>
     {/* NIGHT — the crossroads */}
@@ -115,61 +165,6 @@ export const Home = () => (
 
     {/* DAY — clarity */}
     <div className="bg-[var(--day-bg)] text-[var(--day-ink)]">
-      {/* Stat band */}
-      <section
-        className="relative overflow-hidden border-b border-[var(--day-line)] py-12 sm:py-16"
-        data-testid="daybreak-stats"
-      >
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 -top-24 h-72"
-          style={{
-            background:
-              "radial-gradient(ellipse 42% 90% at 64% 0%, rgba(244,198,96,0.32) 0%, rgba(244,169,124,0.12) 42%, transparent 74%)",
-          }}
-        />
-        <Container className="relative">
-          <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4 md:gap-8">
-            {STATS.map((s, i) => (
-              <Stat key={s.label} {...s} delay={i * 0.08} />
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      {/* The problem — one statement, three pains */}
-      <section className="py-24 md:py-32 relative overflow-hidden">
-        <Container>
-          <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-14 items-center">
-            <FadeIn>
-              <Chapter n="Three" title="The Wrong Maps" className="mb-5" />
-              <h2 className="font-heading text-4xl sm:text-6xl leading-[1.06] font-semibold">
-                Career tools were built
-                <span className="text-[#6D5BA8]"> for someone else.</span>
-              </h2>
-              <ul className="mt-10 space-y-3">
-                {PAINS.map((p, i) => (
-                  <FadeIn key={p} delay={0.1 + i * 0.08}>
-                    <li className="flex items-center gap-3 text-lg text-[var(--day-ink-2)]">
-                      <span className="flex size-6 shrink-0 items-center justify-center rounded-full border border-[#C96F63]/40 bg-[#C96F63]/10 text-[#C96F63]">
-                        <X size={13} weight="bold" aria-hidden />
-                      </span>
-                      {p}
-                    </li>
-                  </FadeIn>
-                ))}
-              </ul>
-              <p className="mt-10 font-heading text-2xl sm:text-3xl font-semibold text-[#B07A18]">
-                Tareeq starts from your reality.
-              </p>
-            </FadeIn>
-            <FadeIn delay={0.12}>
-              <PathToDawn className="w-full h-auto text-[var(--day-ink-2)]" />
-            </FadeIn>
-          </div>
-        </Container>
-      </section>
-
       {/* What makes Tareeq different — one line each */}
       <WaveDivider fill="var(--day-inset)" />
       <section className="py-14 md:py-20 bg-[var(--day-inset)]">
@@ -205,103 +200,7 @@ export const Home = () => (
         </Container>
       </section>
 
-      {/* CORE — letter-forward tiles */}
       <WaveDivider fill="var(--day-bg)" className="bg-[var(--day-inset)]" />
-      <section
-        id="how"
-        className="relative scroll-mt-24 overflow-hidden py-20 md:py-28"
-      >
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ background: "var(--day-glow)" }}
-        />
-        <Container className="relative">
-          <FadeIn className="max-w-2xl mx-auto text-center">
-            <h2 className="font-heading text-4xl sm:text-6xl leading-tight font-semibold">
-              Four dimensions.
-              <br />
-              One honest <span className="text-[#6D5BA8]">map of you.</span>
-            </h2>
-          </FadeIn>
-
-          <div className="mt-12 grid grid-cols-2 gap-3 sm:mt-16 sm:gap-5 lg:grid-cols-4">
-            {PILLARS.map((p, i) => {
-              const Icon = p.icon;
-              return (
-                <FadeIn key={p.name} delay={i * 0.08}>
-                  <motion.div
-                    whileHover={{ y: -6 }}
-                    transition={{ type: "spring", stiffness: 250, damping: 20 }}
-                    className="relative min-h-[190px] h-full overflow-hidden bg-[var(--day-card)] border border-[var(--day-line)] rounded-story px-5 pt-6 pb-16 shadow-[0_10px_36px_rgba(42,33,24,0.06)] sm:min-h-[210px] sm:px-7 sm:pt-8 sm:pb-20"
-                  >
-                    <div className="flex flex-col items-start gap-3 min-[480px]:flex-row min-[480px]:items-center">
-                      <div
-                        className="w-10 h-10 shrink-0 rounded-xl bg-[#FFF9EE] border border-[var(--day-line)] flex items-center justify-center sm:w-11 sm:h-11"
-                        style={{ color: p.accent }}
-                      >
-                        <Icon size={22} />
-                      </div>
-                      <span
-                        className="font-heading text-base font-semibold sm:text-lg"
-                        style={{ color: p.accent }}
-                      >
-                        {p.name}
-                      </span>
-                    </div>
-                    <p className="mt-5 text-sm leading-relaxed text-[var(--day-ink-2)] sm:text-[15px]">
-                      {p.q}
-                    </p>
-                    <span
-                      className="absolute -bottom-7 -right-2 font-heading font-extrabold text-[7rem] leading-none select-none pointer-events-none sm:-bottom-9 sm:text-[9rem]"
-                      style={{ color: `${p.accent}1f` }}
-                    >
-                      {p.letter}
-                    </span>
-                  </motion.div>
-                </FadeIn>
-              );
-            })}
-          </div>
-
-          <FadeIn delay={0.14} className="mt-12 max-w-xl mx-auto">
-            <KaiChip tone="day">
-              You answer. I turn it into a map with no jargon and no scores
-              without meaning.
-            </KaiChip>
-          </FadeIn>
-
-          <FadeIn delay={0.18} className="mt-10 text-center">
-            <Link
-              href="/model"
-              className="inline-flex items-center gap-2 text-[#6D5BA8] hover:text-[#B07A18] transition-colors font-medium"
-            >
-              Explore the full model <WayArrow size={18} />
-            </Link>
-          </FadeIn>
-        </Container>
-      </section>
-
-      {/* Clusters — living marquee */}
-      <section
-        className="py-12 border-y border-[var(--day-line)] overflow-hidden"
-        aria-label="Eight career clusters"
-      >
-        <div className="marquee-track gap-3 pr-3">
-          {[...CAREER_CLUSTERS, ...CAREER_CLUSTERS].map((c, i) => {
-            const Icon = c.icon;
-            return (
-              <span
-                key={`${c.label}-${i}`}
-                aria-hidden={i >= CAREER_CLUSTERS.length ? true : undefined}
-                className="shrink-0 rounded-full bg-[var(--day-card)] border border-[var(--day-line)] px-6 py-2.5 text-sm text-[var(--day-ink-2)] flex items-center gap-2.5"
-              >
-                <Icon size={16} className="text-[#8A6210]" />
-                {c.label}
-              </span>
-            );
-          })}
-        </div>
-      </section>
 
       {/* What you get */}
       <section className="py-24 md:py-28">
@@ -317,15 +216,12 @@ export const Home = () => (
               with the people helping you choose.
             </p>
           </FadeIn>
-          <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto items-start">
+          <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto items-start">
             {PRODUCT_SHOTS.map((d, i) => {
               const Shot = d.shot;
               return (
                 <FadeIn key={d.title} delay={i * 0.12} className={d.lift}>
-                  <ShotFrame tilt={d.tilt}>
-                    <Shot />
-                  </ShotFrame>
-                  <div className="mt-5 text-center">
+                  <div className="text-center">
                     <h3 className="font-heading text-lg font-semibold">
                       {d.title}
                     </h3>
@@ -333,6 +229,9 @@ export const Home = () => (
                       {d.body}
                     </p>
                   </div>
+                  <ShotFrame tilt={d.tilt} className="mt-5">
+                    <Shot />
+                  </ShotFrame>
                 </FadeIn>
               );
             })}
@@ -342,30 +241,6 @@ export const Home = () => (
 
       {/* Walking with Kai — chat + living profile */}
       <KaiShowcase />
-
-      {/* Student story — short pull quote */}
-      <section className="pb-24 md:pb-32">
-        <Container>
-          <FadeIn>
-            <figure className="relative max-w-3xl mx-auto text-center px-6">
-              <span
-                className="block font-heading font-extrabold text-[7rem] leading-[0.5] text-[#F4C660]/40 select-none"
-                aria-hidden
-              >
-                “
-              </span>
-              <blockquote className="font-heading text-2xl sm:text-4xl font-medium leading-snug text-[var(--day-ink)]">
-                I knew I needed fast-paced environments. I just didn’t have
-                language for it. Now I’m choosing with confidence.
-              </blockquote>
-              <figcaption className="mt-7 flex items-center justify-center gap-3 text-sm text-[var(--day-ink-2)]">
-                <span className="h-px w-8 bg-[#B07A18]" aria-hidden />
-                Salma, student, 16, UAE
-              </figcaption>
-            </figure>
-          </FadeIn>
-        </Container>
-      </section>
     </div>
 
     {/* DUSK — back to the stars for the send-off */}
@@ -424,5 +299,40 @@ export const Home = () => (
         </div>
       </Container>
     </section>
+
+    {/* FAQ teaser */}
+    <div className="bg-[var(--day-bg)] text-[var(--day-ink)]">
+      <section className="py-24 md:py-32">
+        <Container>
+          <FadeIn className="max-w-2xl mx-auto text-center">
+            <h2 className="font-heading text-3xl sm:text-4xl leading-tight font-semibold">
+              Good questions.
+            </h2>
+          </FadeIn>
+          <div className="mt-10 grid max-w-3xl mx-auto gap-4">
+            {HOME_FAQS.map((f, i) => (
+              <FadeIn key={f.q} delay={i * 0.08}>
+                <div className="rounded-story border border-[var(--day-line)] bg-[var(--day-card)] p-6">
+                  <h3 className="font-heading text-lg font-semibold">
+                    {f.q}
+                  </h3>
+                  <p className="mt-2 text-[15px] leading-relaxed text-[var(--day-ink-2)]">
+                    {f.a}
+                  </p>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+          <FadeIn delay={0.24} className="mt-8 text-center">
+            <Link
+              href="/faq"
+              className="inline-flex items-center gap-2 text-[#6D5BA8] hover:text-[#B07A18] transition-colors font-medium"
+            >
+              See all FAQs <WayArrow size={18} />
+            </Link>
+          </FadeIn>
+        </Container>
+      </section>
+    </div>
   </main>
 );

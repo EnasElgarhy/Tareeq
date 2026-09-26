@@ -1677,6 +1677,18 @@ export const STRINGS = {
     en: "Share anonymized insights with university partners.",
     ar: "مشاركة رؤى مجهّلة مع شركاء جامعيين.",
   },
+  "register.legal_notice": {
+    en: "By continuing, you agree to our {privacy} and {terms}.",
+    ar: "من خلال المتابعة، فإنك توافق على {privacy} و{terms}.",
+  },
+  "register.legal_privacy_link": {
+    en: "Privacy Policy",
+    ar: "سياسة الخصوصية",
+  },
+  "register.legal_terms_link": {
+    en: "Terms of Service",
+    ar: "شروط الخدمة",
+  },
   "register.sending": { en: "Sending…", ar: "جارٍ الإرسال…" },
   "register.send_code_cta": {
     en: "Send verification code",

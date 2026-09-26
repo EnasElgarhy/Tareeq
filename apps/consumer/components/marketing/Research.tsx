@@ -12,37 +12,7 @@ import {
 } from "./PageShell";
 import { Constellation } from "./Illustrations";
 import { KaiChip } from "./KaiGuide";
-import { WayScale, WayHeart, WayPath, WaySpark, WayGauge } from "./WayIcons";
-
-const THEORIES = [
-  {
-    icon: WayScale,
-    accent: "#B07A18",
-    name: "Holland’s Vocational Interest Theory (RIASEC)",
-    start:
-      "One of the most researched and validated career models in psychology: people with similar interest profiles tend to thrive in similar career environments. CORE builds on this — particularly the insight that interest is a strong predictor of career satisfaction.",
-    adapted:
-      "Holland assumes work experience. CORE measures interests through everyday activities you’re already doing, making it accurate for youth without significant work history.",
-  },
-  {
-    icon: WayHeart,
-    accent: "#C96F63",
-    name: "Self-Determination Theory (Deci & Ryan)",
-    start:
-      "Intrinsic motivation — being driven by internal needs rather than external rewards — is crucial for long-term engagement and wellbeing. Three needs drive it: autonomy, competence, and relatedness.",
-    adapted:
-      "Our Rewards pillar maps to these needs. Impact relates to relatedness, Autonomy maps directly, Mastery relates to competence, and Recognition and Stability address the security needs that underlie motivation.",
-  },
-  {
-    icon: WayPath,
-    accent: "#6D5BA8",
-    name: "Career Development Theory (Super, Savickas, Krumboltz)",
-    start:
-      "Career choice isn’t a single decision — it’s an ongoing process of self-understanding and exploration. People thrive when they use self-knowledge to make intentional choices.",
-    adapted:
-      "Each pillar illuminates a different dimension of yourself — interests, working style, values, environmental needs — a multidimensional self-portrait to guide your explorations.",
-  },
-];
+import { WaySpark, WayGauge } from "./WayIcons";
 
 const REGIONAL = [
   {
@@ -99,40 +69,37 @@ export const Research = () => (
         eyebrow="Research & Evidence"
         title="The science"
         accent="behind CORE."
-        lede="CORE is grounded in established career psychology research. Here’s what informed the model — and where we deliberately adapted it for MENA youth."
+        lede="Built on decades of validated career theories, not guesswork."
         art={Constellation}
         artClass="w-72 h-auto"
       />
 
-      <Section
-        eyebrow="Foundations"
-        title="Three research traditions,"
-        accent="one framework."
-      >
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {THEORIES.map((t, i) => (
-            <FadeIn key={t.name} delay={i * 0.1}>
-              <Card className="h-full flex flex-col">
-                <IconChip icon={t.icon} color={t.accent} />
-                <h3 className="mt-5 font-heading text-lg font-semibold leading-snug">
-                  {t.name}
-                </h3>
-                <p className="mt-4 text-sm text-[var(--day-ink-2)] leading-relaxed">
-                  <span className="text-[#B07A18] font-semibold">
-                    Starting point ·{" "}
-                  </span>
-                  {t.start}
-                </p>
-                <p className="mt-3 text-sm text-[var(--day-ink-2)] leading-relaxed">
-                  <span className="text-[#3D8A73] font-semibold">
-                    How CORE uses it ·{" "}
-                  </span>
-                  {t.adapted}
-                </p>
-              </Card>
-            </FadeIn>
-          ))}
-        </div>
+      <Section eyebrow="Foundations">
+        <FadeIn className="max-w-3xl">
+          <p className="text-[var(--day-ink-2)] leading-relaxed">
+            CORE draws on four established frameworks in career and
+            personality psychology: Holland’s RIASEC model for Curiosities
+            (what captures your attention), Big Five personality research
+            for Operations (how you naturally work), Self-Determination
+            Theory for Rewards (what drives you), and Person-Environment
+            Fit theory for Ecosystems (where you thrive). Scoring is
+            transparent and rule-based — no black box, no machine learning
+            guessing at you. And because these frameworks were largely
+            built and validated in the US and Europe, CORE adds context
+            specific to how the MENA job market and education system
+            actually work.
+          </p>
+          <p className="mt-6 text-sm leading-relaxed text-[var(--day-ink-3)]">
+            Designed by{" "}
+            <span className="font-semibold text-[var(--day-ink-2)]">
+              Enas Elgarhy
+            </span>
+            , a BPS-certified assessor and ICF-accredited coach, with 22+
+            years in people development and psychometric assessment —
+            including tools like Hogan, Saville, Korn Ferry, and MBTI —
+            across the MENA region.
+          </p>
+        </FadeIn>
       </Section>
 
       <Section
@@ -232,7 +199,7 @@ export const Research = () => (
                     Enas Elgarhy
                   </h3>
                   <p className="text-sm text-[#6D5BA8]">
-                    Human Capital Development Consultant · 20+ years
+                    Human Capital Development Consultant · 22+ years
                   </p>
                 </div>
               </div>
