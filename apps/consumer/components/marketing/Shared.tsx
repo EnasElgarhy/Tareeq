@@ -110,3 +110,41 @@ export function GhostButton({
     </Link>
   );
 }
+
+/** Accent phrase inside a headline, swept across the CORE accents. */
+const HEADLINE_GRADIENTS = {
+  // Day accents, as used by the CORE pillar tiles. The brand's --grad-warm
+  // is not used here: its gold end reads at 1.6:1 on the cream surface,
+  // while these three all clear 3:1.
+  day: "linear-gradient(96deg, #B07A18 0%, #C96F63 46%, #6D5BA8 100%)",
+  // The lighter members of the same three families, for night surfaces
+  // (12.6:1, 10.6:1 and 6.4:1 on --night).
+  night: "linear-gradient(96deg, #F4C660 0%, #F2A8B3 48%, #9D7FF0 100%)",
+} as const;
+
+export function GradientText({
+  children,
+  tone = "day",
+  className = "",
+}: {
+  children: ReactNode;
+  tone?: keyof typeof HEADLINE_GRADIENTS;
+  className?: string;
+}) {
+  return (
+    <span
+      className={`gradient-text inline-block ${className}`}
+      style={{
+        backgroundImage: HEADLINE_GRADIENTS[tone],
+        WebkitBackgroundClip: "text",
+        backgroundClip: "text",
+        WebkitTextFillColor: "transparent",
+        color: "transparent",
+        // Keeps descenders off the line box on tight leading.
+        paddingBlock: "0.06em",
+      }}
+    >
+      {children}
+    </span>
+  );
+}

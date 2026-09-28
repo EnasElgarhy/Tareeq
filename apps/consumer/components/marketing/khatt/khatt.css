@@ -1,0 +1,644 @@
+/* ============================================================
+ * Khatt — Tareeq marketing design system v3
+ *
+ * Structure and rhythm are new; the palette is the established Tareeq one
+ * (docs/design-v2-archive.md §2). Cluster values mirror
+ * lib/results/cluster-visuals.ts, so a cluster reads the same colour here
+ * as it does in the user's result.
+ *
+ * The page runs one deliberate luminance arc: a night stage, one dawn
+ * transition into a paper expanse, then back to night to close. The arc
+ * performs the hero copy rather than decorating it, which is why the
+ * surface inverts mid-page instead of holding a single theme.
+ *
+ * Scoped to [data-khatt] so surfaces still on v2 are untouched.
+ * ============================================================ */
+
+[data-khatt] {
+  --night: #08051a;
+  --midnight: #100a24;
+  --dusk: #221248;
+
+  --violet: #6e48e4;
+  --violet-soft: #9d7ff0;
+  --lilac: #c8b6f0;
+
+  --sand: #f5eee6;
+  --paper: #f9f4ec;
+  --carbon: #14101f;
+  --carbon-soft: #2b2440;
+
+  /* Gold is rationed: primary actions and live state only, never
+     decoration. It is a fill, not a type colour. Carbon on gold is 11.8:1. */
+  --gold: #f4c660;
+  --gold-soft: #fde7a8;
+
+  /* The eight clusters. Colour reports which cluster something belongs to. */
+  --cluster-tech: #4f8dff;
+  --cluster-eng: #ff8a4c;
+  --cluster-sci: #7466ee;
+  --cluster-art: #d45cf0;
+  --cluster-bus: #f2c14e;
+  --cluster-law: #20bba8;
+  --cluster-ppl: #ff6f91;
+  --cluster-env: #5bc96a;
+
+  /* Per-surface roles. Each field sets these once, and every child reads
+     them, so one ink carries all type and structural lines on that surface. */
+  --ink: var(--sand);
+  --ink-quiet: var(--lilac);
+  --hairline: color-mix(in oklab, var(--lilac) 20%, transparent);
+  --surface: var(--night);
+
+  --measure: 34rem;
+  --gutter: clamp(1rem, 0.5rem + 2.5vw, 4rem);
+  --field-pad: clamp(3.5rem, 2rem + 6vw, 7.5rem);
+  --rail: clamp(1.25rem, 0.75rem + 1.5vw, 2.5rem);
+
+  /* Display is compressed rather than heavy: weight stays mid, tracking
+     goes deeply negative, leading drops under 1. */
+  --text-display: clamp(2.75rem, 1.2rem + 6.4vw, 6.5rem);
+  --text-heading: clamp(2rem, 1.2rem + 3vw, 3.75rem);
+  --text-lead: clamp(1.0625rem, 1rem + 0.45vw, 1.375rem);
+  --text-meta: 0.875rem;
+
+  /* Buttons are rounder than the cards they sit on. */
+  --radius-card: 20px;
+  --radius-btn: 999px;
+  --radius-img: 18px;
+
+  /* Stacked thin layers, never one heavy drop. */
+  --lift: 0 0 0 1px color-mix(in oklab, var(--carbon) 7%, transparent),
+    0 16px 16px -8px rgba(12, 8, 30, 0.05),
+    0 8px 8px -4px rgba(12, 8, 30, 0.04),
+    0 3px 3px -1.5px rgba(12, 8, 30, 0.03);
+
+  --ease-draw: cubic-bezier(0.22, 1, 0.36, 1);
+
+  font-family: var(--font-rubik), system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--night);
+}
+
+[data-khatt] .page {
+  min-height: 100%;
+  background: var(--night);
+}
+
+/* ---------- Fields ---------- */
+
+[data-khatt] .field {
+  position: relative;
+  padding-block: var(--field-pad);
+  padding-inline: var(--gutter);
+  background: var(--surface);
+  color: var(--ink);
+  overflow: clip;
+}
+
+[data-khatt] .field--dusk {
+  --surface: var(--dusk);
+}
+
+/* The lit half of the arc. One ink carries everything on paper. */
+[data-khatt] .field--paper {
+  --surface: var(--paper);
+  --ink: var(--carbon);
+  --ink-quiet: color-mix(in oklab, var(--carbon) 66%, transparent);
+  --hairline: color-mix(in oklab, var(--carbon) 12%, transparent);
+}
+
+[data-khatt] .field--sand {
+  --surface: var(--sand);
+  --ink: var(--carbon);
+  --ink-quiet: color-mix(in oklab, var(--carbon) 66%, transparent);
+  --hairline: color-mix(in oklab, var(--carbon) 12%, transparent);
+}
+
+[data-khatt] .field__inner {
+  position: relative;
+  max-width: 76rem;
+  margin-inline: auto;
+  padding-inline-start: var(--rail);
+}
+
+/* ---------- Dawn ----------
+   The single transition between the two halves of the arc. It is a real
+   gradient band, not a divider graphic, so the switch reads as one move. */
+
+[data-khatt] .dawn {
+  height: clamp(6rem, 3rem + 12vw, 14rem);
+  background: linear-gradient(
+    180deg,
+    var(--night) 0%,
+    #1a1030 34%,
+    #4a2f52 62%,
+    #b78a6d 84%,
+    var(--paper) 100%
+  );
+}
+
+[data-khatt] .dawn--dusk {
+  background: linear-gradient(
+    180deg,
+    var(--sand) 0%,
+    #b78a6d 18%,
+    #4a2f52 44%,
+    #1a1030 72%,
+    var(--night) 100%
+  );
+}
+
+/* ---------- The thread ----------
+   A spine down the start edge of the content column, tinted per section to
+   the cluster it concerns. Scales on the compositor. */
+
+[data-khatt] .thread {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  color: var(--violet-soft);
+  transform: scaleY(0);
+  transform-origin: top;
+  animation: thread-draw 900ms var(--ease-draw) 120ms forwards;
+}
+
+[data-khatt] .field--paper .thread,
+[data-khatt] .field--sand .thread {
+  color: var(--violet);
+}
+
+@keyframes thread-draw {
+  to {
+    transform: scaleY(1);
+  }
+}
+
+/* ---------- Type ---------- */
+
+[data-khatt] .display {
+  margin: 0;
+  max-width: 16ch;
+  font-size: var(--text-display);
+  font-weight: 500;
+  line-height: 0.94;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+[data-khatt] .heading {
+  margin: 0;
+  max-width: 18ch;
+  font-size: var(--text-heading);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+[data-khatt] .lead {
+  margin: 0;
+  max-width: var(--measure);
+  font-size: var(--text-lead);
+  font-weight: 300;
+  line-height: 1.65;
+  color: var(--ink-quiet);
+}
+
+[data-khatt] .meta {
+  margin: 0;
+  max-width: var(--measure);
+  font-size: var(--text-meta);
+  line-height: 1.6;
+  color: var(--ink-quiet);
+}
+
+[data-khatt] .prose {
+  max-width: 62ch;
+  font-size: 1.0625rem;
+  font-weight: 300;
+  line-height: 1.85;
+  color: var(--ink-quiet);
+}
+
+[data-khatt] .prose p {
+  margin: 0 0 1.25rem;
+}
+
+[data-khatt] .prose p:last-child {
+  margin-block-end: 0;
+}
+
+[data-khatt] .stack {
+  display: grid;
+  gap: 1.5rem;
+  justify-items: start;
+}
+
+/* ---------- Actions ---------- */
+
+[data-khatt] .actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+[data-khatt] .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.9375rem 1.75rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-btn);
+  font: inherit;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 180ms var(--ease-draw),
+    border-color 180ms var(--ease-draw), transform 180ms var(--ease-draw);
+}
+
+[data-khatt] .btn--gold {
+  background: var(--gold);
+  color: var(--carbon);
+}
+
+[data-khatt] .btn--gold:hover {
+  background: var(--gold-soft);
+}
+
+[data-khatt] .btn--quiet {
+  border-color: color-mix(in oklab, var(--ink) 32%, transparent);
+  color: var(--ink);
+}
+
+[data-khatt] .btn--quiet:hover {
+  border-color: var(--ink);
+}
+
+[data-khatt] .btn:active {
+  transform: translateY(1px);
+}
+
+[data-khatt] .btn:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+/* ---------- Hero ---------- */
+
+[data-khatt] .hero {
+  display: grid;
+  align-content: end;
+  min-height: min(84svh, 48rem);
+  padding-block-end: clamp(2.5rem, 1.5rem + 4vw, 5rem);
+}
+
+[data-khatt] .hero__inner {
+  display: grid;
+  gap: 2.5rem;
+  align-items: end;
+}
+
+[data-khatt] .hero__copy {
+  display: grid;
+  gap: 2rem;
+  justify-items: start;
+}
+
+[data-khatt] .hero__lede {
+  display: grid;
+  gap: 1.375rem;
+  justify-items: start;
+}
+
+/* The device carries the product's signature moment. Hidden below the split
+   so the mobile hero still fits one viewport. */
+[data-khatt] .hero__stage {
+  display: none;
+}
+
+@media (min-width: 60rem) {
+  [data-khatt] .hero__inner {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 20rem);
+    gap: 4rem;
+  }
+
+  [data-khatt] .hero__stage {
+    display: block;
+    justify-self: end;
+  }
+
+  [data-khatt] .hero__device {
+    width: 20rem;
+    height: auto;
+    border-radius: var(--radius-img);
+    transform: rotate(2deg);
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--lilac) 14%, transparent),
+      0 40px 60px -24px rgba(0, 0, 0, 0.55),
+      0 16px 24px -12px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* ---------- Readout ---------- */
+
+[data-khatt] .readout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2.5rem 1.5rem;
+}
+
+@media (min-width: 48rem) {
+  [data-khatt] .readout {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+[data-khatt] .readout__value {
+  display: block;
+  font-size: clamp(2.5rem, 1.8rem + 2.6vw, 4rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+[data-khatt] .readout__label {
+  display: block;
+  margin-block-start: 0.5rem;
+  font-size: var(--text-meta);
+  color: var(--ink-quiet);
+}
+
+/* ---------- List with a hanging rule ---------- */
+
+[data-khatt] .list {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-width: var(--measure);
+}
+
+[data-khatt] .list li {
+  position: relative;
+  padding-inline-start: 2rem;
+  font-size: var(--text-lead);
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--ink-quiet);
+}
+
+[data-khatt] .list li::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0.85em;
+  inset-inline-start: 0;
+  width: 1.125rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.45;
+}
+
+/* ---------- Entries ---------- */
+
+[data-khatt] .entries {
+  display: grid;
+  gap: 2.75rem;
+  width: 100%;
+}
+
+/* Asymmetric rather than three equal columns: the first entry carries more
+   weight, the other two sit beside it. */
+@media (min-width: 60rem) {
+  [data-khatt] .entries--lead {
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 3.5rem;
+    align-items: start;
+  }
+
+  [data-khatt] .entries--lead .entry:first-child h3 {
+    font-size: 1.625rem;
+  }
+}
+
+[data-khatt] .entry__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-block-end: 1.25rem;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-btn);
+  color: var(--violet);
+}
+
+[data-khatt] .entry h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+[data-khatt] .entry p {
+  margin: 0;
+  max-width: 42ch;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--ink-quiet);
+}
+
+/* ---------- Product shots: tilted, pinned to the page ---------- */
+
+[data-khatt] .shots {
+  display: grid;
+  gap: 3.5rem;
+  width: 100%;
+  margin-block-start: 1.5rem;
+}
+
+@media (min-width: 60rem) {
+  [data-khatt] .shots {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  [data-khatt] .shot:nth-child(1) {
+    transform: rotate(-2.5deg);
+  }
+
+  [data-khatt] .shot:nth-child(2) {
+    margin-block-start: 3.5rem;
+    transform: rotate(1.5deg);
+  }
+
+  [data-khatt] .shot:nth-child(3) {
+    margin-block-start: 1rem;
+    transform: rotate(-1deg);
+  }
+}
+
+[data-khatt] .shot {
+  margin: 0;
+  display: grid;
+  gap: 1.25rem;
+  justify-items: start;
+}
+
+[data-khatt] .shot__img {
+  width: min(100%, 19rem);
+  height: auto;
+  border-radius: var(--radius-img);
+  box-shadow: var(--lift);
+}
+
+[data-khatt] .shot__caption h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+[data-khatt] .shot__caption p {
+  margin: 0;
+  max-width: 32ch;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--ink-quiet);
+}
+
+/* ---------- CORE ---------- */
+
+[data-khatt] .dimensions {
+  display: grid;
+  width: 100%;
+}
+
+[data-khatt] .dimension {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  gap: 1.5rem;
+  padding-block: 1.75rem;
+  border-block-start: 1px solid var(--hairline);
+}
+
+[data-khatt] .dimension:last-child {
+  border-block-end: 1px solid var(--hairline);
+}
+
+[data-khatt] .dimension__letter {
+  font-size: clamp(2rem, 1.4rem + 2.2vw, 3rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--tone);
+}
+
+[data-khatt] .dimension__name {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+[data-khatt] .dimension__q {
+  margin: 0.375rem 0 0;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--ink-quiet);
+}
+
+/* ---------- Clusters: pastel washes on small surfaces only ---------- */
+
+[data-khatt] .clusters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+[data-khatt] .cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-btn);
+  background: color-mix(in oklab, var(--tone) 14%, transparent);
+  color: var(--ink);
+  font-size: 0.9375rem;
+}
+
+[data-khatt] .cluster::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  flex: none;
+  border-radius: 999px;
+  background: var(--tone);
+}
+
+/* ---------- Split ---------- */
+
+[data-khatt] .split {
+  display: grid;
+  gap: 2.5rem;
+  align-items: center;
+  width: 100%;
+}
+
+@media (min-width: 60rem) {
+  [data-khatt] .split {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 24rem);
+    gap: 4rem;
+  }
+}
+
+[data-khatt] .split__figure {
+  width: min(100%, 22rem);
+  height: auto;
+  justify-self: start;
+}
+
+/* ---------- Quote ---------- */
+
+[data-khatt] .quote {
+  margin: 0;
+}
+
+[data-khatt] .quote blockquote {
+  margin: 0;
+  max-width: 16ch;
+  font-size: clamp(1.75rem, 1.1rem + 2.6vw, 3.25rem);
+  font-weight: 300;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+[data-khatt] .quote figcaption {
+  margin-block-start: 1.75rem;
+  font-size: var(--text-meta);
+  color: var(--ink-quiet);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-khatt] .thread {
+    animation: none;
+    transform: scaleY(1);
+  }
+
+  [data-khatt] *,
+  [data-khatt] *::before,
+  [data-khatt] *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

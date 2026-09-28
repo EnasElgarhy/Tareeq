@@ -4,7 +4,7 @@ import { Check, Sparkle } from "@phosphor-icons/react";
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import type { ReactNode } from "react";
-import { Container, FadeIn } from "./Shared";
+import { Container, FadeIn, GradientText } from "./Shared";
 import { KAI_SRC_SM } from "./KaiGuide";
 import { WayCatalyst } from "./WayIcons";
 
@@ -177,7 +177,7 @@ export const KaiShowcase = () => (
           id="kai-showcase-heading"
           className="font-heading text-4xl sm:text-5xl leading-tight font-semibold"
         >
-          You never read the map <span className="text-[#6D5BA8]">alone.</span>
+          You never read the map <GradientText>alone.</GradientText>
         </h2>
         <p className="mt-5 text-lg text-[var(--day-ink-2)] leading-relaxed">
           A real walk with Kai, from result to plan.

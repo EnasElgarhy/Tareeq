@@ -2297,6 +2297,527 @@ export const STRINGS = {
     en: "Locked",
     ar: "مقفل",
   },
+  // ---- Marketing: nav & shell ----
+  "marketing.nav.model": { en: "The model", ar: "النموذج" },
+  "marketing.nav.about": { en: "About", ar: "عنّا" },
+  "marketing.nav.signin": { en: "Sign in", ar: "تسجيل الدخول" },
+  "marketing.nav.start": { en: "Start assessment", ar: "ابدأ التقييم" },
+  "marketing.footer.tagline": {
+    en: "Democratizing science-based career guidance for every young person in the MENA region.",
+    ar: "نحو توجيه مهني قائم على العلم لكل شاب وشابة في منطقة الشرق الأوسط وشمال أفريقيا.",
+  },
+  "marketing.footer.research": { en: "Research", ar: "الأبحاث" },
+  "marketing.footer.students": { en: "For Students", ar: "للطلاب" },
+  "marketing.footer.parents": { en: "For Parents", ar: "للأهالي" },
+  "marketing.footer.faq": { en: "FAQ", ar: "الأسئلة الشائعة" },
+  "marketing.footer.privacy": { en: "Privacy Policy", ar: "سياسة الخصوصية" },
+  "marketing.footer.terms": { en: "Terms of Service", ar: "شروط الخدمة" },
+  "marketing.footer.col_explore": { en: "Explore", ar: "استكشف" },
+  "marketing.footer.col_audience": { en: "Who it's for", ar: "لمن طريق" },
+  "marketing.footer.col_legal": { en: "Legal", ar: "قانوني" },
+  "marketing.footer.contact": {
+    en: "Questions? Write to us",
+    ar: "لديك سؤال؟ راسلنا",
+  },
+  "marketing.footer.top": { en: "Back to top", ar: "إلى الأعلى" },
+  "marketing.footer.wordmark": { en: "tareeq", ar: "طريق" },
+  "marketing.footer.copyright": { en: "© 2026 Tareeq", ar: "© 2026 طريق" },
+
+  // ---- Marketing: hero ----
+  "marketing.hero.headline1": {
+    en: "At the crossroads?",
+    ar: "على مفترق طرق؟",
+  },
+  "marketing.hero.headline2": {
+    en: "Meet Kai, your AI career navigator.",
+    ar: "تعرّف على كاي، مرشدتك المهنية بالذكاء الاصطناعي.",
+  },
+  "marketing.hero.subtitle": {
+    en: "Powered by the CORE Assessment, a science-backed engine built for the next decade of work.",
+    ar: "مدعوم بتقييم CORE، محرك قائم على العلم ومصمم للعقد القادم من العمل.",
+  },
+  "marketing.hero.cta": {
+    en: "Discover Your CORE",
+    ar: "اكتشف CORE الخاص بك",
+  },
+  "marketing.hero.time": {
+    en: "12 minutes · No account needed",
+    ar: "١٢ دقيقة · بدون حساب",
+  },
+
+  "marketing.hero.sci_banner": {
+    en: "Built on 4 validated psychology frameworks",
+    ar: "مبني على 4 أطر نفسية موثّقة",
+  },
+  "marketing.hero.sci_link": {
+    en: "See the research",
+    ar: "اطّلع على البحث",
+  },
+  // ---- Marketing: stats band ----
+  "marketing.stats.questions": { en: "questions", ar: "سؤالاً" },
+  "marketing.stats.minutes": { en: "minutes", ar: "دقيقة" },
+  "marketing.stats.clusters": { en: "career clusters", ar: "مجالات مهنية" },
+  "marketing.stats.dimensions": {
+    en: "dimensions of fit",
+    ar: "أبعاد الملاءمة",
+  },
+
+  // ---- Marketing: before/after ----
+  "marketing.before.heading1": {
+    en: "Career tools were built",
+    ar: "أدوات التوجيه المهني صُممت",
+  },
+  "marketing.before.heading2": { en: "for someone else.", ar: "لشخص آخر." },
+  "marketing.before.left_title": {
+    en: "Every other career test",
+    ar: "كل اختبار مهني آخر",
+  },
+  "marketing.before.left_1": {
+    en: "Built for Western job markets",
+    ar: "مصمم لأسواق العمل الغربية",
+  },
+  "marketing.before.left_2": {
+    en: "Assume years of work experience",
+    ar: "يفترض سنوات من الخبرة العملية",
+  },
+  "marketing.before.left_3": {
+    en: "Measure interests, and nothing else",
+    ar: "يقيس الاهتمامات فقط، ولا شيء غير ذلك",
+  },
+  "marketing.before.right_title": { en: "With Tareeq", ar: "مع طريق" },
+  "marketing.before.right_1_title": {
+    en: "Real situations, not abstractions",
+    ar: "مواقف حقيقية، ليست تجريدات",
+  },
+  "marketing.before.right_1_body": {
+    en: "Questions about things you're already doing, with no work experience needed.",
+    ar: "أسئلة حول أمور تمارسها فعلاً، بدون الحاجة إلى خبرة عملية.",
+  },
+  "marketing.before.right_2_title": {
+    en: "Built for MENA",
+    ar: "مصمم لمنطقة الشرق الأوسط وشمال أفريقيا",
+  },
+  "marketing.before.right_2_body": {
+    en: "Your job markets, your universities, your family context. Not adapted from the West.",
+    ar: "أسواق عملك، جامعاتك، سياق أسرتك. ليس مقتبساً من الغرب.",
+  },
+  "marketing.before.right_3_title": {
+    en: "Free for everyone",
+    ar: "مجاني للجميع",
+  },
+  "marketing.before.right_3_body": {
+    en: "Career guidance used to be a privilege. One assessment, open to all.",
+    ar: "التوجيه المهني كان امتيازاً. تقييم واحد، متاح للجميع.",
+  },
+  "marketing.before.bottom": {
+    en: "Tareeq starts from your reality.",
+    ar: "طريق يبدأ من واقعك.",
+  },
+
+  // ---- Why Tareeq (learners / parents tabs) ----
+  "marketing.why.heading": { en: "Why Tareeq", ar: "لماذا طريق" },
+  "marketing.why.tabs_label": { en: "Who it's for", ar: "لمن صُمم" },
+  "marketing.why.tab_learners": { en: "For learners", ar: "للمتعلمين" },
+  "marketing.why.tab_parents": { en: "For parents", ar: "لأولياء الأمور" },
+  "marketing.why.learners.headline": {
+    en: "Built for your future life based on your everyday situations.",
+    ar: "مبني لحياتك المستقبلية، انطلاقًا من مواقفك اليومية.",
+  },
+  "marketing.why.learners.1_title": {
+    en: "Everyday scenarios",
+    ar: "مواقف من يومك",
+  },
+  "marketing.why.learners.1_body": {
+    en: "Questions grounded in your reality, with no confusing corporate or grown-up jargon.",
+    ar: "أسئلة نابعة من واقعك، بلا مصطلحات مؤسسية أو لغة كبار مربكة.",
+  },
+  "marketing.why.learners.2_title": {
+    en: "Directions, not labels",
+    ar: "اتجاهات، لا تصنيفات",
+  },
+  "marketing.why.learners.2_body": {
+    en: "Discover where you thrive without being forced into a rigid job title that isn't future-fit.",
+    ar: "اكتشف أين تتألق دون أن تُحصر في مسمى وظيفي جامد لا يواكب المستقبل.",
+  },
+  "marketing.why.learners.3_title": {
+    en: "Clear playbooks",
+    ar: "خطط عمل واضحة",
+  },
+  "marketing.why.learners.3_body": {
+    en: "Get straightforward insights, with no report gibberish that needs translating.",
+    ar: "رؤى مباشرة، بلا تقارير معقدة تحتاج إلى من يترجمها.",
+  },
+  "marketing.why.learners.4_title": {
+    en: "An engaging experience",
+    ar: "تجربة ممتعة",
+  },
+  "marketing.why.learners.4_body": {
+    en: "Designed as an interactive, high-energy discovery session, not a boring test.",
+    ar: "جلسة اكتشاف تفاعلية مليئة بالحيوية، لا اختبار مُمل.",
+  },
+  "marketing.why.learners.5_title": {
+    en: "Freedom to evolve",
+    ar: "حرية التطور",
+  },
+  "marketing.why.learners.5_body": {
+    en: "Uncover what fits today while leaving room for your path and interests to grow.",
+    ar: "اكتشف ما يناسبك اليوم، مع مساحة لاهتماماتك ومسارك لتنمو.",
+  },
+  "marketing.why.parents.headline": {
+    en: "Real clarity for their future, without the guesswork.",
+    ar: "وضوح حقيقي لمستقبل أبنائكم، بلا تخمين.",
+  },
+  "marketing.why.parents.1_title": {
+    en: "An AI coach",
+    ar: "مدربة بالذكاء الاصطناعي",
+  },
+  "marketing.why.parents.1_body": {
+    en: "Meet Kai, a personalized coach who translates report findings into clear choices.",
+    ar: "تعرّفوا على كاي، مدربة شخصية تحوّل نتائج التقرير إلى خيارات واضحة.",
+  },
+  "marketing.why.parents.2_title": {
+    en: "Developmentally sound",
+    ar: "سليم تربويًا",
+  },
+  "marketing.why.parents.2_body": {
+    en: "Guides exploration constructively, without boxing a still-forming personality into a label too early.",
+    ar: "يوجّه الاستكشاف بشكل بنّاء، دون حصر شخصية لا تزال تتشكل في تصنيف مبكر.",
+  },
+  "marketing.why.parents.3_title": {
+    en: "Scientific and culturally intelligent",
+    ar: "علمي ومراعٍ للثقافة",
+  },
+  "marketing.why.parents.3_body": {
+    en: "Built for Middle Eastern family dynamics and backed by validated psychological research.",
+    ar: "مصمم لديناميكيات الأسرة في الشرق الأوسط، ومدعوم بأبحاث نفسية موثّقة.",
+  },
+  "marketing.why.parents.4_title": {
+    en: "Future-proof mapping",
+    ar: "خريطة مهنية للمستقبل",
+  },
+  "marketing.why.parents.4_body": {
+    en: "Focused on the next 5–10 years of AI-driven market shifts, moving past outdated job categories.",
+    ar: "يركّز على تحولات السوق خلال السنوات الخمس إلى العشر القادمة بفعل الذكاء الاصطناعي، متجاوزًا التصنيفات الوظيفية القديمة.",
+  },
+  "marketing.why.parents.5_title": {
+    en: "Zero guidance overhead",
+    ar: "بلا تكاليف توجيه إضافية",
+  },
+  "marketing.why.parents.5_body": {
+    en: "A self-contained, expert roadmap that removes the need for over-priced private consultants.",
+    ar: "خارطة طريق متكاملة بمستوى الخبراء، تغنيكم عن المستشارين الخاصين باهظي التكلفة.",
+  },
+
+  // ---- Why Tareeq panel ----
+  "marketing.whyPanel.learners.headline": {
+    en: "Built around your real life.",
+    ar: "مبني حول حياتك الحقيقية.",
+  },
+  "marketing.whyPanel.learners.desc": {
+    en: "Tareeq starts with situations you already understand, then turns your answers into directions you can actually explore.",
+    ar: "يبدأ طريق من مواقف تفهمها بالفعل، ثم يحوّل إجاباتك إلى اتجاهات يمكنك استكشافها فعلًا.",
+  },
+  "marketing.whyPanel.learners.1_title": {
+    en: "Real situations, not abstract questions",
+    ar: "مواقف حقيقية، لا أسئلة مجردة",
+  },
+  "marketing.whyPanel.learners.1_body": {
+    en: "Questions based on everyday choices, not work experience you don't have yet.",
+    ar: "أسئلة مبنية على اختيارات يومية، لا على خبرة عمل لم تكتسبها بعد.",
+  },
+  "marketing.whyPanel.learners.2_title": {
+    en: "Directions, not labels",
+    ar: "اتجاهات، لا تصنيفات",
+  },
+  "marketing.whyPanel.learners.2_body": {
+    en: "See patterns in what fits you without being forced into one job title.",
+    ar: "اكتشف الأنماط التي تناسبك دون أن تُحصر في مسمى وظيفي واحد.",
+  },
+  "marketing.whyPanel.learners.3_title": {
+    en: "Useful next steps",
+    ar: "خطوات تالية مفيدة",
+  },
+  "marketing.whyPanel.learners.3_body": {
+    en: "Explore careers, subjects and university paths connected to your results.",
+    ar: "استكشف المهن والمواد والمسارات الجامعية المرتبطة بنتائجك.",
+  },
+  "marketing.whyPanel.learners.4_title": {
+    en: "Kai helps you keep exploring",
+    ar: "كاي تساعدك على مواصلة الاستكشاف",
+  },
+  "marketing.whyPanel.learners.4_body": {
+    en: "Ask questions about your results whenever something still feels unclear.",
+    ar: "اسأل عن نتائجك متى شعرت أن شيئًا ما لا يزال غير واضح.",
+  },
+  "marketing.whyPanel.parents.headline": {
+    en: "See the person behind the grades.",
+    ar: "تعرّفوا على الشخص وراء الدرجات.",
+  },
+  "marketing.whyPanel.parents.desc": {
+    en: "Tareeq gives you a clearer view of what motivates them, where they may thrive, and which paths are worth exploring together.",
+    ar: "يمنحكم طريق صورة أوضح عمّا يحفّزهم، وأين قد يتألقون، وأي المسارات تستحق أن تستكشفوها معًا.",
+  },
+  "marketing.whyPanel.parents.1_title": {
+    en: "Understand what drives them",
+    ar: "افهموا ما يحرّكهم",
+  },
+  "marketing.whyPanel.parents.1_body": {
+    en: "See patterns that grades alone cannot show.",
+    ar: "اكتشفوا أنماطًا لا تكشفها الدرجات وحدها.",
+  },
+  "marketing.whyPanel.parents.2_title": {
+    en: "See the reasoning",
+    ar: "اطّلعوا على الأسباب",
+  },
+  "marketing.whyPanel.parents.2_body": {
+    en: "Recommendations come with clear explanations, not mystery scores.",
+    ar: "توصيات مصحوبة بشرح واضح، لا بأرقام غامضة.",
+  },
+  "marketing.whyPanel.parents.3_title": {
+    en: "Explore realistic paths",
+    ar: "استكشفوا مسارات واقعية",
+  },
+  "marketing.whyPanel.parents.3_body": {
+    en: "Connect their profile to careers, subjects and university options.",
+    ar: "اربطوا ملفهم بالمهن والمواد والخيارات الجامعية.",
+  },
+  "marketing.whyPanel.parents.4_title": {
+    en: "Have better conversations",
+    ar: "حوارات أفضل",
+  },
+  "marketing.whyPanel.parents.4_body": {
+    en: "Use Kai and the report to explore choices together instead of forcing one decision.",
+    ar: "استعينوا بكاي والتقرير لاستكشاف الخيارات معًا بدل فرض قرار واحد.",
+  },
+
+  "marketing.whyStory.lead": {
+    en: "Career guidance that starts with who you are now, not who a test expects you to be.",
+    ar: "توجيه مهني يبدأ من حقيقتك الآن، لا مما يتوقعه منك اختبار.",
+  },
+
+  // ---- Marketing: core dimensions ----
+  "marketing.core.heading1": { en: "Four dimensions.", ar: "أربعة أبعاد." },
+  "marketing.core.heading2": {
+    en: "One honest map of you.",
+    ar: "خريطة واحدة صادقة لك.",
+  },
+  "marketing.core.c": { en: "Curiosities", ar: "الفضول" },
+  "marketing.core.c_q": {
+    en: "What captures your attention?",
+    ar: "ما الذي يشد انتباهك؟",
+  },
+  "marketing.core.o": { en: "Operations", ar: "طريقة العمل" },
+  "marketing.core.o_q": {
+    en: "How do you naturally function?",
+    ar: "كيف تعمل بشكل طبيعي؟",
+  },
+  "marketing.core.r": { en: "Rewards", ar: "المكافآت" },
+  "marketing.core.r_q": {
+    en: "Why do you strive for success?",
+    ar: "لماذا تسعى للنجاح؟",
+  },
+  "marketing.core.e": { en: "Ecosystems", ar: "البيئات" },
+  "marketing.core.e_q": { en: "Where do you thrive?", ar: "أين تزدهر؟" },
+  "marketing.core.kai": {
+    en: "You answer. I turn it into a map with no jargon and no scores without meaning.",
+    ar: "أنت تجيب. أنا أحولها إلى خريطة بدون تعقيدات وبدون درجات بلا معنى.",
+  },
+  "marketing.core.explore": {
+    en: "Explore the full model",
+    ar: "استكشف النموذج كاملاً",
+  },
+
+  // ---- Marketing: cluster band ----
+  "marketing.cluster.technology": { en: "Technology", ar: "التكنولوجيا" },
+  "marketing.cluster.engineering": { en: "Engineering", ar: "الهندسة" },
+  "marketing.cluster.science": { en: "Science/Data", ar: "العلوم والبيانات" },
+  "marketing.cluster.arts": { en: "Arts/Media", ar: "الفنون والإعلام" },
+  "marketing.cluster.business": { en: "Business", ar: "الأعمال" },
+  "marketing.cluster.law": { en: "Law/Diplomacy", ar: "القانون والدبلوماسية" },
+  "marketing.cluster.people": {
+    en: "People/Psychology",
+    ar: "الناس وعلم النفس",
+  },
+  "marketing.cluster.environment": { en: "Environment", ar: "البيئة" },
+
+  // ---- Marketing: results story ----
+  "marketing.results.eyebrow": { en: "Your results", ar: "نتائجك" },
+  "marketing.results.heading1": {
+    en: "More than a score.",
+    ar: "أكثر من مجرد درجة.",
+  },
+  "marketing.results.heading2": { en: "Yours to use.", ar: "لك لتستخدمها." },
+  "marketing.results.subtitle": {
+    en: "A clear compass, practical guidance, and answers you can keep exploring.",
+    ar: "بوصلة واضحة، توجيه عملي، وأجوبة يمكنك متابعة استكشافها.",
+  },
+  "marketing.results.close_heading": {
+    en: "You don’t need the whole map.",
+    ar: "لا تحتاج إلى خريطة الطريق كاملة.",
+  },
+  "marketing.results.close_body": {
+    en: "Just your next step.",
+    ar: "فقط خطوتك القادمة.",
+  },
+
+  // ---- Marketing: story cards ----
+  "marketing.card1.eyebrow": { en: "Your direction", ar: "اتجاهك" },
+  "marketing.card1.headline": {
+    en: "See where you naturally fit.",
+    ar: "اعرف أين تنتمي طبيعياً.",
+  },
+  "marketing.card1.body": {
+    en: "Your answers become a clear picture of the career areas that match how you think, work and what motivates you.",
+    ar: "إجاباتك تتحول إلى صورة واضحة للمجالات المهنية التي تناسب طريقة تفكيرك وعملك وما يحفزك.",
+  },
+  "marketing.card1.detail1": {
+    en: "Your strongest career families",
+    ar: "أقوى عائلاتك المهنية",
+  },
+  "marketing.card1.detail2": {
+    en: "Strengths and interests",
+    ar: "نقاط القوة والاهتمامات",
+  },
+  "marketing.card1.detail3": {
+    en: "Clear explanations, not just scores",
+    ar: "تفسيرات واضحة، ليست مجرد درجات",
+  },
+  "marketing.card2.eyebrow": { en: "Your story", ar: "قصتك" },
+  "marketing.card2.headline": {
+    en: "Understand why it fits.",
+    ar: "افهم لماذا يناسبك.",
+  },
+  "marketing.card2.body": {
+    en: "Instead of leaving you with numbers, Tareeq explains what your results mean in plain language.",
+    ar: "بدلاً من تركك مع أرقام، يشرح لك طريق ما تعنيه نتائجك بلغة واضحة.",
+  },
+  "marketing.card2.detail1": {
+    en: "What motivates you",
+    ar: "ما يحفزك",
+  },
+  "marketing.card2.detail2": {
+    en: "How you prefer to work",
+    ar: "كيف تفضل العمل",
+  },
+  "marketing.card2.detail3": {
+    en: "Which environments may suit you",
+    ar: "أي البيئات قد تناسبك",
+  },
+  "marketing.card3.eyebrow": { en: "Your options", ar: "خياراتك" },
+  "marketing.card3.headline": {
+    en: "Turn insight into real choices.",
+    ar: "حوّل الرؤية إلى خيارات حقيقية.",
+  },
+  "marketing.card3.body": {
+    en: "Connect your profile to careers, subjects, majors and paths you can actually explore.",
+    ar: "اربط ملفك الشخصي بمهن ومواد وتخصصات ومسارات يمكنك استكشافها فعلاً.",
+  },
+  "marketing.card3.detail1": {
+    en: "Career matches",
+    ar: "المهن المتطابقة",
+  },
+  "marketing.card3.detail2": {
+    en: "Subjects to explore",
+    ar: "مواد لاستكشافها",
+  },
+  "marketing.card3.detail3": {
+    en: "University directions",
+    ar: "توجهات جامعية",
+  },
+  "marketing.card4.eyebrow": { en: "Your guide", ar: "مرشدتك" },
+  "marketing.card4.headline": {
+    en: "Your results become a conversation.",
+    ar: "نتائجك تتحول إلى حوار.",
+  },
+  "marketing.card4.body": {
+    en: "Kai understands your Tareeq results, so you can ask questions instead of figuring everything out alone.",
+    ar: "كاي تفهم نتائج طريق الخاصة بك، لتتمكن من طرح الأسئلة بدلاً من اكتشاف كل شيء وحدك.",
+  },
+  "marketing.card4.detail1": {
+    en: "Ask anything about your results",
+    ar: "اسأل أي شيء عن نتائجك",
+  },
+  "marketing.card4.detail2": {
+    en: "Compare different paths",
+    ar: "قارن بين المسارات المختلفة",
+  },
+  "marketing.card4.detail3": {
+    en: "Plan your next steps",
+    ar: "خطط لخطواتك القادمة",
+  },
+
+  // ---- Marketing: science & closing ----
+  "marketing.science.heading": {
+    en: "The science behind CORE",
+    ar: "العلم وراء CORE",
+  },
+  "marketing.science.subtitle": {
+    en: "Built on decades of validated career theories, not guesswork.",
+    ar: "مبني على عقود من النظريات المهنية الموثقة، وليس التخمين.",
+  },
+  "marketing.science.body": {
+    en: "CORE draws on four established frameworks in career and personality psychology: Holland's RIASEC model for Curiosities (what captures your attention), Big Five personality research for Operations (how you naturally work), Self-Determination Theory for Rewards (what drives you), and Person-Environment Fit theory for Ecosystems (where you thrive). Scoring is transparent and rule-based — no black box, no machine learning guessing at you. And because these frameworks were largely built and validated in the US and Europe, CORE adds context specific to how the MENA job market and education system actually work.",
+    ar: "يعتمد CORE على أربعة أطر راسخة في علم النفس المهني والشخصي: نموذج RIASEC لهولاند للفضول (ما يشد انتباهك)، أبحاث السمات الشخصية الخمس الكبرى لطريقة العمل (كيف تعمل طبيعياً)، نظرية التحديد الذاتي للمكافآت (ما يحفزك)، ونظرية التوافق بين الشخص والبيئة للبيئات (أين تزدهر). التسجيل شفاف وقائم على قواعد — لا صندوق أسود، ولا تعلم آلي يخمن شخصيتك. ولأن هذه الأطر صُممت وتحقق منها بشكل كبير في الولايات المتحدة وأوروبا، يضيف CORE سياقاً خاصاً بكيفية عمل سوق العمل ونظام التعليم في منطقة الشرق الأوسط وشمال أفريقيا فعلياً.",
+  },
+  "marketing.science.designer": {
+    en: "Designed by Enas Elgarhy, a BPS-certified assessor and ICF-accredited coach, with 22+ years in people development and psychometric assessment — including tools like Hogan, Saville, Korn Ferry, and MBTI — across the MENA region.",
+    ar: "صممته إيناس الجارحي، مُقيّمة معتمدة من BPS ومدربة معتمدة من ICF، بخبرة تزيد عن ٢٢ عاماً في تطوير الأفراد والتقييم النفسي — تشمل أدوات مثل Hogan و Saville و Korn Ferry و MBTI — عبر منطقة الشرق الأوسط وشمال أفريقيا.",
+  },
+
+  // ---- Marketing: Kai showcase ----
+  "marketing.kai.heading1": {
+    en: "You never read the map",
+    ar: "أنت لا تقرأ الخريطة",
+  },
+  "marketing.kai.heading2": { en: "alone.", ar: "وحدك." },
+  "marketing.kai.subtitle": {
+    en: "A real walk with Kai, from result to plan.",
+    ar: "رحلة حقيقية مع كاي، من النتيجة إلى الخطة.",
+  },
+
+  // ---- Marketing: student quote ----
+  "marketing.quote.text": {
+    en: "I knew I needed fast-paced environments. I just didn't have language for it. Now I'm choosing with confidence.",
+    ar: "كنت أعرف أنني بحاجة إلى بيئات سريعة. فقط لم تكن لدي الكلمات لأصفها. الآن أختار بثقة.",
+  },
+  "marketing.quote.name": {
+    en: "Salma, student, 16, UAE",
+    ar: "سلمى، طالبة، ١٦ عاماً، الإمارات",
+  },
+
+  // ---- Marketing: final CTA ----
+  "marketing.cta.heading1": { en: "Understand yourself.", ar: "افهم نفسك." },
+  "marketing.cta.heading2": {
+    en: "Choose with confidence.",
+    ar: "اختر بثقة.",
+  },
+  "marketing.cta.how": { en: "How it works", ar: "كيف يعمل" },
+  "marketing.cta.free": {
+    en: "Free to start. No account needed to begin.",
+    ar: "مجاني للبدء. بدون الحاجة إلى حساب.",
+  },
+
+  // ---- Marketing: FAQ teaser ----
+  "marketing.faq.heading": { en: "Good questions.", ar: "أسئلة جيدة." },
+  "marketing.faq.q1": { en: "Is my data private?", ar: "هل بياناتي خاصة؟" },
+  "marketing.faq.a1": {
+    en: "Yes — your responses are encrypted, and you decide who sees your results.",
+    ar: "نعم — إجاباتك مشفرة، وأنت من يقرر من يرى نتائجك.",
+  },
+  "marketing.faq.q2": {
+    en: "Is this scientifically valid?",
+    ar: "هل هذا صحيح علمياً؟",
+  },
+  "marketing.faq.a2": {
+    en: "Yes — CORE is built on four validated frameworks from career and organizational psychology: RIASEC, the Big Five, Self-Determination Theory, and Person-Environment Fit.",
+    ar: "نعم — CORE مبني على أربعة أطر موثقة من علم النفس المهني والتنظيمي: RIASEC، والسمات الخمس الكبرى، ونظرية التحديد الذاتي، والتوافق بين الشخص والبيئة.",
+  },
+  "marketing.faq.q3": { en: "How much does it cost?", ar: "كم تكلفته؟" },
+  "marketing.faq.a3": {
+    en: "Free during our current testing phase. Pricing will apply once we launch publicly.",
+    ar: "مجاني خلال مرحلة الاختبار الحالية. سيتم تطبيق التسعير عند الإطلاق العام.",
+  },
+  "marketing.faq.all": { en: "See all FAQs", ar: "شاهد كل الأسئلة الشائعة" },
 } as const satisfies Record<string, Entry>;
 
 export type StringKey = keyof typeof STRINGS;

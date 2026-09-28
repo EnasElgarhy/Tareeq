@@ -167,6 +167,19 @@ body {
 html.locale-ar * {
   font-family: var(--font-arabic-stack) !important;
 }
+/* Letter-spacing breaks the joins between Arabic letters, so the marketing
+   site's tracked eyebrows and labels (tracking-[0.2em] etc.) render
+   unspaced in Arabic. */
+html.locale-ar .marketing-site * {
+  letter-spacing: normal !important;
+}
+/* Background-clipped text is only painted inside the element's box. Arabic
+   descenders (medial ه, dots under ي) reach well below it and vanish, so give
+   gradient headlines room — the negative margin keeps the line box unchanged. */
+html.locale-ar .gradient-text {
+  padding-block: 0.3em !important;
+  margin-block: -0.24em;
+}
 html.locale-ar .text-hero,
 html.locale-ar .text-display-2,
 html.locale-ar .text-display,
@@ -2657,3 +2670,263 @@ button {
   .kai-load-rotate, .kai-load-pulse, .kai-load-seq, .kai-load-rise,
   .kai-load-bob, .kai-load-sweep, .kai-load-twinkle { animation: none; }
 }
+
+/* ============================================================
+ * Hero journey cards — dark polished glass catching the portal's
+ * warm light. The rim is a masked gradient rather than a flat
+ * border, so it can shift gold → pink → lavender around the edge.
+ * ============================================================ */
+.glass-rim {
+  position: relative;
+  background: rgba(22, 18, 42, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow:
+    0 0 18px rgba(180, 140, 255, 0.08),
+    0 0 24px rgba(255, 190, 100, 0.05),
+    0 18px 38px -26px rgba(0, 0, 0, 0.85);
+}
+
+/* 1px gradient edge: paint the full shape, then mask out everything
+   but the padding ring. */
+.glass-rim::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: var(--rim);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Inner highlight, directional rim light, and one specular corner. */
+.glass-rim::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      90px 44px at var(--spec-x, 86%) -8%,
+      rgba(255, 255, 255, 0.15),
+      transparent 72%
+    ),
+    linear-gradient(
+      to left,
+      rgba(255, 198, 120, var(--warm, 0.1)),
+      transparent 44%
+    ),
+    linear-gradient(
+      to right,
+      rgba(175, 140, 255, var(--cool, 0.08)),
+      transparent 42%
+    ),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05), transparent 26%);
+}
+
+.glass-rim > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Nearer the doorway: stronger amber rim light. */
+.glass-rim--warm {
+  --rim: linear-gradient(
+    118deg,
+    rgba(170, 135, 255, 0.4),
+    rgba(255, 150, 195, 0.32) 34%,
+    rgba(255, 210, 125, 0.62) 70%,
+    rgba(255, 215, 140, 0.78)
+  );
+  --warm: 0.13;
+  --cool: 0.06;
+  --spec-x: 88%;
+}
+
+/* Farther from it: the edge cools toward lilac. */
+.glass-rim--cool {
+  --rim: linear-gradient(
+    118deg,
+    rgba(170, 135, 255, 0.58),
+    rgba(255, 150, 195, 0.34) 38%,
+    rgba(255, 210, 125, 0.34) 74%,
+    rgba(180, 150, 255, 0.5)
+  );
+  --warm: 0.06;
+  --cool: 0.12;
+  --spec-x: 16%;
+}
+
+/* Same rim on the day surface: lit paper instead of dark glass, with the
+   gradient deepened so it still reads against cream. */
+.glass-rim--day {
+  background: rgba(255, 252, 246, 0.82);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 10px 24px -18px rgba(42, 33, 24, 0.35);
+  --rim: linear-gradient(
+    118deg,
+    rgba(109, 91, 168, 0.42),
+    rgba(201, 111, 99, 0.3) 38%,
+    rgba(176, 122, 24, 0.42) 74%,
+    rgba(109, 91, 168, 0.36)
+  );
+  --warm: 0.05;
+  --cool: 0.04;
+  --spec-x: 16%;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass-rim--day {
+    background: var(--day-card);
+  }
+
+  .glass-rim {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+
+/* Reverse pass for paired marquee rows. */
+@keyframes marketing-marquee-x-reverse {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.marquee-track--reverse {
+  animation-name: marketing-marquee-x-reverse;
+}
+
+/* Compass bezel: a hairline frame with a tick at each cardinal point, so the
+   section reads as an instrument face rather than a plain bordered box. */
+.bezel {
+  --bezel-line: var(--day-line);
+  --bezel-tick: var(--day-line-strong);
+  position: relative;
+  border: 1px solid var(--bezel-line);
+}
+
+/* On a night block the hairline has to carry the other way. */
+.bezel--night {
+  --bezel-line: rgba(245, 238, 230, 0.16);
+  --bezel-tick: rgba(245, 238, 230, 0.4);
+}
+
+.bezel::before,
+.bezel::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  height: 1px;
+  background: transparent;
+  background-image: linear-gradient(
+    to right,
+    transparent calc(50% - 26px),
+    var(--bezel-tick) calc(50% - 26px),
+    var(--bezel-tick) calc(50% + 26px),
+    transparent calc(50% + 26px)
+  );
+}
+
+.bezel::before {
+  top: -1px;
+}
+
+.bezel::after {
+  bottom: -1px;
+}
+
+/* Section edges. A hairline catches the light on the lip and a gradient
+   falls away beneath it, so a band reads as set into the page rather than
+   butted against the one before it. */
+.edge-inset::before,
+.edge-inset::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  z-index: 0;
+  height: 120px;
+  pointer-events: none;
+}
+
+.edge-inset::before {
+  top: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.55) 0%,
+    rgba(0, 0, 0, 0.22) 38%,
+    transparent 100%
+  );
+  box-shadow: inset 0 1px 0 rgba(245, 238, 230, 0.13);
+}
+
+.edge-inset::after {
+  bottom: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.42) 0%,
+    rgba(0, 0, 0, 0.16) 42%,
+    transparent 100%
+  );
+  box-shadow: inset 0 -1px 0 rgba(245, 238, 230, 0.07);
+}
+
+/* The day counterpart: warm light pooling in from the edge instead of dark. */
+.edge-inset--day::before {
+  background: linear-gradient(
+    to bottom,
+    rgba(42, 33, 24, 0.12) 0%,
+    rgba(42, 33, 24, 0.04) 40%,
+    transparent 100%
+  );
+  box-shadow: inset 0 1px 0 rgba(255, 252, 246, 0.85);
+}
+
+.edge-inset--day::after {
+  background: linear-gradient(
+    to top,
+    rgba(42, 33, 24, 0.09) 0%,
+    rgba(42, 33, 24, 0.03) 44%,
+    transparent 100%
+  );
+  box-shadow: inset 0 -1px 0 rgba(255, 252, 246, 0.6);
+}
+
+/* ------------------------------------------------------------------ */
+/* Results Story — stacked scroll-driven cards                         */
+/* ------------------------------------------------------------------ */
+
+.story-card {
+  position: sticky;
+  border-radius: 2.2rem 1.6rem 2.2rem 1.9rem;
+  max-width: 68rem;
+  width: 100%;
+  will-change: transform;
+}
+
+@media (max-width: 1023px) {
+  .story-step {
+    min-height: auto !important;
+  }
+  .story-card {
+    position: relative !important;
+    top: auto !important;
+  }
+}
+

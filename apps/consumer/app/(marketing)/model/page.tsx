@@ -1,5 +1,5 @@
-import { Model } from "@/components/marketing/Model";
+import { ModelPage } from "@/components/marketing/model/ModelPage";
 
-export default function ModelPage() {
-  return <Model />;
+export default function Page() {
+  return <ModelPage />;
 }

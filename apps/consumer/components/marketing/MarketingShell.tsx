@@ -1,49 +1,26 @@
 "use client";
 
 import { List, X } from "@phosphor-icons/react";
-import {
-  AnimatePresence,
-  motion,
-  useMotionValueEvent,
-  useReducedMotion,
-  useScroll,
-} from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { FloatingCta } from "@/components/marketing/FloatingCta";
 import { IconDefs } from "@/components/marketing/Icons";
-import { KaiOrb } from "@/components/marketing/KaiOrb";
-import { Container } from "@/components/marketing/Shared";
-
-const NAV_LINKS = [
-  { label: "The Model", href: "/model" },
-  { label: "Research", href: "/research" },
-  { label: "For Students", href: "/students" },
-  { label: "For Parents", href: "/parents" },
-  { label: "About", href: "/about" },
-  { label: "FAQ", href: "/faq" },
-] as const;
-
-const FOOTER_LEGAL_LINKS = [
-  { label: "Privacy Policy", href: "/privacy-policy" },
-  { label: "Terms of Service", href: "/terms-of-service" },
-] as const;
+import { MarketingLogo } from "@/components/marketing/MarketingLogo";
+import {
+  NAV_LINKS,
+  SECONDARY_NAV_LINKS,
+} from "@/components/marketing/navLinks";
+import { SiteFooter } from "@/components/marketing/SiteFooter";
 
 export function MarketingShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const reduce = useReducedMotion();
-  const { scrollY } = useScroll();
-  const scrolledRef = useRef(false);
   const hasMountedRef = useRef(false);
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    const next = latest > 24;
-    if (next === scrolledRef.current) return;
-    scrolledRef.current = next;
-    setIsScrolled(next);
-  });
+  const { locale, setLocale, ready, t } = useLocale();
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -56,11 +33,9 @@ export function MarketingShell({ children }: { children: ReactNode }) {
     window.scrollTo({ top: 0, behavior: "auto" });
   }, [pathname]);
 
+  // Three zones so the bar reads balanced: brand, navigation, actions.
   const navClassName =
-    "mx-auto flex min-h-14 max-w-7xl items-center justify-between rounded-full border px-4 py-2.5 transition-all duration-500 sm:px-6 " +
-    (isScrolled
-      ? "border-white/10 bg-[#100A24]/85 shadow-[0_8px_32px_rgba(8,5,26,0.35)] backdrop-blur-xl"
-      : "border-white/[0.07] bg-[#100A24]/55 backdrop-blur-lg");
+    "mx-auto grid min-h-[3.75rem] max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-4 px-3 py-2.5 sm:px-4";
 
   return (
     <div className="marketing-site relative min-h-dvh overflow-x-clip bg-[#08051A] font-body text-[#F5EEE6] antialiased">
@@ -71,7 +46,7 @@ export function MarketingShell({ children }: { children: ReactNode }) {
         initial={reduce ? false : { y: -60, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: "spring", stiffness: 90, damping: 18 }}
-        className="fixed inset-x-0 top-0 z-50 px-4 pt-4"
+        className="absolute inset-x-0 top-0 z-50 px-4 pt-4"
       >
         <nav
           aria-label="Main navigation"
@@ -80,23 +55,21 @@ export function MarketingShell({ children }: { children: ReactNode }) {
         >
           <Link
             href="/"
+            aria-label="Tareeq home"
             data-testid="nav-logo"
-            className="flex items-center gap-3 rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F4C660]"
+            className="flex items-center gap-1.5 rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F4C660]"
           >
-            <KaiOrb size={30} speed={18} />
-            <span className="font-heading text-xl font-bold text-[#F5EEE6]">
-              Tareeq
-            </span>
+            <MarketingLogo />
           </Link>
 
-          <div className="hidden items-center gap-5 xl:flex 2xl:gap-7">
+          <div className="hidden items-center justify-center gap-9 md:flex">
             {NAV_LINKS.map((link) => {
               const isActive = pathname === link.href;
               const linkClassName =
-                "rounded-md text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F4C660] " +
+                "relative rounded-md py-1 text-[0.9375rem] font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F4C660] " +
                 (isActive
-                  ? "text-[#F4C660]"
-                  : "text-[#F5EEE6]/65 hover:text-[#F5EEE6]");
+                  ? "text-[#F5EEE6]"
+                  : "text-[#F5EEE6]/60 hover:text-[#F5EEE6]");
 
               return (
                 <Link
@@ -106,26 +79,37 @@ export function MarketingShell({ children }: { children: ReactNode }) {
                   data-testid={"nav-link-" + link.href.slice(1)}
                   className={linkClassName}
                 >
-                  {link.label}
+                  {t(link.key)}
+                  {isActive ? (
+                    <span
+                      className="absolute -bottom-0.5 left-1/2 h-px w-5 -translate-x-1/2 bg-[#F4C660]"
+                      aria-hidden="true"
+                    />
+                  ) : null}
                 </Link>
               );
             })}
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center justify-end gap-3">
+            {ready ? (
+              <button
+                type="button"
+                onClick={() => setLocale(locale === "en" ? "ar" : "en")}
+                className="whitespace-nowrap rounded-full border border-white/20 bg-white/[0.06] px-4 py-2.5 text-sm font-semibold text-[#F5EEE6] backdrop-blur-md transition-colors hover:border-[#F4C660]/60 hover:bg-[#F4C660]/10 hover:text-[#F4C660] active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F4C660]"
+                aria-label={
+                  locale === "en" ? "Switch to Arabic" : "Switch to English"
+                }
+              >
+                {locale === "en" ? "العربية" : "English"}
+              </button>
+            ) : null}
             <Link
               href="/signin"
               data-testid="nav-signin"
-              className="hidden whitespace-nowrap rounded-full border border-white/15 px-4 py-2.5 text-sm font-medium text-[#F5EEE6]/80 transition-colors hover:border-white/30 hover:text-[#F5EEE6] active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F4C660] md:inline-flex"
+              className="hidden whitespace-nowrap rounded-full border border-white/20 bg-white/[0.06] px-5 py-2.5 text-sm font-semibold text-[#F5EEE6] backdrop-blur-md transition-colors hover:border-[#F4C660]/60 hover:bg-[#F4C660]/10 hover:text-[#F4C660] active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F4C660] md:inline-flex"
             >
-              Sign in
-            </Link>
-            <Link
-              href="/start"
-              data-testid="nav-cta-start"
-              className="hidden whitespace-nowrap rounded-full bg-gold-gradient px-5 py-2.5 text-sm font-semibold text-[#14101F] shadow-lg shadow-[#F4C660]/25 transition-transform hover:scale-[1.02] active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F4C660] md:inline-flex"
-            >
-              Start assessment
+              {t("marketing.nav.signin")}
             </Link>
             <button
               type="button"
@@ -133,7 +117,7 @@ export function MarketingShell({ children }: { children: ReactNode }) {
               aria-expanded={isMenuOpen}
               aria-controls="marketing-mobile-menu"
               onClick={() => setIsMenuOpen((value) => !value)}
-              className="flex size-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-[#F5EEE6] active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F4C660] xl:hidden"
+              className="flex size-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-[#F5EEE6] active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F4C660] md:hidden"
             >
               {isMenuOpen ? <X size={20} /> : <List size={20} />}
             </button>
@@ -147,28 +131,28 @@ export function MarketingShell({ children }: { children: ReactNode }) {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="mx-auto mt-2 flex max-w-7xl flex-col gap-4 rounded-2xl border border-white/10 bg-[#100A24]/95 p-6 shadow-xl backdrop-blur-xl xl:hidden"
+              className="mx-auto mt-2 flex max-w-7xl flex-col gap-4 rounded-2xl border border-white/10 bg-[#100A24]/95 p-6 shadow-xl backdrop-blur-xl md:hidden"
             >
-              {NAV_LINKS.map((link) => (
+              {[...NAV_LINKS, ...SECONDARY_NAV_LINKS].map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   className="rounded-md text-base font-medium text-[#F5EEE6]/75 hover:text-[#F5EEE6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F4C660]"
                 >
-                  {link.label}
+                  {t(link.key)}
                 </Link>
               ))}
               <Link
                 href="/signin"
                 className="rounded-full border border-white/15 px-5 py-3 text-center text-sm font-medium text-[#F5EEE6]/85 active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F4C660]"
               >
-                Sign in
+                {t("marketing.nav.signin")}
               </Link>
               <Link
                 href="/start"
                 className="rounded-full bg-gold-gradient px-5 py-3 text-center text-sm font-semibold text-[#14101F] active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F4C660]"
               >
-                Start assessment
+                {t("marketing.nav.start")}
               </Link>
             </motion.div>
           ) : null}
@@ -177,55 +161,9 @@ export function MarketingShell({ children }: { children: ReactNode }) {
 
       {children}
 
-      <footer className="pb-12 pt-16" data-testid="footer">
-        <Container>
-          <div className="grid grid-cols-1 items-start gap-8 border-t border-white/10 pt-10 md:grid-cols-3">
-            <div>
-              <div className="flex items-center gap-3">
-                <KaiOrb size={26} speed={20} />
-                <span className="font-heading text-lg font-bold text-[#F5EEE6]">
-                  Tareeq
-                </span>
-              </div>
-              <p className="mt-3 max-w-xs text-sm leading-relaxed text-[#F5EEE6]/50">
-                Democratizing science-based career guidance for every young
-                person in the MENA region.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-x-8 gap-y-3">
-              {NAV_LINKS.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-sm text-[#F5EEE6]/60 hover:text-[#F5EEE6]"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-            <div className="md:text-right">
-              <a
-                href="mailto:support@tareek.me"
-                className="text-sm text-[#C8B6F0] hover:text-[#F4C660]"
-              >
-                support@tareek.me
-              </a>
-              <p className="mt-2 text-sm text-[#F5EEE6]/40">© 2026 Tareeq</p>
-              <div className="mt-2 flex flex-wrap justify-start gap-x-4 gap-y-1 md:justify-end">
-                {FOOTER_LEGAL_LINKS.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="text-xs text-[#F5EEE6]/40 hover:text-[#F5EEE6]/70"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-        </Container>
-      </footer>
+      <FloatingCta />
+
+      <SiteFooter />
     </div>
   );
 }

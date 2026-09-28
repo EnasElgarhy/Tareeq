@@ -5,6 +5,7 @@ import {
   DM_Serif_Display,
   Fraunces,
   Plus_Jakarta_Sans,
+  Rubik,
 } from "next/font/google";
 import localFont from "next/font/local";
 import { PostHogSessionReplay } from "@/components/analytics/PostHogSessionReplay";
@@ -21,6 +22,14 @@ const bricolage = Bricolage_Grotesque({
   variable: "--font-bricolage",
   subsets: ["latin"],
   weight: ["500", "600", "700", "800"],
+  display: "swap",
+});
+
+// Khatt (marketing v3). One variable family carries display and UI in both
+// scripts, so Arabic and Latin are co-equal rather than one being a fallback.
+const rubik = Rubik({
+  variable: "--font-rubik",
+  subsets: ["latin", "arabic"],
   display: "swap",
 });
 
@@ -146,7 +155,7 @@ export default function RootLayout({
     <html
       lang="en"
       dir="ltr"
-      className={`${jakarta.variable} ${bricolage.variable} ${caveat.variable} ${arabic.variable} ${question.variable} ${displayItalic.variable} h-full antialiased`}
+      className={`${jakarta.variable} ${bricolage.variable} ${caveat.variable} ${arabic.variable} ${question.variable} ${displayItalic.variable} ${rubik.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         {children}

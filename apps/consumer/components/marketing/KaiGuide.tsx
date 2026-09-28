@@ -31,6 +31,8 @@ interface KaiChipProps {
 
 export const KAI_SRC = "/marketing/daybreak/kai/kai-720.png";
 export const KAI_SRC_SM = "/marketing/daybreak/kai/kai-320.png";
+/** Circular portrait with its own lit rim, for chat-sized avatars. */
+export const KAI_AVATAR = "/kai/kai-avatar-glow.png";
 
 /** Full-figure Kai with a warm glow, for heroes and large panels. */
 export const KaiFigure = ({
