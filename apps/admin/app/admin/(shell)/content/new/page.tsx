@@ -10,7 +10,7 @@ export default function NewAssessmentPage() {
       <PageHeader
         kicker="Admin · Content"
         title="New assessment"
-        description="Choose how to build this assessment. Both paths produce the same structure."
+        description="Start from a blank draft or bring in an assessment you already designed."
         actions={
           <Link
             href="/admin/content"

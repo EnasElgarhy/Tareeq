@@ -67,7 +67,10 @@ export function RuleBuilder({
       await setScoringStrategy(catalogId, next, versionId);
       router.refresh();
     } catch (e) {
-      toast("error", e instanceof Error ? e.message : "Could not change strategy.");
+      toast(
+        "error",
+        e instanceof Error ? e.message : "Could not change strategy.",
+      );
     } finally {
       setSwitching(false);
     }
@@ -75,17 +78,19 @@ export function RuleBuilder({
 
   return (
     <section className="mb-8">
-      <h2 className="mb-1 text-sm font-bold text-adm-ink">Scoring strategy &amp; rules</h2>
+      <h2 className="mb-1 text-sm font-bold text-adm-ink">
+        How results are chosen
+      </h2>
       <p className="mb-3 text-[12px] text-adm-ink-muted">
-        How category scores become a result profile. Scoring is deterministic and
-        backend-executed.
+        Choose the simple strongest-match method or define advanced conditional
+        rules. Student scoring always stays deterministic.
       </p>
 
       <div className="mb-4 inline-flex rounded-adm-md border border-adm-line-strong p-0.5">
         {(
           [
-            ["highest_score_wins", "Highest score wins"],
-            ["first_match", "First-match rules"],
+            ["highest_score_wins", "Strongest overall match"],
+            ["first_match", "Advanced rules"],
           ] as const
         ).map(([value, label]) => (
           <button
@@ -133,8 +138,8 @@ function HighestScoreCoverage({
   return (
     <div className="rounded-adm-lg border border-adm-line bg-adm-card p-4">
       <p className="mb-3 text-[13px] text-adm-ink-soft">
-        The highest-scoring category wins; its mapped profile is the result. Set a
-        profile&apos;s category in the profile editor above.
+        The highest-scoring category wins; its mapped profile is the result. Set
+        a profile&apos;s category in the profile editor above.
       </p>
       <ul className="grid gap-1.5">
         {categories.map((c) => {
@@ -161,7 +166,9 @@ function HighestScoreCoverage({
           );
         })}
         {categories.length === 0 ? (
-          <li className="text-[13px] text-adm-ink-faint">Add categories first.</li>
+          <li className="text-[13px] text-adm-ink-faint">
+            Add categories first.
+          </li>
         ) : null}
       </ul>
     </div>
@@ -328,7 +335,9 @@ function RuleCard({
         <span className="mr-2 rounded bg-adm-sand px-1.5 py-0.5 text-[11px] font-bold text-adm-ink-faint">
           P{rule.priority}
         </span>
-        <code className="text-[13px] text-adm-ink">{describeRule(rule, profiles)}</code>
+        <code className="text-[13px] text-adm-ink">
+          {describeRule(rule, profiles)}
+        </code>
       </div>
       <div className="flex shrink-0 gap-1.5">
         <Button size="sm" variant="ghost" onClick={onEdit}>
@@ -369,7 +378,11 @@ function RuleForm({
   function toConditions() {
     return draft.conditions.map((c) =>
       c.rhsType === "category"
-        ? { cluster: c.cluster, operator: c.operator, valueCategory: c.valueCategory }
+        ? {
+            cluster: c.cluster,
+            operator: c.operator,
+            valueCategory: c.valueCategory,
+          }
         : { cluster: c.cluster, operator: c.operator, value: c.value },
     );
   }
@@ -383,7 +396,9 @@ function RuleForm({
   function setCond(i: number, patch: Partial<ConditionDraft>) {
     setDraft((d) => ({
       ...d,
-      conditions: d.conditions.map((c, idx) => (idx === i ? { ...c, ...patch } : c)),
+      conditions: d.conditions.map((c, idx) =>
+        idx === i ? { ...c, ...patch } : c,
+      ),
     }));
   }
 
@@ -422,7 +437,9 @@ function RuleForm({
           <Select
             id="r-profile"
             value={draft.resultProfileId}
-            onChange={(e) => setDraft((d) => ({ ...d, resultProfileId: e.target.value }))}
+            onChange={(e) =>
+              setDraft((d) => ({ ...d, resultProfileId: e.target.value }))
+            }
           >
             {profiles.map((p) => (
               <option key={p.id} value={p.id}>
@@ -437,7 +454,10 @@ function RuleForm({
             id="r-comb"
             value={draft.combinator}
             onChange={(e) =>
-              setDraft((d) => ({ ...d, combinator: e.target.value as "AND" | "OR" }))
+              setDraft((d) => ({
+                ...d,
+                combinator: e.target.value as "AND" | "OR",
+              }))
             }
           >
             <option value="AND">AND</option>
@@ -450,7 +470,9 @@ function RuleForm({
             id="r-prio"
             type="number"
             value={draft.priority}
-            onChange={(e) => setDraft((d) => ({ ...d, priority: Number(e.target.value) }))}
+            onChange={(e) =>
+              setDraft((d) => ({ ...d, priority: Number(e.target.value) }))
+            }
             className="w-20"
           />
         </div>
@@ -476,7 +498,9 @@ function RuleForm({
             </Select>
             <Select
               value={c.operator}
-              onChange={(e) => setCond(i, { operator: e.target.value as RuleOperator })}
+              onChange={(e) =>
+                setCond(i, { operator: e.target.value as RuleOperator })
+              }
               aria-label="Operator"
             >
               {OPERATORS.map((op) => (
@@ -564,7 +588,12 @@ function RuleForm({
       ) : null}
 
       <div className="mt-4 flex gap-2">
-        <Button size="sm" onClick={save} loading={saving} disabled={errors.length > 0}>
+        <Button
+          size="sm"
+          onClick={save}
+          loading={saving}
+          disabled={errors.length > 0}
+        >
           {ruleId ? "Save rule" : "Add rule"}
         </Button>
         <Button size="sm" variant="ghost" onClick={onCancel} disabled={saving}>

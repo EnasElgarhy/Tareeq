@@ -25,20 +25,30 @@ export default async function ImportPage({
 
   return (
     <>
-      <nav aria-label="Breadcrumb" className="mb-4 text-[13px] text-adm-ink-muted">
-        <Link href="/admin/content" className="font-semibold text-adm-violet hover:text-adm-deep">
+      <nav
+        aria-label="Breadcrumb"
+        className="mb-4 text-[13px] text-adm-ink-muted"
+      >
+        <Link
+          href="/admin/content"
+          className="font-semibold text-adm-violet hover:text-adm-deep"
+        >
           Content
         </Link>
-        <span aria-hidden="true" className="mx-2">/</span>
+        <span aria-hidden="true" className="mx-2">
+          /
+        </span>
         <span className="text-adm-ink-soft">{title}</span>
-        <span aria-hidden="true" className="mx-2">/</span>
-        <span className="text-adm-ink-soft">AI import</span>
+        <span aria-hidden="true" className="mx-2">
+          /
+        </span>
+        <span className="text-adm-ink-soft">Import</span>
       </nav>
 
       <PageHeader
-        kicker="Custom assessment · AI import"
+        kicker="Custom assessment · Import"
         title={title}
-        description="Paste your existing questions and scoring rubric. AI drafts the structure; you review and apply. AI never scores students — it only proposes the spec."
+        description="Bring in your existing questions and scoring logic. AI structures the source; you review every part before it enters the editor."
       />
 
       <AiImportFlow catalogId={assessment.id} versionId={versionId} />

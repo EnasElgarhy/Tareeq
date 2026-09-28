@@ -43,11 +43,41 @@ export function repairRequiredBlocks(input: RepairInput): RepairResult {
   }
 
   let text = stripMarkdown(input.text);
+  const existingBlocks = [...(input.blocks ?? [])];
   const addedBlocks: KaiMessageBlock[] = [];
   const stillMissing: BlockType[] = [];
 
   for (const type of missing) {
     if (type === "action_plan") {
+      const bulletPlanIndex = existingBlocks.findIndex((block) => {
+        if (block.type !== "bullet_list" || block.items.length < 2) return false;
+        return block.items.every((item) =>
+          /^(?:days?|اليوم|الأيام)\s*[0-9٠-٩]+(?:\s*[-–—]\s*[0-9٠-٩]+)?\s*[:.\-–—]\s*\S+/iu.test(
+            item.trim(),
+          ),
+        );
+      });
+      if (bulletPlanIndex >= 0) {
+        const bulletPlan = existingBlocks[bulletPlanIndex];
+        if (bulletPlan.type === "bullet_list") {
+          const tasks = bulletPlan.items.map((item, index) => ({
+            id: repairId("promoted-task", index),
+            text: item
+              .trim()
+              .replace(
+                /^(?:days?|اليوم|الأيام)\s*[0-9٠-٩]+(?:\s*[-–—]\s*[0-9٠-٩]+)?\s*[:.\-–—]\s*/iu,
+                "",
+              ),
+          }));
+          existingBlocks.splice(bulletPlanIndex, 1, {
+            type: "action_plan",
+            title: bulletPlan.title || (input.locale === "ar" ? "خطتك" : "Your plan"),
+            tasks,
+          });
+          continue;
+        }
+      }
+
       const dayPlan = extractDayPlanFromText(text);
       if (dayPlan) {
         addedBlocks.push({
@@ -84,7 +114,10 @@ export function repairRequiredBlocks(input: RepairInput): RepairResult {
 
   return {
     text: text || input.text,
-    blocks: addedBlocks.length > 0 ? [...(input.blocks ?? []), ...addedBlocks] : input.blocks,
+    blocks:
+      existingBlocks.length > 0 || addedBlocks.length > 0
+        ? [...existingBlocks, ...addedBlocks]
+        : input.blocks,
     stillMissing,
   };
 }

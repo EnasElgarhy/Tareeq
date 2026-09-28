@@ -1,6 +1,6 @@
 /** Shared types for the admin Analytics surface (lib/admin/analytics/*). */
 
-export type AgeBand = "16-17" | "18-19" | "20-21" | "22+" | "unknown";
+export type AgeBand = "under-16" | "16-17" | "18-19" | "20-21" | "22+" | "unknown";
 
 export type FlaggedFilterMode = "include" | "only" | "exclude";
 

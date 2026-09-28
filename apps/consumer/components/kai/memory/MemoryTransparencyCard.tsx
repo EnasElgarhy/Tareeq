@@ -43,11 +43,11 @@ export function MemoryTransparencyCard() {
   const groups = groupMemoryItems(memory.items, t);
 
   return (
-    <section className="rounded-[20px] border border-[color:var(--day-line,rgba(43,36,28,0.1))] bg-[color:var(--day-card,#fffcf6)] p-3.5 shadow-[0_8px_20px_rgba(43,36,28,0.05)]">
+    <section className="daybreak-story-card rounded-story-alt p-4">
       <div className="mb-2.5 flex items-center gap-2.5">
         <KaiSignal mood="listening" size={30} />
         <div>
-          <p className="text-[13px] font-black leading-tight text-[color:var(--day-ink,#2a2118)]">{t("kai.memory.section_title")}</p>
+          <p className="daybreak-heading text-[16px] leading-tight text-[color:var(--day-ink,#2a2118)]">{t("kai.memory.section_title")}</p>
           <p className="text-[10.5px] text-[color:var(--day-ink-3,#675d4e)]">{t("kai.memory.section_subtitle")}</p>
         </div>
       </div>
@@ -58,7 +58,7 @@ export function MemoryTransparencyCard() {
         <div className="grid gap-2.5">
           {groups.map((group) => (
             <div key={group.category}>
-              <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.08em] text-[color:var(--day-ink-3,#675d4e)]">
+              <p className="daybreak-eyebrow mb-1 text-[color:var(--day-ink-3,#675d4e)]">
                 {group.label}
               </p>
               <div className="flex flex-wrap gap-1.5">

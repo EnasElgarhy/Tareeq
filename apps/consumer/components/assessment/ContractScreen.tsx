@@ -11,6 +11,7 @@ import {
   PulseIcon,
   VibeIcon,
 } from "@/components/brand/ContractIcons";
+import { useAssessmentAudio } from "@/components/assessment/AssessmentAudioProvider";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import {
   defaultVoiceOnForAssessmentStart,
@@ -35,12 +36,36 @@ interface ContractItem {
  * single intention — what this assessment is, and what it isn't.
  */
 const ITEMS: ReadonlyArray<ContractItem> = [
-  { Icon: VibeIcon, titleKey: "contract.item1.title", bodyKey: "contract.item1.body" },
-  { Icon: LensIcon, titleKey: "contract.item2.title", bodyKey: "contract.item2.body" },
-  { Icon: HeartIcon, titleKey: "contract.item3.title", bodyKey: "contract.item3.body" },
-  { Icon: PulseIcon, titleKey: "contract.item4.title", bodyKey: "contract.item4.body" },
-  { Icon: ClusterIcon, titleKey: "contract.item5.title", bodyKey: "contract.item5.body" },
-  { Icon: PathIcon, titleKey: "contract.item6.title", bodyKey: "contract.item6.body" },
+  {
+    Icon: VibeIcon,
+    titleKey: "contract.item1.title",
+    bodyKey: "contract.item1.body",
+  },
+  {
+    Icon: LensIcon,
+    titleKey: "contract.item2.title",
+    bodyKey: "contract.item2.body",
+  },
+  {
+    Icon: HeartIcon,
+    titleKey: "contract.item3.title",
+    bodyKey: "contract.item3.body",
+  },
+  {
+    Icon: PulseIcon,
+    titleKey: "contract.item4.title",
+    bodyKey: "contract.item4.body",
+  },
+  {
+    Icon: ClusterIcon,
+    titleKey: "contract.item5.title",
+    bodyKey: "contract.item5.body",
+  },
+  {
+    Icon: PathIcon,
+    titleKey: "contract.item6.title",
+    bodyKey: "contract.item6.body",
+  },
 ];
 
 // Stagger choreography (ms)
@@ -51,15 +76,31 @@ const ITEM_DURATION = 720;
 const CTA_REVEAL_DELAY =
   ITEM_START_DELAY + (ITEMS.length - 1) * ITEM_STEP + ITEM_DURATION - 120;
 
-export function ContractScreen() {
+export function ContractScreen({
+  firstQuestionAudioId,
+  versionId,
+}: {
+  firstQuestionAudioId: string | null;
+  versionId: string | null;
+}) {
   const router = useRouter();
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
+  const { preloadNarration } = useAssessmentAudio();
   const [ctaReady, setCtaReady] = useState(false);
 
   useEffect(() => {
     const t = window.setTimeout(() => setCtaReady(true), CTA_REVEAL_DELAY);
     return () => window.clearTimeout(t);
   }, []);
+
+  useEffect(() => {
+    if (!firstQuestionAudioId) return;
+    preloadNarration({
+      audioId: firstQuestionAudioId,
+      locale,
+      versionId,
+    });
+  }, [firstQuestionAudioId, locale, preloadNarration, versionId]);
 
   function start() {
     if (!ctaReady) return;
@@ -78,7 +119,10 @@ export function ContractScreen() {
         {t("contract.eyebrow")}
       </span>
 
-      <h1 id="contract-heading" className="text-display-2 text-sand max-w-[14ch] lg:max-w-none">
+      <h1
+        id="contract-heading"
+        className="text-display-2 text-sand max-w-[14ch] lg:max-w-none"
+      >
         {t("contract.headline_before")}{" "}
         <span
           className="text-grad-warm"
@@ -105,7 +149,9 @@ export function ContractScreen() {
             <li
               key={item.titleKey}
               className="anim-contract-item glass-card relative flex items-center gap-3.5 !p-3 !pe-4 !rounded-2xl"
-              style={{ animationDelay: `${ITEM_START_DELAY + i * ITEM_STEP}ms` }}
+              style={{
+                animationDelay: `${ITEM_START_DELAY + i * ITEM_STEP}ms`,
+              }}
             >
               <span
                 aria-hidden="true"

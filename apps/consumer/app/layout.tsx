@@ -1,10 +1,14 @@
 import type { Metadata, Viewport } from "next";
 import {
+  Bricolage_Grotesque,
+  Caveat,
   DM_Serif_Display,
   Fraunces,
   Plus_Jakarta_Sans,
+  Rubik,
 } from "next/font/google";
 import localFont from "next/font/local";
+import { PostHogSessionReplay } from "@/components/analytics/PostHogSessionReplay";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -14,16 +18,54 @@ const jakarta = Plus_Jakarta_Sans({
   display: "swap",
 });
 
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
+  subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
+  display: "swap",
+});
+
+// Khatt (marketing v3). One variable family carries display and UI in both
+// scripts, so Arabic and Latin are co-equal rather than one being a fallback.
+const rubik = Rubik({
+  variable: "--font-rubik",
+  subsets: ["latin", "arabic"],
+  display: "swap",
+});
+
+const caveat = Caveat({
+  variable: "--font-caveat",
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  display: "swap",
+});
+
 // IBM Plex Sans Arabic — self-hosted so the Arabic UI renders reliably
 // offline and in any build environment (no Google Fonts dependency).
 const arabic = localFont({
   variable: "--font-arabic",
   display: "swap",
   src: [
-    { path: "./fonts/ibm-plex-arabic-400.woff2", weight: "400", style: "normal" },
-    { path: "./fonts/ibm-plex-arabic-500.woff2", weight: "500", style: "normal" },
-    { path: "./fonts/ibm-plex-arabic-600.woff2", weight: "600", style: "normal" },
-    { path: "./fonts/ibm-plex-arabic-700.woff2", weight: "700", style: "normal" },
+    {
+      path: "./fonts/ibm-plex-arabic-400.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "./fonts/ibm-plex-arabic-500.woff2",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "./fonts/ibm-plex-arabic-600.woff2",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "./fonts/ibm-plex-arabic-700.woff2",
+      weight: "700",
+      style: "normal",
+    },
   ],
 });
 
@@ -49,10 +91,52 @@ const displayItalic = Fraunces({
   display: "swap",
 });
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://staging.tareek.me";
+const siteTitle = "Tareeq: Discover what you're built for";
+const siteDescription =
+  "Discover your strengths, direction, and next step with a career compass built for students and young adults across MENA.";
+
 export const metadata: Metadata = {
-  title: "Tareeq — Discover what you're built for",
-  description:
-    "12 minutes. 60 questions. One clear path. A career discovery compass for youth in MENA, built on the CORE model.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: siteTitle,
+    template: "%s | Tareeq",
+  },
+  description: siteDescription,
+  applicationName: "Tareeq",
+  alternates: {
+    canonical: "/",
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "64x64" },
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+    ],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180" }],
+  },
+  openGraph: {
+    type: "website",
+    url: "/",
+    siteName: "Tareeq",
+    title: siteTitle,
+    description: siteDescription,
+    locale: "en_US",
+    images: [
+      {
+        url: "/opengraph-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Kai holds a glowing compass on the path toward your future.",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteTitle,
+    description: siteDescription,
+    images: ["/twitter-image.jpg"],
+  },
 };
 
 export const viewport: Viewport = {
@@ -71,9 +155,12 @@ export default function RootLayout({
     <html
       lang="en"
       dir="ltr"
-      className={`${jakarta.variable} ${arabic.variable} ${question.variable} ${displayItalic.variable} h-full antialiased`}
+      className={`${jakarta.variable} ${bricolage.variable} ${caveat.variable} ${arabic.variable} ${question.variable} ${displayItalic.variable} ${rubik.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        {children}
+        <PostHogSessionReplay />
+      </body>
     </html>
   );
 }

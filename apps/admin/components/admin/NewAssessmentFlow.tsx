@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { ArrowRight, FilePenLine, FileUp, Sparkles } from "lucide-react";
 import { type FormEvent, type ReactNode, useState } from "react";
 import { Button } from "@/components/admin/ui/Button";
 import { Field, Input, Select, Textarea } from "@/components/admin/ui/Field";
@@ -26,7 +27,8 @@ export function NewAssessmentFlow() {
   const [description, setDescription] = useState("");
   const [primaryLanguage, setPrimaryLanguage] = useState<Locale>("en");
   const [bilingual, setBilingual] = useState(true);
-  const [assessmentType, setAssessmentType] = useState<AssessmentType>("custom");
+  const [assessmentType, setAssessmentType] =
+    useState<AssessmentType>("custom");
 
   async function onCreate(event: FormEvent) {
     event.preventDefault();
@@ -54,7 +56,7 @@ export function NewAssessmentFlow() {
         method === "ai_import"
           ? `/admin/content/${versionId}/import`
           : effectiveType === "custom"
-            ? `/admin/content/${versionId}/custom`
+            ? `/admin/content/${versionId}/scoring`
             : `/admin/content/${versionId}`,
       );
     } catch (error) {
@@ -68,24 +70,61 @@ export function NewAssessmentFlow() {
 
   if (method === null) {
     return (
-      <div className="grid max-w-2xl gap-4 sm:grid-cols-2">
-        <MethodCard
-          title="Manual Builder"
-          description="Create questions, clusters, and scoring rules by hand. Full control, step by step."
-          onClick={() => setMethod("manual")}
-        />
-        <MethodCard
-          title="AI Import"
-          description="Paste existing questions and scoring rubric — AI drafts a Custom assessment for you to review and apply."
-          badge="Beta"
-          onClick={() => setMethod("ai_import")}
-        />
+      <div className="max-w-3xl">
+        <div className="mb-4">
+          <h2 className="text-sm font-bold text-adm-ink">
+            How would you like to start?
+          </h2>
+          <p className="mt-1 text-[13px] text-adm-ink-muted">
+            Both options create the same editable draft and use the same review
+            and publishing checks.
+          </p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <MethodCard
+            icon={<FilePenLine className="size-5" aria-hidden="true" />}
+            title="Create manually"
+            description="Define the possible results, write questions, and connect each answer to a result."
+            action="Start from a blank draft"
+            onClick={() => setMethod("manual")}
+          />
+          <MethodCard
+            icon={<FileUp className="size-5" aria-hidden="true" />}
+            title="Import an existing assessment"
+            description="Upload or paste your questions and scoring logic. AI structures them for your review."
+            action="Import and review"
+            badge="AI-assisted"
+            onClick={() => setMethod("ai_import")}
+          />
+        </div>
       </div>
     );
   }
 
   return (
-    <form onSubmit={onCreate} className="max-w-xl space-y-5">
+    <form onSubmit={onCreate} className="max-w-2xl space-y-5">
+      <div className="flex items-start gap-3 rounded-adm-lg border border-adm-line bg-adm-card p-4">
+        <span className="grid size-9 shrink-0 place-items-center rounded-adm-md bg-adm-violet/10 text-adm-violet">
+          {method === "manual" ? (
+            <FilePenLine className="size-4.5" aria-hidden="true" />
+          ) : (
+            <Sparkles className="size-4.5" aria-hidden="true" />
+          )}
+        </span>
+        <div>
+          <p className="text-[13px] font-bold text-adm-ink">
+            {method === "manual"
+              ? "Creating a blank draft"
+              : "Importing an existing assessment"}
+          </p>
+          <p className="mt-0.5 text-[12px] leading-relaxed text-adm-ink-muted">
+            {method === "manual"
+              ? "After setup, you will add questions, results, scoring, and translations in a guided workspace."
+              : "After setup, add your source material. Nothing is imported until you review and approve the structured draft."}
+          </p>
+        </div>
+      </div>
+
       <Field label="Assessment name">
         {(p) => (
           <Input
@@ -111,7 +150,11 @@ export function NewAssessmentFlow() {
         )}
       </Field>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div
+        className={
+          method === "manual" ? "grid gap-4 sm:grid-cols-2" : "max-w-xs"
+        }
+      >
         <Field label="Primary language">
           {(p) => (
             <Select
@@ -128,42 +171,52 @@ export function NewAssessmentFlow() {
           )}
         </Field>
 
-        <Field
-          label="Assessment type"
-          hint={
-            assessmentType === "core"
-              ? "Scored by the built-in CORE engine."
-              : "Scored by your own rules."
-          }
-        >
-          {(p) => (
-            <Select
-              {...p}
-              value={assessmentType}
-              onChange={(e) =>
-                setAssessmentType(e.target.value as AssessmentType)
-              }
-            >
-              <option value="custom">Custom assessment</option>
-              <option value="core">Core assessment</option>
-            </Select>
-          )}
-        </Field>
+        {method === "manual" ? (
+          <Field
+            label="Assessment type"
+            hint={
+              assessmentType === "core"
+                ? "Uses Tareeq's built-in CORE scoring engine."
+                : "Uses the questions and scoring logic you define."
+            }
+          >
+            {(p) => (
+              <Select
+                {...p}
+                value={assessmentType}
+                onChange={(e) =>
+                  setAssessmentType(e.target.value as AssessmentType)
+                }
+              >
+                <option value="custom">Custom assessment</option>
+                <option value="core">CORE assessment</option>
+              </Select>
+            )}
+          </Field>
+        ) : null}
       </div>
 
-      <label className="flex items-center gap-2.5 text-sm text-adm-ink-soft">
+      <label className="flex items-start gap-2.5 text-sm text-adm-ink-soft">
         <input
           type="checkbox"
           checked={bilingual}
           onChange={(e) => setBilingual(e.target.checked)}
-          className="h-4 w-4 rounded border-adm-line-strong text-adm-violet focus:ring-2 focus:ring-adm-violet/25"
+          className="mt-0.5 h-4 w-4 rounded border-adm-line-strong text-adm-violet focus:ring-2 focus:ring-adm-violet/25"
         />
-        Bilingual — English + العربية
+        <span>
+          <span className="block font-semibold text-adm-ink">
+            Create English and Arabic content
+          </span>
+          <span className="mt-0.5 block text-[12px] text-adm-ink-muted">
+            Publishing will check that all required fields exist in both
+            languages.
+          </span>
+        </span>
       </label>
 
       <div className="flex items-center gap-3 pt-1">
         <Button type="submit" loading={submitting}>
-          Create assessment
+          {method === "manual" ? "Create blank draft" : "Continue to import"}
         </Button>
         <Button
           type="button"
@@ -181,12 +234,16 @@ export function NewAssessmentFlow() {
 function MethodCard({
   title,
   description,
+  action,
+  icon,
   onClick,
   badge,
   disabled,
 }: {
   title: string;
   description: ReactNode;
+  action: string;
+  icon: ReactNode;
   onClick?: () => void;
   badge?: string;
   disabled?: boolean;
@@ -196,19 +253,29 @@ function MethodCard({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="group rounded-adm-lg border border-adm-line-strong bg-adm-card p-5 text-left transition-colors duration-adm-fast hover:border-adm-violet hover:bg-adm-violet/5 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:border-adm-line-strong disabled:hover:bg-adm-card"
+      className="group flex min-h-48 flex-col rounded-adm-lg border border-adm-line-strong bg-adm-card p-5 text-left transition-[border-color,background-color,box-shadow] duration-adm-fast hover:border-adm-violet hover:bg-adm-violet/5 hover:shadow-adm-sm focus-visible:border-adm-violet disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:border-adm-line-strong disabled:hover:bg-adm-card"
     >
       <div className="flex items-center justify-between gap-2">
-        <h3 className="text-sm font-bold text-adm-ink">{title}</h3>
+        <span className="grid size-9 place-items-center rounded-adm-md bg-adm-sand text-adm-violet transition-colors group-hover:bg-adm-violet group-hover:text-white">
+          {icon}
+        </span>
         {badge ? (
           <span className="rounded-full bg-adm-sand px-2 py-0.5 text-[11px] font-semibold text-adm-ink-muted">
             {badge}
           </span>
         ) : null}
       </div>
-      <p className="mt-1.5 text-[13px] leading-relaxed text-adm-ink-muted">
+      <h3 className="mt-5 text-base font-bold text-adm-ink">{title}</h3>
+      <p className="mt-2 text-[13px] leading-relaxed text-adm-ink-muted">
         {description}
       </p>
+      <span className="mt-auto flex items-center gap-1.5 pt-5 text-[12px] font-bold text-adm-violet">
+        {action}
+        <ArrowRight
+          className="size-3.5 transition-transform group-hover:translate-x-0.5"
+          aria-hidden="true"
+        />
+      </span>
     </button>
   );
 }

@@ -1,5 +1,5 @@
 import type { KaiChatContext } from "@/lib/kai/chat-context";
-import { KAI_MESSAGE_INTENTS, type KaiMessageIntent } from "@/lib/kai/intent";
+import type { KaiMessageIntent } from "@/lib/kai/intent";
 import { MEMORY_CATEGORY_LABELS } from "@/lib/kai/memory/memory-view";
 import type { KaiMemoryCategory } from "@/lib/kai/memory/memory-types";
 
@@ -25,7 +25,7 @@ import type { KaiMemoryCategory } from "@/lib/kai/memory/memory-types";
 export function buildSystemPrompt(locale: string): string {
   return `You are Kai — the user's personal career coach inside Tareeq. You are not a chatbot, and you must never sound like one.
 
-Your job is not to answer quickly. Your job is to guide this student toward a useful next step — every single turn, not just when they ask for a "plan."
+Your first job is to answer the learner's actual question clearly. Give the shortest useful direct answer first, then add coaching only when it improves the answer.
 
 Who you are:
 You already reviewed this person's Career Compass before this conversation started. You are curious about them specifically, not about "helping with career questions" in the abstract. You have a point of view, formed by their real result, and you're not afraid to share it — while staying open to being wrong about the parts that are genuinely uncertain.
@@ -33,13 +33,12 @@ You already reviewed this person's Career Compass before this conversation start
 What you know is true, and must never contradict:
 The deterministic assessment result provided to you (cluster, archetype, driver, ecosystem fit, confidence level) is ground truth. You did not compute it and you cannot recompute it. You never state a different cluster, archetype, driver, or ecosystem fit than the one you were given. You never invent a confidence level. If the data is genuinely thin on a topic, say so plainly instead of filling the gap with confidence you don't have.
 
-The coaching structure — follow this shape for every substantive answer:
-1. Understand — acknowledge what they're actually asking, in your short spoken "text," not a restatement of the question.
-2. Ground — connect the answer to their real profile (cluster, archetype, reward driver, ecosystem fit, or something from memory). An "insight_block" is usually the right place for this.
-3. Teach — explain the idea itself in plain, useful language. This can stay in "text," or move to a "bullet_list" if it has real structure.
-4. Apply — make it concrete for THEIR situation, not a generic answer that would fit anyone.
-5. Resource/Plan — when it fits, recommend real resources ("learning_resources") or a concrete plan ("action_plan"). Don't force this every turn — only when the question calls for it.
-6. Continue — end with useful "quickReplies" that move the conversation forward, not filler options.
+The answer structure — use only the parts the question needs:
+1. Answer — put the direct answer in the first sentence. Never make the learner complete a plan to get the answer they asked for.
+2. Explain — add a tight explanation or "bullet_list" when it makes the answer clearer.
+3. Personalize — connect to their profile only when that connection is real and useful, not as ritual filler.
+4. Resource/Plan — recommend learning resources or a plan only when the learner asked for one or it is genuinely the next useful step.
+5. Continue — end with useful "quickReplies" that move the conversation forward, not filler options.
 
 A one-line question ("what's my top career?") can stay light — a short "text" answer is enough. But a substantive question deserves a substantive answer: for something like "how do I convince my family" or "build me a study plan," 2-3 blocks working together is the right amount — never stop at a definition when the person needs something they can actually use, but also never pad past what's genuinely useful. Keep every block itself tight: a talking_points/checklist/family_script entry is one clear sentence, not a paragraph — depth comes from picking the right few things to say, not from writing more.
 
@@ -47,12 +46,16 @@ Infer the intent behind each message before answering (see the intent list in th
 - explain_result → insight_block, reflection_question
 - family_conversation → insight_block, talking_points, family_script, objection_response_list, checklist
 - resource_recommendation → learning_resources
+- fact_lookup → a direct answer in text, plus a bullet_list only when useful
 - action_plan / study_plan → action_plan
 - career_comparison → comparison_table, decision_matrix
 - university_guidance → university_card, bullet_list, learning_resources
 - challenge_result / confidence_building → insight_block, reflection_question
 - next_step → one short action_plan, or a bullet_list
 - general_question → plain text, with an optional bullet_list if it helps
+
+Current factual questions need evidence:
+For costs, tuition, fees, visas, scholarships, deadlines, salaries, employment data, or anything asking for current/latest/official information, you MUST use Google Search before answering. Answer the question first with concrete figures or requirements. The app attaches verified source links from the provider metadata. Do not invent, copy, or mention URLs in your response fields. Use an indicative range when exact figures vary, say what causes the variation, state the relevant year when available, and distinguish tuition from living costs. Ask a clarifying question only after giving the most useful answer possible with the information already available. Do not create an action plan unless the learner explicitly asks for a plan.
 
 Family conversations are a key case — when a learner asks how to convince their family, explain their choice to their parents, or says their parents don't understand: empathize genuinely first, name what the family is likely actually worried about (money, prestige, unfamiliarity, fear for their future), give them a short script they can literally say, anticipate 2-3 real objections with a calm response to each ("objection_response_list"), and end with a small checklist of next actions. Don't just say "communication is important" — give them the words.
 
@@ -68,6 +71,8 @@ What you do:
 What you never do:
 - Never change, recompute, or second-guess the score, cluster, archetype, driver, or ecosystem fit.
 - Never present any of it as a fixed identity or destiny — it's a signal to explore, always.
+- Never provide personal medical diagnosis, treatment, medication, or dosage advice. Briefly explain that your scope is career and education guidance, recommend a qualified healthcare professional, and redirect to the learner's career exploration. Questions about studying medicine or healthcare careers are in scope and should be answered normally.
+- If a request is unrelated to careers, education, or the learner's development, politely say it is outside your role and offer a useful career-focused direction instead.
 - Never sound like a generic AI assistant. Banned: "Based on the information provided," "As an AI," "I'd be happy to help you with that," "I can help with that," dictionary-style definitions, generic encouragement ("you've got this!" with nothing behind it), vague advice that would apply to literally any student, and empty responses that restate the question without adding anything.
 - Never answer in a wall of text when a shorter answer plus the right block would serve better.
 - Never ask for or reference information you weren't given (their email, full name if not already used, anything outside the provided context).
@@ -78,7 +83,7 @@ You're given a list of structured facts remembered about this person from past c
 You may propose new memories to keep in "memoryUpdates" — but only genuinely useful, durable facts (a real interest, a stated goal, a clear preference, a topic they asked about, a recommendation you made). Don't propose something already in the memory list you were given. Don't propose transient chit-chat. Keep each memory value short — a label, not a sentence (e.g. "Study abroad", not "The user said they are thinking about studying abroad next year"). Update "personSummary" only when it's meaningfully changed — 2-3 short paragraphs about the person, not the conversation.
 
 Learning resources — coaching, not a link directory:
-When a book, course, video, article, podcast, community, website, project, or competition would genuinely help, propose it as a "learning_resources" block, not prose. Draw on your own knowledge — you are not searching or browsing anything. Never invent a URL and never include one; the app deliberately shows no links. Instead, give each resource a good "search_query" (e.g. "day in the life of a marine biologist") so the app can build a real search link. Each resource needs a real reason tied to this person specifically (their cluster, archetype, or what they just said), not a generic "this is popular." Propose 1-3 resources when the question calls for it — don't force one into every turn.
+When a book, course, video, article, podcast, community, website, project, or competition would genuinely help, propose it as a "learning_resources" block, not prose. For resource_recommendation turns, draw on your own knowledge rather than inventing a URL; this rule does not apply to fact_lookup turns, where Google Search is mandatory. Give each resource a good "search_query" (e.g. "day in the life of a marine biologist") so the app can build a real search link. Each resource needs a real reason tied to this person specifically (their cluster, archetype, or what they just said), not a generic "this is popular." Propose 1-3 resources when the question calls for it — don't force one into every turn.
 
 Action plans — concrete and time-boxed:
 When a plan is the right answer (explicit request, or a "next_step"/"study_plan" intent), use "action_plan" with a short title, an optional overall duration_label ("7 days", "this week"), and 3-4 tasks, each a concrete phrase with a realistic estimated_time — not vague steps like "work hard."
@@ -90,7 +95,17 @@ Language:
 Reply in the SAME language the learner's most recent message is written in — English or Arabic, whichever they just used — even if it differs from the app's default. Only when there is no message yet (the very first turn of a brand-new conversation) default to ${locale === "ar" ? "Arabic" : "English"}. Never switch languages mid-conversation just because the app's default differs from what they're typing. If replying in Arabic, use natural, warm Arabic — not a stiff translation of English coaching-speak. Use regional context (A-Levels, Tawjihi, and similar) where it fits naturally. Every field inside every block must be written in that same language too, not just "text."
 
 Output:
-Keep "text" to 1-3 short sentences (under 40 words) — the substance goes in blocks, not a longer "text." Always include 2-4 short "quickReplies" unless the user has clearly ended the conversation. Always set "intent" to your own honest classification of what this turn is about. Update "summary" each turn with one sentence capturing this conversation so far. Plain text only — no decorative emoji, no repeated symbols or characters for emphasis. Every block should read like something a genuinely good coach put in front of you, not filler.`;
+Keep "text" to 1-3 short sentences (under 50 words) — the substance goes in blocks, not a longer "text." Always include 2-4 short "quickReplies" unless the user has clearly ended the conversation. Set "intent" to the server-classified intent required by the response schema. Update "summary" each turn with one sentence capturing this conversation so far. Plain text only — no decorative emoji, no repeated symbols or characters for emphasis. Every block should read like something a genuinely good coach put in front of you, not filler.`;
+}
+
+export function buildFactualSystemPrompt(locale: string): string {
+  return `You are Kai, Tareeq's careful career-information guide.
+
+You MUST use Google Search before answering this factual question. Do not answer from memory alone.
+
+Give the direct answer in the first sentence. Prefer official, primary, and current sources. Use concrete figures, dates, or requirements where they exist. When figures vary, give an indicative range and say what causes the variation. Distinguish tuition from living costs. Label estimates clearly. Never invent a URL or put URLs in response fields; the app attaches sources from provider grounding metadata.
+
+Reply in the same language as the learner's question. Use natural Arabic for Arabic questions and natural English for English questions; if the language is ambiguous, default to ${locale === "ar" ? "Arabic" : "English"}. Do not add an action plan unless explicitly requested. Return only the answer as plain text in 1-3 concise sentences under 100 words, with no markdown, citations, links, labels, or decorative emoji.`;
 }
 
 const RESOURCE_ITEM_SCHEMA = {
@@ -104,13 +119,16 @@ const RESOURCE_ITEM_SCHEMA = {
     author_or_provider: { type: "STRING", description: "Author, instructor, channel, or organization." },
     reason: { type: "STRING", description: "Why this fits THIS person specifically — one short sentence." },
     difficulty: { type: "STRING", enum: ["beginner", "intermediate", "advanced"] },
-    estimated_time: { type: "STRING", description: "e.g. '2 hours', '6 weeks', 'ongoing'." },
+    estimated_time: {
+      type: "STRING",
+      description: "Optional. Include only when the resource has a meaningful time commitment, such as a book, course, video, or project.",
+    },
     search_query: {
       type: "STRING",
       description: "A good search phrase for this resource, e.g. 'day in the life of a marine biologist'.",
     },
   },
-  required: ["type", "title", "author_or_provider", "reason", "difficulty", "estimated_time"],
+  required: ["type", "title", "author_or_provider", "reason", "difficulty"],
 };
 
 const ACTION_TASK_SCHEMA = {
@@ -194,6 +212,21 @@ const BLOCK_TYPE_FIELDS: Record<string, string[]> = {
   decision_matrix: ["options", "matrix_rows", "recommendation"],
 };
 
+const STRICT_BLOCK_REQUIRED_FIELDS: Record<string, string[]> = {
+  action_plan: ["title", "tasks"],
+  comparison: ["leftLabel", "leftPoints", "rightLabel", "rightPoints"],
+  learning_resources: ["title", "resources"],
+  insight_block: ["title", "body"],
+  bullet_list: ["items"],
+  checklist: ["title", "items"],
+  talking_points: ["title", "points"],
+  family_script: ["title", "script"],
+  objection_response_list: ["title", "objections"],
+  reflection_question: ["question"],
+  comparison_table: ["title", "columns", "table_rows"],
+  decision_matrix: ["title", "options", "matrix_rows"],
+};
+
 const BLOCK_FIELD_SCHEMAS: Record<string, object> = {
   body: { type: "STRING", description: "For insight_block only." },
   question: { type: "STRING", description: "For reflection_question only." },
@@ -262,6 +295,7 @@ const INTENT_BLOCK_TYPES: Record<KaiMessageIntent, string[]> = {
   explain_result: ["insight_block", "reflection_question"],
   family_conversation: ["insight_block", "talking_points", "family_script", "objection_response_list", "checklist"],
   resource_recommendation: ["learning_resources"],
+  fact_lookup: ["bullet_list"],
   action_plan: ["action_plan"],
   study_plan: ["action_plan", "checklist"],
   career_comparison: ["comparison", "comparison_table", "decision_matrix"],
@@ -275,7 +309,18 @@ const INTENT_BLOCK_TYPES: Record<KaiMessageIntent, string[]> = {
   general_question: ["bullet_list", "insight_block", "learning_resources"],
 };
 
-function buildBlockSchema(allowedTypes: readonly string[]) {
+const STRUCTURED_RESPONSE_INTENTS = new Set<KaiMessageIntent>([
+  "explain_result",
+  "family_conversation",
+  "resource_recommendation",
+  "action_plan",
+  "study_plan",
+  "career_comparison",
+  "challenge_result",
+  "confidence_building",
+]);
+
+function buildBlockSchema(allowedTypes: readonly string[], requireContent = false) {
   const properties: Record<string, unknown> = {
     type: {
       type: "STRING",
@@ -294,7 +339,11 @@ function buildBlockSchema(allowedTypes: readonly string[]) {
     properties[field] = BLOCK_FIELD_SCHEMAS[field];
   }
 
-  return { type: "OBJECT", properties, required: ["type"] };
+  const required = ["type"];
+  if (requireContent && allowedTypes.length === 1) {
+    required.push(...(STRICT_BLOCK_REQUIRED_FIELDS[allowedTypes[0]] ?? []));
+  }
+  return { type: "OBJECT", properties, required };
 }
 
 const MEMORY_UPDATE_SCHEMA = {
@@ -332,22 +381,27 @@ const MEMORY_UPDATE_SCHEMA = {
  * the always-allowed set — no heavy types needed for a first hello.
  */
 export function buildResponseSchema(intentHint?: KaiMessageIntent) {
-  const allowedTypes = [
-    ...ALWAYS_ALLOWED_BLOCK_TYPES,
-    ...(intentHint ? INTENT_BLOCK_TYPES[intentHint] : []),
-  ];
+  const allowedTypes =
+    intentHint === "fact_lookup"
+      ? INTENT_BLOCK_TYPES.fact_lookup
+      : [
+          ...ALWAYS_ALLOWED_BLOCK_TYPES,
+          ...(intentHint ? INTENT_BLOCK_TYPES[intentHint] : []),
+        ];
 
   return {
     type: "OBJECT",
     properties: {
       text: {
         type: "STRING",
-        description: "Kai's spoken reply. 1-3 short sentences. Never a wall of text.",
+        description:
+          "Kai's spoken reply. 1-3 short sentences. Never a wall of text.",
       },
       intent: {
         type: "STRING",
-        enum: [...KAI_MESSAGE_INTENTS],
-        description: "Your own honest classification of what this turn is about. Used for analytics, never shown to the user.",
+        enum: [intentHint ?? "general_question"],
+        description:
+          "The server-classified intent for this turn. Used for analytics, never shown to the user.",
       },
       quickReplies: {
         type: "ARRAY",
@@ -373,6 +427,128 @@ export function buildResponseSchema(intentHint?: KaiMessageIntent) {
         description: "2-3 short paragraphs about the person overall. Only include if meaningfully changed.",
       },
     },
+    required: [
+      "text",
+      "intent",
+      "quickReplies",
+      ...(intentHint && STRUCTURED_RESPONSE_INTENTS.has(intentHint)
+        ? ["blocks"]
+        : []),
+    ],
+  };
+}
+
+/** Minimal schema for the one strict repair retry. It removes unrelated
+ * block branches and requires the missing artifact array, reducing both
+ * omission risk and constrained-decoding work. */
+export function buildRequiredBlocksSchema(
+  intent: KaiMessageIntent,
+  requiredTypes: readonly string[],
+) {
+  return {
+    type: "OBJECT",
+    properties: {
+      text: {
+        type: "STRING",
+        description: "One short lead-in sentence. Put the substance in blocks.",
+      },
+      intent: { type: "STRING", enum: [intent] },
+      quickReplies: {
+        type: "ARRAY",
+        items: { type: "STRING" },
+        description: "2-4 short suggested replies.",
+      },
+      blocks: {
+        type: "ARRAY",
+        items: buildBlockSchema(requiredTypes, true),
+        description: `Include every required block type: ${requiredTypes.join(", ")}.`,
+      },
+    },
+    required: ["text", "intent", "quickReplies", "blocks"],
+  };
+}
+
+/**
+ * Comparison-only repetition recovery. Gemini can loop on nested block/table
+ * arrays, so this schema collects two labels and two points per side as flat
+ * strings. The server deterministically promotes them into a comparison block.
+ */
+export function buildComparisonRecoverySchema(
+  intent: KaiMessageIntent = "career_comparison",
+) {
+  return {
+    type: "OBJECT",
+    properties: {
+      text: {
+        type: "STRING",
+        description: "One short sentence introducing the comparison.",
+      },
+      intent: { type: "STRING", enum: [intent] },
+      leftLabel: { type: "STRING", description: "The first option's name." },
+      leftPoint1: {
+        type: "STRING",
+        description: "One concrete advantage or defining difference for the first option.",
+      },
+      leftPoint2: {
+        type: "STRING",
+        description: "A second concrete advantage or defining difference for the first option.",
+      },
+      rightLabel: { type: "STRING", description: "The second option's name." },
+      rightPoint1: {
+        type: "STRING",
+        description: "One concrete advantage or defining difference for the second option.",
+      },
+      rightPoint2: {
+        type: "STRING",
+        description: "A second concrete advantage or defining difference for the second option.",
+      },
+    },
+    required: [
+      "text",
+      "intent",
+      "leftLabel",
+      "leftPoint1",
+      "leftPoint2",
+      "rightLabel",
+      "rightPoint1",
+      "rightPoint2",
+    ],
+  };
+}
+
+/**
+ * Text-only response schema for the Phase 2C recovery retry.
+ *
+ * Measured (docs/kai-audit): on the heavy artifact intents, gemini-2.5-flash
+ * loops on ANY structured array under constrained decoding — requiring a block
+ * re-triggers the loop, and leaving it optional makes the model drop it and
+ * answer in prose anyway. So the reliable recovery removes structured output
+ * entirely: just `text` + `intent`, no `blocks` array to loop on. The
+ * recovery instruction (ARTIFACT_SIMPLIFY_HINT) tells the model to put the
+ * short answer directly in `text` (e.g. a numbered list of steps), which
+ * completes reliably and carries the real content — far better than the
+ * generic "I'm having trouble" fallback.
+ */
+export function buildRecoverySchema(intentHint?: KaiMessageIntent) {
+  return {
+    type: "OBJECT",
+    properties: {
+      text: {
+        type: "STRING",
+        description:
+          "Your complete short reply as plain text. May include a short numbered or bulleted list written inline. Keep it concise.",
+      },
+      intent: {
+        type: "STRING",
+        enum: [intentHint ?? "general_question"],
+        description: "The server-classified intent for this turn. Analytics only.",
+      },
+      quickReplies: {
+        type: "ARRAY",
+        items: { type: "STRING" },
+        description: "2-3 short suggested replies the user could tap next.",
+      },
+    },
     required: ["text", "intent"],
   };
 }
@@ -389,9 +565,8 @@ const GOAL_FRAMING: Record<KaiChatContext["conversation"]["goal"], string> = {
 /** The full context payload handed to Gemini, as plain text — kept
  * separate from the system prompt so the "rules" stay stable while the
  * per-request facts change every call. `intentHint`, when present, is
- * this specific message's local keyword-heuristic guess (lib/kai/
- * intent.ts) — a steer, not a constraint; Gemini's own "intent" field
- * in the response is what actually gets recorded. */
+ * this specific message's server-side classification (lib/kai/intent.ts).
+ * The response schema binds Gemini to this same contract. */
 export function buildContextPrompt(context: KaiChatContext, intentHint?: KaiMessageIntent): string {
   const { user, assessment, report, journey, conversation, memories } = context;
 
@@ -402,7 +577,7 @@ export function buildContextPrompt(context: KaiChatContext, intentHint?: KaiMess
 
   if (intentHint) {
     lines.push(
-      `This message's likely intent (a heuristic guess, not a constraint — judge for yourself): ${intentHint}.`,
+      `Server-classified intent for this turn (follow this contract exactly): ${intentHint}.`,
     );
   }
 
@@ -420,8 +595,13 @@ export function buildContextPrompt(context: KaiChatContext, intentHint?: KaiMess
     );
   }
 
+  // Guard against a context that arrives without `journey` (the type marks it
+  // required, but a malformed/partial client payload must degrade gracefully,
+  // not 500 the whole chat request — this was silently failing chat).
+  const completedAssessments = journey?.completedAssessments ?? [];
+  const lockedModules = journey?.lockedModules ?? [];
   lines.push(
-    `Journey — completed: ${journey.completedAssessments.join(", ") || "none"}; still locked: ${journey.lockedModules.join(", ") || "none"}.`,
+    `Journey — completed: ${completedAssessments.join(", ") || "none"}; still locked: ${lockedModules.join(", ") || "none"}.`,
   );
 
   if (memories.items.length > 0 || memories.personSummary) {

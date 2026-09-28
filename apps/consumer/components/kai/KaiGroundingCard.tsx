@@ -38,22 +38,22 @@ export function KaiGroundingCard({
 
   return (
     <details
-      className="group rounded-[20px] border border-carbon/8 bg-carbon/[0.03] px-3.5 py-3 open:bg-carbon/[0.045]"
+      className="daybreak-story-card rounded-story-alt group px-4 py-3.5 open:bg-[color:var(--day-inset)]"
       onToggle={(e) => {
         if ((e.target as HTMLDetailsElement).open) onOpen?.();
       }}
     >
       <summary className="flex cursor-pointer list-none items-center justify-between gap-2 [&::-webkit-details-marker]:hidden">
-        <span className="text-[12.5px] font-black uppercase tracking-[0.1em] text-carbon/55">
+        <span className="daybreak-eyebrow text-[color:var(--day-ink-2)]">
           {t("kai.panel.grounding_title")}
         </span>
         <ChevronDown
           size={15}
-          className="shrink-0 text-carbon/40 transition group-open:rotate-180"
+          className="shrink-0 text-[color:var(--day-ink-3)] transition group-open:rotate-180"
         />
       </summary>
-      <div className="mt-3 border-t border-carbon/8 pt-3">
-        <p className="mb-2 text-[10.5px] font-bold uppercase tracking-[0.12em] text-carbon/40">
+      <div className="mt-3 border-t border-[color:var(--day-line)] pt-3">
+        <p className="daybreak-eyebrow mb-2 text-[color:var(--day-ink-3)]">
           {t("kai.panel.grounding_intro")}
         </p>
         <ul className="grid gap-2">
@@ -62,11 +62,11 @@ export function KaiGroundingCard({
               key={label}
               className="flex items-center justify-between gap-3 text-[12.5px]"
             >
-              <span className="flex items-center gap-2 text-carbon/55">
+              <span className="flex items-center gap-2 text-[color:var(--day-ink-2)]">
                 <Icon size={20} />
                 {label}
               </span>
-              <span className="font-bold text-carbon">{value}</span>
+              <span className="font-bold text-[color:var(--day-ink)]">{value}</span>
             </li>
           ))}
         </ul>

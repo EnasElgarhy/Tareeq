@@ -7,20 +7,18 @@ import { TareeqArrowLeft } from "@/components/brand/icons";
 import { CompassProgress } from "@/components/brand/CompassProgress";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { uiSounds } from "@/lib/audio/ui-sounds";
-import {
-  assessmentQuestions,
-  getQuestionPath,
-} from "@/lib/assessment/questions";
+import { getQuestionPath } from "@/lib/assessment/questions";
 import {
   buildCompassSnapshot,
   PILLAR_META,
   type CompassSnapshot,
 } from "@/lib/assessment/pillar-progress";
 import { useAnimatedSnapshot } from "@/lib/assessment/use-animated-snapshot";
+import type { Question } from "@/lib/scoring";
 
 interface AssessmentChromeProps {
   children: ReactNode;
-  totalQuestions: number;
+  questions: Question[];
 }
 
 function getIndexFromPathname(pathname: string) {
@@ -38,8 +36,9 @@ function getIndexFromPathname(pathname: string) {
  */
 export function AssessmentChrome({
   children,
-  totalQuestions,
+  questions,
 }: AssessmentChromeProps) {
+  const totalQuestions = questions.length;
   const pathname = usePathname();
   const router = useRouter();
   const questionIndex = getIndexFromPathname(pathname);
@@ -54,7 +53,10 @@ export function AssessmentChrome({
   // Results is a long-form report, not a form or a lesson — it just
   // needs more reading width than the 640px form-screen bucket without
   // going as wide as the hero/question layouts.
-  const isResults = pathname === "/results";
+  const isResults =
+    pathname === "/results" || pathname === "/deep-dive-preview";
+  // Registration uses the same wider desktop canvas for its Kai/form split.
+  const isRegistration = pathname === "/register";
   // The Kai conversation is a deliberate light "you've landed" surface —
   // the rest of the flow (assessment + Results) stays on the dark night
   // theme. (/profile used to be a second light surface here; it now
@@ -96,7 +98,7 @@ export function AssessmentChrome({
   // When no question is active we feed an empty snapshot — the compass
   // simply isn't rendered, but the hook keeps a consistent call site.
   const rawSnapshot = buildCompassSnapshot({
-    questions: assessmentQuestions,
+    questions,
     completedCount: hasQuestion ? questionIndex : 0,
     activeIndex: hasQuestion ? questionIndex : null,
   });
@@ -113,14 +115,16 @@ export function AssessmentChrome({
       )}
 
       <div
-        className={`relative z-10 mx-auto flex h-full w-full max-w-[480px] flex-1 flex-col px-5 md:max-w-[560px] ${
+        className={`relative z-10 mx-auto flex h-full w-full max-w-[480px] flex-1 flex-col px-5 ${
           isHero
-            ? "lg:max-w-[960px]"
+            ? "md:max-w-[560px] lg:max-w-[960px]"
             : hasQuestion
-              ? "lg:max-w-[1040px]"
+              ? "md:max-w-[560px] lg:max-w-[1040px]"
               : isResults
-                ? "lg:max-w-[860px]"
-                : "lg:max-w-[640px]"
+                ? "md:max-w-[840px] lg:max-w-[1180px] xl:max-w-[1240px]"
+                : isRegistration
+                  ? "md:max-w-[560px] lg:max-w-[960px]"
+                  : "md:max-w-[560px] lg:max-w-[640px]"
         } ${
           hasQuestion
             ? "gap-2 pb-3 pt-[max(env(safe-area-inset-top),0.625rem)]"
@@ -137,7 +141,7 @@ export function AssessmentChrome({
         <header
           className={
             hasQuestion
-              ? "relative z-10 grid grid-cols-[2rem_minmax(0,1fr)] items-center gap-1.5"
+              ? "relative z-10 grid grid-cols-[2.5rem_minmax(0,1fr)] items-center gap-2 lg:mx-auto lg:w-full lg:max-w-[900px]"
               : "relative z-10 flex h-10 items-center justify-between gap-2"
           }
         >
@@ -145,11 +149,11 @@ export function AssessmentChrome({
             type="button"
             onClick={goBack}
             aria-label="Go back"
-            className={`inline-flex shrink-0 items-center justify-center rounded-full transition active:scale-95 ${
+            className={`shrink-0 ${
               isLightSurface
-                ? "border border-carbon/10 bg-carbon/[0.04] text-carbon hover:bg-carbon/[0.08]"
-                : "glass-tile text-sand hover:text-sand"
-            } ${hasQuestion ? "size-8" : "size-9"}`}
+                ? "inline-flex size-10 items-center justify-center rounded-full border border-carbon/10 bg-carbon/[0.04] text-carbon transition hover:bg-carbon/[0.08] active:scale-95"
+                : "assessment-icon-button size-10"
+            }`}
           >
             <TareeqArrowLeft size={15} className="flip-rtl" />
           </button>
@@ -236,12 +240,12 @@ function QuestionCompassPanel({
 
   return (
     <section
-      className="min-w-0 rounded-[18px] border border-sand/10 bg-sand/[0.07] px-2 py-1.5 shadow-[0_10px_24px_rgba(0,0,0,0.22)] backdrop-blur-md"
+      className="assessment-progress-panel min-w-0 px-2.5 py-1.5"
       aria-label="CORE compass progress"
       aria-live="polite"
     >
       <div className="flex min-w-0 items-center gap-2">
-        <div className="grid size-12 shrink-0 place-items-center rounded-full border border-sand/10 bg-night/35 shadow-inner shadow-black/20">
+        <div className="grid size-12 shrink-0 place-items-center rounded-[14px] border border-sand/10 bg-night/45">
           <CompassProgress
             snapshot={snapshot}
             size={42}
@@ -253,10 +257,10 @@ function QuestionCompassPanel({
         <div className="min-w-0 flex-1 pr-1">
           <div className="flex min-w-0 items-center justify-between gap-2">
             <div className="min-w-0">
-              <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-sand/42">
+              <p className="text-[9px] font-bold uppercase text-sand/48">
                 {t("chrome.compass_label")}
               </p>
-              <p className="truncate text-[13px] font-semibold leading-tight text-sand">
+              <p className="daybreak-heading truncate text-[14px] leading-tight text-sand">
                 {activeMeta ? activeMeta.name : t("chrome.about_you")}
               </p>
             </div>
@@ -278,7 +282,6 @@ function QuestionCompassPanel({
     </section>
   );
 }
-
 
 /**
  * ProfileChip — a small avatar that appears in the chrome's right slot

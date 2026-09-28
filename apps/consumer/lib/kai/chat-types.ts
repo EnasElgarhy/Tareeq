@@ -22,6 +22,8 @@ export type KaiConversationGoal =
 
 export type KaiChatRole = "user" | "kai";
 
+export type KaiMessageStatus = "pending" | "complete" | "failed";
+
 export interface KaiCareerCardBlock {
   type: "career_card";
   title: string;
@@ -106,6 +108,19 @@ export interface KaiLearningResourcesBlock {
   type: "learning_resources";
   title: string;
   resources: KaiLearningResource[];
+}
+
+export interface KaiSourceCitation {
+  title: string;
+  url: string;
+}
+
+/** Verified web references attached from Gemini grounding metadata on the
+ * server. The model cannot author this block or its URLs. */
+export interface KaiSourceListBlock {
+  type: "source_list";
+  title: string;
+  sources: KaiSourceCitation[];
 }
 
 /** The "Ground" step of the coaching framework — a short callout tying
@@ -202,6 +217,7 @@ export type KaiMessageBlock =
   | KaiGoalCardBlock
   | KaiMilestoneCardBlock
   | KaiLearningResourcesBlock
+  | KaiSourceListBlock
   | KaiInsightBlock
   | KaiBulletListBlock
   | KaiChecklistBlock
@@ -217,6 +233,12 @@ export interface KaiMessage {
   role: KaiChatRole;
   createdAt: string;
   text: string;
+  /** Shared by the user turn and Kai reply so retries can be deduplicated. */
+  requestId?: string;
+  /** Stored on the user turn so an idempotent retry reuses the reply row. */
+  assistantMessageId?: string;
+  status?: KaiMessageStatus;
+  errorCode?: string;
   blocks?: KaiMessageBlock[];
   quickReplies?: string[];
   /** What Gemini judged this turn's intent to be — for analytics/
@@ -227,10 +249,17 @@ export interface KaiMessage {
 export interface KaiConversation {
   id: string;
   goal: KaiConversationGoal;
+  title?: string;
   messages: KaiMessage[];
   /** A short rolling summary of the conversation so far — sent to Gemini
    * instead of the full message history once it grows long. */
   summary: string;
   createdAt: string;
   lastOpened: string;
+}
+
+export interface KaiThreadStore {
+  version: 2;
+  activeThreadId: string | null;
+  threads: KaiConversation[];
 }

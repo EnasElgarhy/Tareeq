@@ -6,8 +6,32 @@
 export const resultRegistrationStorageKey = "tareeq.result.registration.v1";
 export const generatedReportStorageKey = "tareeq.result.report.v1";
 export const localeStorageKey = "tareeq.locale";
+/** Per-report access cache: `tareeq.report.access.v1:<reportId>`. */
+export const reportAccessStoragePrefix = "tareeq.report.access.v1:";
 
-export function makeResultRegistration(overrides: Record<string, unknown> = {}) {
+/** Mirrors reportIdFromGeneratedAt in lib/payments/report-access.ts. */
+export function reportIdFromGeneratedAt(generatedAt: string) {
+  return `core-${generatedAt.replace(/[^a-zA-Z0-9]/g, "")}`;
+}
+
+/**
+ * A paid, unlocked access record for the report generated at `generatedAt`.
+ * Trusted by the client only when the registration carries no assessment
+ * id (nothing to reconcile against the server) — the default fixture.
+ */
+export function makeUnlockedAccess(generatedAt: string) {
+  return {
+    reportId: reportIdFromGeneratedAt(generatedAt),
+    status: "unlocked",
+    isPaid: true,
+    paymentId: "e2e-paid",
+    updatedAt: generatedAt,
+  };
+}
+
+export function makeResultRegistration(
+  overrides: Record<string, unknown> = {},
+) {
   return {
     name: "Sara",
     email: "sara@example.com",
@@ -27,10 +51,46 @@ export function makeResultRegistration(overrides: Record<string, unknown> = {}) 
 
 export function makeCompassResult(overrides: Record<string, unknown> = {}) {
   return {
-    cluster: { TECH: 8, ENG: 2, SCI: 1, ART: 0, BUS: 0, LAW: 0, PPL: 1, ENV: 0 },
-    clusterRaw: { TECH: 8, ENG: 2, SCI: 1, ART: 0, BUS: 0, LAW: 0, PPL: 1, ENV: 0 },
-    clusterBonus: { TECH: 1, ENG: 0, SCI: 0, ART: 0, BUS: 0, LAW: 0, PPL: 0, ENV: 0 },
-    clusterFinal: { TECH: 9, ENG: 2, SCI: 1, ART: 0, BUS: 0, LAW: 0, PPL: 1, ENV: 0 },
+    cluster: {
+      TECH: 8,
+      ENG: 2,
+      SCI: 1,
+      ART: 0,
+      BUS: 0,
+      LAW: 0,
+      PPL: 1,
+      ENV: 0,
+    },
+    clusterRaw: {
+      TECH: 8,
+      ENG: 2,
+      SCI: 1,
+      ART: 0,
+      BUS: 0,
+      LAW: 0,
+      PPL: 1,
+      ENV: 0,
+    },
+    clusterBonus: {
+      TECH: 1,
+      ENG: 0,
+      SCI: 0,
+      ART: 0,
+      BUS: 0,
+      LAW: 0,
+      PPL: 0,
+      ENV: 0,
+    },
+    clusterFinal: {
+      TECH: 9,
+      ENG: 2,
+      SCI: 1,
+      ART: 0,
+      BUS: 0,
+      LAW: 0,
+      PPL: 1,
+      ENV: 0,
+    },
     clusterRankedRaw: [
       ["TECH", 8],
       ["ENG", 2],

@@ -1,4 +1,12 @@
-# Tareeq — AWS App Runner deployment (single repo, two apps)
+# Tareeq — AWS App Runner deployment plan (historical)
+
+> [!WARNING]
+> This document is retained as a future/legacy deployment design. It is not the
+> current staging runbook. Staging currently runs as Docker Compose services on
+> an AWS EC2 virtual machine behind Caddy, with manually approved releases.
+> See the root [`README.md`](../../README.md#deployment) and
+> [`SYSTEM_ARCHITECTURE.md`](../architecture/SYSTEM_ARCHITECTURE.md#13-runtime-and-deployment)
+> for the implemented topology.
 
 This is the canonical deployment runbook — one GitHub repo
 (`EnasElgarhy/Tareeq`), two independently-deployable apps (`consumer`,
@@ -31,19 +39,19 @@ docs/deployment/    (repo root — this file, IAM policy JSON)
 
 ## What's already in this repo
 
-| File | Purpose |
-|---|---|
-| `apps/consumer/Dockerfile`, `apps/admin/Dockerfile` | Multi-stage build → Next.js `standalone` output, non-root user, listens on `$PORT` |
-| `apps/*/.dockerignore` | Keeps the build context lean |
-| `apps/*/next.config.ts` | `output: "standalone"` |
-| `apps/*/app/api/health/route.ts` | App Runner health-check target — no auth, no external calls |
-| `.github/workflows/_deploy-apprunner.yml` | Reusable pipeline: lint/typecheck/test → build → push to ECR → trigger App Runner deployment → wait for `RUNNING`. Takes `app`, `environment`, `working-directory` as inputs. |
-| `.github/workflows/deploy-consumer-staging.yml` | Push to `staging` touching `apps/consumer/**` → deploys tareeq-consumer-staging |
-| `.github/workflows/deploy-admin-staging.yml` | Push to `staging` touching `apps/admin/**` → deploys tareeq-admin-staging |
-| `.github/workflows/deploy-consumer-production.yml` | Push to `main` touching `apps/consumer/**` → deploys tareeq-consumer-production |
-| `.github/workflows/deploy-admin-production.yml` | Push to `main` touching `apps/admin/**` → deploys tareeq-admin-production |
-| `docs/deployment/iam-trust-policy-github-oidc-{staging,main}.json` | Who may assume a deploy role — **shared** by both apps within an environment, since it's one repo/branch. Real repo name, no placeholders. |
-| `docs/deployment/iam-permissions-policy-{consumer,admin}-{staging,production}.json` | What each app's role can do — **not** shared; each is scoped to exactly one ECR repo and one App Runner service |
+| File                                                                                | Purpose                                                                                                                                                                       |
+| ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/consumer/Dockerfile`, `apps/admin/Dockerfile`                                 | Multi-stage build → Next.js `standalone` output, non-root user, listens on `$PORT`                                                                                            |
+| `apps/*/.dockerignore`                                                              | Keeps the build context lean                                                                                                                                                  |
+| `apps/*/next.config.ts`                                                             | `output: "standalone"`                                                                                                                                                        |
+| `apps/*/app/api/health/route.ts`                                                    | App Runner health-check target — no auth, no external calls                                                                                                                   |
+| `.github/workflows/_deploy-apprunner.yml`                                           | Reusable pipeline: lint/typecheck/test → build → push to ECR → trigger App Runner deployment → wait for `RUNNING`. Takes `app`, `environment`, `working-directory` as inputs. |
+| `.github/workflows/deploy-consumer-staging.yml`                                     | Push to `staging` touching `apps/consumer/**` → deploys tareeq-consumer-staging                                                                                               |
+| `.github/workflows/deploy-admin-staging.yml`                                        | Push to `staging` touching `apps/admin/**` → deploys tareeq-admin-staging                                                                                                     |
+| `.github/workflows/deploy-consumer-production.yml`                                  | Push to `main` touching `apps/consumer/**` → deploys tareeq-consumer-production                                                                                               |
+| `.github/workflows/deploy-admin-production.yml`                                     | Push to `main` touching `apps/admin/**` → deploys tareeq-admin-production                                                                                                     |
+| `docs/deployment/iam-trust-policy-github-oidc-{staging,main}.json`                  | Who may assume a deploy role — **shared** by both apps within an environment, since it's one repo/branch. Real repo name, no placeholders.                                    |
+| `docs/deployment/iam-permissions-policy-{consumer,admin}-{staging,production}.json` | What each app's role can do — **not** shared; each is scoped to exactly one ECR repo and one App Runner service                                                               |
 
 Path filters on the four trigger workflows mean a push that only touches
 `apps/admin/**` never rebuilds/redeploys `consumer`, and vice versa —
@@ -51,10 +59,10 @@ despite sharing one `staging`/`main` branch.
 
 ## AWS resources (account `403141583896`, region `eu-north-1`) — kept fully separate per app
 
-| App | ECR repo | App Runner service (staging) | App Runner service (production) |
-|---|---|---|---|
-| consumer | `tareeq-consumer` | `tareeq-consumer-staging` | `tareeq-consumer-production` |
-| admin | `tareeq-admin` | `tareeq-admin-staging` | `tareeq-admin-production` |
+| App      | ECR repo          | App Runner service (staging) | App Runner service (production) |
+| -------- | ----------------- | ---------------------------- | ------------------------------- |
+| consumer | `tareeq-consumer` | `tareeq-consumer-staging`    | `tareeq-consumer-production`    |
+| admin    | `tareeq-admin`    | `tareeq-admin-staging`       | `tareeq-admin-production`       |
 
 ## Sequencing (staging first, production only after staging is verified)
 
@@ -125,7 +133,7 @@ Amazon ECR → point at `tareeq-consumer:staging` /
 - **Health check**: path `/api/health`, protocol HTTP
 - **Port**: `3000`
 - **Environment variables / secrets** — everything in that app's
-  `.env.example` *except* `NEXT_PUBLIC_SUPABASE_URL`/
+  `.env.example` _except_ `NEXT_PUBLIC_SUPABASE_URL`/
   `NEXT_PUBLIC_SUPABASE_ANON_KEY` (those are baked into the image at
   build time — see the Dockerfile comment). Use a Secrets Manager
   reference for `SUPABASE_SERVICE_ROLE_KEY`, `ANTHROPIC_API_KEY`,
@@ -152,18 +160,19 @@ as specified.)
 
 For each, add:
 
-| Kind | Name | Value |
-|---|---|---|
-| Secret | `AWS_ROLE_ARN` | that app+environment's role ARN from step (c) |
-| Secret | `NEXT_PUBLIC_SUPABASE_URL` | that app+environment's Supabase project URL |
-| Secret | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | that app+environment's Supabase anon key |
-| Variable | `AWS_REGION` | `eu-north-1` |
-| Variable | `ECR_REPOSITORY` | `tareeq-consumer` or `tareeq-admin` |
-| Variable | `APP_RUNNER_SERVICE_ARN` | that app+environment's service ARN from step (d) |
+| Kind     | Name                            | Value                                            |
+| -------- | ------------------------------- | ------------------------------------------------ |
+| Secret   | `AWS_ROLE_ARN`                  | that app+environment's role ARN from step (c)    |
+| Secret   | `NEXT_PUBLIC_SUPABASE_URL`      | that app+environment's Supabase project URL      |
+| Secret   | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | that app+environment's Supabase anon key         |
+| Variable | `AWS_REGION`                    | `eu-north-1`                                     |
+| Variable | `ECR_REPOSITORY`                | `tareeq-consumer` or `tareeq-admin`              |
+| Variable | `APP_RUNNER_SERVICE_ARN`        | that app+environment's service ARN from step (d) |
 
 ## Runtime environment variables (App Runner service config, not GitHub)
 
 **consumer** (`apps/consumer/.env.example`):
+
 ```
 SUPABASE_SERVICE_ROLE_KEY, GEMINI_API_KEY, ANTHROPIC_API_KEY, ANTHROPIC_MODEL,
 ELEVENLABS_API_KEY, ELEVENLABS_VOICE_ID, ELEVENLABS_VOICE_ID_AR, ELEVENLABS_MODEL_ID,
@@ -172,6 +181,7 @@ TAREEQ_AUDIO_LOCALE, NOUR_SPEAKER_WAV
 ```
 
 **admin** (`apps/admin/.env.example`):
+
 ```
 SUPABASE_SERVICE_ROLE_KEY, DATABASE_URL, RESULTS_PROVIDER, GEMINI_API_KEY,
 GEMINI_MODEL, ANTHROPIC_API_KEY, ANTHROPIC_MODEL, ELEVENLABS_API_KEY,

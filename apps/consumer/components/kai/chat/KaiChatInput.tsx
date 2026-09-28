@@ -29,7 +29,7 @@ export function KaiChatInput({
   }
 
   return (
-    <div className="flex items-end gap-2 rounded-[22px] border border-[color:var(--day-line,rgba(43,36,28,0.1))] bg-[color:var(--day-card,#fffcf6)] p-2 shadow-[0_10px_24px_rgba(43,36,28,0.08)]">
+    <div className="flex items-end gap-2 rounded-[18px] border border-[color:var(--day-line-strong)] bg-[color:var(--day-card,#fffcf6)] p-2 shadow-[0_12px_30px_rgba(43,36,28,0.1)]">
       <textarea
         value={value}
         onChange={(event) => setValue(event.target.value)}
@@ -43,7 +43,7 @@ export function KaiChatInput({
         onClick={submit}
         disabled={disabled || !value.trim()}
         aria-label="Send"
-        className="grid size-9 shrink-0 place-items-center rounded-full bg-grad-warm text-white transition disabled:opacity-30"
+        className="grid size-9 shrink-0 place-items-center rounded-full bg-[#221248] text-[#FFFCF6] transition hover:bg-[#34205F] disabled:opacity-30"
       >
         <ArrowUp size={16} />
       </button>

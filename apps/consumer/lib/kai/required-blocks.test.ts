@@ -56,4 +56,21 @@ describe("getMissingRequiredBlocks", () => {
   it("study_plan requires action_plan just like action_plan intent", () => {
     expect(getMissingRequiredBlocks("study_plan", [])).toEqual(["action_plan"]);
   });
+
+  it("requires a comparison artifact for career comparisons", () => {
+    expect(getMissingRequiredBlocks("career_comparison", undefined)).toEqual([
+      "comparison_table",
+    ]);
+  });
+
+  it.each(["comparison", "comparison_table", "decision_matrix"] as const)(
+    "accepts %s as a valid career comparison artifact",
+    (type) => {
+      expect(
+        getMissingRequiredBlocks("career_comparison", [
+          { type } as KaiMessageBlock,
+        ]),
+      ).toEqual([]);
+    },
+  );
 });

@@ -22,10 +22,10 @@ type BlockType = KaiMessageBlock["type"];
  * ALLOWED (see chat-prompt.ts's INTENT_BLOCK_TYPES) — Gemini can still
  * include an objection_response_list, it's just not force-required.
  *
- * Intents absent from this map (career_comparison, university_guidance,
- * challenge_result, confidence_building, next_step, general_question)
- * have no hard requirement — matches the brief's "unless it is
- * genuinely simple" carve-out.
+ * Intents absent from this map (university_guidance, challenge_result,
+ * confidence_building, next_step, general_question) have no hard
+ * requirement — matches the brief's "unless it is genuinely simple"
+ * carve-out.
  */
 export const INTENT_REQUIRED_BLOCKS: Partial<Record<KaiMessageIntent, readonly BlockType[]>> = {
   explain_result: ["insight_block"],
@@ -33,7 +33,16 @@ export const INTENT_REQUIRED_BLOCKS: Partial<Record<KaiMessageIntent, readonly B
   resource_recommendation: ["learning_resources"],
   action_plan: ["action_plan"],
   study_plan: ["action_plan"],
+  // comparison_table is the canonical repair target. A valid comparison or
+  // decision_matrix also satisfies this intent; see getMissingRequiredBlocks.
+  career_comparison: ["comparison_table"],
 };
+
+const COMPARISON_BLOCK_TYPES = new Set<BlockType>([
+  "comparison",
+  "comparison_table",
+  "decision_matrix",
+]);
 
 /** Returns the required block types for `intent` that are absent from
  * `blocks` — empty when the contract is already satisfied (including
@@ -42,6 +51,13 @@ export function getMissingRequiredBlocks(
   intent: KaiMessageIntent,
   blocks: KaiMessageBlock[] | undefined,
 ): BlockType[] {
+  if (
+    intent === "career_comparison" &&
+    (blocks ?? []).some((block) => COMPARISON_BLOCK_TYPES.has(block.type))
+  ) {
+    return [];
+  }
+
   const required = INTENT_REQUIRED_BLOCKS[intent];
   if (!required || required.length === 0) return [];
 

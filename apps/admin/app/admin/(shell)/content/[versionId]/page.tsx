@@ -6,7 +6,9 @@ import PageHeader from "@/components/admin/PageHeader";
 import { QuestionBuilder } from "@/components/admin/QuestionBuilder";
 import { QuestionEditor } from "@/components/admin/QuestionEditor";
 import { VersionActions } from "@/components/admin/VersionActions";
+import { VersionGovernancePanel } from "@/components/admin/VersionGovernancePanel";
 import { VersionRename } from "@/components/admin/VersionRename";
+import { getVersionResponseStats } from "@/lib/admin/responses";
 import { EmptyState } from "@/components/admin/ui/EmptyState";
 import {
   getContentVersion,
@@ -88,6 +90,11 @@ export default async function VersionDetailPage({
 
   const editable = !version.is_active;
 
+  // Only needed for the read-only governance panel on published versions.
+  const responseStats = editable
+    ? null
+    : await getVersionResponseStats(version.id);
+
   const byPillar = new Map<number, QuestionRow[]>();
   for (const q of questions) {
     const list = byPillar.get(q.pillar) ?? [];
@@ -137,15 +144,15 @@ export default async function VersionDetailPage({
         }
       />
 
-      {!editable && (
-        <p className="mb-6 rounded-adm-md border border-adm-gold/50 bg-adm-gold/15 px-4 py-3 text-[13px] font-medium text-adm-gold-ink">
-          This version is live and read-only. Clone it to a draft to make
-          changes. Arabic translations can still be edited on the{" "}
-          <Link href={`/admin/content/${version.id}/translations`} className="underline">
-            Translations
-          </Link>{" "}
-          tab.
-        </p>
+      {!editable && responseStats && (
+        <VersionGovernancePanel
+          label={version.label}
+          createdAt={version.created_at}
+          responseCount={responseStats.total}
+          completedCount={responseStats.completed}
+          questionCount={questions.length}
+          translationsHref={`/admin/content/${version.id}/translations`}
+        />
       )}
 
       {questions.length === 0 ? (

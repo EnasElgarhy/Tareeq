@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { List, X } from "@phosphor-icons/react";
+import Link from "next/link";
 import { TareeqMark } from "./Shared";
 
 const links = [
@@ -57,6 +58,12 @@ export function Nav() {
         </div>
 
         <div className="flex items-center gap-3">
+          <Link
+            href="/you"
+            className="hidden text-sm font-semibold text-[#5C5142] transition-colors hover:text-[#2A2118] md:inline-flex"
+          >
+            Sign in
+          </Link>
           <a
             href="#final-cta"
             data-testid="nav-cta-start"
@@ -95,6 +102,13 @@ export function Nav() {
                 {l.label}
               </a>
             ))}
+            <Link
+              href="/you"
+              onClick={() => setOpen(false)}
+              className="text-base font-semibold text-[#5C5142] hover:text-[#2A2118]"
+            >
+              Sign in
+            </Link>
             <a
               href="#final-cta"
               onClick={() => setOpen(false)}

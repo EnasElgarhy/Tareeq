@@ -1,12 +1,17 @@
 name: Deploy consumer — staging
 
 on:
+  workflow_dispatch: {}
   push:
     branches: [staging]
     paths:
       - "apps/consumer/**"
       - ".github/workflows/deploy-consumer-staging.yml"
       - ".github/workflows/_deploy-apprunner.yml"
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   deploy:

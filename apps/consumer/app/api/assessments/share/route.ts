@@ -1,8 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
+import { loadAssessmentContentForReference } from "@/lib/assessment/content.server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { resolveContentVersionId } from "@/lib/supabase/content-version";
 
 export const runtime = "nodejs";
 
@@ -20,6 +20,8 @@ export const runtime = "nodejs";
 interface ShareBody {
   report: Record<string, unknown>;
   name?: string;
+  versionId: string | null;
+  versionLabel?: string;
 }
 
 function parseBody(json: unknown): ShareBody | null {
@@ -29,6 +31,9 @@ function parseBody(json: unknown): ShareBody | null {
   return {
     report: b.report as Record<string, unknown>,
     name: typeof b.name === "string" ? b.name : undefined,
+    versionId: typeof b.versionId === "string" ? b.versionId : null,
+    versionLabel:
+      typeof b.versionLabel === "string" ? b.versionLabel : undefined,
   };
 }
 
@@ -53,11 +58,15 @@ export async function POST(request: Request) {
   }
 
   const admin = createSupabaseAdminClient();
-  const versionId = await resolveContentVersionId(admin);
+  const content = await loadAssessmentContentForReference({
+    versionId: body.versionId,
+    versionLabel: body.versionLabel,
+  });
+  const versionId = content?.versionId;
   if (!versionId) {
     return NextResponse.json(
-      { error: "No content version available." },
-      { status: 500 },
+      { error: "Assessment version unavailable." },
+      { status: 409 },
     );
   }
 
@@ -100,7 +109,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: writeError.message }, { status: 500 });
   }
 
-  const origin = new URL(request.url).origin;
+  // Behind the reverse proxy, request.url's host is the container's internal
+  // bind (e.g. 0.0.0.0:3000); use the proxy's forwarded host/proto so the
+  // shared link points at the real public domain.
+  const fwdHost =
+    request.headers.get("x-forwarded-host") ?? request.headers.get("host");
+  const fwdProto = request.headers.get("x-forwarded-proto") ?? "https";
+  const origin = fwdHost
+    ? `${fwdProto}://${fwdHost}`
+    : new URL(request.url).origin;
   return NextResponse.json({
     shareToken,
     url: `${origin}/share/${shareToken}`,

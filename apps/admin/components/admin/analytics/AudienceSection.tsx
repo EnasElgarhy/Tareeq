@@ -73,7 +73,7 @@ export function AudienceSection({
         <DemographicCard
           title="Education level"
           entries={demographics.byEducationLevel}
-          emptyLabel="Not collected yet — no onboarding step asks for this today."
+          emptyLabel="No responses have answered the academic-stage question yet."
         />
       </div>
     </section>

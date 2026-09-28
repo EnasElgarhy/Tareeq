@@ -3,7 +3,10 @@ import {
   readGeneratedReport,
   readResultRegistration,
 } from "@/lib/results/storage";
-import type { PersonalizedCompassReport, ResultRegistration } from "@/lib/results/types";
+import type {
+  PersonalizedCompassReport,
+  ResultRegistration,
+} from "@/lib/results/types";
 
 /**
  * The Profile Journey — what assessments exist, which ones the user
@@ -67,10 +70,12 @@ export const ASSESSMENT_MODULES = [
 
 export type AssessmentModuleId = (typeof ASSESSMENT_MODULES)[number]["id"];
 
-/** The 4 module names are a small, fixed set (unlike career/major names,
- * which come from the deterministic report and stay English by existing
- * precedent) — worth translating. `mod.name` above stays the English
- * fallback/internal value; UI call sites should render `t(getModuleNameKey(id))`. */
+/** The 4 modules are a small, fixed set (unlike career/major names, which
+ * come from the deterministic report and are localized there) — so their
+ * name, tagline and duration are worth translating. The literals in
+ * `ASSESSMENT_MODULES` above stay the English source values; UI call sites
+ * render `t(getModuleNameKey(id))` (and the tagline/duration helpers below)
+ * so nothing English leaks into the Arabic UI. */
 const MODULE_NAME_KEYS: Record<AssessmentModuleId, StringKey> = {
   "core-compass": "journey.module.core_compass",
   "deep-dive": "journey.module.deep_dive",
@@ -78,8 +83,30 @@ const MODULE_NAME_KEYS: Record<AssessmentModuleId, StringKey> = {
   "pulse-check": "journey.module.career_pulse",
 };
 
+const MODULE_TAGLINE_KEYS: Record<AssessmentModuleId, StringKey> = {
+  "core-compass": "journey.module.core_compass.tagline",
+  "deep-dive": "journey.module.deep_dive.tagline",
+  "skills-audit": "journey.module.skills_audit.tagline",
+  "pulse-check": "journey.module.career_pulse.tagline",
+};
+
+const MODULE_DURATION_KEYS: Record<AssessmentModuleId, StringKey> = {
+  "core-compass": "journey.module.core_compass.duration",
+  "deep-dive": "journey.module.deep_dive.duration",
+  "skills-audit": "journey.module.skills_audit.duration",
+  "pulse-check": "journey.module.career_pulse.duration",
+};
+
 export function getModuleNameKey(id: AssessmentModuleId): StringKey {
   return MODULE_NAME_KEYS[id];
+}
+
+export function getModuleTaglineKey(id: AssessmentModuleId): StringKey {
+  return MODULE_TAGLINE_KEYS[id];
+}
+
+export function getModuleDurationKey(id: AssessmentModuleId): StringKey {
+  return MODULE_DURATION_KEYS[id];
 }
 
 /** A computed snapshot of the user's progress across all modules. */
@@ -129,7 +156,7 @@ export function readProfileSnapshot(): ProfileSnapshot {
         icon: mod.icon,
         status: (completed ? "completed" : "available") as ModuleStatus,
         completedAt: coreReport?.generatedAt ?? null,
-        route: completed ? "/results" : mod.route,
+        route: completed ? "/compass" : mod.route,
       };
     }
     // Locked modules — visible but greyed out. They become "available"

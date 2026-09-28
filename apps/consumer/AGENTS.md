@@ -1,5 +1,9 @@
 # tareeq — project context for Claude Code
 
+> Historical context: this file contains an older project snapshot. Follow the
+> repository root `CODING_STYLE.md` and `AGENTS.md` for current coding and
+> workflow rules, and verify architecture claims against the current code.
+
 A mobile-first web app for the **CORE Assessment v4**, a 40-question
 career-discovery quiz aimed at youth in the Middle East. The prototype's
 current user-facing guide is the animated 2D mentor **Nour**. The result

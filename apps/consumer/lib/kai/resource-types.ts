@@ -27,7 +27,7 @@ export interface KaiLearningResource {
   authorOrProvider: string;
   reason: string;
   difficulty: KaiResourceDifficulty;
-  estimatedTime: string;
+  estimatedTime?: string;
   /** Gemini's proposed search phrase, when a better one than the
    * default `${title} ${authorOrProvider}` derivation exists — e.g.
    * "day in the life of a marine biologist" for a youtube_video. */

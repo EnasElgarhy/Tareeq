@@ -6,7 +6,7 @@ export type EcosystemFitName =
   | "Solo Sprinter"
   | "Solo Specialist";
 
-export type ResultSource = "claude" | "fallback";
+export type ResultSource = "gemini" | "claude" | "fallback";
 
 export interface PlatformConsent {
   acceptedAt: string;
@@ -31,6 +31,7 @@ export interface ResultRegistration {
   email: string;
   verifiedAt: string;
   consent: ResultConsent;
+  assessmentId?: string;
 }
 
 export interface PersonalizedCompassReport {

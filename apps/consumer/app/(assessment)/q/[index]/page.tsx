@@ -1,12 +1,10 @@
 import { notFound } from "next/navigation";
 import { QuestionScreen } from "@/components/assessment/QuestionScreen";
+import { loadAttemptAssessmentContent } from "@/lib/assessment/content.server";
 import {
-  assessmentQuestions,
-  getQuestionByIndex,
   menaCountries,
   normalizeQuestionIndex,
   restOfWorldCountries,
-  totalAssessmentQuestions,
 } from "@/lib/assessment/questions";
 
 type QuestionPageProps = {
@@ -15,28 +13,26 @@ type QuestionPageProps = {
   }>;
 };
 
-export function generateStaticParams() {
-  return assessmentQuestions.map((_, index) => ({
-    index: index.toString(),
-  }));
-}
-
 export default async function QuestionPage({ params }: QuestionPageProps) {
   const { index: rawIndex } = await params;
-  const index = normalizeQuestionIndex(rawIndex);
+  const content = await loadAttemptAssessmentContent();
+  const index = normalizeQuestionIndex(rawIndex, content.questions.length);
 
   if (index === null) {
     notFound();
   }
 
-  const question = getQuestionByIndex(index);
+  const question = content.questions[index];
+  if (!question) notFound();
 
   return (
     <QuestionScreen
       question={question}
-      questions={assessmentQuestions}
+      questions={content.questions}
       index={index}
-      totalQuestions={totalAssessmentQuestions}
+      totalQuestions={content.questions.length}
+      versionId={content.versionId}
+      versionLabel={content.versionLabel}
       menaCountries={menaCountries}
       restOfWorldCountries={restOfWorldCountries}
     />

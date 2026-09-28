@@ -164,31 +164,17 @@ export async function createDraftFromVersion(
   return nv.id;
 }
 
-/**
- * Make a version the single active one.
- *
- * Two-step flip — admin-only / low-concurrency, and harmless today because the
- * public app doesn't read is_active from the DB yet. When the app reads content
- * from the DB (Phase 3) this should become a transactional RPC
- * (`update content_versions set is_active = (id = vid)`).
- */
+/** Make a version the single active one in one database transaction. */
 export async function publishVersion(
   versionId: string,
 ): Promise<AudioRegenSummary> {
   await requireAdmin();
   const sb = createSupabaseAdminClient();
 
-  const { error: deactivate } = await sb
-    .from("content_versions")
-    .update({ is_active: false })
-    .neq("id", versionId);
-  if (deactivate) throw new Error(deactivate.message);
-
-  const { error: activate } = await sb
-    .from("content_versions")
-    .update({ is_active: true })
-    .eq("id", versionId);
-  if (activate) throw new Error(activate.message);
+  const { error: publishError } = await sb.rpc("publish_content_version", {
+    target_version_id: versionId,
+  });
+  if (publishError) throw new Error(publishError.message);
 
   revalidatePath("/admin/content");
   revalidatePath(`/admin/content/${versionId}`);
@@ -665,7 +651,9 @@ export async function importQuestionsCsv(
 
     const pillar = Number(first.pillar);
     if (!Number.isInteger(pillar) || pillar < 0 || pillar > 4) {
-      errors.push(`${label}: pillar must be a number 0–4 (got "${first.pillar}").`);
+      errors.push(
+        `${label}: pillar must be a number 0–4 (got "${first.pillar}").`,
+      );
       continue;
     }
     const kind = normalizeKind(first.type);
@@ -689,12 +677,15 @@ export async function importQuestionsCsv(
         .map((r) => ({
           letter: r.answer_key?.trim() || "",
           text: { en: r.answer_text?.trim() || "" },
-          cluster_code: r.cluster?.trim() ? r.cluster.trim().toUpperCase() : null,
+          cluster_code: r.cluster?.trim()
+            ? r.cluster.trim().toUpperCase()
+            : null,
           driver_code: r.driver?.trim() ? r.driver.trim() : null,
           axis_value: r.axis_value?.trim() ? r.axis_value.trim() : null,
         }));
       for (const o of options) {
-        if (!o.letter) errors.push(`${label}: an answer is missing its key (A/B/C…).`);
+        if (!o.letter)
+          errors.push(`${label}: an answer is missing its key (A/B/C…).`);
         if (o.cluster_code && !validClusters.has(o.cluster_code))
           errors.push(`${label}: unknown cluster "${o.cluster_code}".`);
       }

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/admin/ui/Button";
@@ -34,7 +35,11 @@ export function TranslationsPanel({
   async function translate(locale: Locale) {
     setBusy(locale);
     try {
-      const { translated } = await autoTranslateAssessment(catalogId, versionId, locale);
+      const { translated } = await autoTranslateAssessment(
+        catalogId,
+        versionId,
+        locale,
+      );
       toast(
         "success",
         translated > 0
@@ -98,9 +103,26 @@ export function TranslationsPanel({
           </h3>
           <ul className="grid gap-1">
             {gaps.slice(0, 80).map((g, i) => (
-              <li key={i} className="text-[12px] text-adm-ink-soft">
-                <span className="font-semibold text-adm-ink">{g.locale}</span> · {g.kind}{" "}
-                <code className="text-adm-ink-muted">{g.ref}</code> · {g.field}
+              <li
+                key={i}
+                className="flex items-center gap-2 rounded-adm-sm px-2 py-1.5 text-[12px] text-adm-ink-soft odd:bg-adm-sand/60"
+              >
+                <span className="font-semibold uppercase text-adm-ink">
+                  {g.locale}
+                </span>
+                <span>{g.kind}</span>
+                <code className="text-adm-ink-muted">{g.ref}</code>
+                <span className="text-adm-ink-faint">{g.field}</span>
+                <Link
+                  href={`/admin/content/${versionId}/${
+                    g.kind === "question" || g.kind === "option"
+                      ? "custom"
+                      : "scoring"
+                  }`}
+                  className="ml-auto font-bold text-adm-violet hover:text-adm-deep"
+                >
+                  Fix
+                </Link>
               </li>
             ))}
           </ul>
@@ -110,8 +132,8 @@ export function TranslationsPanel({
             </p>
           ) : null}
           <p className="mt-3 text-[12px] text-adm-ink-muted">
-            AI translations are machine-generated — review them in the Questions and
-            Scoring editors before publishing.
+            AI translations are machine-generated — review them in the Questions
+            and Scoring editors before publishing.
           </p>
         </div>
       ) : (

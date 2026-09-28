@@ -42,14 +42,19 @@ export function StatusBadge({ status }: { status: VersionStatus }) {
 export function Badge({
   children,
   className = "",
+  tone = "brand",
 }: {
   children: React.ReactNode;
   className?: string;
+  /** brand (violet tint) or success (mint tint, e.g. free access). */
+  tone?: "brand" | "success";
 }) {
+  const toneCls =
+    tone === "success"
+      ? "bg-adm-mint/25 text-adm-mint-ink"
+      : "bg-adm-violet/10 text-adm-deep";
   return (
-    <span className={`${badgeBase} bg-adm-violet/10 text-adm-deep ${className}`}>
-      {children}
-    </span>
+    <span className={`${badgeBase} ${toneCls} ${className}`}>{children}</span>
   );
 }
 

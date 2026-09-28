@@ -14,10 +14,10 @@ export function ComparisonTableCard({
   rows: Array<{ label: string; values: string[] }>;
 }) {
   return (
-    <div className="rounded-[18px] border border-[color:var(--day-line,rgba(43,36,28,0.1))] bg-[color:var(--day-card,#fffcf6)] p-3.5 shadow-[0_8px_20px_rgba(43,36,28,0.05)]">
+    <div className="daybreak-story-card rounded-story-alt p-4">
       <div className="mb-2.5 flex items-center gap-2">
         <CareerComparisonIcon size={18} />
-        <p className="text-[13px] font-black leading-tight text-[color:var(--day-ink,#2a2118)]">{title}</p>
+        <p className="daybreak-heading text-[15px] leading-tight text-[color:var(--day-ink,#2a2118)]">{title}</p>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full min-w-[420px] border-collapse text-[11.5px]">

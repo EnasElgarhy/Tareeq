@@ -1,11 +1,23 @@
 "use client";
 
-import { ArrowRight, Mail, ShieldCheck, UserRound } from "lucide-react";
+import {
+  ArrowRight,
+  Mail,
+  MailCheck,
+  ShieldCheck,
+  UserRound,
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { KaiChromaVideo } from "@/components/brand/KaiChromaVideo";
 import { useLocale } from "@/components/i18n/LocaleProvider";
-import { sendEmailOtp, verifyEmailOtp } from "@/lib/auth/otp";
+import {
+  OTP_MAX_LENGTH,
+  OTP_MIN_LENGTH,
+  sendEmailOtp,
+  verifyEmailOtp,
+} from "@/lib/auth/otp";
 import { uiSounds } from "@/lib/audio/ui-sounds";
 import { readLocalAssessment } from "@/lib/assessment/progress";
 import {
@@ -14,6 +26,16 @@ import {
   writeResultRegistration,
 } from "@/lib/results/storage";
 import type { ConsentAgeGate } from "@/lib/results/types";
+
+function splitLegalNotice(template: string) {
+  const [beforePrivacy, rest] = template.split("{privacy}");
+  const [betweenLinks, afterTerms] = (rest ?? "").split("{terms}");
+  return {
+    beforePrivacy: beforePrivacy ?? "",
+    betweenLinks: betweenLinks ?? "",
+    afterTerms: afterTerms ?? "",
+  };
+}
 
 function isValidEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -25,7 +47,7 @@ async function persistAssessment(name: string, locale: string) {
   try {
     const progress = readLocalAssessment();
     if (!progress?.result) return;
-    await fetch("/api/assessments/persist", {
+    const response = await fetch("/api/assessments/persist", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -34,7 +56,26 @@ async function persistAssessment(name: string, locale: string) {
         locale,
         name,
         startedAt: progress.startedAt,
+        versionId: progress.versionId,
+        versionLabel: progress.versionLabel,
       }),
+    });
+    if (!response.ok) return;
+
+    const json: unknown = await response.json();
+    if (
+      typeof json !== "object" ||
+      json === null ||
+      typeof (json as { assessmentId?: unknown }).assessmentId !== "string"
+    ) {
+      return;
+    }
+
+    const registration = readResultRegistration();
+    if (!registration) return;
+    writeResultRegistration({
+      ...registration,
+      assessmentId: (json as { assessmentId: string }).assessmentId,
     });
   } catch {
     // fail-open — the result still shows from local state.
@@ -44,6 +85,10 @@ async function persistAssessment(name: string, locale: string) {
 export function RegistrationScreen() {
   const router = useRouter();
   const { t, locale } = useLocale();
+  const legalNotice = useMemo(
+    () => splitLegalNotice(t("register.legal_notice")),
+    [t],
+  );
   const existingRegistration = useMemo(() => readResultRegistration(), []);
   const [name, setName] = useState(existingRegistration?.name ?? "");
   const [email, setEmail] = useState(existingRegistration?.email ?? "");
@@ -104,7 +149,10 @@ export function RegistrationScreen() {
 
     setError("");
     setSending(true);
-    const { ok, error: otpError } = await sendEmailOtp(trimmedEmail, trimmedName);
+    const { ok, error: otpError } = await sendEmailOtp(
+      trimmedEmail,
+      trimmedName,
+    );
     setSending(false);
     if (!ok) {
       setError(otpError ?? t("register.send_error_fallback"));
@@ -135,7 +183,7 @@ export function RegistrationScreen() {
     event.preventDefault();
     const code = enteredCode.trim();
 
-    if (code.length < 6) {
+    if (code.length < OTP_MIN_LENGTH) {
       setError(t("register.code_length_error"));
       return;
     }
@@ -174,41 +222,38 @@ export function RegistrationScreen() {
   const canOptIntoResearch = ageGate !== "minor";
 
   return (
-    <section className="anim-screen-enter flex flex-1 flex-col gap-4">
-      <div className="relative mx-auto flex h-[150px] w-[150px] items-center justify-center">
-        <div
-          aria-label={t("kai.guide_aria")}
-          role="img"
-          className="anim-kai-drop relative z-10"
-        >
-          <div className="anim-kai-drop-bob">
-            {/* No narration here — Kai rests on a closed-mouth frame so she
-                doesn't murmur silently; the CSS float keeps her alive. */}
-            <KaiChromaVideo
-              src="/kai/kai-mentor-green.mp4"
-              size={168}
-              playing={false}
-              restTime={2.3}
-            />
-          </div>
+    <section className="anim-screen-enter mx-auto grid w-full max-w-[920px] flex-1 content-center gap-6 py-3 sm:py-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(420px,1fr)] lg:items-center lg:gap-12 lg:py-8">
+      <div className="grid content-center gap-4 lg:gap-5">
+        <div className="flex items-center gap-4 lg:grid lg:gap-4">
+          <Image
+            src="/illustrations/email-verification.png"
+            alt=""
+            width={240}
+            height={240}
+            priority
+            className="size-[88px] shrink-0 object-contain lg:size-[220px]"
+          />
+          <span className="chip chip--violet-on-dark w-fit">
+            <ShieldCheck size={13} />
+            {t("register.eyebrow")}
+          </span>
+        </div>
+
+        <div className="grid min-w-0 gap-3">
+          <h1 className="text-display-2 max-w-[12ch] text-sand">
+            {t("register.headline")}
+          </h1>
+          <p className="text-body-sm max-w-[42ch] text-sand/70">
+            {t("register.subtitle")}
+          </p>
         </div>
       </div>
 
-      <div className="grid gap-2">
-        <span className="chip chip--violet-on-dark w-fit">
-          <ShieldCheck size={13} />
-          {t("register.eyebrow")}
-        </span>
-        <h1 className="text-display-2 max-w-[12ch] text-sand">
-          {t("register.headline")}
-        </h1>
-        <p className="text-body-sm max-w-[34ch] text-sand/70">
-          {t("register.subtitle")}
-        </p>
-      </div>
-
       {!codeSent ? (
-        <form onSubmit={handleSendCode} className="glass-card grid gap-3 !p-4">
+        <form
+          onSubmit={handleSendCode}
+          className="glass-card grid gap-4 !p-4 sm:!p-5 lg:!p-6"
+        >
           <label className="grid gap-1.5">
             <span className="text-[12px] font-semibold text-sand/70">
               {t("register.name_label")}
@@ -249,7 +294,8 @@ export function RegistrationScreen() {
             </span>
           </label>
 
-          <div className="grid gap-2 rounded-2xl border border-sand/10 bg-sand/[0.045] p-3">
+          <fieldset className="grid min-w-0 gap-2 border-t border-sand/10 pt-4">
+            <legend className="sr-only">{t("register.consent_title")}</legend>
             <div className="grid gap-1">
               <p className="text-[12px] font-bold text-sand">
                 {t("register.consent_title")}
@@ -282,10 +328,13 @@ export function RegistrationScreen() {
               label={t("register.consent_university")}
               onChange={setUniversitySharing}
             />
-          </div>
+          </fieldset>
 
           {error ? (
-            <p role="alert" className="text-[12px] font-semibold text-error">
+            <p
+              role="alert"
+              className="rounded-xl border border-error/25 bg-error/10 px-3 py-2 text-[12px] font-semibold text-error"
+            >
               {error}
             </p>
           ) : null}
@@ -299,34 +348,80 @@ export function RegistrationScreen() {
             {sending ? t("register.sending") : t("register.send_code_cta")}
             <ArrowRight size={18} />
           </button>
+
+          <p className="text-center text-[11px] leading-snug text-sand/55">
+            {legalNotice.beforePrivacy}
+            <Link
+              href="/privacy-policy"
+              className="underline underline-offset-2 hover:text-sand"
+            >
+              {t("register.legal_privacy_link")}
+            </Link>
+            {legalNotice.betweenLinks}
+            <Link
+              href="/terms-of-service"
+              className="underline underline-offset-2 hover:text-sand"
+            >
+              {t("register.legal_terms_link")}
+            </Link>
+            {legalNotice.afterTerms}
+          </p>
         </form>
       ) : (
-        <form onSubmit={handleVerify} className="glass-card grid gap-3 !p-4">
-          <div className="rounded-2xl border border-sand/12 bg-sand/[0.06] p-3">
-            <p className="text-[12px] font-semibold uppercase tracking-[0.12em] text-sand/45">
-              {t("register.code_label")}
+        <form
+          onSubmit={handleVerify}
+          className="glass-card grid gap-4 !p-4 sm:!p-5 lg:!p-6"
+        >
+          <div className="grid gap-3">
+            <div className="flex items-center gap-3">
+              <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-violet-soft/[0.15] text-violet-soft">
+                <MailCheck aria-hidden="true" size={18} />
+              </span>
+              <label htmlFor="registration-code" className="text-h3 text-sand">
+                {t("register.code_label")}
+              </label>
+            </div>
+
+            <p
+              id="registration-code-description"
+              className="text-body-sm text-sand/70"
+            >
+              <span>{t("register.code_sent_before")}</span>{" "}
+              <span
+                className="mt-1 block break-all font-semibold text-sand sm:mt-0 sm:inline sm:break-normal"
+                dir="ltr"
+              >
+                {email}
+              </span>
+              <span aria-hidden="true">.</span>{" "}
+              <span className="block sm:inline">
+                {t("register.code_sent_after")}
+              </span>
             </p>
-            <p className="mt-1 text-body-sm text-sand/70">
-              {t("register.code_sent_before")}{" "}
-              <span className="font-semibold text-sand" dir="ltr">{email}</span>
-              {t("register.code_sent_after")}
-            </p>
-            <p className="mt-2 text-[11px] leading-snug text-sand/45">
+
+            <p className="text-[12px] leading-relaxed text-sand/50">
               {t("register.code_help")}
             </p>
           </div>
 
           <input
+            id="registration-code"
+            name="verification-code"
             value={enteredCode}
             onChange={(event) => setEnteredCode(event.target.value)}
-            className="h-14 w-full rounded-2xl bg-sand px-4 text-center text-[20px] font-bold tracking-[0.24em] text-carbon outline-none shadow-sand-sm focus-visible:ring-2 focus-visible:ring-gold"
-            placeholder="000000"
+            className="h-14 w-full rounded-2xl bg-sand px-5 text-center text-[20px] font-bold tracking-[0.22em] text-carbon outline-none shadow-sand-sm focus-visible:ring-2 focus-visible:ring-gold"
+            placeholder={"0".repeat(OTP_MIN_LENGTH)}
             inputMode="numeric"
-            maxLength={6}
+            maxLength={OTP_MAX_LENGTH}
+            autoComplete="one-time-code"
+            aria-describedby="registration-code-description"
           />
 
           {error ? (
-            <p role="alert" className="text-[12px] font-semibold text-error">
+            <p
+              role="alert"
+              className="rounded-xl border border-error/25 bg-error/10 px-3 py-2 text-[12px] font-semibold text-error"
+            >
               {error}
             </p>
           ) : null}
@@ -341,7 +436,7 @@ export function RegistrationScreen() {
             <ArrowRight size={18} />
           </button>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid gap-2 min-[380px]:grid-cols-2">
             <button
               type="button"
               onClick={() => {

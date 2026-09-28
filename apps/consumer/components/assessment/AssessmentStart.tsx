@@ -4,6 +4,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { KaiAuraV2 } from "@/components/brand/KaiAuraV2";
 import { KaiChromaVideo } from "@/components/brand/KaiChromaVideo";
+import { useAssessmentAudio } from "@/components/assessment/AssessmentAudioProvider";
+import {
+  INTRO_NARRATION_AUDIO_ID,
+  INTRO_NARRATION_OWNER_ID,
+} from "@/components/assessment/intro-audio";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import {
   defaultVoiceOnForAssessmentStart,
@@ -30,28 +35,63 @@ import {
 
 interface AssessmentStartProps {
   totalQuestions: number;
+  versionId: string | null;
+  versionLabel: string;
 }
 
-const STEPS: ReadonlyArray<{ n: number; titleKey: StringKey; metaKey: StringKey }> = [
+type AssessmentSessionResponse = {
+  versionId: string | null;
+  versionLabel: string;
+  totalQuestions: number;
+};
+
+async function setAssessmentSession(
+  versionId: string | null,
+  versionLabel: string,
+): Promise<AssessmentSessionResponse> {
+  const response = await fetch("/api/assessment-session", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ versionId, versionLabel }),
+  });
+  if (!response.ok) throw new Error("Assessment version unavailable.");
+  return (await response.json()) as AssessmentSessionResponse;
+}
+
+const STEPS: ReadonlyArray<{
+  n: number;
+  titleKey: StringKey;
+  metaKey: StringKey;
+}> = [
   { n: 1, titleKey: "start.step1.title", metaKey: "start.step1.meta" },
   { n: 2, titleKey: "start.step2.title", metaKey: "start.step2.meta" },
   { n: 3, titleKey: "start.step3.title", metaKey: "start.step3.meta" },
 ];
 
-export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
+export function AssessmentStart({
+  totalQuestions,
+  versionId,
+  versionLabel,
+}: AssessmentStartProps) {
   const router = useRouter();
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
+  const { playNarration, preloadNarration, setMuted } = useAssessmentAudio();
   const searchParams = useSearchParams();
   const [progress, setProgress] = useState<LocalAssessmentProgress | null>(
     null,
   );
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [startError, setStartError] = useState("");
+  const [settingVersion, setSettingVersion] = useState(false);
 
   useEffect(() => {
     setProgress(readLocalAssessment());
     setTermsAccepted(Boolean(readPlatformConsent()));
   }, []);
+
+  useEffect(() => {
+    preloadNarration({ audioId: INTRO_NARRATION_AUDIO_ID, locale });
+  }, [locale, preloadNarration]);
 
   const answeredCount = answeredQuestionCount(progress);
   const canResume = answeredCount > 0 && !progress?.completedAt;
@@ -66,38 +106,89 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
     );
   }, [progress, totalQuestions]);
 
-  function startFresh() {
+  async function startFresh() {
     if (!termsAccepted && !readPlatformConsent()) {
       setStartError(t("start.terms_error"));
       return;
     }
 
     const isRetake = Boolean(progress?.completedAt);
+    setStartError("");
+    setSettingVersion(true);
     defaultVoiceOnForAssessmentStart();
+    setMuted(false);
+    playNarration({
+      audioId: INTRO_NARRATION_AUDIO_ID,
+      locale,
+      ownerId: INTRO_NARRATION_OWNER_ID,
+    });
     uiSounds.advance();
     if (!readPlatformConsent()) writePlatformConsent();
-    resetLocalAssessment();
-    const fresh = createLocalAssessment();
-    writeLocalAssessment(fresh);
-    trackEvent("assessment_started", { assessmentId: fresh.assessmentId });
-    if (isRetake) trackEvent("assessment_retaken", { assessmentId: fresh.assessmentId });
-    router.push("/intro");
+    try {
+      const session = await setAssessmentSession(versionId, versionLabel);
+      resetLocalAssessment();
+      const fresh = createLocalAssessment({
+        versionId: session.versionId,
+        versionLabel: session.versionLabel,
+      });
+      writeLocalAssessment(fresh);
+      trackEvent("assessment_started", {
+        assessmentId: fresh.assessmentId,
+        assessmentVersion: fresh.versionLabel,
+      });
+      if (isRetake) {
+        trackEvent("assessment_retaken", { assessmentId: fresh.assessmentId });
+      }
+      window.location.assign("/intro");
+    } catch {
+      setSettingVersion(false);
+      setStartError(
+        locale === "ar"
+          ? "تعذّر بدء التقييم الآن. يُرجى المحاولة مرة أخرى."
+          : "We couldn't start the assessment. Please try again.",
+      );
+    }
   }
 
-  function resume() {
+  async function resume() {
+    if (!progress) return;
     defaultVoiceOnForAssessmentStart();
     uiSounds.advance();
     setStartError("");
-    if (progress) trackEvent("assessment_resumed", { assessmentId: progress.assessmentId });
-    router.push(
-      getQuestionPath(getResumeQuestionIndex(progress, totalQuestions)),
-    );
+    setSettingVersion(true);
+    try {
+      const session = await setAssessmentSession(
+        progress.versionId,
+        progress.versionLabel,
+      );
+      const resumed = writeLocalAssessment({
+        ...progress,
+        versionId: session.versionId,
+        versionLabel: session.versionLabel,
+      });
+      trackEvent("assessment_resumed", {
+        assessmentId: resumed.assessmentId,
+        assessmentVersion: resumed.versionLabel,
+      });
+      window.location.assign(
+        getQuestionPath(
+          getResumeQuestionIndex(resumed, session.totalQuestions),
+        ),
+      );
+    } catch {
+      setSettingVersion(false);
+      setStartError(
+        locale === "ar"
+          ? "تعذّر استئناف هذه النسخة من التقييم."
+          : "We couldn't resume this assessment version.",
+      );
+    }
   }
 
   function continueCompleted() {
     uiSounds.advance();
     if (readGeneratedReport()) {
-      router.push("/results");
+      router.push("/compass");
       return;
     }
     if (readResultRegistration()) {
@@ -129,7 +220,7 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
         <div aria-hidden="true" className="anim-kai-drop relative z-10">
           <div className="anim-kai-drop-bob">
             <KaiChromaVideo
-              src="/kai/kai-intro-green.mp4"
+              src="/kai/kai-intro-green-v2.mp4"
               size={220}
               playing={false}
               restTime={0}
@@ -145,7 +236,10 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
             {t("start.eyebrow")}
           </span>
 
-          <h1 id="start-heading" className="text-hero text-sand max-w-[16ch] lg:max-w-[22ch]">
+          <h1
+            id="start-heading"
+            className="text-hero text-sand max-w-[16ch] lg:max-w-[22ch]"
+          >
             {t("start.headline_line1")}
             <br />
             {t("start.headline_line2_before")}{" "}
@@ -181,7 +275,7 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
                   frame (she won't "murmur" silently); the CSS float keeps her
                   subtly alive. */}
               <KaiChromaVideo
-                src="/kai/kai-intro-green.mp4"
+                src="/kai/kai-intro-green-v2.mp4"
                 size={200}
                 playing={false}
                 restTime={0}
@@ -207,6 +301,7 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
               className="btn-v2 btn-v2--ghost-on-dark"
               data-size="sm"
               onClick={resume}
+              disabled={settingVersion}
             >
               {t("start.resume_cta")}
             </button>
@@ -273,10 +368,13 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
           <button
             type="button"
             onClick={canResume ? resume : startFresh}
+            disabled={settingVersion}
             className="btn-v2 btn-v2--primary w-full lg:w-fit lg:px-8"
             data-size="lg"
           >
-            {canResume ? t("start.resume_at_cta").replace("{n}", String(resumeAt)) : t("start.begin_cta")}
+            {canResume
+              ? t("start.resume_at_cta").replace("{n}", String(resumeAt))
+              : t("start.begin_cta")}
             <svg
               width="18"
               height="18"
@@ -298,6 +396,7 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
             <button
               type="button"
               onClick={startFresh}
+              disabled={settingVersion}
               className="btn-v2 btn-v2--ghost-on-dark w-full lg:w-fit"
               data-size="md"
             >
@@ -321,19 +420,19 @@ export function AssessmentStart({ totalQuestions }: AssessmentStartProps) {
                   </span>
                 </label>
               ) : null}
-              {startError ? (
-                <p
-                  role="alert"
-                  className="text-center text-[11px] font-semibold text-error lg:text-start"
-                >
-                  {startError}
-                </p>
-              ) : null}
               <p className="text-center text-eyebrow text-sand/45 pt-0.5 lg:text-start">
                 {t("start.footer_note")}
               </p>
             </>
           )}
+          {startError ? (
+            <p
+              role="alert"
+              className="text-center text-[11px] font-semibold text-error lg:text-start"
+            >
+              {startError}
+            </p>
+          ) : null}
         </div>
       </div>
     </section>

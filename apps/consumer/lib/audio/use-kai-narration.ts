@@ -1,6 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  resolveAssessmentNarrationSources,
+  type AssessmentAudioSource,
+} from "@/lib/audio/assessment-audio-sources";
 import { computeKaiMouthLevel } from "@/lib/audio/lip-sync";
 
 /**
@@ -16,22 +20,6 @@ import { computeKaiMouthLevel } from "@/lib/audio/lip-sync";
  * "locked" and waits for `play()` to be called explicitly), and
  * cleans up its AudioContext / animation frame on unmount.
  */
-
-const FALLBACK_EXTENSIONS = ["m4a", "mp3"] as const;
-
-function getNarrationSrc(
-  audioId: string,
-  fallbackIndex: number,
-  locale?: string,
-) {
-  if (fallbackIndex === 0) {
-    const query = locale ? `?locale=${encodeURIComponent(locale)}` : "";
-    return `/api/kai-tts/${encodeURIComponent(audioId)}${query}`;
-  }
-
-  const ext = FALLBACK_EXTENSIONS[fallbackIndex - 1] ?? "mp3";
-  return `/audio/${audioId}.${ext}`;
-}
 
 export type KaiNarrationState =
   | "idle"
@@ -87,6 +75,7 @@ export function useKaiNarration({
   const analyserRef = useRef<AnalyserNode | null>(null);
   const lipSyncFrameRef = useRef<number | null>(null);
   const lipSyncLevelRef = useRef(0);
+  const sourcesRef = useRef<AssessmentAudioSource[]>([]);
   const fallbackIdxRef = useRef(0);
   const onEndedRef = useRef(onEnded);
   useEffect(() => {
@@ -177,20 +166,31 @@ export function useKaiNarration({
         setAudioState("muted");
         return;
       }
-      if (userGesture) setVoiceUnlocked(true);
+      if (userGesture) {
+        setVoiceUnlocked(true);
+        // A real tap: re-try the localized live-TTS route from the top, in
+        // case earlier blocked-autoplay attempts advanced the fallback chain
+        // to an English baked file.
+        fallbackIdxRef.current = 0;
+      }
       if (voiceRequiresGesture && !voiceUnlocked && !userGesture) {
         setAudioState("locked");
         return;
       }
 
       try {
-        const nextSrc = getNarrationSrc(
-          audioId,
-          fallbackIdxRef.current,
-          locale,
-        );
+        const sources = resolveAssessmentNarrationSources({ audioId, locale });
+        sourcesRef.current = sources;
+        const source =
+          sources[Math.min(fallbackIdxRef.current, sources.length - 1)];
+        if (!source) {
+          setAudioState("unavailable");
+          stopLipSync();
+          return;
+        }
+        const nextSrc = source.src;
         const needsSourceLoad =
-          !audio.getAttribute("src")?.endsWith(nextSrc) ||
+          audio.getAttribute("src") !== nextSrc ||
           audio.readyState === 0;
         if (needsSourceLoad) {
           audio.src = nextSrc;
@@ -206,9 +206,20 @@ export function useKaiNarration({
         await playPromise;
         setAudioState("playing");
         startLipSync();
-      } catch {
-        // Try local baked files if the live TTS route is unavailable.
-        if (fallbackIdxRef.current < FALLBACK_EXTENSIONS.length) {
+      } catch (err) {
+        // Autoplay blocked (no user gesture yet) is NOT a broken source. Do
+        // NOT advance the fallback chain — that burns past the localized
+        // live-TTS route down to an English baked file, so a later tap would
+        // play the wrong-language clip. Wait for a gesture instead; the armed
+        // first-interaction listener / play button calls play(true), which
+        // resets the chain to the top.
+        if (err instanceof DOMException && err.name === "NotAllowedError") {
+          setAudioState("locked");
+          stopLipSync();
+          return;
+        }
+        // Genuine load/decode failure — advance through static/API sources.
+        if (fallbackIdxRef.current < sourcesRef.current.length - 1) {
           fallbackIdxRef.current += 1;
           await play(userGesture);
           return;
@@ -252,7 +263,7 @@ export function useKaiNarration({
       setAudioState((s) => (s === "playing" ? "idle" : s));
     };
     const handleError = () => {
-      if (fallbackIdxRef.current < FALLBACK_EXTENSIONS.length) {
+      if (fallbackIdxRef.current < sourcesRef.current.length - 1) {
         fallbackIdxRef.current += 1;
         void play(true);
         return;
@@ -328,9 +339,11 @@ export function useKaiNarration({
 
   // Cleanup on unmount
   useEffect(() => {
+    const audio = audioRef.current;
+
     return () => {
       stopLipSync();
-      audioRef.current?.pause();
+      audio?.pause();
       audioContextRef.current?.close().catch(() => {});
     };
   }, [stopLipSync]);

@@ -21,6 +21,7 @@ interface PublishPanelProps {
   profiles: { id: string; categoryCode: string | null }[];
   ruleCount: number;
   questionCount: number;
+  translationGapCount?: number;
 }
 
 export function PublishPanel({
@@ -32,6 +33,7 @@ export function PublishPanel({
   profiles,
   ruleCount,
   questionCount,
+  translationGapCount = 0,
 }: PublishPanelProps) {
   const router = useRouter();
   const toast = useToast();
@@ -40,10 +42,16 @@ export function PublishPanel({
 
   const issues = [
     ...(questionCount === 0 ? ["Add at least one question."] : []),
+    ...(translationGapCount > 0 && !singleLanguage
+      ? [`Complete ${translationGapCount} missing translation field(s).`]
+      : []),
     ...validateScoringConfig({
       strategy,
       categories: categoryCodes,
-      profiles: profiles.map((p) => ({ id: p.id, categoryCode: p.categoryCode })),
+      profiles: profiles.map((p) => ({
+        id: p.id,
+        categoryCode: p.categoryCode,
+      })),
       ruleCount,
     }),
   ];
@@ -53,9 +61,13 @@ export function PublishPanel({
   async function run(action: "publish" | "unpublish") {
     setBusy(true);
     try {
-      if (action === "publish") await publishAssessment(catalogId, versionId, singleLanguage);
+      if (action === "publish")
+        await publishAssessment(catalogId, versionId, singleLanguage);
       else await unpublishAssessment(catalogId, versionId);
-      toast("success", action === "publish" ? "Assessment published." : "Moved back to draft.");
+      toast(
+        "success",
+        action === "publish" ? "Assessment published." : "Moved back to draft.",
+      );
       router.refresh();
     } catch (e) {
       toast("error", e instanceof Error ? e.message : "Action failed.");
@@ -95,8 +107,12 @@ export function PublishPanel({
         </ul>
       ) : (
         <p className="mt-3 text-[12px] font-medium text-adm-ink-soft">
-          ✓ Ready to publish — {questionCount} question(s), {profiles.length} profile(s),{" "}
-          {strategy === "highest_score_wins" ? "highest-score" : `${ruleCount} rule(s)`}.
+          ✓ Ready to publish — {questionCount} question(s), {profiles.length}{" "}
+          profile(s),{" "}
+          {strategy === "highest_score_wins"
+            ? "highest-score"
+            : `${ruleCount} rule(s)`}
+          .
         </p>
       )}
 
@@ -115,7 +131,11 @@ export function PublishPanel({
           {published ? "Re-publish" : "Publish"}
         </Button>
         {published ? (
-          <Button variant="ghost" onClick={() => run("unpublish")} disabled={busy}>
+          <Button
+            variant="ghost"
+            onClick={() => run("unpublish")}
+            disabled={busy}
+          >
             Move to draft
           </Button>
         ) : null}

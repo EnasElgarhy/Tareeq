@@ -1,3 +1,5 @@
+import { DEFAULT_LOCALE, getStoredLocale, isRtl } from "@/lib/i18n/locale";
+import { buildFallbackReport } from "@/lib/results/framework";
 import type {
   PlatformConsent,
   PersonalizedCompassReport,
@@ -8,6 +10,45 @@ import type {
 export const resultRegistrationStorageKey = "tareeq.result.registration.v1";
 export const generatedReportStorageKey = "tareeq.result.report.v1";
 export const platformConsentStorageKey = "tareeq.platform.consent.v1";
+
+const ARABIC_SCRIPT = /[\u0600-\u06FF]/;
+
+/**
+ * A fallback report's prose is derived from its `CompassResult` (stored as
+ * `report.score`), so when the visitor switches language after generating,
+ * the stored text can be re-rendered in the language they are reading in now
+ * — otherwise an English report shown in the Arabic shell leaves career
+ * names, majors, paragraphs and even mid-sentence interpolations in English.
+ *
+ * Model-written reports (source `claude`/`gemini`) hold text we cannot
+ * re-derive offline, so they are returned untouched.
+ */
+function inVisitorLanguage(
+  report: PersonalizedCompassReport,
+): PersonalizedCompassReport {
+  if (report.source !== "fallback") return report;
+
+  const locale = getStoredLocale() ?? DEFAULT_LOCALE;
+  // clusterName is written from the same locale table as the rest of the
+  // prose, so its script tells us which language the stored text is in —
+  // including for reports saved before this rule existed.
+  const contentIsArabic = ARABIC_SCRIPT.test(report.clusterName);
+  if (contentIsArabic === isRtl(locale)) return report;
+
+  return {
+    ...buildFallbackReport({
+      result: report.score,
+      name: readResultRegistration()?.name,
+      locale,
+      source: report.source,
+      model: report.model,
+      // Keep the note written at generation time; it explains the original
+      // fallback rather than this re-rendering.
+      fallbackReason: report.fallbackReason,
+    }),
+    generatedAt: report.generatedAt,
+  };
+}
 
 export function createEmptyResultConsent(
   ageGate: ResultConsent["ageGate"] = "unknown",
@@ -103,6 +144,9 @@ export function readResultRegistration() {
         consent: isResultConsent(candidate.consent)
           ? candidate.consent
           : createEmptyResultConsent(),
+        ...(typeof candidate.assessmentId === "string"
+          ? { assessmentId: candidate.assessmentId }
+          : {}),
       } as ResultRegistration;
     }
   } catch {
@@ -135,7 +179,7 @@ export function readGeneratedReport() {
       typeof (parsed as PersonalizedCompassReport).headline === "string" &&
       typeof (parsed as PersonalizedCompassReport).clusterName === "string"
     ) {
-      return parsed as PersonalizedCompassReport;
+      return inVisitorLanguage(parsed as PersonalizedCompassReport);
     }
   } catch {
     return null;

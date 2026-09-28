@@ -18,7 +18,7 @@ export function AppTabBar() {
   return (
     <nav
       aria-label={t("home.tab.nav_label")}
-      className="relative z-20 -mx-5 mt-auto border-t border-[color:var(--day-line)] bg-[#fffcf6]/80 px-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-2 backdrop-blur-xl lg:hidden"
+      className="relative z-20 mb-[max(env(safe-area-inset-bottom),0.5rem)] mt-2 rounded-[24px] bg-[#100A24] p-2 shadow-[0_16px_36px_rgba(8,5,26,0.2)] lg:hidden"
     >
       <ul className="mx-auto flex max-w-[440px] items-stretch justify-between">
         {NAV_ITEMS.map((tab) => {
@@ -29,20 +29,19 @@ export function AppTabBar() {
               <Link
                 href={tab.href}
                 aria-current={isActive ? "page" : undefined}
-                className="group flex flex-col items-center gap-1 rounded-2xl px-2 py-1.5 transition active:scale-95"
+                className="group flex flex-col items-center gap-1 rounded-[18px] px-2 py-1.5 transition active:scale-95"
               >
                 <span
                   className="grid size-9 place-items-center rounded-2xl transition"
                   style={{
                     color: isActive
-                      ? "var(--app-ink, #6B4D00)"
-                      : "var(--day-ink-3, #675D4E)",
+                      ? "#100A24"
+                      : "rgba(245,238,230,0.68)",
                     ...(isActive
                       ? {
                           background:
-                            "color-mix(in oklab, var(--app-accent, #F4C660) 16%, transparent)",
-                          boxShadow:
-                            "inset 0 0 0 1px color-mix(in oklab, var(--app-accent, #F4C660) 30%, transparent)",
+                            "#F4C660",
+                          boxShadow: "0 6px 16px rgba(244,198,96,0.2)",
                         }
                       : {}),
                   }}
@@ -50,11 +49,11 @@ export function AppTabBar() {
                   <Icon size={20} strokeWidth={isActive ? 2.4 : 1.9} />
                 </span>
                 <span
-                  className="text-[10px] font-bold tracking-[0.02em] transition"
+                  className="text-[10px] font-bold transition"
                   style={{
                     color: isActive
-                      ? "var(--app-ink, #6B4D00)"
-                      : "var(--day-ink-3, #675D4E)",
+                      ? "#F4C660"
+                      : "rgba(245,238,230,0.66)",
                   }}
                 >
                   {t(tab.labelKey)}

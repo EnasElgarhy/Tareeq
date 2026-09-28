@@ -58,14 +58,14 @@ export function ProactiveMomentCard({
   const { Icon, background } = MOMENT_VISUALS[moment.kind];
 
   return (
-    <div className="rounded-[20px] border border-[color:var(--day-line,rgba(43,36,28,0.1))] bg-[color:var(--day-card,#fffcf6)] p-3.5 shadow-[0_8px_20px_rgba(43,36,28,0.05)]">
+    <div className="daybreak-story-card rounded-story p-4">
       <div className="flex items-center gap-2.5">
         <span className="grid size-9 shrink-0 place-items-center rounded-xl" style={{ background }}>
           <Icon size={18} />
         </span>
-        <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[color:var(--day-ink-3,#675d4e)]">{t(eyebrowKey)}</p>
+        <p className="daybreak-eyebrow text-[color:var(--day-ink-3,#675d4e)]">{t(eyebrowKey)}</p>
       </div>
-      <p className="mt-2 text-[13.5px] font-black leading-snug text-[color:var(--day-ink,#2a2118)]">
+      <p className="daybreak-heading mt-2 text-[16px] leading-snug text-[color:var(--day-ink,#2a2118)]">
         {renderProactiveMomentText(moment, t)}
       </p>
       {onAction ? (
@@ -75,8 +75,7 @@ export function ProactiveMomentCard({
             onCtaClick();
             onAction();
           }}
-          className="btn-v2 btn-v2--primary mt-3 w-full"
-          data-size="sm"
+          className="daybreak-primary-action mt-3 w-full"
         >
           {t(proactiveMomentCtaKey(moment))}
         </button>
@@ -84,8 +83,7 @@ export function ProactiveMomentCard({
         <Link
           href={proactiveMomentHref(moment)}
           onClick={onCtaClick}
-          className="btn-v2 btn-v2--primary mt-3 w-full"
-          data-size="sm"
+          className="daybreak-primary-action mt-3 w-full"
         >
           {t(proactiveMomentCtaKey(moment))}
         </Link>

@@ -1,0 +1,144 @@
+name: Deploy consumer to Cloud Run (temporary staging)
+
+# TEMPORARY — see docs/deployment/CLOUD_RUN_DEPLOYMENT.md. This exists only
+# until the client provisions an AWS account; the real long-term pipeline is
+# _deploy-apprunner.yml / deploy-consumer-*.yml in this same directory.
+#
+# Auth: Workload Identity Federation only. No GCP service-account JSON key
+# is ever stored as a GitHub secret — google-github-actions/auth exchanges
+# this job's short-lived OIDC token for temporary GCP credentials by
+# impersonating the deployer service account (see CLOUD_RUN_DEPLOYMENT.md
+# §3c for how that trust relationship is set up).
+#
+# Expects, in the "staging" GitHub Environment (Settings → Environments →
+# staging):
+#   secrets.NEXT_PUBLIC_SUPABASE_URL       - inlined at build time (public)
+#   secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY
+#   vars.GCP_PROJECT_ID
+#   vars.GCP_REGION                        - e.g. us-central1
+#   vars.WORKLOAD_IDENTITY_PROVIDER        - full resource name, see §3c
+#   vars.DEPLOYER_SA_EMAIL                 - tareeq-deployer@<project>.iam.gserviceaccount.com
+#
+# All server-only secrets (SUPABASE_SERVICE_ROLE_KEY, ANTHROPIC_API_KEY,
+# ELEVENLABS_API_KEY, GEMINI_API_KEY) are NOT handled here — they're
+# referenced directly on the Cloud Run service via `--set-secrets` from
+# Secret Manager, never passed through this pipeline.
+
+on:
+  push:
+    branches:
+      - feat/bilingual-assessment
+  workflow_dispatch: {}
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  IMAGE_NAME: consumer
+  ARTIFACT_REPO: tareeq
+  CLOUD_RUN_SERVICE: tareeq-consumer-staging
+
+jobs:
+  verify:
+    name: Lint, typecheck, test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type-check
+        run: pnpm exec tsc --noEmit
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test
+        run: pnpm test
+
+  build-and-deploy:
+    name: Build, push, deploy to Cloud Run
+    needs: verify
+    runs-on: ubuntu-latest
+    environment: staging
+    outputs:
+      service-url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to GCP (Workload Identity Federation)
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.DEPLOYER_SA_EMAIL }}
+
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker "${{ vars.GCP_REGION }}-docker.pkg.dev" --quiet
+
+      - name: Build and push image
+        env:
+          IMAGE_TAG: staging-${{ github.sha }}
+          IMAGE_URI_BASE: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO }}/${{ env.IMAGE_NAME }}
+        run: |
+          docker build \
+            --build-arg NEXT_PUBLIC_SUPABASE_URL="${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}" \
+            --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY="${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" \
+            -t "${IMAGE_URI_BASE}:${IMAGE_TAG}" \
+            -t "${IMAGE_URI_BASE}:staging-latest" \
+            .
+          docker push "${IMAGE_URI_BASE}:${IMAGE_TAG}"
+          docker push "${IMAGE_URI_BASE}:staging-latest"
+
+      - name: Deploy to Cloud Run
+        id: deploy
+        env:
+          IMAGE_TAG: staging-${{ github.sha }}
+          IMAGE_URI_BASE: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO }}/${{ env.IMAGE_NAME }}
+        run: |
+          gcloud run deploy "${{ env.CLOUD_RUN_SERVICE }}" \
+            --image="${IMAGE_URI_BASE}:${IMAGE_TAG}" \
+            --region="${{ vars.GCP_REGION }}" \
+            --platform=managed \
+            --allow-unauthenticated \
+            --port=8080 \
+            --cpu=1 \
+            --memory=512Mi \
+            --min-instances=0 \
+            --max-instances=2 \
+            --concurrency=40 \
+            --timeout=60 \
+            --set-env-vars="ANTHROPIC_MODEL=claude-sonnet-4-20250514,ELEVENLABS_VOICE_ID=ZF6FPAbjXT4488VcRRnw,ELEVENLABS_VOICE_ID_AR=KxMRrXEjbJ6kZ93yT3fq,ELEVENLABS_MODEL_ID=eleven_multilingual_v2,GOOGLE_CLOUD_PROJECT=${{ vars.GCP_PROJECT_ID }},GOOGLE_CLOUD_REGION=global,TAREEQ_AUDIO_LOCALE=en" \
+            --set-secrets="SUPABASE_SERVICE_ROLE_KEY=tareeq-supabase-service-role-key:latest,GEMINI_API_KEY=tareeq-gemini-api-key:latest,ANTHROPIC_API_KEY=tareeq-anthropic-api-key:latest,ELEVENLABS_API_KEY=tareeq-elevenlabs-api-key:latest" \
+            --quiet
+
+          echo "url=$(gcloud run services describe ${{ env.CLOUD_RUN_SERVICE }} --region=${{ vars.GCP_REGION }} --format='value(status.url)')" >> "$GITHUB_OUTPUT"
+
+  smoke-test:
+    name: Smoke test
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run smoke tests
+        run: |
+          chmod +x scripts/smoke-test-cloudrun.sh
+          ./scripts/smoke-test-cloudrun.sh --app consumer --url "${{ needs.build-and-deploy.outputs.service-url }}"

@@ -10,6 +10,10 @@ export default async function AnalyticsExportsPage({
   searchParams: Promise<AnalyticsSearchParams>;
 }) {
   const vm = await loadAnalyticsPage(searchParams);
+  const assessmentLabel = vm.filters.catalogId
+    ? (vm.catalogOptions.find((o) => o.id === vm.filters.catalogId)?.label ??
+      "Selected assessment")
+    : "All assessments";
 
   return (
     <>
@@ -23,6 +27,10 @@ export default async function AnalyticsExportsPage({
       <ExportPanel
         queryString={buildQueryString(vm)}
         saltConfigured={Boolean(process.env.ANALYTICS_HASH_SALT)}
+        dateFrom={vm.filters.from}
+        dateTo={vm.filters.to}
+        assessmentLabel={assessmentLabel}
+        recordCount={vm.overview.totalCompleted}
       />
     </>
   );

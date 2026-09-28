@@ -17,11 +17,11 @@ import {
 } from "@/components/brand/ResultIcons";
 import { ResultCompass } from "@/components/assessment/CompassSignalPanel";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { StatStrip } from "@/components/results/StatStrip";
 import { CLUSTER_VISUALS, getClusterLabel } from "@/lib/results/cluster-visuals";
 import { getSubjectReason, youtubeSearchUrl } from "@/lib/results/report-helpers";
 import {
   getArchetypeKey,
-  getConfidenceLabelKey,
   getEcosystemFitKey,
 } from "@/lib/results/report-labels";
 import type { PersonalizedCompassReport } from "@/lib/results/types";
@@ -89,23 +89,7 @@ export function ReportBody({
           </div>
         </div>
 
-        <div className="relative z-10 mt-4 grid grid-cols-3 gap-2">
-          <StatPill
-            label={t("results.stat.signal_label")}
-            value={t("results.stat.signal_value")}
-            meta={getClusterLabel(report.clusterCode, t)}
-          />
-          <StatPill
-            label={t("results.stat.confidence_label")}
-            value={`${report.score.confidencePercentage}%`}
-            meta={t(getConfidenceLabelKey(report.score.confidenceLabel))}
-          />
-          <StatPill
-            label={t("results.stat.style_label")}
-            value={t(getArchetypeKey(report.archetype))}
-            meta={t("results.stat.style_meta")}
-          />
-        </div>
+        <StatStrip report={report} className="relative z-10 mt-4" />
       </header>
 
       <section className="rounded-[24px] border border-sand/10 bg-sand/[0.06] p-4">
@@ -115,7 +99,7 @@ export function ReportBody({
         <h3 className="mt-2 text-[22px] font-black leading-[1.05] text-sand">
           {t("results.kai_read.title")}
         </h3>
-        <p className="mt-3 max-w-[70ch] text-[14px] leading-relaxed text-sand/72">
+        <p className="mt-3 text-[14px] leading-relaxed text-sand/72">
           {report.summary}
         </p>
       </section>
@@ -334,23 +318,6 @@ export function ReportBody({
   );
 }
 
-export function StatPill({
-  label,
-  value,
-  meta,
-}: {
-  label: string;
-  value: string;
-  meta: string;
-}) {
-  return (
-    <div className="rounded-[18px] border border-white/12 bg-white/[0.075] p-2.5 text-start">
-      <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-white/42">{label}</p>
-      <p className="mt-1 min-h-[32px] text-[13px] font-black leading-none text-white">{value}</p>
-      <p className="mt-1 text-[10px] font-semibold text-white/42">{meta}</p>
-    </div>
-  );
-}
 
 type TileAccent = "warm" | "violet" | "mint";
 
@@ -389,16 +356,21 @@ export function CoreSignalCard({
   const tone = getTileTone(accent);
 
   return (
-    <details className="group rounded-[22px] border border-sand/10 bg-sand/[0.055] p-3 open:bg-sand/[0.075]">
-      <summary className="flex cursor-pointer list-none items-center gap-3 [&::-webkit-details-marker]:hidden">
+    <details className="group relative overflow-hidden rounded-[22px] border border-sand/10 bg-sand/[0.055] p-4 open:bg-sand/[0.075]">
+      {/* Custom illustration background */}
+      <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 opacity-15 transition-opacity group-hover:opacity-25">
+        <CardIllustration letter={letter} accent={accent} />
+      </div>
+
+      <summary className="relative flex cursor-pointer list-none items-center gap-3 [&::-webkit-details-marker]:hidden">
         <span
-          className="relative grid size-11 shrink-0 place-items-center rounded-2xl"
+          className="relative grid size-12 shrink-0 place-items-center rounded-2xl"
           style={{
             background: tone.background,
             boxShadow: `inset 0 0 0 1px ${tone.ring}`,
           }}
         >
-          <span className="absolute left-1 top-1 text-[9px] font-black text-sand/54">
+          <span className="absolute left-1.5 top-1.5 text-[9px] font-black text-sand/54">
             {letter}
           </span>
           {icon}
@@ -407,17 +379,76 @@ export function CoreSignalCard({
           <span className="block text-[10px] font-bold uppercase tracking-[0.13em] text-sand/42">
             {label}
           </span>
-          <span className="mt-0.5 block text-[15px] font-black leading-tight text-sand">
+          <span className="mt-0.5 block text-[16px] font-black leading-tight text-sand">
             {value}
           </span>
         </span>
         <ChevronDown size={16} className="shrink-0 text-sand/45 transition group-open:rotate-180" />
       </summary>
-      <p className="mt-3 border-t border-sand/10 pt-3 text-[12.5px] leading-relaxed text-sand/68">
+      <p className="relative mt-3 border-t border-sand/10 pt-3 text-[12.5px] leading-relaxed text-sand/68">
         {children}
       </p>
     </details>
   );
+}
+
+/**
+ * Custom illustration for each CoreSignalCard type.
+ */
+function CardIllustration({ letter, accent }: { letter: string; accent: TileAccent }) {
+  const color = accent === "warm" ? "#f4c660" : accent === "violet" ? "#9d7ff0" : "#6fe0c0";
+
+  if (letter === "C") {
+    // Compass/Cluster - compass rose illustration
+    return (
+      <svg width="80" height="80" viewBox="0 0 80 80" fill="none" aria-hidden="true">
+        <circle cx="40" cy="40" r="30" stroke={color} strokeWidth="1.5" opacity="0.6" />
+        <circle cx="40" cy="40" r="20" stroke={color} strokeWidth="1" opacity="0.4" strokeDasharray="2 3" />
+        <path d="M40 20L43 35L40 40L37 35Z" fill={color} opacity="0.7" />
+        <path d="M40 60L37 45L40 40L43 45Z" fill={color} opacity="0.4" />
+        <circle cx="40" cy="40" r="3" fill={color} opacity="0.9" />
+      </svg>
+    );
+  }
+  if (letter === "O") {
+    // Operations/Archetype - interconnected nodes
+    return (
+      <svg width="80" height="80" viewBox="0 0 80 80" fill="none" aria-hidden="true">
+        <circle cx="40" cy="25" r="8" fill={color} opacity="0.5" />
+        <circle cx="25" cy="50" r="8" fill={color} opacity="0.4" />
+        <circle cx="55" cy="50" r="8" fill={color} opacity="0.4" />
+        <line x1="40" y1="33" x2="25" y2="42" stroke={color} strokeWidth="1.5" opacity="0.5" />
+        <line x1="40" y1="33" x2="55" y2="42" stroke={color} strokeWidth="1.5" opacity="0.5" />
+        <line x1="25" y1="50" x2="55" y2="50" stroke={color} strokeWidth="1.5" opacity="0.5" />
+        <circle cx="40" cy="25" r="3" fill={color} opacity="0.9" />
+      </svg>
+    );
+  }
+  if (letter === "R") {
+    // Rewards/Driver - upward trend
+    return (
+      <svg width="80" height="80" viewBox="0 0 80 80" fill="none" aria-hidden="true">
+        <path d="M15 60L30 45L45 50L65 25" stroke={color} strokeWidth="2" strokeLinecap="round" opacity="0.7" />
+        <circle cx="65" cy="25" r="5" fill={color} opacity="0.8" />
+        <circle cx="45" cy="50" r="3" fill={color} opacity="0.6" />
+        <circle cx="30" cy="45" r="3" fill={color} opacity="0.6" />
+      </svg>
+    );
+  }
+  if (letter === "E") {
+    // Ecosystem - community figures
+    return (
+      <svg width="80" height="80" viewBox="0 0 80 80" fill="none" aria-hidden="true">
+        <circle cx="40" cy="30" r="10" fill={color} opacity="0.5" />
+        <circle cx="25" cy="55" r="8" fill={color} opacity="0.4" />
+        <circle cx="55" cy="55" r="8" fill={color} opacity="0.4" />
+        <path d="M40 40L25 47" stroke={color} strokeWidth="1.5" opacity="0.5" />
+        <path d="M40 40L55 47" stroke={color} strokeWidth="1.5" opacity="0.5" />
+        <circle cx="40" cy="30" r="4" fill={color} opacity="0.9" />
+      </svg>
+    );
+  }
+  return null;
 }
 
 export function CareerFamilyCard({
@@ -569,14 +600,14 @@ export function ReportSection({
     <section className="relative overflow-hidden rounded-[24px] border border-sand/10 bg-sand/[0.052] p-4 shadow-[0_12px_34px_rgba(0,0,0,0.18)]">
       <span
         aria-hidden
-        className="absolute inset-y-4 left-0 w-1 rounded-r-full"
+        className="absolute inset-y-4 start-0 w-1 rounded-e-full"
         style={{ background: accent }}
       />
       <div className="mb-3 flex items-center gap-2 text-gold">
         <span className="grid size-8 place-items-center rounded-full bg-sand/[0.09]">{icon}</span>
         <h3 className="text-[16px] font-bold text-sand">{title}</h3>
       </div>
-      <div className="grid max-w-[70ch] gap-3 text-[13.5px] leading-relaxed text-sand/73">
+      <div className="grid gap-3 text-[13.5px] leading-relaxed text-sand/73">
         {children}
       </div>
     </section>

@@ -16,17 +16,16 @@ export function ResumeConversationCard({
   const { t } = useLocale();
 
   return (
-    <div className="justify-self-start rounded-[18px] border border-violet/20 bg-violet/[0.05] p-3.5 sm:max-w-[480px]">
+    <div className="daybreak-story-card rounded-story-alt justify-self-start border-[#BEB2DF] bg-[#F7F2FF] p-4 sm:max-w-[480px]">
       <div className="mb-1.5 flex items-center gap-2">
         <KaiSignal mood="curious" size={22} />
-        <p className="text-[13px] font-black leading-tight text-[color:var(--day-ink,#2a2118)]">{title}</p>
+        <p className="daybreak-heading text-[15px] leading-tight text-[color:var(--day-ink,#2a2118)]">{title}</p>
       </div>
       {description ? <p className="mb-2.5 text-[12px] leading-snug text-[color:var(--day-ink-2,#5c5142)]">{description}</p> : null}
       <button
         type="button"
         onClick={onContinue}
-        className="btn-v2 btn-v2--ghost-on-light w-fit"
-        data-size="sm"
+        className="daybreak-secondary-action w-fit"
       >
         {t("kai.memory.resume_cta")}
       </button>

@@ -280,6 +280,41 @@
   transition-duration: 150ms;
 }
 
+/* ---- Side sheet — same transitions-dev pattern as dialog ------------- */
+/* Backdrop docks content to the inline end instead of centering it. */
+.adm-dialog-backdrop.adm-sheet-backdrop {
+  justify-content: flex-end;
+  align-items: stretch;
+  padding: 0;
+}
+
+/* Panel */
+.adm-sheet-panel {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  height: 100%;
+  overflow-y: auto;
+  background: var(--adm-paper);
+  border-inline-start: 1px solid var(--adm-line);
+  box-shadow: var(--adm-shadow-lg);
+  padding: 1.25rem 1.25rem 2rem;
+  opacity: 0;
+  transform: translateX(48px);
+  transition:
+    opacity 250ms var(--adm-ease),
+    transform 250ms var(--adm-ease);
+}
+.adm-dialog-backdrop[data-open="true"] .adm-sheet-panel {
+  opacity: 1;
+  transform: translateX(0);
+}
+.adm-dialog-backdrop[data-closing="true"] .adm-sheet-panel {
+  opacity: 0;
+  transform: translateX(48px);
+  transition-duration: 150ms;
+}
+
 /* ---- Reduced motion: kill transforms & animations --------------------- */
 @media (prefers-reduced-motion: reduce) {
   .adm *,

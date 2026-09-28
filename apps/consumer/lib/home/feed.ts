@@ -1,6 +1,10 @@
 import type { StringKey } from "@/lib/i18n/strings";
 import { buildKaiStarterPrompts } from "@/lib/kai/starter-prompts";
 import { getClusterLabel } from "@/lib/results/cluster-visuals";
+import {
+  getArchetypeKey,
+  getEcosystemFitKey,
+} from "@/lib/results/report-labels";
 import type { PersonalizedCompassReport } from "@/lib/results/types";
 
 /**
@@ -98,6 +102,9 @@ export interface AskKaiCard {
    * own tappable bubbles below the lead prompt — each starts a real
    * chat with that exact text (lib/kai/starter-prompts.ts). */
   morePrompts: string[];
+  /** One short sentence, less weight than the actions — what Kai knows
+   * ("Your Compass points toward Law & Diplomacy."). Not a chat prompt. */
+  focusLine: string;
 }
 
 export type HomeFeedCard =
@@ -287,14 +294,14 @@ function buildInsightPool(report: PersonalizedCompassReport, t: Translate): Insi
       kind: "insight",
       id: "insight-style",
       eyebrow: t("home.feed.insight.style_eyebrow"),
-      title: report.archetype,
+      title: t(getArchetypeKey(report.archetype)),
       body: t("home.feed.insight.style_body"),
     },
     {
       kind: "insight",
       id: "insight-ecosystem",
       eyebrow: t("home.feed.insight.ecosystem_eyebrow"),
-      title: report.ecosystemFit,
+      title: t(getEcosystemFitKey(report.ecosystemFit)),
       body: t("home.feed.insight.ecosystem_body"),
     },
   ];
@@ -360,6 +367,10 @@ export function buildHomeFeed({
     prompt: leadPrompt,
     href: proactiveMoment?.href,
     morePrompts: starterPrompts.filter((p) => p !== leadPrompt),
+    focusLine: t("home.feed.ask_kai_focus").replace(
+      "{paths}",
+      getClusterLabel(report.clusterCode, t),
+    ),
   });
 
   // 7 · A second spotlight to reward scrolling

@@ -72,6 +72,7 @@ export function FilterToolbar({
           {(p) => (
             <Select name="ageBand" defaultValue={filters.ageBand ?? ""} {...p}>
               <option value="">All</option>
+              <option value="under-16">Under 16</option>
               <option value="16-17">16–17</option>
               <option value="18-19">18–19</option>
               <option value="20-21">20–21</option>

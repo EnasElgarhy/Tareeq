@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { normalizeExtractedDraft } from "./ai-extract";
+import {
+  normalizeExtractedDraft,
+  withDirectScoreProfileFallback,
+} from "./ai-extract";
 
 describe("normalizeExtractedDraft", () => {
   it("normalises a well-formed draft", () => {
@@ -89,5 +92,61 @@ describe("normalizeExtractedDraft", () => {
 
     const empty = normalizeExtractedDraft("not an object");
     expect(empty).toMatchObject({ categories: [], questions: [], profiles: [], rules: [] });
+  });
+
+  it("creates matching profiles when a direct-score extraction omits outcomes", () => {
+    const draft = normalizeExtractedDraft({
+      confidence: 0.9,
+      categories: [
+        { code: "EXPLORER", name: { en: "Explorer" } },
+        { code: "BUILDER", name: { en: "Builder" } },
+        { code: "UNUSED", name: { en: "Unused" } },
+      ],
+      questions: [
+        {
+          title: { en: "What energizes you?" },
+          options: [
+            { text: { en: "Discovering" }, categoryCode: "EXPLORER", points: 2 },
+            { text: { en: "Making" }, categoryCode: "BUILDER", points: 2 },
+          ],
+        },
+      ],
+      profiles: [],
+      rules: [],
+    });
+
+    const recovered = withDirectScoreProfileFallback(draft);
+
+    expect(recovered.profiles).toEqual([
+      { code: "EXPLORER", title: { en: "Explorer" }, categoryCode: "EXPLORER" },
+      { code: "BUILDER", title: { en: "Builder" }, categoryCode: "BUILDER" },
+    ]);
+    expect(recovered.confidence).toBe(0.5);
+  });
+
+  it("does not infer profiles for a conditional-rule extraction", () => {
+    const normalized = normalizeExtractedDraft({
+      categories: [{ code: "LEAD", name: { en: "Leadership" } }],
+      questions: [
+        {
+          title: { en: "Q" },
+          options: [{ text: { en: "A" }, categoryCode: "LEAD", points: 1 }],
+        },
+      ],
+      profiles: [],
+    });
+    const draft = {
+      ...normalized,
+      rules: [
+        {
+          resultProfileCode: "OUTCOME",
+          combinator: "AND" as const,
+          conditions: [{ cluster: "LEAD", operator: ">=" as const, value: 1 }],
+          priority: 1,
+        },
+      ],
+    };
+
+    expect(withDirectScoreProfileFallback(draft).profiles).toEqual([]);
   });
 });

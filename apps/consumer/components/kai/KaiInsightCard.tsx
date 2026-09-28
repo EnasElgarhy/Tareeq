@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { Sparkles } from "lucide-react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
-import { KaiChromaVideo } from "@/components/brand/KaiChromaVideo";
 import type { KaiAssessmentContext } from "@/lib/kai/types";
 
 /**
@@ -48,11 +47,17 @@ export function KaiInsightCard({
     return (
       <section className="rounded-[24px] border border-carbon/8 bg-white p-4 shadow-[0_10px_28px_rgba(43,36,28,0.06)]">
         <div className="flex items-start gap-3">
-          <div className="grid size-11 shrink-0 place-items-center overflow-hidden rounded-2xl bg-carbon ring-1 ring-carbon/10">
-            <div style={{ transform: "translateY(4px)" }}>
-              <KaiChromaVideo src="/kai/kai-mentor-green.mp4" size={56} playing={false} restTime={2.3} />
-            </div>
-          </div>
+          <span className="size-11 shrink-0 overflow-hidden rounded-2xl ring-1 ring-carbon/10">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/kai/kai-poster.png"
+              alt="Kai"
+              width={44}
+              height={44}
+              className="size-full object-cover"
+              style={{ objectPosition: "50% 26%" }}
+            />
+          </span>
           <div className="grid min-w-0 flex-1 gap-2">
             <p className="text-[15px] font-black leading-tight text-carbon">{t("kai.panel.empty_title")}</p>
             <p className="text-[13.5px] leading-relaxed text-carbon/65">{t("kai.panel.empty_body")}</p>
@@ -77,14 +82,20 @@ export function KaiInsightCard({
           style={{ background: "radial-gradient(circle at 78% -10%, rgba(255,255,255,0.35), transparent 55%)" }}
         />
         <div className="relative z-10 flex items-center gap-3">
-          <div className="relative grid size-[52px] shrink-0 place-items-center overflow-hidden rounded-full border-[1.5px] border-white/55 bg-carbon/28 shadow-[0_8px_20px_rgba(20,16,31,0.25)]">
+          <div className="relative size-[52px] shrink-0 overflow-hidden rounded-full border-[1.5px] border-white/55 shadow-[0_8px_20px_rgba(20,16,31,0.25)]">
             <span
               aria-hidden="true"
               className="absolute -inset-1 rounded-full border-[1.5px] border-white/50"
             />
-            <div style={{ transform: "translateY(3px) scale(1.15)" }}>
-              <KaiChromaVideo src="/kai/kai-mentor-green.mp4" size={50} playing={false} restTime={2.3} />
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/kai/kai-poster.png"
+              alt="Kai"
+              width={52}
+              height={52}
+              className="size-full object-cover"
+              style={{ objectPosition: "50% 26%" }}
+            />
           </div>
           <div className="min-w-0">
             <p className="text-[14px] font-black text-white">{t("profile.tab.kai")}</p>

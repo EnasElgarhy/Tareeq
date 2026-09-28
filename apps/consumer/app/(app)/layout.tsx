@@ -1,7 +1,9 @@
 import type { ReactNode } from "react";
 import { AppShell } from "@/components/home/AppShell";
+import { DashboardAccessGate } from "@/components/home/DashboardAccessGate";
 import { LanguageGate } from "@/components/i18n/LanguageGate";
 import { LocaleProvider } from "@/components/i18n/LocaleProvider";
+import { KaiChatProvider } from "@/components/kai/chat/KaiChatProvider";
 
 /**
  * Layout for the post-result app surface (Home / Explore / Kai / You) —
@@ -18,7 +20,11 @@ export default function AppGroupLayout({
   return (
     <LocaleProvider>
       <LanguageGate>
-        <AppShell>{children}</AppShell>
+        <DashboardAccessGate>
+          <KaiChatProvider>
+            <AppShell>{children}</AppShell>
+          </KaiChatProvider>
+        </DashboardAccessGate>
       </LanguageGate>
     </LocaleProvider>
   );

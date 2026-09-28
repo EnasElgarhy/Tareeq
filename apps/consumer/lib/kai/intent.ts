@@ -20,6 +20,7 @@ export type KaiMessageIntent =
   | "explain_result"
   | "family_conversation"
   | "resource_recommendation"
+  | "fact_lookup"
   | "action_plan"
   | "career_comparison"
   | "university_guidance"
@@ -33,6 +34,7 @@ export const KAI_MESSAGE_INTENTS: readonly KaiMessageIntent[] = [
   "explain_result",
   "family_conversation",
   "resource_recommendation",
+  "fact_lookup",
   "action_plan",
   "career_comparison",
   "university_guidance",
@@ -56,9 +58,14 @@ const INTENT_PATTERNS: ReadonlyArray<{ intent: KaiMessageIntent; pattern: RegExp
       /(family|parents?|my mom|my dad|convince them|don't understand|explain to my parents|عائلت[يى]|أهل[يى]|والد[يى]|والدت[يى]|أقنع|يقتنع|ما بيفهم|رفض أهل)/i,
   },
   {
+    intent: "fact_lookup",
+    pattern:
+      /(how much|what (?:does|do|is|are) .* cost|costs?|tuition|fees?|visa requirements?|scholarships?|application deadlines?|salary|salaries|pay range|employment rate|current|latest|official (?:figures|data|requirements)|كم (?:تبلغ|تكلف)|تكلفة|رسوم|مصاريف|متطلبات التأشيرة|تأشيرة|منح|موعد التقديم|آخر موعد|راتب|رواتب|أحدث|حالي[ًاا]|بيانات رسمية)/i,
+  },
+  {
     intent: "resource_recommendation",
     pattern:
-      /(recommend|suggest|video|course|book|article|podcast|resource|watch|read (a|some)|أوص[يى]|فيديو|دورة|كتاب|مقال|مصادر|شاهد|اقرأ)/i,
+      /(recommend|suggest|video|course|book|article|podcast|resource|watch|read (a|some)|أوص[يى]|اقترح|فيديو|دورة|كتاب|مقال|مصادر|شاهد|اقرأ)/i,
   },
   {
     intent: "study_plan",
@@ -74,7 +81,7 @@ const INTENT_PATTERNS: ReadonlyArray<{ intent: KaiMessageIntent; pattern: RegExp
   },
   {
     intent: "university_guidance",
-    pattern: /(university|college|which major|admission|apply to|degree program|جامع|تخصص|القبول|التقديم على|شهادة جامعية)/i,
+    pattern: /(universit(?:y|ies)|college|which major|admission|apply to|degree program|جامع|تخصص|القبول|التقديم على|شهادة جامعية)/i,
   },
   {
     intent: "challenge_result",
@@ -103,4 +110,8 @@ export function detectIntent(message: string): KaiMessageIntent {
   }
 
   return "general_question";
+}
+
+export function shouldGroundIntent(intent: KaiMessageIntent | undefined): boolean {
+  return intent === "fact_lookup";
 }

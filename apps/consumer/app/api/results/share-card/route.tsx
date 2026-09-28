@@ -108,6 +108,11 @@ function rtlWords(text: string, isArabic: boolean): string {
   return isArabic ? text.split(" ").reverse().join(" ") : text;
 }
 
+function displayNameForRenderer(name: string, isArabic: boolean): string {
+  const containsArabic = /[\u0600-\u06ff]/.test(name);
+  return containsArabic ? rtlWords(name, isArabic) : name;
+}
+
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const params = url.searchParams;
@@ -138,12 +143,18 @@ export async function GET(request: Request) {
   const locale: Locale = isLocale(localeParam) ? localeParam : "en";
   const t = (key: StringKey) => translate(locale, key);
   const isArabic = locale === "ar";
+  // Latin tracking (letter-spacing) breaks Arabic — it's a cursive, connected
+  // script, so per-glyph spacing splits the joins and blows out word gaps
+  // (the "broken" look). Zero all decorative tracking for Arabic; keep it for
+  // the Latin design.
+  const track = (n: number) => (isArabic ? 0 : s(n));
   // IBM Plex Sans Arabic has no italic face (same reasoning as the live
   // app's `html.locale-ar .text-grad-warm { font-style: normal }` rule) —
   // Fraunces stays the display font for English; Arabic swaps to the
   // Arabic face entirely and never goes italic.
   const displayFont = isArabic ? "IBM Plex Sans Arabic" : "Fraunces";
   const bodyFont = isArabic ? "IBM Plex Sans Arabic" : "Plus Jakarta Sans";
+  const displayName = displayNameForRenderer(name.toUpperCase(), isArabic);
 
   const clusterColor = getClusterColor(clusterCode);
   const clusterLabel = rtlWords(getClusterLabel(clusterCode, t), isArabic);
@@ -254,7 +265,7 @@ export async function GET(request: Request) {
             style={{
               fontSize: s(9),
               fontWeight: 700,
-              letterSpacing: s(2.34),
+              letterSpacing: track(2.34),
               color: "rgba(255,255,255,.55)",
               display: "flex",
             }}
@@ -311,7 +322,7 @@ export async function GET(request: Request) {
               transform: `translate(-50%, -100%)`,
               fontSize: s(8.5),
               fontWeight: 700,
-              letterSpacing: s(1.87),
+              letterSpacing: track(1.87),
               color: "#F4C660",
               display: "flex",
             }}
@@ -338,7 +349,7 @@ export async function GET(request: Request) {
                 transform: `rotate(90deg)`,
                 fontSize: s(8.5),
                 fontWeight: 700,
-                letterSpacing: s(1.87),
+                letterSpacing: track(1.87),
                 color: "#6FE0C0",
                 display: "flex",
               }}
@@ -354,7 +365,7 @@ export async function GET(request: Request) {
               transform: `translate(-50%, 100%)`,
               fontSize: s(8.5),
               fontWeight: 700,
-              letterSpacing: s(1.87),
+              letterSpacing: track(1.87),
               color: "#F2A8B3",
               display: "flex",
             }}
@@ -376,7 +387,7 @@ export async function GET(request: Request) {
                 transform: `rotate(-90deg)`,
                 fontSize: s(8.5),
                 fontWeight: 700,
-                letterSpacing: s(1.87),
+                letterSpacing: track(1.87),
                 color: "#9D7FF0",
                 display: "flex",
               }}
@@ -402,7 +413,7 @@ export async function GET(request: Request) {
             style={{
               fontSize: s(10),
               fontWeight: 600,
-              letterSpacing: s(3),
+              letterSpacing: track(3),
               color: "rgba(255,255,255,.6)",
               display: "flex",
               // display:flex lays each child out as its own flex item, so
@@ -416,7 +427,7 @@ export async function GET(request: Request) {
           >
             <span>{eyebrowBefore}</span>
             {eyebrowBefore ? <span>{" "}</span> : null}
-            <span>{name.toUpperCase()}</span>
+            <span>{displayName}</span>
             {/* eyebrowAfter (", YOUR PATH POINTS TO" / "، طريقك...") starts
              *  with punctuation in both locales' templates, so it gets no
              *  leading space. */}
@@ -468,7 +479,7 @@ export async function GET(request: Request) {
             justifyContent: "center",
             gap: s(22),
             fontSize: s(9.5),
-            letterSpacing: s(0.57),
+            letterSpacing: track(0.57),
             color: "rgba(255,255,255,.7)",
           }}
         >
@@ -532,7 +543,7 @@ export async function GET(request: Request) {
             alignItems: "center",
             gap: s(6),
             fontSize: s(9),
-            letterSpacing: s(1.8),
+            letterSpacing: track(1.8),
             color: "rgba(255,255,255,.4)",
           }}
         >

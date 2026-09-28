@@ -12,8 +12,8 @@ export function GoalPicker({ onSelect }: { onSelect: (goal: KaiConversationGoal)
   const { t } = useLocale();
 
   return (
-    <div className="grid gap-2.5">
-      <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[color:var(--day-ink-3,#675d4e)]">
+    <div className="daybreak-kai-note rounded-story grid gap-3 border border-[color:var(--day-line)] bg-[color:var(--day-card)] p-4">
+      <p className="font-hand text-[21px] font-semibold leading-tight text-[color:var(--day-ink)]">
         {t("kai.chat.goal_prompt")}
       </p>
       <div className="flex flex-wrap gap-2">

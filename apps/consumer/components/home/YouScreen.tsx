@@ -8,12 +8,11 @@ import { OtpSignIn } from "@/components/auth/OtpSignIn";
 import { CareerCompassIcon } from "@/components/brand/DomainIcons";
 import { SettingsPanel } from "@/components/assessment/SettingsPanel";
 import { JourneyModuleCard } from "@/components/assessment/JourneyModuleCard";
-import { JourneyPath } from "@/components/kai/JourneyPath";
 import { NoCompassEmptyState } from "@/components/home/NoCompassEmptyState";
+import { PaymentsSection } from "@/components/home/PaymentsScreen";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { signOut } from "@/lib/auth/otp";
 import { useKaiProfile } from "@/lib/kai/useKaiProfile";
-import { deriveMinutesRemaining } from "@/lib/profile/activity";
 import { getModuleNameKey, readProfileSnapshot, type ProfileSnapshot } from "@/lib/profile/journey";
 
 const MODULE_ICONS: Record<string, ReactNode> = {
@@ -55,41 +54,19 @@ export function YouScreen() {
     await reload();
   }
 
-  const minutesRemaining = localSnapshot ? deriveMinutesRemaining(localSnapshot) : 0;
-
   return (
-    <section className="flex flex-1 flex-col gap-4 pb-4">
+    <section className="daybreak-reveal flex flex-1 flex-col gap-5 pb-6">
       <header className="pt-1 lg:pt-2">
-        <h1 className="text-[26px] font-black leading-tight text-[color:var(--day-ink)] lg:text-[34px]">
+        <h1 className="daybreak-heading text-[30px] leading-tight text-[color:var(--day-ink)] lg:text-[38px]">
           {t("home.you.title")}
         </h1>
-        <p className="mt-0.5 text-[13px] text-[color:var(--day-ink-2)] lg:mt-1.5 lg:text-[15px]">
+        <p className="mt-1 max-w-[58ch] text-[13px] leading-relaxed text-[color:var(--day-ink-2)] lg:text-[15px]">
           {t("home.you.subtitle")}
         </p>
       </header>
 
       {localSnapshot?.coreReport ? (
         <div className="grid gap-3">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[color:var(--day-ink-3)]">
-                {t("profile.journey.eyebrow")}
-              </p>
-              <h2 className="mt-1 text-[16px] font-black text-[color:var(--day-ink)]">
-                {t("home.you.stages_complete")
-                  .replace("{completed}", String(localSnapshot.completedCount))
-                  .replace("{total}", String(localSnapshot.totalCount))}
-              </h2>
-            </div>
-            {minutesRemaining > 0 ? (
-              <span className="shrink-0 rounded-full border border-[color:var(--day-line)] px-2.5 py-1 text-[10px] font-bold text-[color:var(--day-ink-3)]">
-                {t("profile.journey.minutes_left").replace("{n}", String(minutesRemaining))}
-              </span>
-            ) : null}
-          </div>
-
-          <JourneyPath modules={localSnapshot.modules} />
-
           <div className="grid gap-2 md:grid-cols-2 md:gap-3">
             {localSnapshot.modules.map((mod) => (
               <JourneyModuleCard
@@ -109,12 +86,14 @@ export function YouScreen() {
         />
       )}
 
-      <div className="grid gap-2">
-        <p className="ps-0.5 text-[10px] font-black uppercase tracking-[0.14em] text-[color:var(--day-ink-3)]">
+      <PaymentsSection />
+
+      <div className="grid gap-2.5">
+        <p className="daybreak-eyebrow ps-0.5">
           {t("home.you.account_label")}
         </p>
         {authState === "loading" ? (
-          <div className="h-[140px] animate-pulse rounded-[20px] border border-[color:var(--day-line)] bg-[color:var(--day-inset)]" />
+          <div className="rounded-story h-[140px] animate-pulse border border-[color:var(--day-line)] bg-[color:var(--day-inset)]" />
         ) : authState === "signed-in" ? (
           <SettingsPanel
             displayName={displayName}
@@ -123,8 +102,8 @@ export function YouScreen() {
             onSignOut={handleSignOut}
           />
         ) : (
-          <div className="rounded-[20px] border border-[color:var(--day-line)] bg-[color:var(--day-card)] p-3.5 shadow-[var(--day-shadow-card)]">
-            <p className="text-[13px] font-black leading-tight text-[color:var(--day-ink)]">
+          <div className="py-1">
+            <p className="daybreak-heading text-[18px] leading-tight text-[color:var(--day-ink)]">
               {t("home.you.signin_title")}
             </p>
             <p className="mt-1 text-[12px] leading-relaxed text-[color:var(--day-ink-2)]">
@@ -135,7 +114,7 @@ export function YouScreen() {
              *  human-scaled form reads as an intentional desktop form
              *  instead of a mobile button just stretched wider. */}
             <div className="mt-3 lg:mx-auto lg:max-w-[420px]">
-              <OtpSignIn onSignedIn={() => void reload()} />
+              <OtpSignIn onSignedIn={() => void reload()} variant="daybreak" />
               <p className="mt-3 text-center text-[11px] leading-snug text-[color:var(--day-ink-3)]">
                 {t("home.you.new_here_prefix")}
                 <Link href="/start" className="font-semibold text-[color:var(--day-ink)] underline">

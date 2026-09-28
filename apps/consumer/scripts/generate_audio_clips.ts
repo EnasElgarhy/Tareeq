@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { APPROVED_KAI_ENGLISH_VOICE } from "../lib/audio/assessment-voice";
 
 const ELEVENLABS_TTS_ENDPOINT = "https://api.elevenlabs.io/v1/text-to-speech";
 const MODEL_ID = "eleven_multilingual_v2";
@@ -93,7 +94,7 @@ async function main() {
   const serviceRoleKey = requiredEnv("SUPABASE_SERVICE_ROLE_KEY");
   const elevenLabsApiKey = requiredEnv("ELEVENLABS_API_KEY");
   const voiceByLocale: Record<string, string> = {
-    en: requiredEnv("ELEVENLABS_VOICE_ID"),
+    en: APPROVED_KAI_ENGLISH_VOICE.id,
     ar: requiredEnv("ELEVENLABS_VOICE_ID_AR"),
   };
 

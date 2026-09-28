@@ -54,8 +54,8 @@ export function ProgressRingCard({
   const fillPath = arcPath((pct / 100) * ARC_DEG);
 
   return (
-    <article className="rounded-[24px] border border-[color:var(--day-line)] bg-[color:var(--day-card)] p-4 shadow-[var(--day-shadow-card)]">
-      <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[color:var(--day-ink-3)]">
+    <article className="daybreak-story-card rounded-story p-5">
+      <p className="daybreak-eyebrow">
         {t("profile.journey.eyebrow")}
       </p>
 
@@ -81,7 +81,7 @@ export function ProgressRingCard({
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
           <span
-            className="text-[44px] font-black leading-none tabular-nums"
+            className="font-heading text-[46px] font-bold leading-none tabular-nums"
             style={{ color: clusterInk }}
           >
             {pct}%
@@ -95,12 +95,12 @@ export function ProgressRingCard({
       </div>
 
       {moduleName ? (
-        <div className="mt-1 flex items-center gap-3 rounded-2xl border border-[color:var(--day-line)] bg-[color:var(--day-inset)] p-3">
+        <div className="mt-1 flex items-center gap-3 rounded-xl border border-[color:var(--day-line)] bg-[color:var(--day-inset)] p-3">
           <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[rgba(43,36,28,0.06)] text-[color:var(--day-ink-3)]">
             <Lock size={16} />
           </span>
           <div className="min-w-0 flex-1">
-            <p className="text-[13px] font-black text-[color:var(--day-ink)]">
+            <p className="daybreak-heading text-[14px] text-[color:var(--day-ink)]">
               {t("home.progress.next").replace("{module}", moduleName)}
             </p>
             <p className="truncate text-[11.5px] text-[color:var(--day-ink-3)]">

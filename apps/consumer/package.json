@@ -11,10 +11,13 @@
     "format": "prettier --check .",
     "test": "vitest run --passWithNoTests",
     "test:e2e": "playwright test",
+    "test:isolation": "tsx scripts/verify_user_data_isolation.ts",
+    "kai:quality": "tsx scripts/stress_test_kai_quality.ts",
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "seed": "tsx scripts/seed_db.ts",
     "audio:generate-clips": "tsx scripts/generate_audio_clips.ts",
+    "audio:bake:english-assessment": "tsx scripts/bake_english_assessment_audio.ts",
     "audio:bake": "python3 prototype/bake_audio.py --source seed --out-dir public/audio",
     "audio:bake:force": "python3 prototype/bake_audio.py --source seed --out-dir public/audio --force",
     "audio:bake:dry": "python3 prototype/bake_audio.py --source seed --out-dir public/audio --dry-run",
@@ -27,6 +30,8 @@
     "@phosphor-icons/react": "^2.1.10",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.4.3",
+    "@stripe/react-stripe-js": "^6.8.2",
+    "@stripe/stripe-js": "^9.15.0",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.88.0",
     "drizzle-orm": "^0.45.1",
@@ -35,8 +40,10 @@
     "next": "^15.0.0",
     "next-intl": "^4.6.1",
     "postgres": "^3.4.7",
+    "posthog-js": "^1.406.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "stripe": "^22.6.0",
     "three": "^0.181.2",
     "zod": "^4.2.1"
   },
@@ -63,6 +70,7 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
+      "core-js",
       "esbuild",
       "sharp",
       "unrs-resolver"

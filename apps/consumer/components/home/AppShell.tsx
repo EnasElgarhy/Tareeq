@@ -20,7 +20,7 @@ import { AppTabBar } from "@/components/home/AppTabBar";
 export function AppShell({ children }: { children: ReactNode }) {
   return (
     <main
-      className="surface-day relative flex h-dvh w-full flex-col overflow-hidden text-[color:var(--day-ink)] lg:flex-row"
+      className="surface-day relative flex h-dvh w-full flex-col overflow-x-clip overflow-y-hidden text-[color:var(--day-ink)] lg:flex-row"
       style={
         {
           "--app-accent": APP_ACCENT,
@@ -28,16 +28,17 @@ export function AppShell({ children }: { children: ReactNode }) {
         } as CSSProperties
       }
     >
-      <div className="absolute inset-0 bg-day-wash opacity-70 pointer-events-none" />
+      <div className="absolute inset-0 bg-day-wash opacity-55 pointer-events-none" />
+      <div className="daybreak-grain" aria-hidden="true" />
 
-      <div className="relative z-10 mx-auto flex h-full w-full max-w-[480px] flex-1 flex-col px-5 pt-[max(env(safe-area-inset-top),0.875rem)] md:max-w-[640px] lg:max-w-[1360px] lg:flex-row lg:gap-2 lg:px-8 lg:pt-8">
+      <div className="relative z-10 mx-auto flex h-full w-full max-w-[520px] flex-1 flex-col px-4 pt-[max(env(safe-area-inset-top),0.875rem)] md:max-w-[760px] md:px-6 lg:max-w-[1440px] lg:flex-row lg:gap-7 lg:px-8 lg:pb-8 lg:pt-8">
         <AppSidebarNav />
 
         {/* Scrollable content well — chrome locks to the viewport; the feed
          *  overflows and scrolls inside here so the tab bar stays put. On
          *  desktop this centers within the space beside the sidebar instead
          *  of stretching full-bleed. */}
-        <div className="flex flex-1 flex-col min-h-0 -mx-5 overflow-y-auto overscroll-contain px-5 pb-2 pt-1 lg:mx-auto lg:w-full lg:max-w-[880px] lg:px-0">
+        <div className="flex min-h-0 flex-1 flex-col -mx-4 overflow-y-auto overscroll-contain px-4 pb-3 pt-1 md:-mx-6 md:px-6 lg:mx-auto lg:w-full lg:max-w-[1080px] lg:px-0 lg:pe-2">
           {children}
         </div>
 
