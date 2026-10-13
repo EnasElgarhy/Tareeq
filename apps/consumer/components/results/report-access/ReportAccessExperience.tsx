@@ -6,7 +6,6 @@ import {
   CheckoutSheet,
   type CheckoutStage,
 } from "@/components/results/report-access/CheckoutSheet";
-import { LockedReportStory } from "@/components/results/report-access/story/LockedReportStory";
 import { trackEvent } from "@/lib/analytics/track";
 import type { StringKey } from "@/lib/i18n/strings";
 import {
@@ -15,6 +14,7 @@ import {
   reportIdFromGeneratedAt,
   type PaymentProvider,
   type ReportAccess,
+  type ReportOffer,
 } from "@/lib/payments/report-access";
 import {
   ReportPaymentError,
@@ -24,11 +24,20 @@ import { writeReportAccess } from "@/lib/payments/report-access-storage";
 import { readLocalAssessment } from "@/lib/assessment/progress";
 import { resolveCurrentAssessmentId } from "@/lib/results/assessment-identity";
 import { readResultRegistration } from "@/lib/results/storage";
-import type { PersonalizedCompassReport } from "@/lib/results/types";
+
+export interface LockedStoryProps {
+  offer: ReportOffer;
+  /** Questions answered in the local attempt; 0 when unknown. */
+  answeredCount: number;
+  onOpen(): void;
+}
 
 interface ReportAccessExperienceProps {
-  report: PersonalizedCompassReport;
+  /** When the report was generated; derives the local report id. */
+  generatedAt: string;
   email: string;
+  /** The locked story for this kind of report (legacy v4 or CORE 2.0). */
+  renderLocked(props: LockedStoryProps): ReactNode;
   children: ReactNode;
 }
 
@@ -56,14 +65,15 @@ function readAnsweredCount(): number {
 }
 
 export function ReportAccessExperience({
-  report,
+  generatedAt,
   email,
+  renderLocked,
   children,
 }: ReportAccessExperienceProps) {
   const { t } = useLocale();
   const reportId = useMemo(
-    () => reportIdFromGeneratedAt(report.generatedAt),
-    [report.generatedAt],
+    () => reportIdFromGeneratedAt(generatedAt),
+    [generatedAt],
   );
   const offer = useMemo(getReportOffer, []);
   const answeredCount = useMemo(readAnsweredCount, []);
@@ -269,12 +279,7 @@ export function ReportAccessExperience({
 
   return (
     <div className="relative w-full">
-      <LockedReportStory
-        report={report}
-        offer={offer}
-        answeredCount={answeredCount}
-        onOpen={openCheckout}
-      />
+      {renderLocked({ offer, answeredCount, onOpen: openCheckout })}
 
       {stage ? (
         <CheckoutSheet

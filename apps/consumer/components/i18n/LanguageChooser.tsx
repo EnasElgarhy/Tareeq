@@ -20,8 +20,7 @@ export function LanguageChooser() {
   return (
     <main
       dir="ltr"
-      className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden bg-night px-6 py-12 text-sand"
-      style={{ background: "var(--night-gradient, #08051a)" }}
+      className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden bg-[#08051A] px-6 py-12 text-sand"
     >
       {/* faint compass ring */}
       <svg
@@ -36,16 +35,10 @@ export function LanguageChooser() {
       </svg>
 
       <div className="anim-fade-in relative z-10 w-full max-w-md text-center">
-        <p
-          className="text-[11px] font-bold uppercase tracking-[0.32em]"
-          style={{ color: "var(--violet-soft, #9D7FF0)" }}
-        >
+        <p className="text-[11px] font-bold uppercase tracking-[0.32em] text-[#F4C660]">
           Tareeq
         </p>
-        <h1
-          className="mt-3 text-[28px] font-bold leading-tight"
-          style={{ fontFamily: "var(--font-display)", fontStyle: "italic" }}
-        >
+        <h1 className="mt-3 font-heading text-[32px] font-bold leading-tight tracking-[-0.03em]">
           Choose your language
         </h1>
         <p className="mt-1 text-[20px] text-sand/80" dir="rtl">
@@ -66,7 +59,7 @@ export function LanguageChooser() {
               <span
                 aria-hidden
                 className="mt-3 inline-block h-1 w-8 rounded-full opacity-60 transition-opacity group-hover:opacity-100"
-                style={{ background: "var(--violet, #6E48E4)" }}
+                style={{ background: "var(--gold, #F4C660)" }}
               />
             </button>
           ))}

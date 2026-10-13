@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { KaiAuraV2 } from "@/components/brand/KaiAuraV2";
@@ -81,12 +82,16 @@ export function AssessmentStart({
     null,
   );
   const [termsAccepted, setTermsAccepted] = useState(false);
+  // Consent already on record (from an earlier start) — no need to ask again.
+  const [hasStoredConsent, setHasStoredConsent] = useState(false);
   const [startError, setStartError] = useState("");
   const [settingVersion, setSettingVersion] = useState(false);
 
   useEffect(() => {
     setProgress(readLocalAssessment());
-    setTermsAccepted(Boolean(readPlatformConsent()));
+    const stored = Boolean(readPlatformConsent());
+    setHasStoredConsent(stored);
+    setTermsAccepted(stored);
   }, []);
 
   useEffect(() => {
@@ -207,9 +212,7 @@ export function AssessmentStart({
        *  instance from the mobile one below rather than reordered with
        *  CSS, so the mobile visual sequence (headline → Kai → steps)
        *  never has to be disturbed to achieve the desktop split. Static
-       *  (playing=false, no audioRef), so a second instance is cheap.
-       *  KaiAuraV2 (previously built but unused anywhere) blooms behind
-       *  her — the one atmospheric "arrival" moment for this screen. */}
+       *  (playing=false, no audioRef), so a second instance is cheap. */}
       <div className="relative hidden h-[340px] w-full items-center justify-center lg:flex">
         <div
           aria-hidden="true"
@@ -221,7 +224,7 @@ export function AssessmentStart({
           <div className="anim-kai-drop-bob">
             <KaiChromaVideo
               src="/kai/kai-intro-green-v2.mp4"
-              size={220}
+              size={260}
               playing={false}
               restTime={0}
             />
@@ -231,11 +234,6 @@ export function AssessmentStart({
 
       <div className="flex flex-1 flex-col gap-4">
         <div className="flex flex-col gap-3">
-          <span className="anim-eyebrow-fade-up chip chip--violet-on-dark w-fit">
-            <span className="size-1.5 rounded-full bg-gold" />
-            {t("start.eyebrow")}
-          </span>
-
           <h1
             id="start-heading"
             className="text-hero text-sand max-w-[16ch] lg:max-w-[22ch]"
@@ -243,13 +241,7 @@ export function AssessmentStart({
             {t("start.headline_line1")}
             <br />
             {t("start.headline_line2_before")}{" "}
-            <span
-              className="text-grad-warm"
-              style={{
-                fontStyle: "italic",
-                fontVariationSettings: '"SOFT" 100, "opsz" 144',
-              }}
-            >
+            <span className="text-grad-warm">
               {t("start.headline_emphasis")}
             </span>
             {t("start.headline_after")}
@@ -257,14 +249,8 @@ export function AssessmentStart({
         </div>
 
         {/* Hero illustration — phone/tablet only; desktop uses its own
-         *  column above. Same aura treatment, scaled down. */}
-        <div className="relative mx-auto flex h-[200px] w-[200px] items-center justify-center lg:hidden">
-          <div
-            aria-hidden="true"
-            className="anim-aura-bloom pointer-events-none absolute"
-          >
-            <KaiAuraV2 size={220} />
-          </div>
+         *  column above. */}
+        <div className="relative mx-auto flex h-[240px] w-[240px] items-center justify-center lg:hidden">
           <div
             aria-label={t("kai.guide_aria")}
             role="img"
@@ -276,7 +262,7 @@ export function AssessmentStart({
                   subtly alive. */}
               <KaiChromaVideo
                 src="/kai/kai-intro-green-v2.mp4"
-                size={200}
+                size={240}
                 playing={false}
                 restTime={0}
               />
@@ -364,7 +350,27 @@ export function AssessmentStart({
 
         <div className="flex-1 lg:hidden" />
 
-        <div className="grid gap-2">
+        <div className="grid gap-3">
+          {/* Begin always requires consent, so the box shows whenever
+           *  none is on record — including a retake after a finished run
+           *  that predates the stored consent. */}
+          {!canResume && !hasStoredConsent ? (
+            <ConsentCheckbox
+              checked={termsAccepted}
+              invalid={Boolean(startError) && !termsAccepted}
+              onChange={(checked) => {
+                setTermsAccepted(checked);
+                setStartError("");
+              }}
+            />
+          ) : null}
+
+          {startError ? (
+            <p role="alert" className="text-[12px] font-semibold text-error">
+              {startError}
+            </p>
+          ) : null}
+
           <button
             type="button"
             onClick={canResume ? resume : startFresh}
@@ -403,38 +409,78 @@ export function AssessmentStart({
               {t("start.start_over_cta")}
             </button>
           ) : (
-            <>
-              {!completed ? (
-                <label className="glass-tile flex items-start gap-2 !rounded-2xl px-3 py-2 text-start">
-                  <input
-                    type="checkbox"
-                    checked={termsAccepted}
-                    onChange={(event) => {
-                      setTermsAccepted(event.target.checked);
-                      setStartError("");
-                    }}
-                    className="mt-0.5 size-4 accent-gold"
-                  />
-                  <span className="text-[11px] leading-snug text-sand/58">
-                    {t("start.terms_checkbox")}
-                  </span>
-                </label>
-              ) : null}
-              <p className="text-center text-eyebrow text-sand/45 pt-0.5 lg:text-start">
-                {t("start.footer_note")}
-              </p>
-            </>
-          )}
-          {startError ? (
-            <p
-              role="alert"
-              className="text-center text-[11px] font-semibold text-error lg:text-start"
-            >
-              {startError}
+            <p className="text-center text-[12.5px] text-sand/45 lg:text-start">
+              {t("start.footer_note")}
             </p>
-          ) : null}
+          )}
         </div>
       </div>
     </section>
+  );
+}
+
+interface ConsentCheckboxProps {
+  checked: boolean;
+  invalid: boolean;
+  onChange: (checked: boolean) => void;
+}
+
+/**
+ * Platform-terms consent — sits directly above Begin, since agreeing comes
+ * before starting. A custom 20px box (gold when checked, like the CTA) with
+ * the agreement on one line and the research-consent note beneath it.
+ */
+function ConsentCheckbox({ checked, invalid, onChange }: ConsentCheckboxProps) {
+  const { t } = useLocale();
+  const [before, afterTerms = ""] = t("start.terms_agree").split("{terms}");
+  const [between, after = ""] = afterTerms.split("{privacy}");
+  const linkClass =
+    "font-medium text-sand underline decoration-sand/30 underline-offset-[3px] transition-colors hover:decoration-gold";
+
+  return (
+    <label className="consent-check group flex cursor-pointer items-start gap-3 text-start">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(event) => onChange(event.target.checked)}
+        aria-invalid={invalid || undefined}
+        aria-describedby="consent-research-note"
+        className="peer sr-only"
+      />
+      <span
+        aria-hidden="true"
+        data-invalid={invalid || undefined}
+        className="consent-check__box mt-px grid size-5 shrink-0 place-items-center rounded-[6px]"
+      >
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M5 12.5l4.5 4.5L19 7.5"
+            stroke="currentColor"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </span>
+      <span className="min-w-0">
+        <span className="block text-[13.5px] leading-snug text-sand/80">
+          {before}
+          <Link href="/terms-of-service" target="_blank" className={linkClass}>
+            {t("start.terms_link")}
+          </Link>
+          {between}
+          <Link href="/privacy-policy" target="_blank" className={linkClass}>
+            {t("start.privacy_link")}
+          </Link>
+          {after}
+        </span>
+        <span
+          id="consent-research-note"
+          className="mt-1 block text-[12px] leading-snug text-sand/45"
+        >
+          {t("start.terms_research_note")}
+        </span>
+      </span>
+    </label>
   );
 }

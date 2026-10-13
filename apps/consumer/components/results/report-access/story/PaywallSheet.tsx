@@ -34,19 +34,25 @@ const FROST_HEIGHT = 208;
  * seamless and the report is heavily veiled by the card's edge — the
  * unopened chapters read as one frosted continuation instead of a hard cut.
  */
+/** How far the sheet rises over the locked rows of the default 9-stop timeline. */
+const DEFAULT_OVERLAP_PX = 488;
+
 export function PaywallSheet({
   offer,
   onOpen,
+  overlapPx = DEFAULT_OVERLAP_PX,
 }: {
   offer: ReportOffer;
   onOpen(): void;
+  /** Rise over the timeline's locked rows; shorter timelines pass less. */
+  overlapPx?: number;
 }) {
   const { locale, t } = useLocale();
   const price = formatOfferPrice(offer, locale);
   const listPrice = formatOfferListPrice(offer, locale);
 
   return (
-    <div className="relative z-10 -mt-[488px]">
+    <div className="relative z-10" style={{ marginTop: -overlapPx }}>
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"

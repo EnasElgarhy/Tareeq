@@ -7,12 +7,16 @@ import { type CSSProperties, type ReactNode, useEffect, useState } from "react";
 import { OtpSignIn } from "@/components/auth/OtpSignIn";
 import { APP_ACCENT } from "@/components/home/app-accent";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { decideDashboardAccess } from "@/lib/auth/dashboard-access";
+import { isCoreReportPreview } from "@/lib/core-v2/preview";
+import { clearBrowserUserData } from "@/lib/auth/local-data";
 import { signOut } from "@/lib/auth/otp";
 import { readProfileSnapshot } from "@/lib/profile/journey";
 import {
   restoreProfileFromAssessment,
   type SavedAssessmentRecord,
 } from "@/lib/profile/restore-profile";
+import { readResultRegistration } from "@/lib/results/storage";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 type AccessState =
@@ -30,16 +34,16 @@ export function DashboardAccessGate({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (pathname === "/home-preview") return;
+    // The CORE 2.0 report preview uses sample data only, outside production.
+    if (isCoreReportPreview(pathname, window.location.search)) {
+      setState("allowed");
+      return;
+    }
 
     let active = true;
 
     async function checkAccess() {
       setState("checking");
-
-      if (readProfileSnapshot().hasAnyResult) {
-        if (active) setState("allowed");
-        return;
-      }
 
       const supabase = createSupabaseBrowserClient();
       const {
@@ -48,14 +52,27 @@ export function DashboardAccessGate({ children }: { children: ReactNode }) {
       } = await supabase.auth.getUser();
 
       if (!active) return;
-      if (!user) {
-        setState("signed-out");
-        return;
-      }
-      if (authError) {
+      if (authError && user) {
         setState("error");
         return;
       }
+
+      // A locally saved result only opens the dashboard for the account
+      // that owns it — see decideDashboardAccess.
+      const decision = decideDashboardAccess({
+        sessionEmail: user?.email ?? null,
+        localEmail: readResultRegistration()?.email ?? null,
+        hasLocalResult: readProfileSnapshot().hasAnyResult,
+      });
+      if (decision === "signed-out" || !user) {
+        setState("signed-out");
+        return;
+      }
+      if (decision === "allow-local") {
+        setState("allowed");
+        return;
+      }
+      if (decision === "clear-and-restore") clearBrowserUserData();
 
       const [profileResponse, assessmentResponse] = await Promise.all([
         supabase

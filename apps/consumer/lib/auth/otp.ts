@@ -1,3 +1,4 @@
+import { clearBrowserUserData } from "@/lib/auth/local-data";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 /**
@@ -51,7 +52,16 @@ export async function verifyEmailOtp(
   return error ? { ok: false, error: error.message } : { ok: true };
 }
 
+/**
+ * Ends the session and removes this device's copy of the account's data
+ * (report, progress, Kai, …) so the dashboard can't stay open after
+ * sign-out. The local copy is cleared even if the network sign-out fails.
+ */
 export async function signOut(): Promise<void> {
   const supabase = createSupabaseBrowserClient();
-  await supabase.auth.signOut();
+  try {
+    await supabase.auth.signOut();
+  } finally {
+    clearBrowserUserData();
+  }
 }

@@ -1348,6 +1348,44 @@ button {
 .anim-backdrop-fade {
   animation: backdrop-fade 280ms ease-out both;
 }
+/* Rush heads-up sheet: Kai does a double-take, the headline pops. */
+@keyframes rush-kai-double-take {
+  0%, 100% { transform: rotate(0) scale(1); }
+  20% { transform: rotate(-12deg) scale(1.08); }
+  40% { transform: rotate(10deg) scale(1.08); }
+  60% { transform: rotate(-6deg) scale(1.04); }
+  80% { transform: rotate(3deg) scale(1.02); }
+}
+@keyframes rush-fill-grow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+.anim-rush-fill {
+  transform-origin: left center;
+  animation: rush-fill-grow 700ms cubic-bezier(0.2, 0.8, 0.2, 1) 420ms both;
+}
+[dir="rtl"] .anim-rush-fill {
+  transform-origin: right center;
+}
+@keyframes rush-title-pop {
+  0% { opacity: 0; transform: scale(0.85); }
+  60% { opacity: 1; transform: scale(1.06); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.anim-rush-kai {
+  animation: rush-kai-double-take 900ms cubic-bezier(0.36, 0.07, 0.19, 0.97) 280ms both;
+}
+.anim-rush-title {
+  animation: rush-title-pop 520ms cubic-bezier(0.2, 0.8, 0.2, 1) 160ms both;
+  transform-origin: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .anim-rush-kai,
+  .anim-rush-title,
+  .anim-rush-fill {
+    animation: none;
+  }
+}
 .anim-contract-spine {
   animation: contract-spine-grow 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
   transform-origin: top;
@@ -2450,6 +2488,11 @@ button {
   --daybreak-gold-ink: #7a4a21;
   --daybreak-green: #3d8a73;
   --daybreak-clay: #c96f63;
+  /* Deeper letter colours for filled surfaces that carry white text (4.5:1). */
+  --daybreak-green-deep: #2f7a64;
+  --daybreak-clay-deep: #a9554a;
+  --daybreak-violet-deep: #5c4a96;
+  --daybreak-cocoa: #4a2c17;
   background:
     linear-gradient(180deg, rgba(255, 252, 246, 0.72), transparent 34%),
     var(--day-bg);

@@ -4,11 +4,14 @@ import { Lock } from "lucide-react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import type { StringKey } from "@/lib/i18n/strings";
 
-interface Stop {
+export interface ExploreStop {
   number: string;
-  titleKey: StringKey;
+  /** A UI string key, or ready text (the CORE 2.0 report passes its own section titles). */
+  titleKey?: StringKey;
+  title?: string;
   unlocked: boolean;
 }
+type Stop = ExploreStop;
 
 /** Defocus of the first locked row, and how much each deeper row adds. */
 const LOCKED_BLUR_PX = 1.5;
@@ -96,7 +99,7 @@ function StopRow({
               : "text-[#5c5142]"
           }`}
         >
-          {t(stop.titleKey)}
+          {stop.title ?? (stop.titleKey ? t(stop.titleKey) : "")}
           {!stop.unlocked && (
             <span className="sr-only"> — {t("paywall.explore.locked")}</span>
           )}
@@ -117,10 +120,10 @@ function StopRow({
  * app shell's scroll well, so the blur lives on the locked rows and the
  * sheet lays its cream veil over them.
  */
-export function ExploreTimeline() {
+export function ExploreTimeline({ stops = STOPS }: { stops?: readonly Stop[] } = {}) {
   const { t } = useLocale();
-  const openStops = STOPS.filter((stop) => stop.unlocked);
-  const lockedStops = STOPS.filter((stop) => !stop.unlocked);
+  const openStops = stops.filter((stop) => stop.unlocked);
+  const lockedStops = stops.filter((stop) => !stop.unlocked);
 
   return (
     <section aria-labelledby="explore-heading" className="pt-8">

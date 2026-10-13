@@ -2,7 +2,6 @@
 
 import { ArrowUpRight, ReceiptText, RefreshCw } from "lucide-react";
 import { useEffect, useState } from "react";
-import { OtpSignIn } from "@/components/auth/OtpSignIn";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import type { Locale } from "@/lib/i18n/locale";
 
@@ -47,7 +46,16 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 /** Defensive parse — an API response is data from a trust boundary. */
 function normalizePurchase(value: unknown): Purchase | null {
   if (!isRecord(value)) return null;
-  const { id, kind, status, source, amountMinor, currency, paidAt, documentUrl } = value;
+  const {
+    id,
+    kind,
+    status,
+    source,
+    amountMinor,
+    currency,
+    paidAt,
+    documentUrl,
+  } = value;
   if (typeof id !== "string") return null;
   if (kind !== "report_unlock") return null;
   if (status !== "paid" && status !== "refunded") return null;
@@ -187,7 +195,11 @@ function PurchaseCard({ purchase }: { purchase: Purchase }) {
             className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[color:var(--day-ink-2)] transition hover:text-[color:var(--day-ink)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6D5BA8]"
           >
             {t("payments.view_invoice")}
-            <ArrowUpRight size={14} aria-hidden="true" className="rtl:-scale-x-100" />
+            <ArrowUpRight
+              size={14}
+              aria-hidden="true"
+              className="rtl:-scale-x-100"
+            />
           </a>
         </div>
       ) : null}
@@ -259,20 +271,22 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
   );
 }
 
-function SignedOutState({ onSignedIn }: { onSignedIn: () => void }) {
+/**
+ * Signed out: a single line pointing at the Account section's sign-in form
+ * rather than a second, duplicate form on the same page.
+ */
+function SignedOutState() {
   const { t } = useLocale();
   return (
-    <div className="rounded-story border border-[color:var(--day-line)] bg-[color:var(--day-card)] px-5 py-8">
-      <p className="daybreak-heading text-[17px] text-[color:var(--day-ink)]">
-        {t("payments.signin_title")}
-      </p>
-      <p className="mt-1 max-w-[52ch] text-[13px] leading-relaxed text-[color:var(--day-ink-2)]">
-        {t("payments.signin_body")}
-      </p>
-      <div className="mt-3 lg:mx-auto lg:max-w-[420px]">
-        <OtpSignIn onSignedIn={onSignedIn} variant="daybreak" />
-      </div>
-    </div>
+    <p className="rounded-story border border-dashed border-[color:var(--day-line)] px-5 py-4 text-[13px] leading-relaxed text-[color:var(--day-ink-2)]">
+      {t("payments.signin_body")}{" "}
+      <a
+        href="#account"
+        className="font-semibold text-[color:var(--day-ink)] underline underline-offset-[3px]"
+      >
+        {t("payments.signin_link")}
+      </a>
+    </p>
   );
 }
 
@@ -280,7 +294,12 @@ function SignedOutState({ onSignedIn }: { onSignedIn: () => void }) {
  * The Payments & Invoices section, embedded in the You tab. Renders its own
  * section heading, supporting text, and the purchase-history states.
  */
-export function PaymentsSection() {
+interface PaymentsSectionProps {
+  /** Bump to re-fetch — e.g. after the user signs in elsewhere on the page. */
+  refreshKey?: number;
+}
+
+export function PaymentsSection({ refreshKey = 0 }: PaymentsSectionProps) {
   const { t } = useLocale();
   const [state, setState] = useState<ScreenState>({ phase: "loading" });
   const [attempt, setAttempt] = useState(0);
@@ -305,7 +324,7 @@ export function PaymentsSection() {
     return () => {
       active = false;
     };
-  }, [attempt]);
+  }, [attempt, refreshKey]);
 
   return (
     <section className="grid gap-2.5">
@@ -321,9 +340,7 @@ export function PaymentsSection() {
       </p>
 
       {state.phase === "loading" ? <SkeletonList /> : null}
-      {state.phase === "signed-out" ? (
-        <SignedOutState onSignedIn={() => setAttempt((value) => value + 1)} />
-      ) : null}
+      {state.phase === "signed-out" ? <SignedOutState /> : null}
       {state.phase === "error" ? (
         <ErrorState onRetry={() => setAttempt((value) => value + 1)} />
       ) : null}

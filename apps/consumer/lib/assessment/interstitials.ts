@@ -39,11 +39,17 @@ export interface Interstitial {
   ctaLabel: LocalizedText;
 }
 
-const DID_YOU_KNOW_TITLE: LocalizedText = { en: "Did you know?", ar: "هل تعلم؟" };
+const DID_YOU_KNOW_TITLE: LocalizedText = {
+  en: "Did you know?",
+  ar: "هل تعلم؟",
+};
 const CTA_GOT_IT: LocalizedText = { en: "Got it", ar: "فهمت" };
 const CTA_KEEP_GOING: LocalizedText = { en: "Keep going", ar: "أكمل" };
 const CTA_MAKES_SENSE: LocalizedText = { en: "Makes sense", ar: "منطقي" };
-const CTA_FINISH_STRONG: LocalizedText = { en: "Finish strong", ar: "أنهِ بقوة" };
+const CTA_FINISH_STRONG: LocalizedText = {
+  en: "Finish strong",
+  ar: "أنهِ بقوة",
+};
 
 export const INTERSTITIALS: ReadonlyArray<Interstitial> = [
   {
@@ -85,7 +91,10 @@ export const INTERSTITIALS: ReadonlyArray<Interstitial> = [
       en: "Only 27% of college graduates end up working in a field directly related to their major. Your first job does not define your whole career.",
       ar: "27% فقط من خريجي الجامعات ينتهي بهم المطاف بالعمل في مجال مرتبط مباشرة بتخصصهم. وظيفتك الأولى لا تُحدد مسيرتك المهنية بأكملها.",
     },
-    source: { en: "Federal Reserve Bank of New York", ar: "بنك الاحتياطي الفيدرالي في نيويورك" },
+    source: {
+      en: "Federal Reserve Bank of New York",
+      ar: "بنك الاحتياطي الفيدرالي في نيويورك",
+    },
     ctaLabel: CTA_GOT_IT,
   },
   {
@@ -130,7 +139,10 @@ export const INTERSTITIALS: ReadonlyArray<Interstitial> = [
       en: "Nursing has one of the lowest unemployment rates of any major. Healthcare careers can stay resilient even when the economy shifts.",
       ar: "التمريض لديه واحد من أدنى معدلات البطالة بين جميع التخصصات. المهن الصحية يمكن أن تبقى صامدة حتى عندما يتغيّر الاقتصاد.",
     },
-    source: { en: "Federal Reserve Bank of New York", ar: "بنك الاحتياطي الفيدرالي في نيويورك" },
+    source: {
+      en: "Federal Reserve Bank of New York",
+      ar: "بنك الاحتياطي الفيدرالي في نيويورك",
+    },
     ctaLabel: CTA_KEEP_GOING,
   },
   {
@@ -161,7 +173,10 @@ export const INTERSTITIALS: ReadonlyArray<Interstitial> = [
       en: "The average person changes careers several times in their lifetime. Choosing your first path does not lock you in forever.",
       ar: "يُغيّر الشخص العادي مساره المهني عدة مرات خلال حياته. اختيار مسارك الأول لا يُقيّدك إلى الأبد.",
     },
-    source: { en: "Bureau of Labor Statistics", ar: "مكتب إحصاءات العمل الأمريكي" },
+    source: {
+      en: "Bureau of Labor Statistics",
+      ar: "مكتب إحصاءات العمل الأمريكي",
+    },
     ctaLabel: CTA_MAKES_SENSE,
   },
   {
@@ -199,6 +214,26 @@ export const INTERSTITIALS: ReadonlyArray<Interstitial> = [
     ctaLabel: CTA_FINISH_STRONG,
   },
 ];
+
+/**
+ * Kai's one-time "slow down" beat, shown by QuestionScreen after several
+ * rushed answers in a row (see lib/assessment/reading-pace.ts). Not part of
+ * INTERSTITIALS — it is triggered by pace, not by question position — and
+ * it has no narration clip, so it renders without audio controls.
+ */
+export const PACE_NUDGE: Interstitial = {
+  key: "pace-nudge",
+  triggerAfterIndex: -1,
+  illustration: CrossingPathsScene,
+  glow: "lavender",
+  audioId: "",
+  title: { en: "Easy there, speed racer!", ar: "على مهلك يا بطل السرعة!" },
+  body: {
+    en: "You're flying through these! But this isn't a race — your Compass only points the right way if the answers are really you. Take a breath, read each one, and trust your gut.",
+    ar: "أنت تطير بين الأسئلة! لكنها ليست سباقاً — بوصلتك تشير للاتجاه الصحيح فقط إذا كانت الإجابات تشبهك فعلاً. خذ نفساً، اقرأ كل سؤال، وثق بإحساسك.",
+  },
+  ctaLabel: { en: "Okay, slowing down", ar: "حسناً، سأتمهّل" },
+};
 
 /** Find the interstitial that should fire after the given question index. */
 export function findInterstitialFor(

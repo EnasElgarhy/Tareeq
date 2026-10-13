@@ -2,171 +2,228 @@ import type { Locale } from "@/lib/i18n/locale";
 
 /**
  * Words inside the home page's product mock-ups (StoryVisuals), per locale.
- * Numbers, colours and layout stay in the components; Arabic uses the
- * product's own report terms so the mock-ups match what users really see.
+ * Colours and layout stay in the components; Arabic uses the product's own
+ * report terms so the mock-ups match what users really see.
  */
 
+type Three = readonly [string, string, string];
+
 interface StoryWords {
-  fit: (value: number) => string;
-  compass: {
+  glance: {
     title: string;
-    archetypeLabel: string;
-    archetype: string;
-    topClusters: string;
-    clusters: readonly [string, string, string];
-    drivesLabel: string;
-    drives: string;
-    thrivesLabel: string;
-    thrives: string;
+    owner: string;
+    curiosity: {
+      tag: string;
+      heading: string;
+      clusters: readonly [
+        { name: string; desc: string },
+        { name: string; desc: string },
+      ];
+      connect: string;
+    };
+    operations: { tag: string; heading: string; sub: string; options: Three };
+    ecosystem: { tag: string; heading: string; sub: string; options: Three };
+    rewards: { tag: string; heading: string; items: readonly [string, string] };
   };
-  report: {
-    signal: string;
-    signalValue: string;
-    confidence: string;
-    style: string;
-    styleValue: string;
+  meaning: {
     title: string;
+    context: string;
+    tag: string;
     heading: string;
-    patternLabel: string;
-    pattern: string;
-    patternBody: string;
+    body: string;
+    noticeLabel: string;
+    notices: Three;
+    footer: string;
   };
   options: {
     title: string;
-    basis: string;
-    topMatch: string;
-    careers: readonly [string, string, string];
-    careerClusters: readonly [string, string, string];
-    subjectsLabel: string;
-    subjects: readonly [string, string, string];
-    pathsLabel: string;
-    paths: readonly [string, string, string];
-    pathDescs: readonly [string, string, string];
+    meetLabel: string;
+    tags: readonly [string, string];
+    field: string;
+    roles: Three;
+    career: string;
+    closest: string;
+    workLabel: string;
+    work: string;
+    motiveLabel: string;
+    motive: string;
+    studyLabel: string;
+    study: string;
+    nextLabel: string;
+    next: readonly [string, string, string, string];
   };
   kai: {
-    directionLabel: string;
-    direction: string;
+    reportLabel: string;
+    section: string;
+    discuss: string;
     name: string;
-    role: string;
     question: string;
-    answerHeading: string;
-    answerBody: string;
-    basedOn: string;
-    and: string;
-    evidence: readonly [string, string];
-    actions: readonly [string, string, string];
+    reply: string;
+    footer: string;
   };
 }
 
 export const STORY_COPY: Record<Locale, StoryWords> = {
   en: {
-    fit: (value) => `${value}% fit`,
-    compass: {
-      title: "Your Career Compass",
-      archetypeLabel: "Operational archetype",
-      archetype: "The Catalyst",
-      topClusters: "Top clusters",
-      clusters: ["Technology", "Arts / Media", "Business"],
-      drivesLabel: "Drives you",
-      drives: "Impact",
-      thrivesLabel: "Thrives in",
-      thrives: "Dynamic teams",
+    glance: {
+      title: "Your CORE picture at a glance",
+      owner: "Sara’s report",
+      curiosity: {
+        tag: "Curiosities",
+        heading: "What sparks your curiosity",
+        clusters: [
+          {
+            name: "Research & Discovery",
+            desc: "Finding out why things happen",
+          },
+          {
+            name: "People & Wellbeing",
+            desc: "Understanding people and helping them",
+          },
+        ],
+        connect: "They connect into one direction.",
+      },
+      operations: {
+        tag: "Operating style",
+        heading: "How you like to work",
+        sub: "How set out you like the work",
+        options: ["Steps set out for you", "A mix of both", "Room to find your own way"],
+      },
+      ecosystem: {
+        tag: "Ecosystem",
+        heading: "Your work setting",
+        sub: "Team or individual work",
+        options: ["Side by side with others", "A mix of both", "On your own"],
+      },
+      rewards: {
+        tag: "Rewards",
+        heading: "What motivates you most",
+        items: [
+          "Making a difference for others and your community",
+          "Getting really good at something difficult",
+        ],
+      },
     },
-    report: {
-      signal: "Signal",
-      signalValue: "High curiosity",
-      confidence: "Confidence",
-      style: "Style",
-      styleValue: "Catalyst",
-      title: "Narrative report",
-      heading: "Why fast-moving environments suit you",
-      patternLabel: "Key pattern",
-      pattern: "Adaptability keeps you engaged; repetition drains your energy.",
-      patternBody:
-        "You engage most when work changes quickly and gives you room to explore.",
+    meaning: {
+      title: "Your report",
+      context: "What sparks your curiosity",
+      tag: "Research & Discovery",
+      heading: "You want to know why.",
+      body: "The answer itself is the reward: understanding how something works, what causes it, and what the evidence says.",
+      noticeLabel: "You might notice it when:",
+      notices: [
+        "you keep asking “but why?” after the lesson ends",
+        "you look things up just to understand them",
+        "a puzzle or mystery stays on your mind",
+      ],
+      footer: "No scores. No labels. Just what your answers suggest, in plain words.",
     },
     options: {
-      title: "Career matches",
-      basis: "Based on your profile",
-      topMatch: "Top match",
-      careers: ["Clinical Psychologist", "Counsellor", "UX Researcher"],
-      careerClusters: [
-        "People & Psychology",
-        "People & Psychology",
-        "Technology",
-      ],
-      subjectsLabel: "Subjects",
-      subjects: ["Psychology", "Biology", "Sociology"],
-      pathsLabel: "Paths",
-      paths: ["Psychology BA", "Counselling", "Human Resources"],
-      pathDescs: ["Related degree", "Strong match", "Alternative path"],
+      title: "What this means for you",
+      meetLabel: "Where your curiosities meet",
+      tags: ["Research & Discovery", "People & Wellbeing"],
+      field: "Clinical and health sciences",
+      roles: ["Clinical psychologist", "Dietitian", "Genetic counsellor"],
+      career: "Pharmacist",
+      closest: "Closest to your answers",
+      workLabel: "Matches how you like to work.",
+      work: "This work usually offers: clear steps and expectations",
+      motiveLabel: "Often offers what motivates you:",
+      motive: "making a difference for others and your community",
+      studyLabel: "Study fields:",
+      study: "Medicine, pharmacy, biomedical science",
+      nextLabel: "Next steps:",
+      next: ["Watch", "Try", "Talk", "Ask"],
     },
     kai: {
-      directionLabel: "Your direction",
-      direction: "People & Psychology",
+      reportLabel: "In your report",
+      section: "What sparks your curiosity",
+      discuss: "Discuss this with Kai",
       name: "Kai",
-      role: "Personalised guide",
-      question: "Which path keeps the most options open?",
-      answerHeading: "You don’t need to choose one career yet.",
-      answerBody:
-        "Psychology keeps several paths open — from counselling and research to HR and UX.",
-      basedOn: "Based on",
-      and: "&",
-      evidence: ["People curiosity", "Catalyst"],
-      actions: ["Compare paths", "What to study", "Make a plan"],
+      question: "Which of these curiosities feels most like you, and which feels least?",
+      reply: "Research, for sure. I always want to know why things happen.",
+      footer: "Kai has read your report, so every chat starts from your results.",
     },
   },
   ar: {
-    fit: (value) => `توافق ${value}%`,
-    compass: {
-      title: "بوصلة مسارك المهني",
-      archetypeLabel: "نمط العمل",
-      archetype: "المحفّز",
-      topClusters: "أبرز المجالات",
-      clusters: ["التقنية", "الفنون والإعلام", "الأعمال"],
-      drivesLabel: "يحفّزك",
-      drives: "الأثر",
-      thrivesLabel: "تتألق في",
-      thrives: "فرق ديناميكية",
+    glance: {
+      title: "صورة CORE الخاصة بك في لمحة",
+      owner: "تقرير سارة",
+      curiosity: {
+        tag: "الفضول",
+        heading: "ما الذي يثير فضولك",
+        clusters: [
+          {
+            name: "البحث والاكتشاف",
+            desc: "معرفة لماذا تحدث الأشياء",
+          },
+          {
+            name: "الناس والرفاه",
+            desc: "فهم الناس ومساعدتهم",
+          },
+        ],
+        connect: "يلتقيان في اتجاه واحد.",
+      },
+      operations: {
+        tag: "طريقة العمل",
+        heading: "كيف تحب أن تعمل",
+        sub: "إلى أي حد تحب أن يكون العمل منظّماً",
+        options: ["خطوات واضحة لك", "مزيج من الاثنين", "مساحة لتجد طريقتك"],
+      },
+      ecosystem: {
+        tag: "بيئة العمل",
+        heading: "بيئة عملك",
+        sub: "العمل ضمن فريق أو بشكل فردي",
+        options: ["جنباً إلى جنب مع الآخرين", "مزيج من الاثنين", "بمفردك"],
+      },
+      rewards: {
+        tag: "المكافآت",
+        heading: "ما يحفّزك أكثر",
+        items: [
+          "إحداث فرق للآخرين ولمجتمعك",
+          "أن تتقن شيئاً صعباً",
+        ],
+      },
     },
-    report: {
-      signal: "المؤشر",
-      signalValue: "فضول مرتفع",
-      confidence: "مستوى الثقة",
-      style: "النمط",
-      styleValue: "المحفّز",
-      title: "التقرير السردي",
-      heading: "لماذا تناسبك البيئات سريعة الإيقاع",
-      patternLabel: "النمط الأبرز",
-      pattern: "المرونة تُبقيك متحمساً، والتكرار يستنزف طاقتك.",
-      patternBody:
-        "تكون في أفضل حالاتك حين يتغيّر العمل بسرعة ويمنحك مساحة للاستكشاف.",
+    meaning: {
+      title: "تقريرك",
+      context: "ما الذي يثير فضولك",
+      tag: "البحث والاكتشاف",
+      heading: "تريد أن تعرف لماذا.",
+      body: "الإجابة نفسها هي المكافأة: أن تفهم كيف يعمل الشيء، وما سببه، وماذا تقول الأدلة.",
+      noticeLabel: "قد تلاحظ ذلك عندما:",
+      notices: [
+        "تستمر في السؤال «لكن لماذا؟» بعد انتهاء الدرس",
+        "تبحث عن الأشياء فقط لتفهمها",
+        "يبقى لغز أو أحجية في ذهنك",
+      ],
+      footer: "لا درجات. لا تصنيفات. فقط ما تشير إليه إجاباتك، بكلمات بسيطة.",
     },
     options: {
-      title: "مهن تناسبك",
-      basis: "بناءً على ملفك",
-      topMatch: "الأكثر توافقاً",
-      careers: ["أخصائي نفسي إكلينيكي", "مرشد نفسي", "باحث تجربة المستخدم"],
-      careerClusters: ["الناس وعلم النفس", "الناس وعلم النفس", "التقنية"],
-      subjectsLabel: "المواد",
-      subjects: ["علم النفس", "الأحياء", "علم الاجتماع"],
-      pathsLabel: "المسارات",
-      paths: ["بكالوريوس علم النفس", "الإرشاد النفسي", "الموارد البشرية"],
-      pathDescs: ["تخصص مرتبط", "توافق قوي", "مسار بديل"],
+      title: "ماذا يعني هذا لك",
+      meetLabel: "حيث يلتقي فضولك",
+      tags: ["البحث والاكتشاف", "الناس والرفاه"],
+      field: "العلوم السريرية والصحية",
+      roles: ["أخصائي نفسي إكلينيكي", "أخصائي تغذية", "مستشار وراثي"],
+      career: "صيدلي",
+      closest: "الأقرب لإجاباتك",
+      workLabel: "يناسب طريقتك في العمل.",
+      work: "يوفّر هذا العمل عادةً: خطوات وتوقعات واضحة",
+      motiveLabel: "غالباً ما يوفّر ما يحفّزك:",
+      motive: "إحداث فرق للآخرين ولمجتمعك",
+      studyLabel: "مجالات الدراسة:",
+      study: "الطب، الصيدلة، العلوم الطبية الحيوية",
+      nextLabel: "الخطوات التالية:",
+      next: ["شاهد", "جرّب", "تحدّث", "اسأل"],
     },
     kai: {
-      directionLabel: "اتجاهك",
-      direction: "الناس وعلم النفس",
+      reportLabel: "في تقريرك",
+      section: "ما الذي يثير فضولك",
+      discuss: "ناقش هذا مع كاي",
       name: "كاي",
-      role: "مرشدتك الشخصية",
-      question: "أي مسار يُبقي خياراتي مفتوحة أكثر؟",
-      answerHeading: "لست مضطراً لاختيار مهنة واحدة الآن.",
-      answerBody:
-        "علم النفس يُبقي أمامك عدة مسارات مفتوحة — من الإرشاد والبحث إلى الموارد البشرية وتجربة المستخدم.",
-      basedOn: "بناءً على",
-      and: "و",
-      evidence: ["فضولك تجاه الناس", "المحفّز"],
-      actions: ["قارن المسارات", "ماذا أدرس", "ضع خطة"],
+      question: "أيّ هذه الاهتمامات يشبهك أكثر، وأيّها يشبهك أقل؟",
+      reply: "البحث بالتأكيد. أريد دائماً أن أعرف لماذا تحدث الأشياء.",
+      footer: "قرأت كاي تقريرك، لذا تبدأ كل محادثة من نتائجك.",
     },
   },
 };

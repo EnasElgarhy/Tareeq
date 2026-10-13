@@ -1,0 +1,402 @@
+/* ============================================================
+ * Assessment theme — brings the assessment flow onto the live landing
+ * page's language (GatewayHero): flat #08051A night, Bricolage headlines,
+ * the gold → blush → lilac "night" headline sweep, the gold pill CTA and
+ * warm-rimmed glass.
+ *
+ * Scoped to `.assessment-night`, which AssessmentChrome sets on every
+ * assessment screen except the report (/results, /deep-dive-preview) —
+ * the report keeps its own visual design.
+ * ============================================================ */
+
+.assessment-night {
+  --assess-night: #08051a;
+  --assess-headline-sweep: linear-gradient(
+    96deg,
+    #f4c660 0%,
+    #f2a8b3 48%,
+    #9d7ff0 100%
+  );
+  --assess-rim: linear-gradient(
+    118deg,
+    rgba(170, 135, 255, 0.4),
+    rgba(255, 150, 195, 0.3) 34%,
+    rgba(255, 210, 125, 0.55) 70%,
+    rgba(255, 215, 140, 0.7)
+  );
+  --assess-glass: rgba(22, 18, 42, 0.72);
+  --assess-glass-shadow:
+    0 0 18px rgba(180, 140, 255, 0.08), 0 0 24px rgba(255, 190, 100, 0.05),
+    0 18px 38px -26px rgba(0, 0, 0, 0.85);
+  --assessment-line: rgba(245, 238, 230, 0.1);
+  --assessment-panel: rgba(255, 255, 255, 0.05);
+  --assessment-panel-hover: rgba(255, 255, 255, 0.08);
+}
+
+/* ---------- Surface: deep-space night sky ---------------------------
+   A near-black indigo gradient with soft violet glows (top-left,
+   bottom-right) and faint star dust. Portrait screens get
+   a tall cut so both glows stay in frame; #08051A shows while it loads. */
+.assessment-night.surface-night {
+  background: var(--assess-night) url("/assessment/space-night-mobile.webp")
+    center / cover no-repeat;
+}
+@media (min-aspect-ratio: 1 / 1) {
+  .assessment-night.surface-night {
+    background-image: url("/assessment/space-night.webp");
+  }
+}
+.assessment-night.surface-night::before,
+.assessment-night.surface-night::after,
+.assessment-night .bg-night-stars {
+  display: none;
+}
+
+/* ---------- Headlines: Bricolage bold, as on the landing hero -------- */
+.assessment-night :is(.text-hero, .text-display-2, .text-display-3) {
+  font-family:
+    var(--font-bricolage), var(--font-jakarta), system-ui, sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-variation-settings: normal;
+}
+.assessment-night .text-hero {
+  line-height: 1.05;
+}
+.assessment-night .text-display-2 {
+  line-height: 1.08;
+}
+
+/* Accent phrase: the landing's night sweep instead of pink → orange.
+   Kept upright — the landing never italicises its accent. */
+.assessment-night .text-grad-warm {
+  background-image: var(--assess-headline-sweep);
+  font-family: inherit;
+  font-style: normal;
+}
+
+/* Serif moments (Kai's intro line, contract numerals, question text)
+   drop to the landing's sans voice. */
+.assessment-night .font-display {
+  font-family:
+    var(--font-bricolage), var(--font-jakarta), system-ui, sans-serif;
+  font-style: normal;
+}
+.assessment-night .font-question {
+  font-family:
+    var(--font-bricolage), var(--font-jakarta), system-ui, sans-serif;
+  font-style: normal;
+  letter-spacing: -0.012em;
+}
+
+/* ---------- Eyebrow chip: the landing's ScienceBanner pill ----------- */
+.assessment-night .chip--violet-on-dark {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--gold);
+  box-shadow: none;
+}
+
+/* ---------- Primary CTA: the landing's gold pill --------------------- */
+.assessment-night .btn-v2--primary {
+  background: var(--gold-gradient);
+  color: var(--carbon);
+  box-shadow: 0 12px 40px rgba(244, 198, 96, 0.3);
+}
+.assessment-night .btn-v2--primary:hover:not(:disabled) {
+  box-shadow: 0 16px 44px rgba(244, 198, 96, 0.4);
+}
+
+/* ---------- Glass: warm-rimmed, as on the landing's Kai card --------- */
+.assessment-night :is(.glass-tile, .assessment-progress-panel) {
+  background: var(--assess-glass);
+  border-color: rgba(255, 210, 125, 0.16);
+  box-shadow: var(--assess-glass-shadow);
+}
+
+/* Question card: from a cream slab to the landing's dark Kai bubble. */
+.assessment-night .assessment-question-card {
+  background: var(--assess-glass);
+  color: var(--sand);
+  border: 1px solid rgba(255, 210, 125, 0.28);
+  box-shadow: var(--assess-glass-shadow);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.assessment-night .assessment-question-card .text-carbon {
+  color: var(--sand);
+}
+.assessment-night
+  .assessment-question-card[data-tail-edge="top"]
+  .bubble__tail {
+  border-bottom-color: rgba(255, 210, 125, 0.4);
+}
+
+/* Selected answer: gold, matching the CTA, instead of pink → orange. */
+.assessment-night .assessment-answer[data-active="true"] {
+  border-color: rgba(244, 198, 96, 0.8);
+  background: var(--gold-gradient);
+  color: var(--carbon);
+  box-shadow: 0 10px 28px rgba(244, 198, 96, 0.24);
+}
+.assessment-night .assessment-answer[data-active="true"] * {
+  color: var(--carbon);
+}
+
+/* Progress fill + any other warm-gradient fills. */
+.assessment-night .bg-grad-warm {
+  background-image: var(--assess-headline-sweep);
+}
+
+/* Arabic keeps the brand Arabic face everywhere the sans voice lands. */
+html.locale-ar
+  .assessment-night
+  :is(
+    .text-hero,
+    .text-display-2,
+    .text-display-3,
+    .font-display,
+    .font-question
+  ) {
+  font-family: var(--font-arabic-stack);
+  letter-spacing: 0;
+}
+
+/* ---------- Contract list -------------------------------------------
+ * Mobile: one warm-rimmed glass panel, rows split by hairlines, a small
+ * inline icon beside each title. lg+: the 3x2 grid of separate cards
+ * with a 44px icon tile. */
+.contract-list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255, 210, 125, 0.16);
+  border-radius: var(--radius-lg);
+  background: var(--assess-glass);
+  box-shadow: var(--assess-glass-shadow);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.contract-item {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  column-gap: 12px;
+  align-items: start;
+  padding: 14px 16px;
+}
+.contract-item + .contract-item {
+  border-top: 1px solid rgba(245, 238, 230, 0.07);
+}
+.contract-item__icon {
+  display: grid;
+  place-items: center;
+  margin-top: -1px;
+}
+.contract-item__icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* The one action stays in thumb reach while the list scrolls. */
+.contract-cta {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  margin-inline: -20px;
+  padding: 24px 20px 4px;
+  background: linear-gradient(
+    to top,
+    var(--assess-night) 55%,
+    rgba(8, 5, 26, 0)
+  );
+}
+
+@media (min-width: 1024px) {
+  .contract-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    border: 0;
+    background: none;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .contract-item {
+    grid-template-columns: 44px minmax(0, 1fr);
+    column-gap: 14px;
+    align-items: center;
+    padding: 12px 16px 12px 12px;
+    border: 1px solid rgba(255, 210, 125, 0.16);
+    border-radius: var(--radius-lg);
+    background: var(--assess-glass);
+    box-shadow: var(--assess-glass-shadow);
+  }
+  .contract-item + .contract-item {
+    border-top: 1px solid rgba(255, 210, 125, 0.16);
+  }
+  .contract-item__icon {
+    width: 44px;
+    height: 44px;
+    margin-top: 0;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .contract-item__icon svg {
+    width: 26px;
+    height: 26px;
+  }
+  .contract-cta {
+    position: static;
+    margin: 0;
+    padding: 0;
+    background: none;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+/* ---------- Consent checkbox (start screen) -------------------------- */
+.consent-check__box {
+  border: 1.5px solid rgba(245, 238, 230, 0.32);
+  background: rgba(255, 255, 255, 0.04);
+  color: transparent;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
+}
+.consent-check:hover .consent-check__box {
+  border-color: rgba(244, 198, 96, 0.6);
+}
+.consent-check input:checked + .consent-check__box {
+  border-color: transparent;
+  background: var(--gold-gradient);
+  color: var(--carbon);
+}
+.consent-check:active .consent-check__box {
+  transform: scale(0.92);
+}
+.consent-check input:focus-visible + .consent-check__box {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+.consent-check__box[data-invalid] {
+  border-color: var(--error);
+}
+
+/* Meet Kai (/intro) — one Kai instance, sized per breakpoint. */
+.intro-kai {
+  --intro-kai-size: 260px;
+  width: var(--intro-kai-size);
+  height: var(--intro-kai-size);
+}
+@media (min-width: 1024px) {
+  .intro-kai {
+    --intro-kai-size: 360px;
+    width: 100%;
+  }
+}
+
+/* ---------- Popups (Did you know?, rendered in a portal) -------------
+ * The overlay root carries .assessment-night so the headline, chip,
+ * primary button and icon buttons match; the sheet itself becomes the
+ * landing's warm-rimmed dark glass. */
+.assessment-night .assessment-modal-panel {
+  border: 1px solid rgba(255, 210, 125, 0.18);
+  background: linear-gradient(
+    180deg,
+    rgba(22, 16, 46, 0.97),
+    rgba(12, 9, 30, 0.98) 60%,
+    rgba(8, 5, 26, 0.99)
+  );
+  box-shadow:
+    0 28px 80px rgba(0, 0, 0, 0.55),
+    0 0 24px rgba(180, 140, 255, 0.08),
+    inset 0 1px 0 rgba(255, 230, 190, 0.1);
+}
+.assessment-night .assessment-interstitial-illustration {
+  border-color: rgba(255, 210, 125, 0.14);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+/* ---------- Text fields: dark glass, gold on focus ------------------ */
+.assessment-night .assess-field {
+  border: 1px solid rgba(245, 238, 230, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--sand);
+  outline: none;
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+.assessment-night .assess-field::placeholder {
+  color: rgba(245, 238, 230, 0.35);
+}
+.assessment-night .assess-field:hover {
+  border-color: rgba(245, 238, 230, 0.24);
+}
+.assessment-night .assess-field:focus-visible {
+  border-color: rgba(244, 198, 96, 0.7);
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: 0 0 0 4px rgba(244, 198, 96, 0.14);
+}
+.assessment-night .assess-field:-webkit-autofill {
+  -webkit-text-fill-color: var(--sand);
+  -webkit-box-shadow: 0 0 0 40px #151030 inset;
+  caret-color: var(--sand);
+}
+
+/* Disabled consent boxes (under-18 research opt-in). */
+.consent-check input:disabled + .consent-check__box {
+  opacity: 0.4;
+}
+
+/* The registration / code form card: warm-rimmed glass. */
+.assessment-night .glass-card {
+  background: var(--assess-glass);
+  border-color: rgba(255, 210, 125, 0.16);
+  box-shadow: var(--assess-glass-shadow);
+}
+
+/* ---------- Per-screen side art (ScreenIllustration) ----------------
+ * Fills the inline-start side on desktop and dissolves into the night
+ * surface toward the content (inline-end). */
+.screen-illustration {
+  --screen-illustration-fade: linear-gradient(
+    to right,
+    #000 0%,
+    #000 55%,
+    transparent 100%
+  );
+  -webkit-mask-image: var(--screen-illustration-fade);
+  mask-image: var(--screen-illustration-fade);
+}
+html.locale-ar .screen-illustration {
+  --screen-illustration-fade: linear-gradient(
+    to left,
+    #000 0%,
+    #000 55%,
+    transparent 100%
+  );
+}
+/* Portrait desktops/tablets (e.g. 1024×1366): filling the full height would
+ * zoom in until the focus point is cropped, so anchor the art to the bottom
+ * at a height that keeps the scene's subject whole, and fade its top edge
+ * into the night surface as well as its inline-end edge. */
+@media (orientation: portrait) {
+  .screen-illustration {
+    top: auto;
+    height: min(100%, 72vw);
+    -webkit-mask-image:
+      var(--screen-illustration-fade),
+      linear-gradient(to bottom, transparent 0%, #000 35%);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      var(--screen-illustration-fade),
+      linear-gradient(to bottom, transparent 0%, #000 35%);
+    mask-composite: intersect;
+  }
+}

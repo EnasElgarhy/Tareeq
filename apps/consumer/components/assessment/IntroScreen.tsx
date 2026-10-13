@@ -159,20 +159,21 @@ export function IntroScreen() {
       className="anim-screen-enter flex flex-1 flex-col items-center justify-center gap-5 pb-4 text-center lg:grid lg:grid-cols-2 lg:content-center lg:items-center lg:gap-10 lg:pb-0 lg:text-start"
     >
       {/* Character first — Kai drops in, green screen keyed out so she
-          floats transparently over the app (no frame, halo, or card).
-          Desktop: her own column, room to be the bigger presence a
-          landing-style split layout calls for. */}
-      <div className="relative flex h-[240px] w-[240px] items-center justify-center lg:h-[320px] lg:w-full lg:justify-center">
+          floats over the night surface. Sized by --intro-kai-size so one
+          instance scales per breakpoint.
+          Desktop: her own column, the bigger presence a landing-style
+          split layout calls for. */}
+      <div className="intro-kai relative flex items-center justify-center lg:w-full">
         <div
           aria-label={t("kai.guide_aria")}
           role="img"
-          className="anim-kai-drop"
+          className="anim-kai-drop relative z-10"
         >
           <div className="anim-kai-drop-bob">
             {/* New Kai intro clip — plays in sync with the narration
                 (same line), freezes on her closed-mouth smile when done. */}
             <KaiChromaVideo
-              size={232}
+              size="var(--intro-kai-size)"
               src="/kai/kai-intro-green-v2.mp4"
               audioRef={audioRef}
               onReadyChange={setKaiVideoReady}
@@ -195,16 +196,7 @@ export function IntroScreen() {
           style={{ animationDelay: "700ms" }}
         >
           {t("intro.meet_prefix")}
-          <span
-            className="text-grad-warm"
-            style={{
-              fontStyle: "italic",
-              fontVariationSettings: '"SOFT" 100, "opsz" 144',
-            }}
-          >
-            {t("intro.kai_name")}
-          </span>
-          .
+          <span className="text-grad-warm">{t("intro.kai_name")}</span>.
         </h1>
 
         {/* Body — synced to Kai's actual voice start, with a muted fallback. */}
@@ -218,13 +210,9 @@ export function IntroScreen() {
               onComplete={() => setTypingDone(true)}
               className="text-sand/85"
               style={{
-                fontFamily: "var(--font-display)",
-                fontStyle: "italic",
                 fontWeight: 500,
                 fontSize: "clamp(17px, 0.95rem + 1vw, 21px)",
-                lineHeight: 1.4,
-                letterSpacing: "-0.005em",
-                fontVariationSettings: '"SOFT" 60, "opsz" 96',
+                lineHeight: 1.45,
                 margin: 0,
               }}
             />
@@ -233,11 +221,9 @@ export function IntroScreen() {
               aria-hidden="true"
               className="m-0 text-sand/50"
               style={{
-                fontFamily: "var(--font-display)",
-                fontStyle: "italic",
                 fontWeight: 500,
                 fontSize: "clamp(17px, 0.95rem + 1vw, 21px)",
-                lineHeight: 1.4,
+                lineHeight: 1.45,
               }}
             >
               {t("intro.getting_ready")}
@@ -255,7 +241,13 @@ export function IntroScreen() {
             className="glass-tile inline-flex size-9 items-center justify-center rounded-full text-sand/80 transition hover:text-sand"
             aria-label={soundOn ? t("audio.mute") : t("audio.unmute")}
           >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden>
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden
+            >
               <path
                 d="M4 9.5 H7.5 L12 6 V18 L7.5 14.5 H4 Z"
                 fill="currentColor"
@@ -287,7 +279,13 @@ export function IntroScreen() {
             className="glass-tile inline-flex size-9 items-center justify-center rounded-full text-sand/75 transition hover:text-sand active:scale-95 disabled:opacity-40"
             aria-label={isPlaying ? t("audio.speaking") : t("audio.replay")}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden
+            >
               <path
                 d="M3 12 A 9 9 0 0 1 21 12"
                 stroke="currentColor"
@@ -318,7 +316,13 @@ export function IntroScreen() {
               data-size="lg"
             >
               {t("nav.continue")}
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden
+              >
                 <path
                   d="M5 12h14M13 6l6 6-6 6"
                   stroke="currentColor"

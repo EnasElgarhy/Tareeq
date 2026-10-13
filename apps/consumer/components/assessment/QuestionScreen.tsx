@@ -14,6 +14,7 @@ import { TareeqArrowLeft } from "@/components/brand/icons";
 import { type KaiMood } from "@/components/brand/Kai";
 import { KaiChromaVideo } from "@/components/brand/KaiChromaVideo";
 import { DidYouKnow } from "@/components/onboarding/DidYouKnow";
+import { RushConfirmSheet } from "@/components/assessment/RushConfirmSheet";
 import { useAssessmentAudio } from "@/components/assessment/AssessmentAudioProvider";
 import { prefersReducedMotion, uiSounds } from "@/lib/audio/ui-sounds";
 import {
@@ -27,8 +28,14 @@ import {
   INTERSTITIALS,
   findInterstitialFor,
   markInterstitialSeen,
+  PACE_NUDGE,
   type Interstitial,
 } from "@/lib/assessment/interstitials";
+import {
+  getMinReadMs,
+  isRushedTap,
+  recordAnswerPace,
+} from "@/lib/assessment/reading-pace";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { getLocalizedText, getQuestionPath } from "@/lib/assessment/questions";
 import { computeScore, type Question } from "@/lib/scoring";
@@ -115,6 +122,14 @@ export function QuestionScreen({
    * for the same question instance (e.g. a real departure racing the
    * pagehide listener). */
   const hasLeftQuestionRef = useRef(false);
+  /** Reading-pace guard (lib/assessment/reading-pace.ts): whether this
+   * question already had an answer when it opened (revisits skip the
+   * guard), and whether its pace has been counted toward the rush streak. */
+  const wasAnsweredOnOpenRef = useRef(false);
+  const paceRecordedRef = useRef(false);
+  const rushedFirstTapRef = useRef(false);
+  /** Set once they've been sent back to read; the next tap then counts. */
+  const rereadRef = useRef(false);
 
   const [selected, setSelected] = useState("");
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
@@ -123,6 +138,12 @@ export function QuestionScreen({
   const [pendingInterstitial, setPendingInterstitial] =
     useState<Interstitial | null>(null);
   const [kaiVideoReady, setKaiVideoReady] = useState(false);
+  /** An option tapped too fast to have been read — selected, awaiting
+   * confirmation in RushConfirmSheet. */
+  const [pendingConfirm, setPendingConfirm] = useState<string | null>(null);
+  /** How long the rushed tap took, shown on the heads-up's speed track. */
+  const [rushElapsedMs, setRushElapsedMs] = useState(0);
+  const [showPaceNudge, setShowPaceNudge] = useState(false);
 
   const [speed, setSpeed] = useState(1);
 
@@ -247,6 +268,12 @@ export function QuestionScreen({
     setExiting(null);
     setHoveredIdx(null);
     setPendingInterstitial(null);
+    setPendingConfirm(null);
+    setShowPaceNudge(false);
+    wasAnsweredOnOpenRef.current = isRevisit;
+    paceRecordedRef.current = false;
+    rushedFirstTapRef.current = false;
+    rereadRef.current = false;
     if (progress && Object.keys(progress.answers).length > 0) {
       uiSounds.transition();
     }
@@ -312,7 +339,10 @@ export function QuestionScreen({
       recordAnswer(letter);
       trackEvent(
         "question_auto_advanced",
-        questionContext({ selectedAnswer: letter }),
+        questionContext({
+          selectedAnswer: letter,
+          rushedFirstTap: rushedFirstTapRef.current,
+        }),
       );
 
       const progress = saveLocalAnswer(
@@ -370,6 +400,58 @@ export function QuestionScreen({
       stopNarration,
     ],
   );
+
+  const minReadMs = useMemo(
+    () => getMinReadMs(question, locale),
+    [question, locale],
+  );
+
+  /** Option tap / number key. A tap that comes before the question could
+   * have been read only selects the option and opens RushConfirmSheet,
+   * away from the answers, so a reflexive double-tap can't confirm it.
+   * Any tap once the reading time has passed, or after "Let me read
+   * again", submits. Revisited questions skip the guard. */
+  function handleOptionTap(letter: string) {
+    if (
+      confirming ||
+      exiting ||
+      pendingInterstitial ||
+      showPaceNudge ||
+      pendingConfirm
+    ) {
+      return;
+    }
+    const guarded = !wasAnsweredOnOpenRef.current && !rereadRef.current;
+    const elapsedMs = Date.now() - questionViewStartRef.current;
+    if (guarded && isRushedTap(elapsedMs, minReadMs)) {
+      setSelected(letter);
+      setPendingConfirm(letter);
+      setRushElapsedMs(elapsedMs);
+      uiSounds.select();
+      if (!paceRecordedRef.current) {
+        paceRecordedRef.current = true;
+        rushedFirstTapRef.current = true;
+        if (recordAnswerPace(true).shouldNudge) {
+          stopNarration(activeOwnerId);
+          setShowPaceNudge(true);
+        }
+      }
+      return;
+    }
+    if (guarded && !paceRecordedRef.current) {
+      paceRecordedRef.current = true;
+      recordAnswerPace(false);
+    }
+    commitAndAdvance(letter);
+  }
+  function rereadRushedAnswer() {
+    rereadRef.current = true;
+    setPendingConfirm(null);
+    setSelected("");
+  }
+
+  const handleOptionTapRef = useRef(handleOptionTap);
+  handleOptionTapRef.current = handleOptionTap;
 
   function dismissInterstitial() {
     stopNarration(activeOwnerId);
@@ -449,7 +531,7 @@ export function QuestionScreen({
       if (!option) return;
       event.preventDefault();
       setHoveredIdx(asNumber - 1);
-      commitAndAdvance(option.letter);
+      handleOptionTapRef.current(option.letter);
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
@@ -615,6 +697,21 @@ export function QuestionScreen({
         />
       ) : null}
 
+      {showPaceNudge ? (
+        <DidYouKnow
+          interstitial={PACE_NUDGE}
+          onDismiss={() => setShowPaceNudge(false)}
+        />
+      ) : null}
+
+      {pendingConfirm && !showPaceNudge ? (
+        <RushConfirmSheet
+          elapsedMs={rushElapsedMs}
+          minReadMs={minReadMs}
+          onReread={rereadRushedAnswer}
+        />
+      ) : null}
+
       <section
         key={question.externalId}
         aria-labelledby="question-text"
@@ -760,7 +857,7 @@ export function QuestionScreen({
                     <button
                       type="button"
                       key={option.letter}
-                      onClick={() => commitAndAdvance(option.letter)}
+                      onClick={() => handleOptionTap(option.letter)}
                       onMouseEnter={() => setHoveredIdx(optionIdx)}
                       onMouseLeave={() =>
                         setHoveredIdx((v) => (v === optionIdx ? null : v))

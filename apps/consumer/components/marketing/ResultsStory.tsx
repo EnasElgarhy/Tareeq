@@ -4,14 +4,14 @@ import { useInView, useReducedMotion } from "framer-motion";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import type { StringKey } from "@/lib/i18n/strings";
-import styles from "./ResultsStory.module.css";
+import { ShootingStars } from "@/components/brand/ShootingStars";
 import { Container, GradientText } from "./Shared";
 import { ClosingJourney } from "./ClosingJourney";
 import {
-  CareerCompassVisual,
-  KaiConversationVisual,
-  NarrativeReportVisual,
-  OptionsVisual,
+  CoreGlanceVisual,
+  CareerOptionsVisual,
+  KaiCoachVisual,
+  MeaningVisual,
 } from "./StoryVisuals";
 
 interface Step {
@@ -28,33 +28,32 @@ const STEPS: readonly Step[] = [
     label: "marketing.card1.eyebrow",
     title: "marketing.card1.headline",
     body: "marketing.card1.body",
-    visual: <CareerCompassVisual />,
+    visual: <CoreGlanceVisual />,
     glow: "rgba(244,198,96,0.14)",
   },
   {
     label: "marketing.card2.eyebrow",
     title: "marketing.card2.headline",
     body: "marketing.card2.body",
-    visual: <NarrativeReportVisual />,
+    visual: <MeaningVisual />,
     glow: "rgba(157,127,240,0.16)",
   },
   {
     label: "marketing.card3.eyebrow",
     title: "marketing.card3.headline",
     body: "marketing.card3.body",
-    visual: <OptionsVisual />,
+    visual: <CareerOptionsVisual />,
     glow: "rgba(242,168,179,0.14)",
   },
   {
     label: "marketing.card4.eyebrow",
     title: "marketing.card4.headline",
     body: "marketing.card4.body",
-    visual: <KaiConversationVisual />,
+    visual: <KaiCoachVisual />,
     glow: "rgba(244,198,96,0.12)",
   },
 ];
 
-const STAR_COUNT = 24;
 const stepId = (i: number) => `results-step-${i + 1}`;
 
 /**
@@ -218,20 +217,3 @@ const StepCard = ({ step, index, onActive }: StepCardProps) => {
     </div>
   );
 };
-
-const ShootingStars = () => (
-  <div aria-hidden="true" className={styles.sky}>
-    {Array.from({ length: STAR_COUNT }, (_, index) => (
-      <span
-        key={index}
-        className={styles.shootingStar}
-        style={{
-          left: `${(index * 37 + 7) % 100}%`,
-          top: `${(index * 17 + 2) % 100}%`,
-          animationDelay: `${-((index * 2.3) % 11)}s`,
-          animationDuration: `${7 + (index % 5)}s`,
-        }}
-      />
-    ))}
-  </div>
-);

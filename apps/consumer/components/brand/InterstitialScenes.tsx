@@ -28,9 +28,9 @@ const VIOLET_SOFT = "#9D7FF0";
 function WarmGradient({ id }: { id: string }) {
   return (
     <linearGradient id={id} x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stopColor="#FF3D83" />
-      <stop offset="55%" stopColor="#FF6B3D" />
-      <stop offset="100%" stopColor="#FFA53D" />
+      <stop offset="0%" stopColor="#F4C660" />
+      <stop offset="48%" stopColor="#F2A8B3" />
+      <stop offset="100%" stopColor="#9D7FF0" />
     </linearGradient>
   );
 }
@@ -38,9 +38,9 @@ function WarmGradient({ id }: { id: string }) {
 function WarmRadial({ id }: { id: string }) {
   return (
     <radialGradient id={id} cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stopColor="#FFA53D" stopOpacity="0.95" />
-      <stop offset="55%" stopColor="#FF6B3D" stopOpacity="0.55" />
-      <stop offset="100%" stopColor="#FF3D83" stopOpacity="0" />
+      <stop offset="0%" stopColor="#F4C660" stopOpacity="0.95" />
+      <stop offset="55%" stopColor="#F2A8B3" stopOpacity="0.5" />
+      <stop offset="100%" stopColor="#9D7FF0" stopOpacity="0" />
     </radialGradient>
   );
 }
@@ -180,11 +180,31 @@ export function PatternEmergingScene({
         opacity="0.55"
         fill="none"
       >
-        <path d="M 55 80 L 120 120" className="scene-line" style={{ animationDelay: "0.05s" }} />
-        <path d="M 120 120 L 195 60" className="scene-line" style={{ animationDelay: "0.2s" }} />
-        <path d="M 120 120 L 80 195" className="scene-line" style={{ animationDelay: "0.35s" }} />
-        <path d="M 120 120 L 190 180" className="scene-line" style={{ animationDelay: "0.5s" }} />
-        <path d="M 120 120 L 40 150" className="scene-line" style={{ animationDelay: "0.65s" }} />
+        <path
+          d="M 55 80 L 120 120"
+          className="scene-line"
+          style={{ animationDelay: "0.05s" }}
+        />
+        <path
+          d="M 120 120 L 195 60"
+          className="scene-line"
+          style={{ animationDelay: "0.2s" }}
+        />
+        <path
+          d="M 120 120 L 80 195"
+          className="scene-line"
+          style={{ animationDelay: "0.35s" }}
+        />
+        <path
+          d="M 120 120 L 190 180"
+          className="scene-line"
+          style={{ animationDelay: "0.5s" }}
+        />
+        <path
+          d="M 120 120 L 40 150"
+          className="scene-line"
+          style={{ animationDelay: "0.65s" }}
+        />
       </g>
 
       {/* Outer cream stars — staggered fade-in */}
@@ -202,7 +222,13 @@ export function PatternEmergingScene({
       ))}
 
       {/* Warm anchor — emerges last and continues pulsing */}
-      <circle cx="120" cy="120" r="9" fill="url(#pat-grad)" className="scene-anchor" />
+      <circle
+        cx="120"
+        cy="120"
+        r="9"
+        fill="url(#pat-grad)"
+        className="scene-anchor"
+      />
       <circle
         cx="120"
         cy="120"
@@ -377,7 +403,13 @@ export function DualWaysScene({
 
       {/* Sun — rises from below the horizon */}
       <g className="scene-rise">
-        <circle cx="120" cy="190" r="70" fill="url(#dual-halo)" opacity="0.55" />
+        <circle
+          cx="120"
+          cy="190"
+          r="70"
+          fill="url(#dual-halo)"
+          opacity="0.55"
+        />
         <path
           d="M 80 190 A 40 40 0 0 1 160 190 Z"
           fill="url(#dual-grad)"

@@ -1,30 +1,57 @@
 "use client";
 
-import {
-  ArrowsLeftRight,
-  BookOpen,
-  FlagBanner,
-  Sparkle,
-} from "@phosphor-icons/react";
+import { ArrowRight, Sparkle } from "@phosphor-icons/react";
 import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { KAI_SRC_SM } from "./KaiGuide";
 import { STORY_COPY } from "./storyVisualsCopy";
-import { WayCatalyst, WayHeart, WayLeaf } from "./WayIcons";
 
 /* ------------------------------------------------------------------ */
 /* Shared primitives                                                    */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Each mock-up is the product itself: a phone screen on the night sky, with
+ * one detail lifted out of the frame. The four CORE letters glow in their
+ * own light; colours are the site's existing night-mode accents.
+ */
+const CORE = {
+  C: "#F4C660",
+  O: "#6FE0C0",
+  R: "#F2A8B3",
+  E: "#B9A3FA",
+} as const;
+type CoreLetter = keyof typeof CORE;
+
+const CREAM = "#F5EEE6";
+const INK = "#2A2118";
+const INK_2 = "#675D4E";
+const EASE_OUT_EXPO = [0.16, 1, 0.3, 1] as const;
+const FLOAT_SHADOW = "shadow-[0_24px_50px_-16px_rgba(0,0,0,0.75)]";
+
 const KAI_RING = "ring-1 ring-[#F4C660]/60";
+const KAI_IMG_CLASSES =
+  "absolute w-[170%] max-w-none left-1/2 -translate-x-1/2 top-[-6%]";
 
 function useStoryCopy() {
   return STORY_COPY[useLocale().locale];
 }
-const KAI_IMG_CLASSES =
-  "absolute w-[170%] max-w-none left-1/2 -translate-x-1/2 top-[-6%]";
+
+/** Viewport-triggered reveal, collapsed to nothing under reduced motion. */
+function useReveal() {
+  const reduce = useReducedMotion();
+  return (delay = 0, y = 12) =>
+    reduce
+      ? {}
+      : {
+          initial: { y, opacity: 0 },
+          whileInView: { y: 0, opacity: 1 },
+          viewport: { once: true, margin: "-60px" },
+          transition: { duration: 0.6, delay, ease: EASE_OUT_EXPO },
+        };
+}
 
 export function KaiFace({ size = 32 }: { size?: number }) {
   return (
@@ -44,611 +71,538 @@ export function KaiFace({ size = 32 }: { size?: number }) {
   );
 }
 
-function Bar({
-  label,
-  value,
-  color,
-  delay = 0,
-}: {
-  label: string;
-  value: number;
-  color: string;
-  delay?: number;
-}) {
-  const reduce = useReducedMotion();
-  const copy = useStoryCopy();
+/** A glowing CORE letter, the recurring mark across the four screens. */
+function Orb({ letter, size = 34 }: { letter: CoreLetter; size?: number }) {
+  const color = CORE[letter];
   return (
-    <div className="mb-3">
-      <div className="flex justify-between text-[11px] text-[var(--day-ink-2)] mb-1">
-        <span className="font-medium">{label}</span>
-        <span>{copy.fit(value)}</span>
-      </div>
-      <div className="h-2 rounded-full bg-[var(--day-inset)] overflow-hidden">
+    <span
+      aria-hidden="true"
+      className="relative flex shrink-0 items-center justify-center rounded-full font-heading font-semibold"
+      style={{
+        width: size,
+        height: size,
+        fontSize: size * 0.48,
+        color: "#14101F",
+        background: `radial-gradient(circle at 35% 30%, #FFFFFF 0%, ${color} 45%, ${color}AA 100%)`,
+        boxShadow: `0 0 ${size * 0.6}px ${color}66`,
+      }}
+    >
+      {letter}
+    </span>
+  );
+}
+
+/**
+ * Phone frame. `children` is the screen; `floating` is a detail lifted out
+ * of the frame and layered over its edge.
+ */
+function Phone({
+  children,
+  floating,
+  floatingClass = "",
+}: {
+  children: ReactNode;
+  floating?: ReactNode;
+  floatingClass?: string;
+}) {
+  const reveal = useReveal();
+  return (
+    <div className="relative mx-auto w-full max-w-[540px] px-2 py-6">
+      <motion.div
+        {...reveal(0, 18)}
+        className="relative mx-auto w-[272px] rounded-[44px] bg-[#1B1433] p-[7px] shadow-[0_40px_90px_-30px_rgba(0,0,0,0.9),inset_0_0_0_1px_rgba(245,238,230,0.12)]"
+      >
+        <div
+          className="relative h-[540px] overflow-hidden rounded-[37px]"
+          style={{
+            background:
+              "radial-gradient(120% 60% at 50% 0%, #2B1A5E 0%, #140C30 55%, #0B0720 100%)",
+          }}
+        >
+          {/* Status bar + island */}
+          <div className="relative flex items-center justify-between px-6 pt-3 text-[10px] font-semibold text-[#F5EEE6]/90">
+            <span>9:41</span>
+            <span
+              aria-hidden="true"
+              className="absolute left-1/2 top-2 h-[22px] w-[78px] -translate-x-1/2 rounded-full bg-black"
+            />
+            <span
+              aria-hidden="true"
+              className="h-[7px] w-[13px] rounded-[2px] border border-[#F5EEE6]/80"
+            />
+          </div>
+          <div className="px-4 pt-5">{children}</div>
+        </div>
+      </motion.div>
+
+      {floating ? (
         <motion.div
-          initial={reduce ? false : { width: 0 }}
-          whileInView={{ width: `${value}%` }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 1.1, delay, ease: "easeOut" }}
-          className="h-full rounded-full"
-          style={{ background: color }}
-        />
-      </div>
+          {...reveal(0.35, 16)}
+          className={`absolute z-10 ${floatingClass}`}
+        >
+          {floating}
+        </motion.div>
+      ) : null}
     </div>
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* 1 — Career Compass                                                   */
-/* ------------------------------------------------------------------ */
-
-export function CareerCompassVisual() {
-  const { compass } = useStoryCopy();
-  const pills: ReadonlyArray<[string, string, ReactNode, string]> = [
-    [
-      compass.drivesLabel,
-      compass.drives,
-      <WayHeart key="h" size={13} />,
-      "#C96F63",
-    ],
-    [
-      compass.thrivesLabel,
-      compass.thrives,
-      <WayLeaf key="l" size={13} />,
-      "#3D8A73",
-    ],
-  ];
+/** A three-stop scale inside a tile; the student's position glows. */
+function Dots({ active, color }: { active: number; color: string }) {
   return (
-    <div className="w-full max-w-[420px] rounded-[26px] border border-[var(--day-line)] bg-[#FDFAF3] p-6 shadow-[0_20px_56px_rgba(42,33,24,0.1)]">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-5">
-        <p className="text-[10px] uppercase tracking-[0.18em] text-[var(--day-ink-3)] font-semibold">
-          {compass.title}
-        </p>
-        <KaiFace size={28} />
-      </div>
+    <span className="mt-2 flex items-center gap-1" aria-hidden="true">
+      {[0, 1, 2].map((i) => (
+        <span
+          key={i}
+          className="h-[5px] flex-1 rounded-full"
+          style={{
+            background: i === active ? color : "rgba(245,238,230,0.14)",
+          }}
+        />
+      ))}
+    </span>
+  );
+}
 
-      {/* Archetype badge */}
-      <div className="rounded-2xl bg-gradient-to-br from-[#221248] to-[#08051A] px-4 py-4 mb-5 flex items-center gap-3">
-        <span className="w-10 h-10 rounded-xl bg-gold-gradient flex items-center justify-center text-[#14101F]">
-          <WayCatalyst size={22} />
-        </span>
-        <div>
-          <p className="text-[9px] uppercase tracking-[0.15em] text-[#C8B6F0]">
-            {compass.archetypeLabel}
+/* ------------------------------------------------------------------ */
+/* 1 — Your CORE at a glance                                            */
+/* ------------------------------------------------------------------ */
+
+export function CoreGlanceVisual() {
+  const { glance } = useStoryCopy();
+  const { curiosity, operations, ecosystem, rewards } = glance;
+
+  const tiles: ReadonlyArray<{
+    letter: CoreLetter;
+    name: string;
+    value: string;
+    scale?: number;
+  }> = [
+    { letter: "C", name: curiosity.tag, value: curiosity.clusters[0].name },
+    {
+      letter: "O",
+      name: operations.tag,
+      value: operations.options[0],
+      scale: 0,
+    },
+    { letter: "R", name: rewards.tag, value: rewards.items[0] },
+    {
+      letter: "E",
+      name: ecosystem.tag,
+      value: ecosystem.options[0],
+      scale: 0,
+    },
+  ];
+
+  return (
+    <Phone
+      floatingClass="end-0 bottom-0"
+      floating={
+        <div
+          className={`w-[200px] rounded-[20px] bg-[#FFFDF8] p-3.5 ${FLOAT_SHADOW}`}
+        >
+          <p className="text-[10px] font-semibold" style={{ color: INK_2 }}>
+            {curiosity.heading}
           </p>
-          <p className="font-heading font-semibold text-[#F5EEE6] text-lg">
-            {compass.archetype}
+          <div className="relative mt-2 grid gap-2.5 ps-4">
+            <span
+              aria-hidden="true"
+              className="absolute start-[4px] top-[5px] bottom-[14px] w-px bg-[#B07A18]"
+            />
+            {curiosity.clusters.map((cluster) => (
+              <div key={cluster.name} className="relative">
+                <span
+                  aria-hidden="true"
+                  className="absolute -start-4 top-[2px] size-[9px] rounded-full"
+                  style={{
+                    background: CORE.C,
+                    boxShadow: "0 0 0 3px rgba(244,198,96,0.3)",
+                  }}
+                />
+                <p
+                  className="text-[11px] font-semibold leading-tight"
+                  style={{ color: INK }}
+                >
+                  {cluster.name}
+                </p>
+                <p className="text-[9px] leading-snug" style={{ color: INK_2 }}>
+                  {cluster.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-2 text-[9.5px] font-semibold text-[#B07A18]">
+            {curiosity.connect}
           </p>
         </div>
+      }
+    >
+      <p className="text-[10px] text-[#C8B6F0]/80">{glance.owner}</p>
+      <p className="mt-0.5 font-heading text-[19px] font-semibold leading-tight text-[#F5EEE6]">
+        {glance.title}
+      </p>
+
+      <div className="mt-4 grid grid-cols-2 gap-2">
+        {tiles.map((tile) => (
+          <div
+            key={tile.letter}
+            className="rounded-[18px] border border-[#F5EEE6]/10 bg-[#F5EEE6]/[0.05] p-2.5"
+          >
+            <Orb letter={tile.letter} size={28} />
+            <p
+              className="mt-2 text-[9px] font-semibold"
+              style={{ color: CORE[tile.letter] }}
+            >
+              {tile.name}
+            </p>
+            <p
+              className="mt-0.5 line-clamp-3 text-[10.5px] font-medium leading-snug"
+              style={{ color: CREAM }}
+            >
+              {tile.value}
+            </p>
+            {tile.scale !== undefined ? (
+              <Dots active={tile.scale} color={CORE[tile.letter]} />
+            ) : null}
+          </div>
+        ))}
       </div>
 
-      {/* Cluster bars */}
-      <p className="text-[11px] font-semibold text-[var(--day-ink-2)] mb-2.5">
-        {compass.topClusters}
-      </p>
-      <Bar label={compass.clusters[0]} value={92} color="#B07A18" />
-      <Bar
-        label={compass.clusters[1]}
-        value={84}
-        color="#6D5BA8"
-        delay={0.15}
-      />
-      <Bar label={compass.clusters[2]} value={71} color="#3D8A73" delay={0.3} />
+      <div className="mt-3 rounded-[16px] border border-[#F4C660]/25 bg-[#F4C660]/[0.08] px-3 py-2.5">
+        <p className="text-[9px] font-semibold text-[#F4C660]">
+          {rewards.heading}
+        </p>
+        <p className="mt-0.5 text-[10px] leading-snug text-[#F5EEE6]/80">
+          {rewards.items[1]}
+        </p>
+      </div>
+    </Phone>
+  );
+}
 
-      {/* Detail pills */}
-      <div className="mt-5 flex flex-wrap gap-2">
-        {pills.map(([k, v, icon, color]) => (
-          <span
-            key={k}
-            className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px]"
-            style={{
-              background: `${color}14`,
-              color,
-            }}
+/* ------------------------------------------------------------------ */
+/* 2 — What it means for you                                            */
+/* ------------------------------------------------------------------ */
+
+const SCENE_STARS = [
+  [18, 22],
+  [72, 14],
+  [84, 40],
+  [30, 48],
+  [56, 30],
+  [10, 60],
+] as const;
+
+/** A small night scene: one glowing question rising over the horizon. */
+function WhyScene() {
+  return (
+    <div
+      aria-hidden="true"
+      className="relative -mx-4 -mt-5 h-[150px] overflow-hidden"
+      style={{
+        background:
+          "linear-gradient(180deg, rgba(43,26,94,0) 0%, rgba(110,72,228,0.35) 70%, rgba(244,198,96,0.25) 100%)",
+      }}
+    >
+      {SCENE_STARS.map(([x, y]) => (
+        <span
+          key={`${x}-${y}`}
+          className="absolute size-[2px] rounded-full bg-[#F5EEE6]/80"
+          style={{ left: `${x}%`, top: `${y}%` }}
+        />
+      ))}
+      <span
+        className="absolute left-1/2 top-[50px] flex size-[76px] -translate-x-1/2 items-center justify-center rounded-full font-heading text-[40px] font-semibold text-[#14101F]"
+        style={{
+          background:
+            "radial-gradient(circle at 38% 30%, #FFF6DA, #F4C660 55%, #D9A23D)",
+          boxShadow: "0 0 60px rgba(244,198,96,0.55)",
+        }}
+      >
+        ?
+      </span>
+      <span className="absolute inset-x-[-10%] bottom-[-46px] h-[80px] rounded-[50%] bg-[#140C30]" />
+    </div>
+  );
+}
+
+export function MeaningVisual() {
+  const { meaning } = useStoryCopy();
+
+  return (
+    <Phone
+      floatingClass="start-0 top-[150px]"
+      floating={
+        <p
+          className={`max-w-[180px] rounded-[16px] bg-[#FFFDF8] px-3.5 py-2.5 text-[10.5px] font-medium leading-snug ${FLOAT_SHADOW}`}
+          style={{ color: INK, transform: "rotate(-2deg)" }}
+        >
+          {meaning.footer}
+        </p>
+      }
+    >
+      <WhyScene />
+      <p className="mt-2 text-[10px] text-[#C8B6F0]/80">{meaning.context}</p>
+      <span className="mt-1.5 inline-flex rounded-full bg-[#F4C660]/15 px-2 py-0.5 text-[9px] font-semibold text-[#F4C660]">
+        {meaning.tag}
+      </span>
+      <p className="mt-2 font-heading text-[27px] font-semibold leading-[1.02] tracking-[-0.02em] text-[#F5EEE6]">
+        {meaning.heading}
+      </p>
+      <p className="mt-2 text-[11px] leading-relaxed text-[#F5EEE6]/70">
+        {meaning.body}
+      </p>
+      <p className="mt-3.5 text-[10px] font-semibold text-[#F5EEE6]">
+        {meaning.noticeLabel}
+      </p>
+      <ul className="mt-1.5 grid gap-1">
+        {meaning.notices.map((notice) => (
+          <li
+            key={notice}
+            className="flex items-start gap-1.5 text-[10.5px] leading-snug text-[#F5EEE6]/80"
           >
-            <span className="flex items-center">{icon}</span>
-            <span className="opacity-70">{k}:</span> <strong>{v}</strong>
+            <Sparkle
+              size={9}
+              weight="fill"
+              className="mt-[3px] shrink-0 text-[#F4C660]"
+              aria-hidden
+            />
+            {notice}
+          </li>
+        ))}
+      </ul>
+    </Phone>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* 3 — From insights to career options                                  */
+/* ------------------------------------------------------------------ */
+
+export function CareerOptionsVisual() {
+  const { options } = useStoryCopy();
+  const matches = [
+    ["O", "#3D8A73", options.workLabel, options.work],
+    ["R", "#C96F63", options.motiveLabel, options.motive],
+  ] as const;
+
+  return (
+    <Phone
+      floatingClass="end-0 bottom-0"
+      floating={
+        <div
+          className={`w-[220px] rounded-[20px] bg-[#FFFDF8] p-3.5 ${FLOAT_SHADOW}`}
+        >
+          <div className="flex items-center justify-between gap-2">
+            <p
+              className="font-heading text-[15px] font-semibold"
+              style={{ color: INK }}
+            >
+              {options.career}
+            </p>
+            <span className="rounded-full bg-[#2A2118] px-2 py-0.5 text-[8.5px] font-semibold text-[#F4C660]">
+              {options.closest}
+            </span>
+          </div>
+          {matches.map(([letter, color, label, text]) => (
+            <p
+              key={letter}
+              className="mt-2 flex gap-2 text-[9.5px] leading-snug"
+              style={{ color: INK_2 }}
+            >
+              <span
+                aria-hidden="true"
+                className="font-heading text-[13px] font-semibold leading-none"
+                style={{ color }}
+              >
+                {letter}
+              </span>
+              <span>
+                <strong style={{ color: INK }}>{label}</strong> {text}
+              </span>
+            </p>
+          ))}
+          <p
+            className="mt-2 border-t border-[#2A2118]/10 pt-2 text-[9.5px] leading-snug"
+            style={{ color: INK_2 }}
+          >
+            <strong style={{ color: INK }}>{options.studyLabel}</strong>{" "}
+            {options.study}
+          </p>
+        </div>
+      }
+    >
+      <p className="text-[10px] text-[#C8B6F0]/80">{options.title}</p>
+
+      {/* Two curiosities overlapping into one field */}
+      <div
+        className="relative mx-auto mt-3 h-[104px] w-[184px]"
+        aria-hidden="true"
+      >
+        <span
+          className="absolute start-0 top-0 size-[104px] rounded-full mix-blend-screen"
+          style={{
+            background:
+              "radial-gradient(circle at 40% 40%, rgba(244,198,96,0.6), rgba(244,198,96,0.1) 72%)",
+          }}
+        />
+        <span
+          className="absolute end-0 top-0 size-[104px] rounded-full mix-blend-screen"
+          style={{
+            background:
+              "radial-gradient(circle at 60% 40%, rgba(242,168,179,0.6), rgba(242,168,179,0.1) 72%)",
+          }}
+        />
+        <Sparkle
+          size={14}
+          weight="fill"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white"
+        />
+      </div>
+      <div className="mt-1.5 flex justify-between gap-2 text-[9px] font-semibold">
+        <span style={{ color: CORE.C }}>{options.tags[0]}</span>
+        <span className="text-end" style={{ color: CORE.R }}>
+          {options.tags[1]}
+        </span>
+      </div>
+
+      <p className="mt-3 text-[9.5px] text-[#F5EEE6]/60">{options.meetLabel}</p>
+      <p className="mt-0.5 font-heading text-[20px] font-semibold leading-tight text-[#F5EEE6]">
+        {options.field}
+      </p>
+      <div className="mt-2 flex flex-wrap gap-1">
+        {options.roles.map((role) => (
+          <span
+            key={role}
+            className="rounded-full border border-[#F5EEE6]/15 px-2 py-0.5 text-[9px] text-[#F5EEE6]/80"
+          >
+            {role}
           </span>
         ))}
       </div>
-    </div>
-  );
-}
 
-/* ------------------------------------------------------------------ */
-/* 2 — Narrative Report                                                 */
-/* ------------------------------------------------------------------ */
-
-export function NarrativeReportVisual() {
-  const { report } = useStoryCopy();
-  return (
-    <div className="relative w-full max-w-[460px] pb-3 pe-3">
-      {/* Stacked pages */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-x-3 bottom-1 top-3 rounded-[22px] border border-[#F5EEE6]/40 bg-[#E9E0D4]"
-      />
-      <div
-        aria-hidden="true"
-        className="absolute inset-y-3 start-5 end-1 rounded-[22px] border border-[#F5EEE6]/50 bg-[#F4EDE3]"
-      />
-
-      {/* Main page */}
-      <article
-        className="relative overflow-hidden rounded-[22px] bg-[#FFFDF7] shadow-[0_24px_64px_rgba(8,5,26,0.2)]"
-        style={{ border: "1px solid rgba(245,238,230,0.55)" }}
-      >
-        {/* Dark signal band */}
-        <div
-          className="grid grid-cols-[1.35fr_0.8fr_1fr] px-6 py-4"
-          style={{
-            background:
-              "radial-gradient(circle at 82% 10%, rgba(110,72,228,0.24), transparent 40%), linear-gradient(135deg, #100A24, #1A1140)",
-          }}
-        >
-          <div className="pe-4">
-            <p className="text-[8px] font-bold uppercase tracking-[0.14em] text-[#C8B6F0]/75">
-              {report.signal}
-            </p>
-            <p className="mt-1 text-[13px] font-semibold leading-tight text-[#F5EEE6]">
-              {report.signalValue}
-            </p>
-          </div>
-          <div className="border-s border-[#F5EEE6]/10 px-4">
-            <p className="text-[8px] font-bold uppercase tracking-[0.14em] text-[#C8B6F0]/75">
-              {report.confidence}
-            </p>
-            <div className="mt-1 flex items-center gap-2">
-              <p className="text-[13px] font-semibold leading-tight text-[#B9A3FA]">
-                38%
-              </p>
-              <span
-                aria-hidden="true"
-                className="h-1 flex-1 overflow-hidden rounded-full bg-[#F5EEE6]/10"
-              >
-                <span className="block h-full w-[38%] rounded-full bg-[#9D7FF0]" />
-              </span>
-            </div>
-          </div>
-          <div className="border-s border-[#F5EEE6]/10 ps-4">
-            <p className="text-[8px] font-bold uppercase tracking-[0.14em] text-[#C8B6F0]/75">
-              {report.style}
-            </p>
-            <p className="mt-1 text-[13px] font-semibold leading-tight text-[#6FE0C0]">
-              {report.styleValue}
-            </p>
-          </div>
-        </div>
-
-        <div className="px-6 pb-6 pt-5">
-          <div className="mb-4 flex items-center justify-between gap-4 border-b border-[#2A2118]/10 pb-3">
-            <div className="flex items-center gap-2">
-              <Image
-                src="/logo/tareeq-mark.svg"
-                alt=""
-                width={14}
-                height={14}
-                aria-hidden="true"
-                className="size-3.5"
-              />
-              <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-[#8A6620]">
-                {report.title}
-              </p>
-            </div>
-            <p className="text-[9px] font-semibold tabular-nums text-[#2A2118]/45">
-              02 / 06
-            </p>
-          </div>
-
-          <p className="max-w-[390px] font-heading text-[25px] font-semibold leading-[1.08] tracking-[-0.025em] text-[#2A2118]">
-            {report.heading}
-          </p>
-
-          <div
-            className="relative mt-5 overflow-hidden rounded-[16px] px-5 py-4"
-            style={{
-              background:
-                "radial-gradient(circle at 100% 0%, rgba(157,127,240,0.18), transparent 46%), linear-gradient(135deg, rgba(34,18,72,0.96), rgba(16,10,36,0.98))",
-              border: "1px solid rgba(157,127,240,0.18)",
-            }}
-          >
+      {/* Next steps drawn as a short road */}
+      <p className="mt-4 text-[9.5px] font-semibold text-[#F5EEE6]">
+        {options.nextLabel}
+      </p>
+      <ol className="relative mt-2 grid grid-cols-4">
+        <span
+          aria-hidden="true"
+          className="absolute inset-x-[12%] top-[4px] border-t border-dashed border-[#F5EEE6]/30"
+        />
+        {options.next.map((step, i) => (
+          <li key={step} className="relative flex flex-col items-center">
             <span
               aria-hidden="true"
-              className="absolute inset-y-4 start-0 w-[3px] rounded-e-full bg-[#F4C660]"
+              className="size-[9px] rounded-full"
+              style={
+                i === 0
+                  ? {
+                      background: CORE.C,
+                      boxShadow: "0 0 10px rgba(244,198,96,0.7)",
+                    }
+                  : {
+                      background: "#140C30",
+                      border: "1.5px solid rgba(245,238,230,0.4)",
+                    }
+              }
             />
-            <p className="mb-2 text-[8px] font-bold uppercase tracking-[0.13em] text-[#F4C660]">
-              {report.patternLabel}
-            </p>
-            <p className="max-w-[350px] text-[15px] font-semibold leading-[1.38] text-[#F5EEE6]">
-              {report.pattern}
-            </p>
-            <p className="mt-2.5 max-w-[350px] text-[11px] leading-[1.55] text-[#F5EEE6]/[0.62]">
-              {report.patternBody}
-            </p>
-          </div>
-        </div>
-      </article>
-    </div>
+            <span className="mt-1 text-[9px] text-[#F5EEE6]/80">{step}</span>
+          </li>
+        ))}
+      </ol>
+    </Phone>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/* 3 — Careers + Study Paths (card collage)                              */
+/* 4 — Go deeper with Kai                                               */
 /* ------------------------------------------------------------------ */
 
-/** Visual data only; the words come from STORY_COPY by index. */
-const CAREER_CARDS = [
-  { fit: 91, accent: "#B07A18", top: true },
-  { fit: 87, accent: "#6D5BA8", top: false },
-  { fit: 84, accent: "#3D8A73", top: false },
-] as const;
-
-const SUBJECTS = [
-  { glyph: "ψ", accent: "#C96F63" },
-  { glyph: "⚗", accent: "#3D8A73" },
-  { glyph: "☱", accent: "#6D5BA8" },
-] as const;
-
-export function OptionsVisual() {
-  const reduce = useReducedMotion();
-  const { options } = useStoryCopy();
-  const careers = CAREER_CARDS.map((card, i) => ({
-    ...card,
-    label: options.careers[i],
-    cluster: options.careerClusters[i],
-  }));
-  const subjects = SUBJECTS.map((subject, i) => ({
-    ...subject,
-    label: options.subjects[i],
-  }));
-  const paths = options.paths.map((label, i) => ({
-    label,
-    desc: options.pathDescs[i],
-  }));
+export function KaiCoachVisual() {
+  const { kai } = useStoryCopy();
+  const reveal = useReveal();
 
   return (
-    <div className="relative w-full max-w-[460px]">
-      {/* Shared warm glow + shadow behind the whole card group */}
+    <Phone
+      floatingClass="start-0 top-[170px]"
+      floating={
+        <div
+          className={`w-[204px] rounded-[18px] bg-[#FFFDF8] px-3.5 py-3 ${FLOAT_SHADOW}`}
+          style={{ transform: "rotate(-3deg)" }}
+        >
+          <p className="text-[9.5px]" style={{ color: INK_2 }}>
+            {kai.reportLabel}
+          </p>
+          <p
+            className="mt-0.5 text-[12px] font-semibold"
+            style={{ color: INK }}
+          >
+            {kai.section}
+          </p>
+          <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-gold-gradient px-2.5 py-1 text-[9.5px] font-semibold text-[#14101F]">
+            {kai.discuss}
+            <ArrowRight
+              size={9}
+              weight="bold"
+              className="rtl:-scale-x-100"
+              aria-hidden
+            />
+          </span>
+        </div>
+      }
+    >
+      <div className="flex items-center gap-2 border-b border-[#F5EEE6]/10 pb-3">
+        <KaiFace size={30} />
+        <div className="min-w-0">
+          <p className="text-[12px] font-semibold text-[#F5EEE6]">
+            {kai.name}
+          </p>
+          <p className="truncate text-[9px] text-[#C8B6F0]/80">
+            {kai.section}
+          </p>
+        </div>
+      </div>
+
+      {/* Same pattern as the real chat: Kai's turn is open text under an
+          avatar + name; only the student's message sits in a bubble. */}
+      <div className="flex h-[400px] flex-col justify-end gap-4 pb-14">
+        <motion.article {...reveal(0.3, 8)} className="grid gap-1.5">
+          <header className="flex items-center gap-1.5">
+            <KaiFace size={18} />
+            <span className="text-[9.5px] font-semibold text-[#C8B6F0]">
+              {kai.name}
+            </span>
+          </header>
+          <p className="pe-4 text-[12px] leading-[1.55] text-[#F5EEE6]">
+            {kai.question}
+          </p>
+        </motion.article>
+        <motion.p
+          {...reveal(0.65, 8)}
+          className="ms-auto max-w-[80%] rounded-[16px] rounded-ee-[5px] bg-[#F5EEE6] px-3 py-2 text-[11.5px] leading-[1.5] text-[#2A2118] shadow-[0_8px_20px_rgba(0,0,0,0.25)]"
+        >
+          {kai.reply}
+        </motion.p>
+        <p className="text-center text-[9px] leading-snug text-[#C8B6F0]/60">
+          {kai.footer}
+        </p>
+      </div>
+
+      {/* Composer */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -inset-6 -bottom-4 rounded-[3rem] blur-2xl"
-        style={{
-          background:
-            "radial-gradient(ellipse 55% 40% at 50% 38%, rgba(244,198,96,0.16), rgba(157,127,240,0.1) 50%, transparent 78%)",
-          boxShadow: "0 30px 72px rgba(8,5,26,0.16)",
-        }}
-      />
-
-      {/* ── Career Matches — main card, slightly narrower ── */}
-      <motion.article
-        initial={reduce ? {} : { y: 12, opacity: 0 }}
-        whileInView={{ y: 0, opacity: 1 }}
-        viewport={{ once: true, margin: "-40px" }}
-        transition={{ duration: 0.5 }}
-        className="relative z-10 mx-auto w-[92%] rounded-[24px] border border-[#F5EEE6]/25 bg-[#FFFDF8] px-5 py-5 shadow-[0_18px_48px_rgba(8,5,26,0.18)]"
+        className="absolute inset-x-3 bottom-3 flex items-center rounded-full border border-[#F5EEE6]/10 bg-[#F5EEE6]/[0.06] py-1.5 pe-1.5 ps-3.5"
       >
-        {/* Header */}
-        <div className="flex items-center justify-between mb-3.5">
-          <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#8A6620]">
-            {options.title}
-          </p>
-          <span className="text-[9px] font-semibold text-[#675D4E]/80">
-            {options.basis}
-          </span>
-        </div>
-
-        {/* Rows */}
-        <div className="space-y-0.5">
-          {careers.map((c) => (
-            <div
-              key={c.label}
-              className="group relative flex items-center gap-3 rounded-2xl px-3 py-2.5 transition-colors hover:bg-[#FDFAF3]"
-              style={{ background: c.top ? `${c.accent}0D` : "transparent" }}
-            >
-              {/* Fit percentage ring */}
-              <span
-                aria-hidden
-                className="flex size-7 shrink-0 items-center justify-center rounded-full text-[10px] font-bold"
-                style={{
-                  background: `${c.accent}1A`,
-                  color: c.accent,
-                }}
-              >
-                {c.fit}%
-              </span>
-
-              {/* Text + integrated progress line */}
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-[13px] font-semibold text-[#2A2118]">
-                    {c.label}
-                  </span>
-                  {c.top ? (
-                    <span
-                      className="rounded-full px-1.5 py-px text-[9px] font-semibold"
-                      style={{
-                        background: `${c.accent}22`,
-                        color: c.accent,
-                      }}
-                    >
-                      {options.topMatch}
-                    </span>
-                  ) : null}
-                  {/* Inline progress line */}
-                  <span
-                    aria-hidden
-                    className="ms-auto h-1 shrink-0 rounded-full"
-                    style={{
-                      width: `${Math.max(c.fit * 0.5, 18)}px`,
-                      background: `linear-gradient(90deg, ${c.accent}, ${c.accent}66)`,
-                    }}
-                  />
-                </div>
-                <p className="mt-0.5 text-[11px] font-medium text-[#675D4E]/85">
-                  {c.cluster}
-                </p>
-              </div>
-
-              {/* Hover arrow */}
-              <span
-                aria-hidden
-                className="inline-block shrink-0 text-[#675D4E]/40 opacity-0 transition-opacity group-hover:opacity-100 rtl:-scale-x-100"
-                style={{ fontSize: 15 }}
-              >
-                ›
-              </span>
-            </div>
-          ))}
-        </div>
-      </motion.article>
-
-      {/* ── Subjects + University — editorial offset pair ── */}
-      <div className="relative z-0 mt-1.5 grid grid-cols-[1fr_1fr] gap-2">
-        {/* Subjects — offset left, rotated slightly */}
-        <motion.article
-          initial={reduce ? {} : { y: 16, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="rounded-[18px] border border-[#F5EEE6]/20 bg-[#FAF7F1] px-3.5 py-3.5 shadow-[0_10px_28px_rgba(8,5,26,0.1)]"
-          style={{ transform: "translateX(-4px) rotate(-1deg)" }}
-        >
-          <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#6D5BA8] mb-2.5">
-            {options.subjectsLabel}
-          </p>
-          <div className="space-y-1">
-            {subjects.map((s) => (
-              <div
-                key={s.label}
-                className="flex items-center gap-2 rounded-lg px-2 py-1.5"
-                style={{ background: `${s.accent}10` }}
-              >
-                {/* Small product icon — subject-specific glyph */}
-                <span
-                  aria-hidden
-                  className="flex size-4 shrink-0 items-center justify-center rounded text-[9px]"
-                  style={{
-                    background: `${s.accent}22`,
-                    color: s.accent,
-                  }}
-                >
-                  {s.glyph}
-                </span>
-                <span className="text-[11px] font-semibold text-[#2A2118]">
-                  {s.label}
-                </span>
-              </div>
-            ))}
-          </div>
-        </motion.article>
-
-        {/* University paths — offset right */}
-        <motion.article
-          initial={reduce ? {} : { y: 20, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="rounded-[18px] border border-[#F5EEE6]/20 bg-white/[0.93] px-3.5 py-3.5 shadow-[0_10px_28px_rgba(8,5,26,0.08)]"
-          style={{ transform: "translateX(3px) rotate(0.7deg)" }}
-        >
-          <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#3D8A73] mb-2.5">
-            {options.pathsLabel}
-          </p>
-          <div className="space-y-1">
-            {paths.map((p) => (
-              <div
-                key={p.label}
-                className="group flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-[#3D8A73]/[0.06]"
-              >
-                {/* Degree cap icon */}
-                <span
-                  aria-hidden
-                  className="flex size-4 shrink-0 items-center justify-center rounded text-[9px]"
-                  style={{
-                    background: "rgba(61,138,115,0.15)",
-                    color: "#3D8A73",
-                  }}
-                >
-                  ▸
-                </span>
-                <div className="min-w-0 flex-1">
-                  <span className="block text-[11px] font-semibold text-[#2A2118] leading-tight">
-                    {p.label}
-                  </span>
-                  <span className="text-[9px] font-medium text-[#675D4E]/80">
-                    {p.desc}
-                  </span>
-                </div>
-                {/* Action arrow */}
-                <span
-                  aria-hidden
-                  className="inline-block shrink-0 text-[#3D8A73]/40 opacity-0 transition-opacity group-hover:opacity-100 rtl:-scale-x-100"
-                  style={{ fontSize: 13 }}
-                >
-                  →
-                </span>
-              </div>
-            ))}
-          </div>
-        </motion.article>
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* 4 — Kai Insight                                                       */
-/* ------------------------------------------------------------------ */
-
-const NEXT_ACTIONS = [
-  { icon: ArrowsLeftRight, accent: "#6D5BA8" },
-  { icon: BookOpen, accent: "#B07A18" },
-  { icon: FlagBanner, accent: "#3D8A73" },
-] as const;
-
-export function KaiConversationVisual() {
-  const reduce = useReducedMotion();
-  const { kai } = useStoryCopy();
-  const actions = NEXT_ACTIONS.map((action, i) => ({
-    ...action,
-    label: kai.actions[i],
-  }));
-
-  return (
-    <div className="relative w-full max-w-[460px]">
-      {/* ── Direction chip — overlaps top edge ── */}
-      <motion.div
-        initial={reduce ? {} : { y: 8, opacity: 0 }}
-        whileInView={{ y: 0, opacity: 1 }}
-        viewport={{ once: true, margin: "-40px" }}
-        transition={{ duration: 0.4 }}
-        className="relative z-20 ms-3"
-      >
-        <span className="inline-flex items-center gap-2 rounded-full border border-[#F5EEE6]/25 bg-[#100A24]/80 backdrop-blur-md px-3.5 py-1.5 shadow-[0_8px_24px_rgba(8,5,26,0.35)]">
-          <span className="text-[10px] font-medium text-[#C8B6F0]">
-            {kai.directionLabel}
-          </span>
-          <span
-            aria-hidden
-            className="flex size-2 shrink-0 rounded-full"
-            style={{ background: "linear-gradient(135deg, #F4C660, #9D7FF0)" }}
+        <span className="flex-1" />
+        <span className="flex size-6 items-center justify-center rounded-full bg-gold-gradient">
+          <ArrowRight
+            size={11}
+            weight="bold"
+            className="-rotate-90 text-[#14101F]"
           />
-          <span className="text-[10px] font-semibold text-[#F5EEE6]">
-            {kai.direction}
-          </span>
         </span>
-      </motion.div>
-
-      {/* ── Main card ── */}
-      <motion.article
-        initial={reduce ? {} : { y: 16, opacity: 0 }}
-        whileInView={{ y: 0, opacity: 1 }}
-        viewport={{ once: true, margin: "-40px" }}
-        transition={{ duration: 0.5 }}
-        className="relative -mt-2 rounded-[30px] bg-[#FFFDF8] shadow-[0_24px_64px_rgba(8,5,26,0.18)]"
-        style={{ border: "1px solid rgba(245,238,230,0.3)" }}
-      >
-        <div className="px-7 py-7">
-          {/* ── Kai identity row ── */}
-          <div className="flex items-center gap-3 mb-5">
-            <KaiFace size={48} />
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-[15px] font-semibold text-[#2A2118]">
-                  {kai.name}
-                </span>
-                <Sparkle size={10} weight="fill" style={{ color: "#F4C660" }} />
-              </div>
-              <p className="text-[11px] text-[#675D4E]">{kai.role}</p>
-            </div>
-          </div>
-
-          {/* ── Student question — left-aligned ── */}
-          <div className="flex justify-start mb-3">
-            <div className="rounded-2xl bg-[#F5EEE6]/70 px-4 py-2.5 max-w-[78%]">
-              <p className="text-[12.5px] leading-snug text-[#675D4E]">
-                {kai.question}
-              </p>
-            </div>
-          </div>
-
-          {/* ── Kai's response — right-aligned ── */}
-          <div className="flex justify-end mb-5">
-            <div className="flex items-start gap-2.5 max-w-[85%]">
-              <div
-                className="flex-1 rounded-2xl px-4 py-3.5"
-                style={{
-                  background:
-                    "linear-gradient(135deg, rgba(109,91,168,0.055), rgba(244,198,96,0.035))",
-                  border: "1px solid rgba(109,91,168,0.1)",
-                }}
-              >
-                <p className="font-heading text-[17px] font-semibold leading-[1.15] text-[#2A2118] mb-1.5">
-                  {kai.answerHeading}
-                </p>
-                <p className="text-[12.5px] leading-relaxed text-[#675D4E]">
-                  {kai.answerBody}
-                </p>
-
-                {/* Personalisation evidence */}
-                <div className="mt-3 flex items-center gap-1.5 flex-wrap">
-                  <span className="text-[10px] text-[#675D4E]/60">
-                    {kai.basedOn}
-                  </span>
-                  <span
-                    className="rounded-full px-2 py-0.5 text-[9px] font-medium"
-                    style={{
-                      background: "rgba(201,111,99,0.1)",
-                      color: "#C96F63",
-                    }}
-                  >
-                    {kai.evidence[0]}
-                  </span>
-                  <span className="text-[10px] text-[#675D4E]/60">
-                    {kai.and}
-                  </span>
-                  <span
-                    className="rounded-full px-2 py-0.5 text-[9px] font-medium"
-                    style={{
-                      background: "rgba(109,91,168,0.1)",
-                      color: "#6D5BA8",
-                    }}
-                  >
-                    {kai.evidence[1]}
-                  </span>
-                </div>
-              </div>
-              <KaiFace size={22} />
-            </div>
-          </div>
-
-          {/* ── Next actions ── */}
-          <div className="flex gap-2.5 justify-end">
-            {actions.map((a) => {
-              const Icon = a.icon;
-              return (
-                <div
-                  key={a.label}
-                  className="flex items-center gap-1.5 rounded-xl px-3 py-2"
-                  style={{ background: `${a.accent}0D` }}
-                >
-                  <Icon
-                    size={13}
-                    weight="regular"
-                    style={{ color: a.accent }}
-                  />
-                  <span
-                    className="text-[10.5px] font-medium"
-                    style={{ color: a.accent }}
-                  >
-                    {a.label}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </motion.article>
-    </div>
+      </div>
+    </Phone>
   );
 }

@@ -13,7 +13,11 @@ import { PaymentsSection } from "@/components/home/PaymentsScreen";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { signOut } from "@/lib/auth/otp";
 import { useKaiProfile } from "@/lib/kai/useKaiProfile";
-import { getModuleNameKey, readProfileSnapshot, type ProfileSnapshot } from "@/lib/profile/journey";
+import {
+  getModuleNameKey,
+  readProfileSnapshot,
+  type ProfileSnapshot,
+} from "@/lib/profile/journey";
 
 const MODULE_ICONS: Record<string, ReactNode> = {
   compass: <CareerCompassIcon size={22} />,
@@ -36,9 +40,12 @@ export function YouScreen() {
   // useKaiProfile()'s own `snapshot` only populates once signed in (it's
   // built for the auth-gated Kai chat) — Journey needs the same
   // local-first read Home/Explore use, independent of auth state.
-  const [localSnapshot, setLocalSnapshot] = useState<ProfileSnapshot | null>(null);
+  const [localSnapshot, setLocalSnapshot] = useState<ProfileSnapshot | null>(
+    null,
+  );
 
   const [ready, setReady] = useState(false);
+  const [signInCount, setSignInCount] = useState(0);
 
   useEffect(() => {
     setLocalSnapshot(readProfileSnapshot());
@@ -51,7 +58,9 @@ export function YouScreen() {
 
   async function handleSignOut() {
     await signOut();
-    await reload();
+    // Full navigation, not router.push: drops in-memory state (Kai chat,
+    // profile) that the cleared storage was feeding.
+    window.location.assign("/");
   }
 
   return (
@@ -86,12 +95,10 @@ export function YouScreen() {
         />
       )}
 
-      <PaymentsSection />
+      <PaymentsSection refreshKey={signInCount} />
 
-      <div className="grid gap-2.5">
-        <p className="daybreak-eyebrow ps-0.5">
-          {t("home.you.account_label")}
-        </p>
+      <div id="account" className="grid scroll-mt-6 gap-2.5">
+        <p className="daybreak-eyebrow ps-0.5">{t("home.you.account_label")}</p>
         {authState === "loading" ? (
           <div className="rounded-story h-[140px] animate-pulse border border-[color:var(--day-line)] bg-[color:var(--day-inset)]" />
         ) : authState === "signed-in" ? (
@@ -114,10 +121,19 @@ export function YouScreen() {
              *  human-scaled form reads as an intentional desktop form
              *  instead of a mobile button just stretched wider. */}
             <div className="mt-3 lg:mx-auto lg:max-w-[420px]">
-              <OtpSignIn onSignedIn={() => void reload()} variant="daybreak" />
+              <OtpSignIn
+                onSignedIn={() => {
+                  void reload();
+                  setSignInCount((count) => count + 1);
+                }}
+                variant="daybreak"
+              />
               <p className="mt-3 text-center text-[11px] leading-snug text-[color:var(--day-ink-3)]">
                 {t("home.you.new_here_prefix")}
-                <Link href="/start" className="font-semibold text-[color:var(--day-ink)] underline">
+                <Link
+                  href="/start"
+                  className="font-semibold text-[color:var(--day-ink)] underline"
+                >
                   {t("home.you.new_here_link")}
                 </Link>
                 {t("home.you.new_here_suffix")}

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
+import { ScreenIllustration } from "@/components/assessment/ScreenIllustration";
 import { TareeqArrowLeft } from "@/components/brand/icons";
 import { CompassProgress } from "@/components/brand/CompassProgress";
 import { useLocale } from "@/components/i18n/LocaleProvider";
@@ -14,7 +15,9 @@ import {
   type CompassSnapshot,
 } from "@/lib/assessment/pillar-progress";
 import { useAnimatedSnapshot } from "@/lib/assessment/use-animated-snapshot";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import type { Question } from "@/lib/scoring";
+import "./assessment-theme.css";
 
 interface AssessmentChromeProps {
   children: ReactNode;
@@ -40,11 +43,12 @@ export function AssessmentChrome({
 }: AssessmentChromeProps) {
   const totalQuestions = questions.length;
   const pathname = usePathname();
+  const { dir } = useLocale();
   const router = useRouter();
   const questionIndex = getIndexFromPathname(pathname);
   const hasQuestion = questionIndex !== null;
   // Ceremonial screens — Meet Kai and the Contract — get a larger,
-  // centered Tareeq mark with the warm-gradient icon.
+  // centered Tareeq mark.
   const isCeremony = pathname === "/intro" || pathname === "/contract";
   // Hero screens (ceremony + /start) get a genuine two-column desktop
   // layout (illustration + copy), which needs real width to breathe —
@@ -62,6 +66,8 @@ export function AssessmentChrome({
   // theme. (/profile used to be a second light surface here; it now
   // redirects to /you, outside this chrome entirely.)
   const isLightSurface = pathname === "/kai-chat";
+  // The deep-space night surface on every assessment screen; the report and the light Kai chat keep their own.
+  const isNightSky = !isLightSurface && !isResults;
 
   function goBack() {
     uiSounds.back();
@@ -108,11 +114,15 @@ export function AssessmentChrome({
     <main
       className={`relative flex h-dvh w-full flex-col overflow-hidden ${
         isLightSurface ? "surface-sand text-carbon" : "surface-night text-sand"
-      }`}
+      } ${isNightSky ? "assessment-night" : ""}`}
     >
       {isLightSurface ? null : (
         <div className="absolute inset-0 bg-night-stars opacity-80 pointer-events-none" />
       )}
+      {isNightSky ? (
+        // Per-screen side art (desktop), independent of the background.
+        <ScreenIllustration pathname={pathname} isRtl={dir === "rtl"} />
+      ) : null}
 
       <div
         className={`relative z-10 mx-auto flex h-full w-full max-w-[480px] flex-1 flex-col px-5 ${
@@ -136,7 +146,7 @@ export function AssessmentChrome({
          * Two layouts:
          *  · question screens (/q/*) — back-button left, readable compass panel
          *  · everywhere else        — back-button + counter left, Tareeq mark right
-         *                              (mark goes centered+warm-gradient on ceremony screens)
+         *                              (mark goes centered + larger on ceremony screens)
          */}
         <header
           className={
@@ -172,7 +182,7 @@ export function AssessmentChrome({
                   : "inline-flex items-center gap-2"
               }
             >
-              {/* Tareeq mark — centered + warm-gradient on ceremony screens, right on others */}
+              {/* Tareeq mark — centered + larger on ceremony screens, right on others */}
               <Link
                 href="/"
                 aria-label="Tareeq home"
@@ -180,8 +190,8 @@ export function AssessmentChrome({
               >
                 <span
                   aria-hidden="true"
-                  className={`inline-block ${
-                    isCeremony ? "size-8 bg-grad-warm" : "size-6 bg-aurora"
+                  className={`inline-block bg-aurora ${
+                    isCeremony ? "size-8" : "size-6"
                   }`}
                   style={{
                     WebkitMaskImage: "url('/logo/tareeq-mark.svg')",
@@ -284,23 +294,35 @@ function QuestionCompassPanel({
 }
 
 /**
- * ProfileChip — a small avatar that appears in the chrome's right slot
- * once the user has registered. Click → /profile. Hidden on /profile
- * itself (no self-link) and on screens where the user hasn't yet
- * registered (no profile to show).
+ * ProfileChip — a small avatar in the chrome's right slot, shown only while
+ * there is a real signed-in session (not merely a locally saved
+ * registration, which would read as "signed in" to a signed-out user).
+ * Click → /you. Hidden on /you itself (no self-link).
  */
 function ProfileChip({ pathname }: { pathname: string }) {
   const [name, setName] = useState<string | null>(null);
 
   useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem("tareeq.result.registration.v1");
-      if (!raw) return;
-      const parsed = JSON.parse(raw) as { name?: string; email?: string };
-      if (typeof parsed?.name === "string") setName(parsed.name);
-    } catch {
-      // ignore — no profile chip if storage is unreadable
-    }
+    let active = true;
+    const supabase = createSupabaseBrowserClient();
+    void supabase.auth
+      .getSession()
+      .then(({ data: { session } }) => {
+        if (!active || !session) return;
+        const metadataName = session.user.user_metadata?.display_name;
+        const displayName =
+          readRegistrationName() ??
+          (typeof metadataName === "string" && metadataName.trim()
+            ? metadataName
+            : (session.user.email ?? null));
+        setName(displayName);
+      })
+      .catch(() => {
+        // No session available — the chip simply stays hidden.
+      });
+    return () => {
+      active = false;
+    };
   }, []);
 
   if (!name || pathname === "/you") return null;
@@ -320,6 +342,19 @@ function ProfileChip({ pathname }: { pathname: string }) {
       {initials}
     </Link>
   );
+}
+
+function readRegistrationName(): string | null {
+  try {
+    const raw = window.localStorage.getItem("tareeq.result.registration.v1");
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as { name?: unknown };
+    return typeof parsed?.name === "string" && parsed.name.trim()
+      ? parsed.name
+      : null;
+  } catch {
+    return null;
+  }
 }
 
 function getProfileInitials(name: string): string {

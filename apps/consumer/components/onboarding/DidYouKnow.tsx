@@ -28,7 +28,7 @@ interface DidYouKnowProps {
  * accents, glass panels, and the warm-gradient primary CTA.
  *
  * Composition: drag indicator → violet glass eyebrow → illustration on
- * a violet-glow plate → display headline with warm-gradient italic →
+ * a violet-glow plate → display headline with the night-sweep accent →
  * body → warm-gradient CTA.
  *
  * Portalled into `document.body` so the sheet escapes the assessment
@@ -77,13 +77,13 @@ export function DidYouKnow({
 
   if (!mounted) return null;
 
-  // First two words of the title get the warm-gradient italic accent.
+  // First two words of the title get the night-sweep accent.
   // Falls back gracefully if the title is one word.
   const titleParts = splitTitle(title);
 
   const overlay = (
     <div
-      className="fixed inset-0 z-[100] flex items-end justify-center md:items-center"
+      className="assessment-night fixed inset-0 z-[100] flex items-end justify-center md:items-center"
       aria-hidden={false}
     >
       {/* Dim + blur backdrop over the question screen */}
@@ -114,7 +114,7 @@ export function DidYouKnow({
           maxHeight: "calc(100dvh - 56px)",
         }}
       >
-        {/* Soft violet bloom + warm hint at the top of the sheet */}
+        {/* Soft violet bloom + a faint gold hint at the top of the sheet */}
         <span
           aria-hidden="true"
           className="pointer-events-none absolute inset-x-0 top-0 h-[60%]"
@@ -128,7 +128,7 @@ export function DidYouKnow({
           className="pointer-events-none absolute -top-10 left-1/2 size-48 -translate-x-1/2"
           style={{
             background:
-              "radial-gradient(circle, rgba(255,107,61,0.10), transparent 70%)",
+              "radial-gradient(circle, rgba(244,198,96,0.08), transparent 70%)",
             filter: "blur(20px)",
           }}
         />
@@ -158,10 +158,17 @@ export function DidYouKnow({
                 />
               </div>
             </div>
-            <span className="chip chip--violet-on-dark min-w-0 truncate">
-              <span className="size-1.5 shrink-0 rounded-full bg-gold" />
-              {t("interstitial.chip")}
-            </span>
+            {/* Who's speaking — the landing's Kai-card label. The headline
+             *  already says "Did you know?", so no chip repeating it. */}
+            <div className="min-w-0">
+              <p className="flex items-center gap-1.5 text-[14px] font-bold leading-none text-[#F4C660]">
+                <span aria-hidden="true">✦</span>
+                {t("interstitial.kai_name")}
+              </p>
+              <p className="mt-1 truncate text-[11.5px] leading-tight text-[#C8B6F0]/80">
+                {t("interstitial.kai_role")}
+              </p>
+            </div>
           </div>
           <div className="flex shrink-0 items-center gap-2">
             {onToggleSound ? (
@@ -220,15 +227,7 @@ export function DidYouKnow({
             {titleParts.accent ? (
               <>
                 {titleParts.lead ? " " : ""}
-                <span
-                  className="text-grad-warm"
-                  style={{
-                    fontStyle: "italic",
-                    fontVariationSettings: '"SOFT" 100, "opsz" 144',
-                  }}
-                >
-                  {titleParts.accent}
-                </span>
+                <span className="text-grad-warm">{titleParts.accent}</span>
               </>
             ) : null}
           </h2>
@@ -274,7 +273,7 @@ export function DidYouKnow({
 
 /**
  * Split a short interstitial title so the LAST two words get the
- * warm-gradient italic accent. Editorial pacing — the eye lands on the
+ * night-sweep accent. Editorial pacing — the eye lands on the
  * accented phrase last. Falls back to "lead only" for short titles.
  */
 function splitTitle(title: string): { lead: string; accent: string } {

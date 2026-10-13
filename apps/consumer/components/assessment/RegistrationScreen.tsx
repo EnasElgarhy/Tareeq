@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  ArrowRight,
-  Mail,
-  MailCheck,
-  ShieldCheck,
-  UserRound,
-} from "lucide-react";
-import Image from "next/image";
+import { ArrowRight, Mail, MailCheck, UserRound } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useMemo, useState } from "react";
@@ -222,23 +215,8 @@ export function RegistrationScreen() {
   const canOptIntoResearch = ageGate !== "minor";
 
   return (
-    <section className="anim-screen-enter mx-auto grid w-full max-w-[920px] flex-1 content-center gap-6 py-3 sm:py-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(420px,1fr)] lg:items-center lg:gap-12 lg:py-8">
+    <section className="anim-screen-enter mx-auto grid w-full max-w-[920px] flex-1 content-center gap-6 py-3 sm:py-6 lg:me-0 lg:ms-auto lg:max-w-[480px] lg:gap-6 lg:py-8">
       <div className="grid content-center gap-4 lg:gap-5">
-        <div className="flex items-center gap-4 lg:grid lg:gap-4">
-          <Image
-            src="/illustrations/email-verification.png"
-            alt=""
-            width={240}
-            height={240}
-            priority
-            className="size-[88px] shrink-0 object-contain lg:size-[220px]"
-          />
-          <span className="chip chip--violet-on-dark w-fit">
-            <ShieldCheck size={13} />
-            {t("register.eyebrow")}
-          </span>
-        </div>
-
         <div className="grid min-w-0 gap-3">
           <h1 className="text-display-2 max-w-[12ch] text-sand">
             {t("register.headline")}
@@ -261,12 +239,12 @@ export function RegistrationScreen() {
             <span className="relative">
               <UserRound
                 size={17}
-                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-carbon/45"
+                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sand/45"
               />
               <input
                 value={name}
                 onChange={(event) => setName(event.target.value)}
-                className="h-[52px] w-full rounded-2xl bg-sand py-3 pl-11 pr-4 text-[16px] font-semibold text-carbon outline-none shadow-sand-sm focus-visible:ring-2 focus-visible:ring-gold"
+                className="assess-field h-[52px] w-full rounded-2xl py-3 pl-11 pr-4 text-[16px] font-semibold"
                 placeholder={t("register.name_placeholder")}
                 autoComplete="name"
               />
@@ -280,12 +258,12 @@ export function RegistrationScreen() {
             <span className="relative">
               <Mail
                 size={17}
-                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-carbon/45"
+                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sand/45"
               />
               <input
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
-                className="h-[52px] w-full rounded-2xl bg-sand py-3 pl-11 pr-4 text-[16px] font-semibold text-carbon outline-none shadow-sand-sm focus-visible:ring-2 focus-visible:ring-gold"
+                className="assess-field h-[52px] w-full rounded-2xl py-3 pl-11 pr-4 text-[16px] font-semibold"
                 placeholder="you@example.com"
                 autoComplete="email"
                 inputMode="email"
@@ -297,10 +275,10 @@ export function RegistrationScreen() {
           <fieldset className="grid min-w-0 gap-2 border-t border-sand/10 pt-4">
             <legend className="sr-only">{t("register.consent_title")}</legend>
             <div className="grid gap-1">
-              <p className="text-[12px] font-bold text-sand">
+              <p className="text-[13px] font-bold text-sand">
                 {t("register.consent_title")}
               </p>
-              <p className="text-[11px] leading-snug text-sand/55">
+              <p className="text-[12px] leading-snug text-sand/55">
                 {t("register.consent_body")}
               </p>
               {!canOptIntoResearch ? (
@@ -353,14 +331,14 @@ export function RegistrationScreen() {
             {legalNotice.beforePrivacy}
             <Link
               href="/privacy-policy"
-              className="underline underline-offset-2 hover:text-sand"
+              className="text-sand/80 underline decoration-sand/30 underline-offset-[3px] transition-colors hover:decoration-gold"
             >
               {t("register.legal_privacy_link")}
             </Link>
             {legalNotice.betweenLinks}
             <Link
               href="/terms-of-service"
-              className="underline underline-offset-2 hover:text-sand"
+              className="text-sand/80 underline decoration-sand/30 underline-offset-[3px] transition-colors hover:decoration-gold"
             >
               {t("register.legal_terms_link")}
             </Link>
@@ -409,7 +387,7 @@ export function RegistrationScreen() {
             name="verification-code"
             value={enteredCode}
             onChange={(event) => setEnteredCode(event.target.value)}
-            className="h-14 w-full rounded-2xl bg-sand px-5 text-center text-[20px] font-bold tracking-[0.22em] text-carbon outline-none shadow-sand-sm focus-visible:ring-2 focus-visible:ring-gold"
+            className="assess-field h-14 w-full rounded-2xl px-5 text-center text-[20px] font-bold tracking-[0.22em]"
             placeholder={"0".repeat(OTP_MIN_LENGTH)}
             inputMode="numeric"
             maxLength={OTP_MAX_LENGTH}
@@ -475,10 +453,13 @@ function ConsentToggle({
   label: string;
   onChange: (checked: boolean) => void;
 }) {
+  // Same custom box as the start screen's terms consent (.consent-check).
   return (
     <label
-      className={`flex items-start gap-2 text-[11px] leading-snug ${
-        disabled ? "text-sand/35" : "text-sand/68"
+      className={`consent-check flex items-start gap-3 text-[13px] leading-snug ${
+        disabled
+          ? "cursor-not-allowed text-sand/35"
+          : "cursor-pointer text-sand/75"
       }`}
     >
       <input
@@ -486,8 +467,22 @@ function ConsentToggle({
         checked={checked}
         disabled={disabled}
         onChange={(event) => onChange(event.target.checked)}
-        className="mt-0.5 size-4 accent-gold disabled:opacity-45"
+        className="peer sr-only"
       />
+      <span
+        aria-hidden="true"
+        className="consent-check__box mt-px grid size-5 shrink-0 place-items-center rounded-[6px]"
+      >
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M5 12.5l4.5 4.5L19 7.5"
+            stroke="currentColor"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </span>
       <span>{label}</span>
     </label>
   );

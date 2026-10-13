@@ -1,3 +1,4 @@
+import { useId } from "react";
 import {
   COMPASS_PILLARS,
   PILLAR_META,
@@ -10,22 +11,39 @@ interface CompassProgressProps {
   /** Pixel size of the compass. Default 88. */
   size?: number;
   /** Optional layout — `compact` shows the compass + a small label;
-   *  `display` shows it large with labels around it (used on /start);
+   *  `display` shows it large with labels around it;
    *  `bare` is the compass alone (no label). */
   layout?: "compact" | "display" | "bare";
-  /** Surface tone — flips track/letter/center colors for light pages. */
+  /** Surface tone — flips bezel/letter colors for light pages. */
   surface?: "dark" | "light";
 }
 
 /**
- * CompassProgress — Tareeq's signature mechanic.
+ * The CORE axes as the website draws them (ProductJourney's AXES): each
+ * pillar owns a cardinal direction and an accent colour.
+ */
+const PILLAR_AXES: Record<CompassPillar, { angle: number; tone: string }> = {
+  1: { angle: -90, tone: "#F4C660" }, // C — north, gold
+  2: { angle: 0, tone: "#6FE0C0" }, // O — east, mint
+  3: { angle: 90, tone: "#F2A8B3" }, // R — south, blush
+  4: { angle: 180, tone: "#9D7FF0" }, // E — west, lilac
+};
+
+// Geometry in a 100×100 viewBox.
+const C = 50;
+const BEZEL_R = 45;
+const LETTER_R = 31;
+const NEEDLE_REACH = 22;
+const QUADRANT_GAP = 10; // degrees left empty between pillar arcs
+
+/**
+ * CompassProgress — Tareeq's signature mechanic, drawn as a compass.
  *
- * Four quadrants for the C-O-R-E pillars. Each fills with coral as the
- * user answers questions in that pillar. The active pillar pulses with
- * a cyan ring. The center holds the percentage; cardinal letters orbit.
- *
- * Replaces the linear progress bar so the user can see *which axes of
- * their compass* are forming — not just "x of 60 done."
+ * The bezel is split into four arcs, one per C-O-R-E pillar, each filling
+ * in that pillar's colour as questions are answered. The needle swings to
+ * the pillar currently being asked; before a scored pillar begins it rests
+ * north, dimmed. Overall percentage lives in the accessible label (the
+ * chrome shows the question counter alongside).
  */
 export function CompassProgress({
   snapshot,
@@ -33,31 +51,18 @@ export function CompassProgress({
   layout = "compact",
   surface = "dark",
 }: CompassProgressProps) {
-  const cx = size / 2;
-  const cy = size / 2;
-  const outerR = size * 0.46;
-  const innerR = size * 0.28;
+  const uid = useId().replace(/:/g, "");
   const isLight = surface === "light";
-  const trackColor = isLight ? "#E8E0D4" : "#F5EEE6";
-  const trackOpacity = isLight ? 0.9 : 0.18;
-  const letterColor = isLight ? "#1B0E3F" : "#F5EEE6";
-  const centerFill = isLight ? "#F5EEE6" : "#0F0824";
-  const centerFillOpacity = isLight ? 1 : 0.45;
-  const centerTextColor = isLight ? "#1B0E3F" : "#F5EEE6";
-  const labelMutedColor = isLight ? "rgba(13,27,33,0.55)" : "rgba(245,238,230,0.55)";
-  const labelStrongColor = isLight ? "#1B0E3F" : "#F5EEE6";
+  const ink = isLight ? "#1B0E3F" : "#F5EEE6";
+  const labelMutedColor = isLight
+    ? "rgba(13,27,33,0.55)"
+    : "rgba(245,238,230,0.55)";
 
-  // Quadrant order, mapped to compass directions:
-  //   C (Curiosities) → top         (-90° → 0°)
-  //   O (Operations)  → right       (0°   → 90°)
-  //   R (Rewards)     → bottom      (90°  → 180°)
-  //   E (Ecosystems)  → left        (180° → 270°)
-  const QUADRANT_BASE: Record<CompassPillar, number> = {
-    1: -90,
-    2: 0,
-    3: 90,
-    4: 180,
-  };
+  const active = snapshot.activePillar;
+  const needleAngle = active ? PILLAR_AXES[active].angle + 90 : 0;
+  const needleTone = active ? PILLAR_AXES[active].tone : ink;
+  const needleId = `cmp-needle-${uid}`;
+  const percent = Math.round(snapshot.overall * 100);
 
   return (
     <div
@@ -70,85 +75,84 @@ export function CompassProgress({
       }
     >
       <svg
-        viewBox={`0 0 ${size} ${size}`}
+        viewBox="0 0 100 100"
         width={size}
         height={size}
-        aria-label={`Compass progress, ${Math.round(snapshot.overall * 100)} percent`}
+        aria-label={`Compass progress, ${percent} percent`}
         role="img"
       >
         <defs>
-          <linearGradient id="cmp-fill" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#FF3D83" />
-            <stop offset="55%" stopColor="#FF6B3D" />
-            <stop offset="100%" stopColor="#FFA53D" />
+          <linearGradient id={needleId} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={needleTone} />
+            <stop offset="100%" stopColor={needleTone} stopOpacity="0.55" />
           </linearGradient>
         </defs>
 
-        {/* Quadrants */}
-        {COMPASS_PILLARS.map((p) => {
-          const base = QUADRANT_BASE[p];
-          // Each quadrant sweeps 88° (small gap between segments)
-          const start = base + 2;
-          const end = base + 88;
-          // Filled portion ends at `start + (sweep × progress)`
-          const sweep = 86;
-          const filled = snapshot.byPillar[p];
-          const filledEnd = start + sweep * filled;
-          const isActive = snapshot.activePillar === p;
+        {/* Face + minor ticks every 30° (cardinals are the pillar arcs). */}
+        <circle
+          cx={C}
+          cy={C}
+          r={BEZEL_R + 3}
+          fill={isLight ? "#F5EEE6" : "#0F0824"}
+          fillOpacity={isLight ? 1 : 0.55}
+        />
+        {Array.from({ length: 12 }, (_, i) => i * 30)
+          .filter((deg) => deg % 90 !== 0)
+          .map((deg) => (
+            <line
+              key={deg}
+              x1={C}
+              y1={C - BEZEL_R + 7}
+              x2={C}
+              y2={C - BEZEL_R + 10}
+              stroke={ink}
+              strokeOpacity="0.28"
+              strokeWidth="1.2"
+              strokeLinecap="round"
+              transform={`rotate(${deg} ${C} ${C})`}
+            />
+          ))}
 
+        {/* Pillar arcs: faint track, then the filled portion in its tone. */}
+        {COMPASS_PILLARS.map((p) => {
+          const { angle, tone } = PILLAR_AXES[p];
+          const start = angle - 45 + QUADRANT_GAP / 2;
+          const end = angle + 45 - QUADRANT_GAP / 2;
+          const filledEnd = start + (end - start) * snapshot.byPillar[p];
+          const isActive = active === p;
           return (
             <g key={p}>
-              {/* Track */}
               <path
-                d={annularSector(cx, cy, innerR, outerR, start, end)}
-                fill={trackColor}
-                fillOpacity={trackOpacity}
+                d={arc(C, C, BEZEL_R, start, end)}
+                stroke={ink}
+                strokeOpacity="0.14"
+                strokeWidth="5"
+                strokeLinecap="round"
+                fill="none"
               />
-              {/* Fill */}
-              {filled > 0 ? (
+              {snapshot.byPillar[p] > 0 ? (
                 <path
-                  d={annularSector(
-                    cx,
-                    cy,
-                    innerR,
-                    outerR,
-                    start,
-                    filledEnd,
-                  )}
-                  fill="url(#cmp-fill)"
-                />
-              ) : null}
-              {/* Active pulse ring around this quadrant */}
-              {isActive ? (
-                <path
-                  d={arc(cx, cy, outerR + 2.5, start, end)}
-                  stroke="url(#cmp-fill)"
-                  strokeWidth="2"
+                  d={arc(C, C, BEZEL_R, start, filledEnd)}
+                  stroke={tone}
+                  strokeWidth="5"
                   strokeLinecap="round"
                   fill="none"
-                  opacity="0.95"
-                >
-                  <animate
-                    attributeName="opacity"
-                    values="1;0.5;1"
-                    dur="1.8s"
-                    repeatCount="indefinite"
-                  />
-                </path>
+                  style={
+                    isActive
+                      ? { filter: `drop-shadow(0 0 3px ${tone})` }
+                      : undefined
+                  }
+                />
               ) : null}
             </g>
           );
         })}
 
-        {/* Cardinal letters — C O R E around the compass */}
+        {/* Cardinal letters, lit in the pillar's tone once it has progress. */}
         {COMPASS_PILLARS.map((p) => {
-          const base = QUADRANT_BASE[p];
-          const angle = ((base + 45) * Math.PI) / 180;
-          const r = (outerR + innerR) / 2;
-          const x = cx + Math.cos(angle) * r;
-          const y = cy + Math.sin(angle) * r;
-          const isFilled = snapshot.byPillar[p] > 0;
-          const isActive = snapshot.activePillar === p;
+          const { angle, tone } = PILLAR_AXES[p];
+          const [x, y] = pointOnCircle(C, C, LETTER_R, angle);
+          const lit = active === p || snapshot.byPillar[p] > 0;
           return (
             <text
               key={`l-${p}`}
@@ -156,10 +160,10 @@ export function CompassProgress({
               y={y}
               textAnchor="middle"
               dominantBaseline="central"
-              fontSize={size * 0.13}
-              fontWeight={700}
-              fill={letterColor}
-              opacity={isActive ? 1 : isFilled ? 0.9 : 0.55}
+              fontSize="15"
+              fontWeight={800}
+              fill={lit ? tone : ink}
+              opacity={active === p ? 1 : lit ? 0.85 : 0.4}
               fontFamily="var(--font-jakarta), system-ui, sans-serif"
             >
               {PILLAR_META[p].letter}
@@ -167,29 +171,27 @@ export function CompassProgress({
           );
         })}
 
-        {/* Center percentage */}
-        <circle
-          cx={cx}
-          cy={cy}
-          r={innerR - 4}
-          fill={centerFill}
-          fillOpacity={centerFillOpacity}
-        />
-        <text
-          x={cx}
-          y={cy}
-          textAnchor="middle"
-          dominantBaseline="central"
-          fontSize={size * 0.2}
-          fontWeight={700}
-          fill={centerTextColor}
-          fontFamily="var(--font-jakarta), system-ui, sans-serif"
+        {/* Needle — swings to the active pillar. */}
+        <g
+          style={{
+            transform: `rotate(${needleAngle}deg)`,
+            transformOrigin: "50px 50px",
+            transition: "transform 600ms cubic-bezier(0.34, 1.56, 0.64, 1)",
+          }}
+          opacity={active ? 1 : 0.45}
         >
-          {Math.round(snapshot.overall * 100)}
-          <tspan fontSize={size * 0.11} dy={-size * 0.045}>
-            %
-          </tspan>
-        </text>
+          <path
+            d={`M${C} ${C - NEEDLE_REACH} L${C + 5} ${C} L${C - 5} ${C} Z`}
+            fill={`url(#${needleId})`}
+          />
+          <path
+            d={`M${C} ${C + NEEDLE_REACH * 0.7} L${C + 5} ${C} L${C - 5} ${C} Z`}
+            fill={ink}
+            fillOpacity="0.3"
+          />
+        </g>
+        <circle cx={C} cy={C} r="3.4" fill={ink} />
+        <circle cx={C} cy={C} r="1.6" fill={needleTone} />
       </svg>
 
       {layout === "compact" ? (
@@ -197,13 +199,8 @@ export function CompassProgress({
           <p className="text-caption" style={{ color: labelMutedColor }}>
             Your compass
           </p>
-          <p
-            className="text-body-sm font-semibold"
-            style={{ color: labelStrongColor }}
-          >
-            {snapshot.activePillar
-              ? PILLAR_META[snapshot.activePillar].name
-              : "Building..."}
+          <p className="text-body-sm font-semibold" style={{ color: ink }}>
+            {active ? PILLAR_META[active].name : "Building..."}
           </p>
         </div>
       ) : layout === "display" ? (
@@ -215,7 +212,7 @@ export function CompassProgress({
             <p key={`disp-${p}`}>
               <span
                 className="font-semibold"
-                style={{ color: labelStrongColor }}
+                style={{ color: PILLAR_AXES[p].tone }}
               >
                 {PILLAR_META[p].letter}
               </span>{" "}
@@ -240,7 +237,6 @@ function pointOnCircle(
   return [cx + Math.cos(rad) * r, cy + Math.sin(rad) * r];
 }
 
-/** SVG path for the outer arc only (used as the active-quadrant pulse ring). */
 function arc(
   cx: number,
   cy: number,
@@ -248,32 +244,9 @@ function arc(
   startDeg: number,
   endDeg: number,
 ): string {
+  if (endDeg <= startDeg) return "";
   const [x0, y0] = pointOnCircle(cx, cy, r, startDeg);
   const [x1, y1] = pointOnCircle(cx, cy, r, endDeg);
   const large = endDeg - startDeg > 180 ? 1 : 0;
   return `M ${x0} ${y0} A ${r} ${r} 0 ${large} 1 ${x1} ${y1}`;
-}
-
-/** SVG path for an annular (donut-segment) sector. */
-function annularSector(
-  cx: number,
-  cy: number,
-  rInner: number,
-  rOuter: number,
-  startDeg: number,
-  endDeg: number,
-): string {
-  if (endDeg <= startDeg) return "";
-  const large = endDeg - startDeg > 180 ? 1 : 0;
-  const [xo0, yo0] = pointOnCircle(cx, cy, rOuter, startDeg);
-  const [xo1, yo1] = pointOnCircle(cx, cy, rOuter, endDeg);
-  const [xi0, yi0] = pointOnCircle(cx, cy, rInner, endDeg);
-  const [xi1, yi1] = pointOnCircle(cx, cy, rInner, startDeg);
-  return [
-    `M ${xo0} ${yo0}`,
-    `A ${rOuter} ${rOuter} 0 ${large} 1 ${xo1} ${yo1}`,
-    `L ${xi0} ${yi0}`,
-    `A ${rInner} ${rInner} 0 ${large} 0 ${xi1} ${yi1}`,
-    "Z",
-  ].join(" ");
 }

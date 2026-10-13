@@ -65,8 +65,26 @@ export const STRINGS = {
   "question.previous_aria": { en: "Previous question", ar: "السؤال السابق" },
 
   // ---- Did You Know interstitial (components/onboarding/DidYouKnow.tsx) ----
-  "interstitial.chip": { en: "Kai · did you know?", ar: "كاي · هل تعلم؟" },
+  "interstitial.kai_name": { en: "Kai", ar: "كاي" },
+  "interstitial.kai_role": {
+    en: "Your AI career navigator",
+    ar: "مرشدتك المهنية الذكية",
+  },
   "interstitial.dismiss_aria": { en: "Dismiss", ar: "إغلاق" },
+  "rush.body": {
+    en: "You picked before you could read the question and every answer. Rushed answers make your Compass less accurate.",
+    ar: "اخترت قبل أن تقرأ السؤال وكل الإجابات. الإجابات المتسرعة تجعل بوصلتك أقل دقة.",
+  },
+  "rush.track_yours": { en: "You took {s}s", ar: "استغرقت {s} ث" },
+  "rush.track_needed": {
+    en: "Reading takes about {s}s",
+    ar: "القراءة تحتاج نحو {s} ث",
+  },
+  "rush.track_aria": {
+    en: "You answered in {yours} seconds. Reading this question takes about {needed} seconds.",
+    ar: "أجبت خلال {yours} ثانية. قراءة هذا السؤال تحتاج نحو {needed} ثانية.",
+  },
+  "rush.reread": { en: "Let me read again", ar: "دعني أقرأ مرة أخرى" },
   "interstitial.source_prefix": {
     en: "Source: {source}",
     ar: "المصدر: {source}",
@@ -1606,9 +1624,15 @@ export const STRINGS = {
   "start.begin_cta": { en: "Begin", ar: "ابدأ" },
   "start.resume_at_cta": { en: "Resume at {n}", ar: "استئناف عند {n}" },
   "start.start_over_cta": { en: "Start over", ar: "ابدأ من جديد" },
-  "start.terms_checkbox": {
-    en: "I agree to Tareeq’s platform terms and privacy notice. I can still choose separately whether my anonymized answers are used for research after the assessment.",
-    ar: "أوافق على شروط منصة طريق وإشعار الخصوصية. يمكنني لاحقاً أن أختار بشكل منفصل ما إذا كانت إجاباتي المجهّلة تُستخدم في البحث بعد التقييم.",
+  "start.terms_agree": {
+    en: "I agree to Tareeq’s {terms} and {privacy}.",
+    ar: "أوافق على {terms} و{privacy}.",
+  },
+  "start.terms_link": { en: "platform terms", ar: "شروط منصة طريق" },
+  "start.privacy_link": { en: "privacy notice", ar: "إشعار الخصوصية" },
+  "start.terms_research_note": {
+    en: "Research use of your anonymized answers is a separate choice you’ll make after the assessment.",
+    ar: "استخدام إجاباتك المجهّلة في البحث خيار منفصل ستحدده بعد التقييم.",
   },
   "start.terms_error": {
     en: "Please accept Tareeq’s platform terms before starting.",
@@ -1996,6 +2020,10 @@ export const STRINGS = {
   "payments.signin_body": {
     en: "Your payment history is tied to your Tareeq account.",
     ar: "يرتبط سجل مدفوعاتك بحسابك في Tareeq.",
+  },
+  "payments.signin_link": {
+    en: "Sign in below to see it.",
+    ar: "سجّل الدخول أدناه لعرضه.",
   },
   "payments.status.free": { en: "Free access", ar: "وصول مجاني" },
   // ---- Free-access invites ----
@@ -2663,12 +2691,12 @@ export const STRINGS = {
   // ---- Marketing: story cards ----
   "marketing.card1.eyebrow": { en: "Your direction", ar: "اتجاهك" },
   "marketing.card1.headline": {
-    en: "See where you naturally fit.",
-    ar: "اعرف أين تنتمي طبيعياً.",
+    en: "Your CORE, mapped from your answers.",
+    ar: "CORE الخاص بك، مرسوم من إجاباتك.",
   },
   "marketing.card1.body": {
-    en: "Your answers become a clear picture of the career areas that match how you think, work and what motivates you.",
-    ar: "إجاباتك تتحول إلى صورة واضحة للمجالات المهنية التي تناسب طريقة تفكيرك وعملك وما يحفزك.",
+    en: "Your curiosities, how you like to work, what motivates you and your work setting, brought together in one picture.",
+    ar: "فضولك، وطريقتك في العمل، وما يحفّزك، وبيئة عملك، مجتمعة في صورة واحدة.",
   },
   "marketing.card1.detail1": {
     en: "Your strongest career families",
@@ -2684,12 +2712,12 @@ export const STRINGS = {
   },
   "marketing.card2.eyebrow": { en: "Your story", ar: "قصتك" },
   "marketing.card2.headline": {
-    en: "Understand why it fits.",
-    ar: "افهم لماذا يناسبك.",
+    en: "What it means for you.",
+    ar: "ماذا يعني ذلك لك.",
   },
   "marketing.card2.body": {
-    en: "Instead of leaving you with numbers, Tareeq explains what your results mean in plain language.",
-    ar: "بدلاً من تركك مع أرقام، يشرح لك طريق ما تعنيه نتائجك بلغة واضحة.",
+    en: "Every result explained in plain words. No scores, no labels.",
+    ar: "كل نتيجة مشروحة بكلمات بسيطة. لا درجات، ولا تصنيفات.",
   },
   "marketing.card2.detail1": {
     en: "What motivates you",
@@ -2705,12 +2733,12 @@ export const STRINGS = {
   },
   "marketing.card3.eyebrow": { en: "Your options", ar: "خياراتك" },
   "marketing.card3.headline": {
-    en: "Turn insight into real choices.",
-    ar: "حوّل الرؤية إلى خيارات حقيقية.",
+    en: "From insights to career options.",
+    ar: "من الفهم إلى خيارات مهنية.",
   },
   "marketing.card3.body": {
-    en: "Connect your profile to careers, subjects, majors and paths you can actually explore.",
-    ar: "اربط ملفك الشخصي بمهن ومواد وتخصصات ومسارات يمكنك استكشافها فعلاً.",
+    en: "See the careers and study fields your results point to, and simple ways to explore them before you decide.",
+    ar: "اكتشف المهن ومجالات الدراسة التي تشير إليها نتائجك، وطرقاً بسيطة لاستكشافها قبل أن تقرر.",
   },
   "marketing.card3.detail1": {
     en: "Career matches",
@@ -2726,12 +2754,12 @@ export const STRINGS = {
   },
   "marketing.card4.eyebrow": { en: "Your guide", ar: "مرشدتك" },
   "marketing.card4.headline": {
-    en: "Your results become a conversation.",
-    ar: "نتائجك تتحول إلى حوار.",
+    en: "Go deeper with your AI career coach.",
+    ar: "تعمّق أكثر مع مرشدتك المهنية بالذكاء الاصطناعي.",
   },
   "marketing.card4.body": {
-    en: "Kai understands your Tareeq results, so you can ask questions instead of figuring everything out alone.",
-    ar: "كاي تفهم نتائج طريق الخاصة بك، لتتمكن من طرح الأسئلة بدلاً من اكتشاف كل شيء وحدك.",
+    en: "Kai has read your report. Ask anything, think it through, and make the choice yourself.",
+    ar: "قرأت كاي تقريرك. اسأل أي شيء، وفكّر بهدوء، واتخذ قرارك بنفسك.",
   },
   "marketing.card4.detail1": {
     en: "Ask anything about your results",
@@ -2818,6 +2846,98 @@ export const STRINGS = {
     ar: "مجاني خلال مرحلة الاختبار الحالية. سيتم تطبيق التسعير عند الإطلاق العام.",
   },
   "marketing.faq.all": { en: "See all FAQs", ar: "شاهد كل الأسئلة الشائعة" },
+
+  // ---- CORE 2.0 report: navigation chrome (report wording itself comes from file 04) ----
+  "core.nav.label": { en: "Report sections", ar: "أقسام التقرير" },
+  "core.nav.S1": { en: "Your starting point", ar: "نقطة انطلاقك" },
+  "core.nav.S2": { en: "At a glance", ar: "نظرة سريعة" },
+  "core.nav.S3": { en: "Your curiosity", ar: "فضولك" },
+  "core.nav.S4": { en: "Where it leads", ar: "إلى أين يقودك" },
+  "core.nav.S5": { en: "Next steps", ar: "خطواتك التالية" },
+  "core.nav.S6": { en: "For parents", ar: "لأولياء الأمور" },
+  "core.nav.S7": { en: "About", ar: "عن التقرير" },
+  "core.nav.FLAG-NOTE": { en: "A note first", ar: "ملاحظة أولاً" },
+  "core.nav.back": { en: "Back", ar: "السابق" },
+  "core.nav.next": { en: "Next", ar: "التالي" },
+  "core.nav.progress": { en: "Section {current} of {total}", ar: "القسم {current} من {total}" },
+  "core.glance.report_date": {
+    en: "Your CORE report, {date}",
+    ar: "تقرير CORE الخاص بك، {date}",
+  },
+  "core.glance.key_label": { en: "Jump to a letter", ar: "انتقل إلى حرف" },
+  "core.glance.key.C": { en: "Curiosity", ar: "الفضول" },
+  "core.glance.key.O": { en: "Work style", ar: "أسلوب العمل" },
+  "core.glance.key.R": { en: "Motivation", ar: "الدافع" },
+  "core.glance.key.E": { en: "Setting", ar: "البيئة" },
+  "core.glance.almost_level": { en: "Almost level", ar: "متقاربة جداً" },
+  "core.glance.setting_photo_alt": {
+    en: "Two students working side by side at one table",
+    ar: "طالبان يعملان جنباً إلى جنب على طاولة واحدة",
+  },
+  "core.pending": { en: "Wording pending", ar: "النص قيد الإعداد" },
+  "core.preview.banner": {
+    en: "Preview with sample answers. Wording and jobs are placeholders until the final content files arrive.",
+    ar: "معاينة بإجابات تجريبية. النصوص والمهن مؤقتة حتى تصل ملفات المحتوى النهائية.",
+  },
+  "core.jobs.pending": {
+    en: "Jobs for this family come with the full career bank.",
+    ar: "مهن هذه العائلة تأتي مع بنك المهن الكامل.",
+  },
+  "core.cover.preview_label": {
+    en: "Your Career Compass · First look",
+    ar: "بوصلة مسارك المهني · نظرة أولى",
+  },
+  "core.cover.label": { en: "Your starting point", ar: "نقطة انطلاقك" },
+  "core.cover.preview_title": {
+    en: "A little more clarity. A world to explore.",
+    ar: "وضوح أكبر. وعالم يستحق الاستكشاف.",
+  },
+  "core.cover.title": {
+    en: "Your next chapter starts with curiosity.",
+    ar: "فصلك القادم يبدأ بالفضول.",
+  },
+  "core.cover.body": {
+    en: "These are the curiosities your answers point toward today. See what feels familiar, then explore where they could lead.",
+    ar: "هذه المجالات التي تشير إليها إجاباتك اليوم. تأمل ما يشبهك منها، ثم استكشف المسارات التي قد تقودك إليها.",
+  },
+  "core.cover.curiosities": {
+    en: "Your leading curiosities",
+    ar: "أبرز مجالات فضولك",
+  },
+  "core.cover.open": {
+    en: "Explore your CORE picture",
+    ar: "استكشف صورتك في CORE",
+  },
+  "core.cover.guide": { en: "How to read your compass", ar: "كيف تقرأ بوصلتك" },
+  "core.offer.title": {
+    en: "Turn curiosity into possibilities.",
+    ar: "حوّل فضولك إلى فرص.",
+  },
+  "core.offer.body": {
+    en: "Explore career families, understand what fits your way of working, and find practical ways to try a direction.",
+    ar: "استكشف عائلات المهن، وافهم ما يناسب أسلوبك في العمل، واكتشف طرقاً عملية لتجربة مسار.",
+  },
+  "core.offer.picture": {
+    en: "Your work style, motivations and setting",
+    ar: "أسلوب عملك ودوافعك وبيئتك",
+  },
+  "core.offer.careers": {
+    en: "Career families and example jobs to explore",
+    ar: "عائلات مهنية وأمثلة لمهن تستكشفها",
+  },
+  "core.offer.study": {
+    en: "Study fields and questions worth checking",
+    ar: "مجالات الدراسة وأسئلة تستحق البحث",
+  },
+  "core.offer.steps": {
+    en: "Personal next steps and a guide for parents",
+    ar: "خطوات شخصية تالية ودليل لأولياء الأمور",
+  },
+  "core.family.explore": {
+    en: "Explore this family",
+    ar: "استكشف هذه العائلة",
+  },
+  "core.nav.finish": { en: "Choose your next step", ar: "اختر خطوتك التالية" },
 } as const satisfies Record<string, Entry>;
 
 export type StringKey = keyof typeof STRINGS;
