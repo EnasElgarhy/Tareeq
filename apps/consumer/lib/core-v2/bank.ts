@@ -2,8 +2,8 @@ import type { AxisCode, AxisSide, CuriosityCode, MotivatorCode } from "./types";
 
 /**
  * Career bank shape (file 05: 76 families, 304 jobs). Bank order is the
- * array order and breaks every tie in Section 4. An adapter maps the
- * delivered JSON onto this shape once the file arrives.
+ * array order and breaks every tie in Section 4. content/core-content.ts
+ * maps the delivered JSON onto this shape.
  */
 
 export type RouteTag =
@@ -21,9 +21,13 @@ export type RouteTag =
 export interface CareerJob {
   id: string;
   name: string;
+  /** English name: the no-repeat rule compares jobs by it in every language (spec §6.4). */
+  nameEn: string;
   routes: Record<AxisCode, RouteTag>;
   /** Motivators this job "often offers". SEC and FAM are never matched. */
   offers: readonly MotivatorCode[];
+  /** changing_work: shown with a marker and the S4-CHANGING note (spec §6.7). */
+  isChangingWork: boolean;
 }
 
 export interface CareerFamily {

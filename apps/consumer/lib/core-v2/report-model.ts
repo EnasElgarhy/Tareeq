@@ -1,3 +1,4 @@
+import type { Locale } from "@/lib/i18n/locale";
 import type { CareerBank, CareerFamily, CareerJob } from "./bank";
 import {
   clarityBlocks,
@@ -48,8 +49,8 @@ export interface ReportModel {
   clarity: string[];
   /** Motivators not leading (all eight when no small set), in fixed order. */
   otherMotivators: string[];
-  /** Fills [job] in S5-WATCH: article + name as it reads mid-sentence. */
-  watchFill: string;
+  /** Fills [job 1] and [job 2] in S5-WATCH: in English, article + name as it reads mid-sentence. */
+  watchFills: { "job 1": string; "job 2": string };
   /** Fills [family] in S5-TALK. */
   talkFill: string;
   /** Ordered block IDs shown, for core_report_renders (spec §6.8). */
@@ -135,6 +136,12 @@ function sectionBlocks(
         ...(section4.noMatch ? ["S4-NOMATCH"] : []),
         ...(section4.meetCards.length > 0 ? ["S4-MEET-TITLE"] : []),
         ...section4.meetCards.map((card) => card.line),
+        ...(section4.alsoCuriosities.length > 0 ? ["S4-ALSO"] : []),
+        ...([...section4.meetCards, ...section4.directions.flatMap((d) => d.full)].some(
+          (card) => card.hasChangingNote,
+        )
+          ? ["S4-CHANGING"]
+          : []),
         ...(section4.directions.some((d) => d.full.some((f) => f.isClosest))
           ? ["S4-CLOSEST"]
           : []),
@@ -181,10 +188,16 @@ export function buildReportModel(
   result: CoreResult,
   bank: CareerBank,
   flags: { isFlagged: boolean; isFlagsLive: boolean },
+  locale: Locale = "en",
 ): ReportModel {
   const lookup = indexBank(bank);
   const section4 = buildSection4(result, bank);
-  const nextSteps = planNextSteps(result, section4);
+  const nextSteps = planNextSteps(result, section4, (id) => lookup.job(id).nameEn);
+  // Arabic names read as they are; English takes an article mid-sentence.
+  const watchName = (id: string) =>
+    locale === "ar" ? lookup.job(id).name : withArticle(lookup.job(id).name);
+  const familyName = (id: string) =>
+    locale === "ar" ? lookup.family(id).name : inlineName(lookup.family(id).name);
   const sections = planSections(result, flags);
   const clarity = clarityBlocks(result);
 
@@ -205,8 +218,11 @@ export function buildReportModel(
     otherMotivators: MOTIVATOR_CODES.filter(
       (code) => !result.leadingMotivators.includes(code),
     ),
-    watchFill: withArticle(lookup.job(nextSteps.watchJobId).name),
-    talkFill: inlineName(lookup.family(nextSteps.talkFamilyId).name),
+    watchFills: {
+      "job 1": watchName(nextSteps.watchJobIds[0]),
+      "job 2": watchName(nextSteps.watchJobIds[1]),
+    },
+    talkFill: familyName(nextSteps.talkFamilyId),
     blocksShown,
     family: lookup.family,
     job: lookup.job,

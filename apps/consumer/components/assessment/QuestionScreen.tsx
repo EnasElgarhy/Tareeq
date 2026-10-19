@@ -19,6 +19,7 @@ import { useAssessmentAudio } from "@/components/assessment/AssessmentAudioProvi
 import { prefersReducedMotion, uiSounds } from "@/lib/audio/ui-sounds";
 import {
   completeLocalAssessment,
+  completeLocalCoreAssessment,
   ensureLocalAssessment,
   readLocalAssessment,
   saveLocalAnswer,
@@ -39,6 +40,11 @@ import {
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { getLocalizedText, getQuestionPath } from "@/lib/assessment/questions";
 import { computeScore, type Question } from "@/lib/scoring";
+import {
+  coreAnswersFromLetters,
+  isCoreQuestionSet,
+} from "@/lib/core-v2/assessment";
+import { scoreCore } from "@/lib/core-v2/scoring";
 import { trackEvent } from "@/lib/analytics/track";
 
 type AudioState =
@@ -49,6 +55,21 @@ type AudioState =
   | "locked"
   | "unavailable";
 type ExitDirection = "forward" | "back" | null;
+
+/** Scores a finished attempt with the model its questions belong to. */
+function completeAttempt(
+  answers: Record<string, string>,
+  questions: Question[],
+  index: number,
+  version: Parameters<typeof completeLocalAssessment>[2],
+) {
+  if (isCoreQuestionSet(questions)) {
+    const coreResult = scoreCore(coreAnswersFromLetters(answers));
+    completeLocalCoreAssessment(coreResult, index, version);
+    return;
+  }
+  completeLocalAssessment(computeScore(answers, questions), index, version);
+}
 
 interface QuestionScreenProps {
   question: Question;
@@ -377,8 +398,12 @@ export function QuestionScreen({
             router.push(getQuestionPath(index + 1));
             return;
           }
-          const result = computeScore(progress.answers, questions);
-          completeLocalAssessment(result, index, assessmentVersion);
+          completeAttempt(
+            progress.answers,
+            questions,
+            index,
+            assessmentVersion,
+          );
           router.push("/register");
         }, exitDelay);
       }, confirmDelay);
@@ -499,8 +524,7 @@ export function QuestionScreen({
           router.push(getQuestionPath(index + 1));
           return;
         }
-        const result = computeScore(progress.answers, questions);
-        completeLocalAssessment(result, index, assessmentVersion);
+        completeAttempt(progress.answers, questions, index, assessmentVersion);
         router.push("/register");
       },
       prefersReducedMotion() ? 60 : 220,

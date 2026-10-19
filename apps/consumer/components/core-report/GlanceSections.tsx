@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRight, ChevronDown } from "lucide-react";
+import { useState, useSyncExternalStore } from "react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { DiscoveryCover } from "./DiscoveryCover";
 import type { ReportModel } from "@/lib/core-v2/report-model";
@@ -11,12 +12,30 @@ import {
   WorkStyleCard,
 } from "./glance/GlanceCards";
 import { GlanceHeader } from "./glance/GlanceHeader";
+import { GlanceStack, type StackCard } from "./glance/GlanceStack";
 import { DeckCard } from "./glance/deck";
 import { LETTER_FILL } from "./glance/palette";
 import { Block } from "./parts";
 import styles from "./ReportDesign.module.css";
 
 const KEY_LETTERS = ["C", "O", "R", "E"] as const;
+/** Matches the report's desktop breakpoint (the chapter bar, two columns). */
+const DESKTOP_QUERY = "(min-width: 1024px)";
+
+function subscribeToDesktop(onChange: () => void): () => void {
+  const query = window.matchMedia(DESKTOP_QUERY);
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
+}
+
+/** False on the server and on phones/tablets, so the stack renders first. */
+function useIsDesktop(): boolean {
+  return useSyncExternalStore(
+    subscribeToDesktop,
+    () => window.matchMedia(DESKTOP_QUERY).matches,
+    () => false,
+  );
+}
 const BULLETS = ["S1-B1", "S1-B2", "S1-B3", "S1-B4", "S1-B5", "S1-B6"];
 
 /** A personal opening with the original reading notes and CORE key available on demand. */
@@ -106,17 +125,52 @@ export function AtAGlance({
   model: ReportModel;
   generatedAt?: string;
 }) {
+  const isDesktop = useIsDesktop();
+  if (!isDesktop) {
+    return <AtAGlanceStack model={model} generatedAt={generatedAt} />;
+  }
   return (
-    <div className={`grid lg:grid-cols-2 lg:items-start ${styles.overview}`}>
-      <div className="grid gap-4 lg:col-span-2">
-        <GlanceHeader generatedAt={generatedAt} />
-        <CuriosityTile model={model} />
-      </div>
+    <div className={`grid ${styles.overview}`}>
+      <GlanceHeader generatedAt={generatedAt} />
+      <CuriosityTile model={model} />
       <WorkStyleCard model={model} />
       <MotivatorsCard model={model} />
-      <div className="lg:col-span-2">
-        <SettingCard model={model} />
-      </div>
+      <SettingCard model={model} />
+    </div>
+  );
+}
+
+/**
+ * Phones and tablets: the same four cards as a swipeable deck, one at a
+ * time, the next ones peeking underneath. Desktop shows one card per row.
+ */
+function AtAGlanceStack({
+  model,
+  generatedAt,
+}: {
+  model: ReportModel;
+  generatedAt?: string;
+}) {
+  const { t } = useLocale();
+  const [active, setActive] = useState(0);
+  const content = {
+    C: <CuriosityTile model={model} />,
+    O: <WorkStyleCard model={model} />,
+    R: <MotivatorsCard model={model} />,
+    E: <SettingCard model={model} />,
+  };
+  const cards: StackCard[] = KEY_LETTERS.map((letter) => ({
+    id: letter,
+    letter,
+    label: t(`core.glance.key.${letter}`),
+    color: LETTER_FILL[letter],
+    content: content[letter],
+  }));
+
+  return (
+    <div className={`grid ${styles.overview}`}>
+      <GlanceHeader generatedAt={generatedAt} hideKey />
+      <GlanceStack cards={cards} active={active} onActiveChange={setActive} />
     </div>
   );
 }

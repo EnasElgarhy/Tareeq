@@ -1,5 +1,6 @@
 import type { KaiMessage } from "@/lib/kai/chat-types";
 import type { KaiMemoryUpdateCandidate } from "@/lib/kai/memory/memory-types";
+import type { CoreKaiEvent } from "@/lib/kai/core/core-events";
 
 export interface KaiChatResult {
   message: KaiMessage;
@@ -7,6 +8,8 @@ export interface KaiChatResult {
   source: "gemini" | "fallback" | "guardrail";
   memoryUpdates?: KaiMemoryUpdateCandidate[];
   personSummary?: string;
+  /** CORE students: tool calls Kai made this turn (lib/kai/core/core-events.ts). */
+  coreEvents?: CoreKaiEvent[];
   timings?: {
     firstTextMs?: number;
     modelMs: number;

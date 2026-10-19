@@ -40,7 +40,7 @@ function job(
   routes: Partial<Record<keyof typeof MIXED, RouteTag>> = {},
   offers: MotivatorCode[] = [],
 ): CareerJob {
-  return { id, name, routes: { ...MIXED, ...routes }, offers };
+  return { id, name, nameEn: name, routes: { ...MIXED, ...routes }, offers, isChangingWork: false };
 }
 
 function family(

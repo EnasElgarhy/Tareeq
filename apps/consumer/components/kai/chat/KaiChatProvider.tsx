@@ -24,6 +24,8 @@ import {
   writeConversation,
 } from "@/lib/kai/chat-storage";
 import { readKaiChatStream } from "@/lib/kai/chat-stream";
+import type { CoreEntryPromptId } from "@/lib/kai/core/core-context";
+import { readCoreKaiRequest, storeCoreKaiEvents } from "@/lib/kai/core/core-client";
 import { markPaidAccessUnpaid } from "@/lib/payments/use-paid-access";
 import type {
   KaiConversation,
@@ -49,8 +51,11 @@ interface KaiChatContextValue extends ReturnType<typeof useKaiProfile> {
   isTyping: boolean;
   streamingText: string;
   error: string | null;
-  startConversation: (goal: KaiConversationGoal) => void;
-  startWithPrompt: (text: string) => boolean;
+  startConversation: (
+    goal: KaiConversationGoal,
+    entryPromptId?: CoreEntryPromptId,
+  ) => void;
+  startWithPrompt: (text: string, entryPromptId?: CoreEntryPromptId) => boolean;
   sendMessage: (text: string, viaQuickReply?: boolean) => void;
   retryLastMessage: () => void;
   selectThread: (threadId: string) => void;
@@ -259,12 +264,17 @@ export function KaiChatProvider({ children }: { children: ReactNode }) {
           messages: recentMessages(input.conversation),
           memory: currentMemory,
         });
+        // Students with a CORE 2.0 result get the client's Kai (lib/kai/core).
+        const core = readCoreKaiRequest(
+          input.conversation.entryPromptId ?? null,
+        );
         const response = await fetch("/api/kai/chat", {
           method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({
             kind: input.kind,
             context: chatContext,
+            ...(core ? { core } : {}),
             message: input.message,
             threadId,
             threadTitle: input.conversation.title,
@@ -317,6 +327,7 @@ export function KaiChatProvider({ children }: { children: ReactNode }) {
         }
         if (data.summary) latest = { ...latest, summary: data.summary };
         commitThread(latest);
+        if (data.coreEvents?.length) storeCoreKaiEvents(data.coreEvents);
 
         trackEvent("kai_message_received", {
           source: data.source,
@@ -380,11 +391,12 @@ export function KaiChatProvider({ children }: { children: ReactNode }) {
   );
 
   const startConversation = useCallback(
-    (goal: KaiConversationGoal) => {
+    (goal: KaiConversationGoal, entryPromptId?: CoreEntryPromptId) => {
       if (!profile.kaiContext) return;
       const conversation = {
         ...createConversation(goal),
         title: conversationTitle(goal),
+        ...(entryPromptId ? { entryPromptId } : {}),
       };
       commitThread(conversation, true);
       trackEvent("kai_chat_started", { goal });
@@ -394,7 +406,7 @@ export function KaiChatProvider({ children }: { children: ReactNode }) {
   );
 
   const startWithPrompt = useCallback(
-    (text: string) => {
+    (text: string, entryPromptId?: CoreEntryPromptId) => {
       if (!profile.kaiContext) return false;
       const requestId = crypto.randomUUID();
       const assistantMessageId = crypto.randomUUID();
@@ -407,13 +419,22 @@ export function KaiChatProvider({ children }: { children: ReactNode }) {
         createdAt: new Date().toISOString(),
         text,
       };
-      const started = createConversation("build_plan");
+      // An answer tapped under a report question explores the result;
+      // a home-screen prompt keeps the legacy plan goal.
+      const goal: KaiConversationGoal = entryPromptId
+        ? "explain_results"
+        : "build_plan";
+      const started = createConversation(goal);
       const conversation = appendMessage(
-        { ...started, title: conversationTitle("build_plan", text) },
+        {
+          ...started,
+          title: conversationTitle(goal, text),
+          ...(entryPromptId ? { entryPromptId } : {}),
+        },
         userMessage,
       );
       commitThread(conversation, true);
-      trackEvent("kai_chat_started", { goal: "build_plan" });
+      trackEvent("kai_chat_started", { goal });
       trackEvent("kai_message_sent", {
         length: text.length,
         source: "home_prompt",

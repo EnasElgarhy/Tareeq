@@ -14,6 +14,7 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { trackEvent } from "@/lib/analytics/track";
 import { readLocalAssessment } from "@/lib/assessment/progress";
+import { writeCoreReport } from "@/lib/core-v2/storage";
 import type { StringKey } from "@/lib/i18n/strings";
 import { buildFallbackReport } from "@/lib/results/framework";
 import {
@@ -83,7 +84,7 @@ export function AnalyzingScreen() {
     const registration = readResultRegistration();
     const existingReport = readGeneratedReport();
 
-    if (!progress?.completedAt || !progress.result) {
+    if (!progress?.completedAt || (!progress.result && !progress.coreResult)) {
       router.replace("/start");
       return;
     }
@@ -94,6 +95,27 @@ export function AnalyzingScreen() {
 
     if (startedRef.current) return;
     startedRef.current = true;
+
+    // CORE 2.0: the report is assembled from the stored result and the
+    // report wording on this device, so there is nothing to generate.
+    if (progress.coreResult) {
+      writeCoreReport({
+        generatedAt: progress.completedAt,
+        result: progress.coreResult,
+        isFlagged: false,
+      });
+      trackEvent("report_generation_completed", {
+        assessmentId: progress.assessmentId,
+        assessmentVersion: progress.versionLabel,
+        source: "core-v2",
+      });
+      window.setTimeout(() => {
+        setStatus("done");
+        setActiveStage(ANALYSIS_STAGES.length - 1);
+      }, 2400);
+      window.setTimeout(() => router.replace("/compass"), 4200);
+      return;
+    }
 
     // Let a cached report settle into the completed route before revealing it.
     if (existingReport) {

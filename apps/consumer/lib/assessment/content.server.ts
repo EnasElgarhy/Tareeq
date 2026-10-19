@@ -4,6 +4,7 @@ import { unstable_cache } from "next/cache";
 import { cookies } from "next/headers";
 import {
   assessmentVersionCookieName,
+  getCoreAssessmentContent,
   getSeedAssessmentContent,
   mapCmsAssessmentQuestions,
   seedLabelFromCookie,
@@ -12,6 +13,8 @@ import {
   type CmsQuestionRow,
 } from "@/lib/assessment/content";
 import { contentVersion } from "@/lib/content/seed";
+import { CORE_QUESTION_SET_LABEL } from "@/lib/core-v2/assessment";
+import { IS_CORE_V2_LIVE } from "@/lib/core-v2/live";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 type ContentVersionRow = {
@@ -103,6 +106,7 @@ export async function loadPublishedAssessmentContent(versionId: string) {
 }
 
 export async function loadActiveAssessmentContent() {
+  if (IS_CORE_V2_LIVE) return getCoreAssessmentContent();
   const active = await findVersion("is_active", true);
   if (active) {
     const content = await loadPublishedVersionCached(active.id);
@@ -115,6 +119,10 @@ export async function loadAssessmentContentForReference(
   ref: Partial<AssessmentVersionRef>,
 ): Promise<AssessmentContentSnapshot | null> {
   if (ref.versionId) return loadPublishedVersionCached(ref.versionId);
+
+  if (IS_CORE_V2_LIVE && ref.versionLabel === CORE_QUESTION_SET_LABEL) {
+    return getCoreAssessmentContent();
+  }
 
   if (ref.versionLabel) {
     const version = await findVersion("label", ref.versionLabel);
@@ -132,6 +140,7 @@ export async function loadAssessmentContentForReference(
 }
 
 export async function loadAttemptAssessmentContent() {
+  if (IS_CORE_V2_LIVE) return getCoreAssessmentContent();
   const cookieStore = await cookies();
   const value = cookieStore.get(assessmentVersionCookieName)?.value;
   if (!value) return loadActiveAssessmentContent();

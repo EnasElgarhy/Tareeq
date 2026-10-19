@@ -39,13 +39,14 @@ function isValidEmail(value: string) {
 async function persistAssessment(name: string, locale: string) {
   try {
     const progress = readLocalAssessment();
-    if (!progress?.result) return;
+    const result = progress?.result ?? progress?.coreResult;
+    if (!progress || !result) return;
     const response = await fetch("/api/assessments/persist", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         answers: progress.answers,
-        result: progress.result,
+        result,
         locale,
         name,
         startedAt: progress.startedAt,
@@ -103,7 +104,7 @@ export function RegistrationScreen() {
 
   useEffect(() => {
     const progress = readLocalAssessment();
-    if (!progress?.completedAt || !progress.result) {
+    if (!progress?.completedAt || (!progress.result && !progress.coreResult)) {
       router.replace("/start");
       return;
     }

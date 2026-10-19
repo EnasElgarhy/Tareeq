@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { CareerBank, CareerFamily, CareerJob } from "./bank";
 import { flagPart } from "./flags";
-import { buildSection4 } from "./section4";
+import { SCORE_SCALE, buildSection4 } from "./section4";
 import { scoreCore } from "./scoring";
 import { findShifts } from "./shifts";
 import {
@@ -17,8 +17,8 @@ import {
 /**
  * Student profiles across every result shape the spec's acceptance cases
  * cover (§14: cases 01–09). Expected values are worked out by hand from the
- * rules in §4, not produced by running the scorer. When file 08 arrives its
- * exact cases replace these as the acceptance gate.
+ * rules in §4, not produced by running the scorer. The client's exact cases
+ * (file 08) are the acceptance gate in acceptance.test.ts.
  */
 
 const AXIS_SIDES: Record<AxisCode, [counted: AxisSide, other: AxisSide]> = {
@@ -63,6 +63,8 @@ function sampleBank(): CareerBank {
   const job = (id: string, isTagged: boolean): CareerJob => ({
     id,
     name: id,
+    nameEn: id,
+    isChangingWork: false,
     routes: isTagged
       ? { structure: "Set out", focus: "Deep", team: "Together", setting: "Changing" }
       : { structure: "Mixed", focus: "Mixed", team: "Mixed", setting: "Mixed" },
@@ -208,8 +210,9 @@ const PROFILES: Profile[] = [
       margin: 0,
       circleReading: "diverse", // IE(2)–TS(6) is distance 3
     },
-    // All pairs tie on 8: RD+IE, then RD+TS adds TS, then RD+AE adds AE.
-    section4: { meetFamilies: ["RD+IE", "RD+TS", "RD+AE"], directions: [], noMatch: false },
+    // All pairs tie on 8, so the farthest apart lead: IE+TS (3), then RD+TS
+    // adds RD, then IE+AE adds AE (2 apart, ahead of the 1-apart pairs).
+    section4: { meetFamilies: ["IE+TS", "RD+TS", "IE+AE"], directions: [], noMatch: false },
   },
   {
     name: "07 no small set of motivators",
@@ -247,7 +250,8 @@ const PROFILES: Profile[] = [
       },
       leadingShare: 25,
     },
-    section4: { meetFamilies: ["RD+IE", "RD+PW", "RD+EI"], directions: [], noMatch: true },
+    // Every pair ties, so pairs 3 apart lead in fixed order: RD+EI, RD+PE, IE+PE.
+    section4: { meetFamilies: ["RD+EI", "RD+PE", "IE+PE"], directions: [], noMatch: true },
   },
   {
     name: "10 open with two leaders far apart",
@@ -293,7 +297,8 @@ describe("student profiles: what this means for you", () => {
     const top = section.directions[0].full[0];
     expect(top.isClosest).toBe(true);
     expect(top.jobs[0]).toMatchObject({
-      score: 5,
+      // Every part fully matched: work 2/2, setting 2/2, motivators 1/1 → 1.
+      score: SCORE_SCALE,
       workTags: ["structure", "focus", "team", "setting"],
       motivators: ["IMP"],
       isHighlighted: true,

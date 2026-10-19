@@ -30,7 +30,14 @@ function formatReportDate(
  * Top of At a glance: report date and title, then a compact CORE key
  * that jumps to each card below without competing with the result.
  */
-export function GlanceHeader({ generatedAt }: { generatedAt?: string }) {
+export function GlanceHeader({
+  generatedAt,
+  hideKey = false,
+}: {
+  generatedAt?: string;
+  /** The card stack has its own C·O·R·E tabs, so the key is not repeated. */
+  hideKey?: boolean;
+}) {
   const { t, locale } = useLocale();
   const date = formatReportDate(generatedAt, locale);
 
@@ -47,23 +54,25 @@ export function GlanceHeader({ generatedAt }: { generatedAt?: string }) {
         </h2>
       </div>
 
-      <nav aria-label={t("core.glance.key_label")}>
-        <ul className={styles.keyList}>
-          {LETTERS.map((letter) => (
-            <li key={letter}>
-              <a href={`#${glanceCardId(letter)}`} className={styles.keyLink}>
-                <span
-                  className={styles.keyLetter}
-                  style={{ color: LETTER_FILL[letter] }}
-                >
-                  {letter}
-                </span>
-                <span>{t(`core.glance.key.${letter}`)}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      {hideKey ? null : (
+        <nav aria-label={t("core.glance.key_label")}>
+          <ul className={styles.keyList}>
+            {LETTERS.map((letter) => (
+              <li key={letter}>
+                <a href={`#${glanceCardId(letter)}`} className={styles.keyLink}>
+                  <span
+                    className={styles.keyLetter}
+                    style={{ color: LETTER_FILL[letter] }}
+                  >
+                    {letter}
+                  </span>
+                  <span>{t(`core.glance.key.${letter}`)}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
     </header>
   );
 }

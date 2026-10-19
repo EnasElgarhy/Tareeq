@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { assessmentQuestions } from "@/lib/assessment/questions";
+import { CORE_ASSESSMENT_QUESTIONS } from "@/lib/core-v2/assessment";
+import { readCoreReport } from "@/lib/core-v2/storage";
 import {
   assessmentStorageKey,
   readLocalAssessment,
@@ -109,5 +111,39 @@ describe("restoreProfileFromAssessment", () => {
       window.localStorage.getItem(resultRegistrationStorageKey),
     ).toBeNull();
     expect(window.localStorage.getItem(generatedReportStorageKey)).toBeNull();
+  });
+});
+
+describe("restoring a CORE 2.0 attempt after sign-in", () => {
+  beforeEach(() => window.localStorage.clear());
+
+  it("restores the new report, not a legacy report scored from 5.1 answers", () => {
+    const answers = Object.fromEntries([
+      ["QD1", "C"],
+      ...CORE_ASSESSMENT_QUESTIONS.map((q) => [q.externalId, "A"] as const),
+    ]);
+    const snapshot = restoreProfileFromAssessment({
+      assessment: {
+        id: "4431d666-7f56-4773-8cab-bf1ebdd01c4a",
+        answers,
+        completed_at: "2026-10-15T19:54:57.886Z",
+        started_at: null,
+        locale: "en",
+        respondent_name: "Test Student",
+        respondent_email: "student@example.test",
+      },
+      displayName: "",
+      email: "student@example.test",
+      locale: "en",
+    });
+
+    expect(snapshot?.hasAnyResult).toBe(true);
+    expect(readCoreReport()?.result.scoringVersion).toBe("2.0");
+    expect(readCoreReport()?.generatedAt).toBe("2026-10-15T19:54:57.886Z");
+    expect(readGeneratedReport()).toBeNull();
+    expect(readLocalAssessment()?.coreResult).toBeTruthy();
+    expect(readResultRegistration()?.assessmentId).toBe(
+      "4431d666-7f56-4773-8cab-bf1ebdd01c4a",
+    );
   });
 });

@@ -2859,10 +2859,13 @@ export const STRINGS = {
   "core.nav.FLAG-NOTE": { en: "A note first", ar: "ملاحظة أولاً" },
   "core.nav.back": { en: "Back", ar: "السابق" },
   "core.nav.next": { en: "Next", ar: "التالي" },
-  "core.nav.progress": { en: "Section {current} of {total}", ar: "القسم {current} من {total}" },
+  "core.nav.progress": {
+    en: "Section {current} of {total}",
+    ar: "القسم {current} من {total}",
+  },
   "core.glance.report_date": {
     en: "Your CORE report, {date}",
-    ar: "تقرير CORE الخاص بك، {date}",
+    ar: "تقرير كور الخاص بك، {date}",
   },
   "core.glance.key_label": { en: "Jump to a letter", ar: "انتقل إلى حرف" },
   "core.glance.key.C": { en: "Curiosity", ar: "الفضول" },
@@ -2870,15 +2873,58 @@ export const STRINGS = {
   "core.glance.key.R": { en: "Motivation", ar: "الدافع" },
   "core.glance.key.E": { en: "Setting", ar: "البيئة" },
   "core.glance.almost_level": { en: "Almost level", ar: "متقاربة جداً" },
+  "core.kai.asks": { en: "asks", ar: "تسأل" },
+  "core.kai.typing": { en: "is typing", ar: "تكتب" },
+  "core.kai.answer_most": {
+    en: "{name} feels most like me",
+    ar: "{name} هو الأقرب إليّ",
+  },
+  "core.kai.answer_unsure": { en: "I'm not sure yet", ar: "لست متأكداً بعد" },
+  "core.kai.s4_day": {
+    en: "What does a typical day look like?",
+    ar: "كيف يبدو يوم عادي؟",
+  },
+  "core.kai.s4_fit": {
+    en: "How does it fit what motivates me?",
+    ar: "كيف يتوافق مع ما يحفّزني؟",
+  },
+  "core.kai.s5_prepare": {
+    en: "Help me prepare my questions",
+    ar: "ساعدني في تحضير أسئلتي",
+  },
+  "core.kai.s5_tell": {
+    en: "I want to tell you what I tried",
+    ar: "أريد أن أخبرك بما جرّبته",
+  },
+  "core.stack.label": { en: "Your CORE cards", ar: "بطاقات CORE الخاصة بك" },
+  "core.stack.next": { en: "Next card", ar: "البطاقة التالية" },
+  "core.stack.previous": { en: "Previous card", ar: "البطاقة السابقة" },
+  "core.stack.restart": {
+    en: "Back to the first card",
+    ar: "العودة إلى البطاقة الأولى",
+  },
+  "core.stack.count": {
+    en: "Card {current} of {total}",
+    ar: "البطاقة {current} من {total}",
+  },
+  "core.stack.hint": {
+    en: "Swipe or use the arrows",
+    ar: "اسحب أو استخدم الأسهم",
+  },
   "core.glance.setting_photo_alt": {
     en: "Two students working side by side at one table",
     ar: "طالبان يعملان جنباً إلى جنب على طاولة واحدة",
   },
   "core.pending": { en: "Wording pending", ar: "النص قيد الإعداد" },
   "core.preview.banner": {
-    en: "Preview with sample answers. Wording and jobs are placeholders until the final content files arrive.",
-    ar: "معاينة بإجابات تجريبية. النصوص والمهن مؤقتة حتى تصل ملفات المحتوى النهائية.",
+    en: "Preview with sample answers, not a real student's results.",
+    ar: "معاينة بإجابات تجريبية، وليست نتائج طالب حقيقي.",
   },
+  "core.jobs.changing": {
+    en: "Work that is changing",
+    ar: "عمل يتغيّر",
+  },
+  "core.list.and": { en: " and ", ar: "، و" },
   "core.jobs.pending": {
     en: "Jobs for this family come with the full career bank.",
     ar: "مهن هذه العائلة تأتي مع بنك المهن الكامل.",
@@ -2906,7 +2952,7 @@ export const STRINGS = {
   },
   "core.cover.open": {
     en: "Explore your CORE picture",
-    ar: "استكشف صورتك في CORE",
+    ar: "استكشف صورتك في كور",
   },
   "core.cover.guide": { en: "How to read your compass", ar: "كيف تقرأ بوصلتك" },
   "core.offer.title": {

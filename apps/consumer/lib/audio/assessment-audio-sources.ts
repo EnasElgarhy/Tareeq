@@ -54,7 +54,8 @@ function normalizeFallbackSource(
 }
 
 export function isQuestionStaticAudioId(audioId: string) {
-  return /^(Q|QD|QT)\d+$/.test(audioId);
+  // Legacy v4 ids (Q12, QD2) and CORE question set 5.1 ids (P1-07).
+  return /^(Q|QD|QT)\d+$/.test(audioId) || /^P[1-4]-\d{2}$/.test(audioId);
 }
 
 export function resolveAssessmentNarrationSources({

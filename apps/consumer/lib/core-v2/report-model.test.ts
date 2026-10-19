@@ -42,7 +42,9 @@ describe("buildReportModel for the sample student", () => {
   });
 
   it("fills Watch with the meet card's best job and Talk with its family", () => {
-    expect(model.watchFill).toMatch(/^an? [a-z]/);
+    expect(model.watchFills["job 1"]).toMatch(/^an? [a-z]/);
+    expect(model.watchFills["job 2"]).toMatch(/^an? [a-z]/);
+    expect(model.watchFills["job 2"]).not.toBe(model.watchFills["job 1"]);
     expect(model.talkFill).toBe("clinical and health sciences");
   });
 

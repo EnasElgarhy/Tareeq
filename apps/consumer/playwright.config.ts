@@ -1,5 +1,12 @@
 import { defineConfig, devices } from "@playwright/test";
 
+// Point the run at a dev server that is already up (E2E_BASE_URL), instead of
+// starting a second `next dev` here: two servers in this directory share
+// `.next` and delete each other's chunks.
+const existingServer = process.env.E2E_BASE_URL;
+// Optional explicit browser, for machines with a versioned Playwright cache.
+const executablePath = process.env.E2E_CHROME_PATH;
+
 export default defineConfig({
   testDir: "./e2e",
   fullyParallel: true,
@@ -14,13 +21,19 @@ export default defineConfig({
   workers: process.env.CI ? 1 : 2,
   reporter: "html",
   use: {
-    baseURL: "http://localhost:3100",
+    baseURL: existingServer ?? "http://localhost:3100",
     trace: "on-first-retry",
   },
   projects: [
-    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+    {
+      name: "chromium",
+      use: {
+        ...devices["Desktop Chrome"],
+        ...(executablePath ? { launchOptions: { executablePath } } : {}),
+      },
+    },
   ],
-  webServer: {
+  webServer: existingServer ? undefined : {
     // Fixed, non-default port: 3000 is commonly already occupied by another
     // project's dev server on this machine, and reuseExistingServer would
     // silently reuse that unrelated server instead of failing loudly.

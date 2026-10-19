@@ -27,8 +27,9 @@ import {
 import { getQuestionPath } from "@/lib/assessment/questions";
 import { trackEvent } from "@/lib/analytics/track";
 import type { StringKey } from "@/lib/i18n/strings";
+import { readCoreReport } from "@/lib/core-v2/storage";
+import { readCurrentReportGeneratedAt } from "@/lib/results/current-report";
 import {
-  readGeneratedReport,
   readPlatformConsent,
   readResultRegistration,
   writePlatformConsent,
@@ -192,7 +193,13 @@ export function AssessmentStart({
 
   function continueCompleted() {
     uiSounds.advance();
-    if (readGeneratedReport()) {
+    // A finished CORE 2.0 attempt whose report isn't built yet goes on to
+    // registration / analysis even when an older legacy report exists.
+    const progress = readLocalAssessment();
+    const coreReportPending =
+      Boolean(progress?.coreResult) &&
+      readCoreReport()?.generatedAt !== progress?.completedAt;
+    if (!coreReportPending && readCurrentReportGeneratedAt()) {
       router.push("/compass");
       return;
     }

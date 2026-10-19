@@ -10,6 +10,7 @@ import type {
 } from "@/lib/kai/chat-types";
 import { KAI_MESSAGE_INTENTS, type KaiMessageIntent } from "@/lib/kai/intent";
 import type { KaiLearningResource } from "@/lib/kai/resource-types";
+import { parseCoreKaiRequest, type CoreKaiRequest } from "@/lib/kai/core/core-request";
 
 /**
  * Pure request/response handling for /api/kai/chat, kept out of route.ts —
@@ -26,6 +27,8 @@ export interface ChatRequestBody {
   requestId?: string;
   userMessageId?: string;
   assistantMessageId?: string;
+  /** Present for students with a CORE 2.0 result: Kai runs the client prompt. */
+  core?: unknown;
 }
 
 export interface ValidatedChatRequest {
@@ -37,6 +40,7 @@ export interface ValidatedChatRequest {
   requestId?: string;
   userMessageId?: string;
   assistantMessageId?: string;
+  core?: CoreKaiRequest;
 }
 
 const PERSONAL_MEDICAL_ADVICE_PATTERN =
@@ -319,6 +323,13 @@ export function validateChatRequest(
     }
   }
 
+  let core: CoreKaiRequest | undefined;
+  if (candidate.core !== undefined && candidate.core !== null) {
+    const parsedCore = parseCoreKaiRequest(candidate.core);
+    if (!parsedCore.ok) return { ok: false, error: parsedCore.error };
+    core = parsedCore.value;
+  }
+
   return {
     ok: true,
     value: {
@@ -333,6 +344,7 @@ export function validateChatRequest(
       requestId: candidate.requestId,
       userMessageId: candidate.userMessageId,
       assistantMessageId: candidate.assistantMessageId,
+      ...(core ? { core } : {}),
     },
   };
 }

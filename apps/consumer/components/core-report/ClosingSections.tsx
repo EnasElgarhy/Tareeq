@@ -3,8 +3,10 @@
 import {
   ChatsCircle,
   Check,
+  ClipboardText,
   Flask,
   GraduationCap,
+  Handshake,
   PlayCircle,
   X,
   type Icon,
@@ -14,6 +16,7 @@ import { ParentsIcon } from "@/components/brand/DomainIcons";
 import type { ReportModel } from "@/lib/core-v2/report-model";
 import { DeckCard, DeckHeader } from "./glance/deck";
 import { LETTER_FILL } from "./glance/palette";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import { Block, KaiPrompt } from "./parts";
 
 const bodyText = "text-[14px] leading-relaxed text-[color:var(--day-ink-2)]";
@@ -29,6 +32,7 @@ function Step({
   children,
 }: {
   icon: Icon;
+  /** The block whose label (the text before its first colon) heads the step. */
   labelId: string;
   isLast?: boolean;
   children: ReactNode;
@@ -49,7 +53,7 @@ function Step({
       </span>
       <div className="grid min-w-0 flex-1 gap-2 pt-2">
         <h3 className="daybreak-heading text-[18px] leading-tight text-[color:var(--day-ink)]">
-          <Block id={labelId} />
+          <Block id={labelId} part="lead" />
         </h3>
         {children}
       </div>
@@ -75,6 +79,7 @@ function Questions({ ids }: { ids: string[] }) {
 
 /** Section 5 · Your next steps (spec §6.5). Watch, Try, Talk, Ask is a real sequence. */
 export function NextStepsSection({ model }: { model: ReportModel }) {
+  const { t } = useLocale();
   const { nextSteps } = model;
   const hasAsk = nextSteps.askBlocks.length > 0;
   return (
@@ -82,9 +87,9 @@ export function NextStepsSection({ model }: { model: ReportModel }) {
       <DeckHeader titleId="S5-TITLE" introId="S5-INTRO" />
       <DeckCard className="lg:p-6">
         <ol className="grid max-w-[640px]">
-          <Step icon={PlayCircle} labelId="S5-WATCH-LABEL">
+          <Step icon={PlayCircle} labelId="S5-WATCH">
             <p className={bodyText}>
-              <Block id="S5-WATCH" fills={{ job: model.watchFill }} />
+              <Block id="S5-WATCH" fills={model.watchFills} part="rest" />
             </p>
           </Step>
           <Step icon={Flask} labelId="S5-TRY-LABEL">
@@ -96,40 +101,57 @@ export function NextStepsSection({ model }: { model: ReportModel }) {
               ))}
             </ul>
           </Step>
-          <Step icon={ChatsCircle} labelId="S5-TALK-LABEL" isLast={!hasAsk}>
+          <Step icon={ChatsCircle} labelId="S5-TALK" isLast={!hasAsk}>
             <p className={bodyText}>
-              <Block id="S5-TALK" fills={{ family: model.talkFill }} />
+              <Block id="S5-TALK" fills={{ family: model.talkFill }} part="rest" />
             </p>
             <Questions ids={nextSteps.talkBlocks} />
           </Step>
           {hasAsk ? (
-            <Step icon={GraduationCap} labelId="S5-ASK-LABEL" isLast>
+            <Step icon={GraduationCap} labelId="S5-ASK" isLast>
               <p className={bodyText}>
-                <Block id="S5-ASK" />
+                <Block id="S5-ASK" part="rest" />
               </p>
               <Questions ids={nextSteps.askBlocks} />
             </Step>
           ) : null}
         </ol>
       </DeckCard>
-      <KaiPrompt questionId="S5-KAI-Q" />
+      <KaiPrompt
+        questionId="S5-KAI-Q"
+        answers={[t("core.kai.s5_prepare"), t("core.kai.s5_tell")]}
+      />
     </div>
   );
 }
 
+/** The four practical points after the lead, each with its own mark. */
+const PARENT_TIPS: ReadonlyArray<{ id: string; icon: Icon }> = [
+  { id: "S6-B2", icon: ChatsCircle },
+  { id: "S6-B3", icon: ClipboardText },
+  { id: "S6-B4", icon: Handshake },
+  { id: "S6-B5", icon: GraduationCap },
+];
+
 /**
  * Section 6 · For parents (spec §6.6): the same for every student. Written
- * for a different reader, so it gets its own filled tile.
+ * for a different reader, so it gets its own filled tile. The first block
+ * frames the whole report (not ability, not a prediction), so it leads as a
+ * statement; the other four are practical tips a parent can scan.
  */
 export function ParentsSection() {
   return (
     <section
       aria-labelledby="core-s6-title"
-      className="relative overflow-hidden rounded-[28px] px-5 pb-6 pt-5 text-white lg:px-7 lg:pb-7 lg:pt-6"
+      className="relative isolate overflow-hidden rounded-[28px] px-5 pb-5 pt-5 text-white lg:px-8 lg:pb-8 lg:pt-7"
       style={{ background: LETTER_FILL.E }}
     >
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute -end-24 -top-24 -z-10 size-72 rounded-full bg-white/[0.07] blur-2xl"
+      />
       <div className="flex items-center gap-3">
-        <span className="grid size-12 shrink-0 place-items-center rounded-[16px] bg-[#fffcf6]">
+        <span className="grid size-12 shrink-0 place-items-center rounded-[16px] bg-[#fffcf6] shadow-[0_8px_20px_rgba(20,10,50,0.25)]">
           <ParentsIcon size={26} />
         </span>
         <h2
@@ -139,14 +161,24 @@ export function ParentsSection() {
           <Block id="S6-TITLE" />
         </h2>
       </div>
-      <ul className="mt-5 grid max-w-[68ch] gap-3.5">
-        {["S6-B1", "S6-B2", "S6-B3", "S6-B4", "S6-B5"].map((id) => (
-          <li key={id} className="flex gap-3 text-[14.5px] leading-relaxed text-white/90">
+
+      <p className="daybreak-heading mt-5 max-w-[34ch] border-s-2 border-[#f2c94c] ps-4 text-[18px] leading-snug text-white lg:mt-6 lg:max-w-[46ch] lg:text-[22px]">
+        <Block id="S6-B1" />
+      </p>
+
+      <ul className="mt-5 grid gap-2.5 lg:mt-7 lg:grid-cols-2 lg:gap-3">
+        {PARENT_TIPS.map(({ id, icon: TipIcon }) => (
+          <li
+            key={id}
+            className="flex gap-3 rounded-[20px] border border-white/15 bg-white/[0.08] p-4 backdrop-blur-sm transition-colors hover:bg-white/[0.12] lg:p-5"
+          >
             <span
               aria-hidden="true"
-              className="mt-[9px] size-2 shrink-0 rounded-full bg-[#e3dcf5]"
-            />
-            <span>
+              className="grid size-9 shrink-0 place-items-center rounded-[12px] bg-[#fffcf6] text-[color:var(--daybreak-violet-deep)]"
+            >
+              <TipIcon size={19} weight="duotone" />
+            </span>
+            <span className="text-[14px] leading-relaxed text-white/90 lg:text-[14.5px]">
               <Block id={id} />
             </span>
           </li>

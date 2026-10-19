@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 import type { CareerBank, CareerFamily, CareerJob, RouteTag } from "./bank";
-import { buildSection4, choosePairs, jobMatch, worthChecking } from "./section4";
+import {
+  SCORE_SCALE,
+  buildSection4,
+  choosePairs,
+  jobMatch,
+  worthChecking,
+} from "./section4";
 import {
   CURIOSITY_CODES,
   type AxisResult,
@@ -20,7 +26,14 @@ function job(
   routes: Partial<Record<keyof typeof MIXED_ROUTES, RouteTag>> = {},
   offers: MotivatorCode[] = [],
 ): CareerJob {
-  return { id, name: `Job ${id}`, routes: { ...MIXED_ROUTES, ...routes }, offers };
+  return {
+    id,
+    name: `Job ${id}`,
+    nameEn: `Job ${id}`,
+    routes: { ...MIXED_ROUTES, ...routes },
+    offers,
+    isChangingWork: false,
+  };
 }
 
 function family(
@@ -81,7 +94,8 @@ describe("jobMatch", () => {
     // focus is evenly split, so "Deep" never counts.
     expect(match.workTags).toEqual(["structure", "team"]);
     expect(match.motivators).toEqual(["IMP"]);
-    expect(match.score).toBe(3);
+    // Equal thirds: work 1/1, setting 1/1, motivators 1/2 → 5/6.
+    expect(match.score).toBe((5 / 6) * SCORE_SCALE);
   });
 
   it("never matches Mixed, No data, Security or Family", () => {
@@ -106,10 +120,11 @@ describe("choosePairs", () => {
         directionClarity: "close",
       }),
     );
-    // TS+RD = 9 and TS+PW = 9 tie; fixed order puts RD before PW.
+    // TS+RD = 9 and TS+PW = 9 tie; the pair farther apart on the circle
+    // (TS+PW, 3 apart) comes first, then TS+RD adds RD.
     expect(pairs).toEqual([
-      ["RD", "TS"],
-      ["PW", "TS"],
+      ["TS", "PW"],
+      ["TS", "RD"],
     ]);
   });
 
@@ -121,12 +136,12 @@ describe("choosePairs", () => {
         directionClarity: "open",
       }),
     );
-    // All sums tie at 8 → fixed order: RD+PE, RD+IR, RD+AE, PE+IR, …
-    // RD+PE covers RD, PE; RD+IR adds IR; RD+AE adds AE → three pairs.
+    // All sums tie at 8 → farther apart first: RD+PE (3), PE+IR (2), PE+AE (2), …
+    // RD+PE covers RD, PE; PE+IR adds IR; PE+AE adds AE → three pairs.
     expect(pairs).toEqual([
       ["RD", "PE"],
-      ["RD", "IR"],
-      ["RD", "AE"],
+      ["PE", "IR"],
+      ["PE", "AE"],
     ]);
   });
 });
@@ -170,10 +185,10 @@ describe("buildSection4", () => {
     expect(direction.more).toEqual(["RD3", "RD5", "RD6"]);
     expect(direction.full[0].isClosest).toBe(true);
     expect(direction.full[1].isClosest).toBe(false);
-    // Jobs by score: RD4-1 (2) then RD4-3 (1), then bank order.
-    expect(direction.full[0].jobs.map((j) => [j.jobId, j.score])).toEqual([
-      ["RD4-1", 2],
-      ["RD4-3", 1],
+    // Jobs by score: RD4-1 (1/2) then RD4-3 (1/3), then bank order.
+    expect(direction.full[0].jobs.map((j) => [j.jobId, j.score / SCORE_SCALE])).toEqual([
+      ["RD4-1", 1 / 2],
+      ["RD4-3", 1 / 3],
       ["RD4-2", 0],
       ["RD4-4", 0],
     ]);
@@ -218,5 +233,25 @@ describe("buildSection4", () => {
       ),
     ).toThrow(/RD\+PW/);
   });
-});
 
+  it("hides a job already shown on an earlier card and notes changing work", () => {
+    const shared = (id: string, isChangingWork = false): CareerJob => ({
+      ...job(id, { structure: "Set out" }),
+      nameEn: "Shared job",
+      isChangingWork,
+    });
+    const families = neutralBank().map((fam) =>
+      fam.id === "RD1"
+        ? family("RD1", ["RD"], [shared("RD1-1"), job("RD1-2"), job("RD1-3"), job("RD1-4")])
+        : fam.id === "RD2"
+          ? family("RD2", ["RD"], [shared("RD2-1", true), job("RD2-2"), job("RD2-3"), job("RD2-4")])
+          : fam,
+    );
+    const [first, second] = buildSection4(result(), { families }).directions[0].full;
+    expect(first.jobs.map((j) => j.jobId)).toContain("RD1-1");
+    expect(second.jobs.map((j) => j.jobId)).not.toContain("RD2-1");
+    expect(second.hiddenRepeatJobIds).toEqual(["RD2-1"]);
+    // The only changing-work job was hidden, so no note.
+    expect(second.hasChangingNote).toBe(false);
+  });
+});

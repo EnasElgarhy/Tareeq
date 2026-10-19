@@ -23,6 +23,11 @@ import {
   PaidAccessChecking,
   PaidFeatureLock,
 } from "@/components/access/PaidFeatureLock";
+import {
+  CORE_ENTRY_PROMPT_IDS,
+  type CoreEntryPromptId,
+} from "@/lib/kai/core/core-context";
+import { hasCoreKaiResult } from "@/lib/kai/core/core-client";
 import { usePaidAccess } from "@/lib/payments/use-paid-access";
 import { trackEvent } from "@/lib/analytics/track";
 import type { KaiConversationGoal } from "@/lib/kai/chat-types";
@@ -47,6 +52,10 @@ function parseGoal(requested: string | null): KaiConversationGoal | null {
   return requested && VALID_GOALS.includes(requested)
     ? (requested as KaiConversationGoal)
     : null;
+}
+
+function parseEntryPrompt(requested: string | null): CoreEntryPromptId | null {
+  return CORE_ENTRY_PROMPT_IDS.find((id) => id === requested) ?? null;
 }
 
 function KaiChatExperience() {
@@ -76,6 +85,13 @@ function KaiChatExperience() {
   );
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const consumedLaunchRef = useRef<string | null>(null);
+  // A CORE 2.0 student has no legacy assessment context but does have a
+  // result: Kai runs on the client prompt for them (lib/kai/core).
+  const [hasCoreResult, setHasCoreResult] = useState(false);
+
+  useEffect(() => {
+    setHasCoreResult(hasCoreKaiResult());
+  }, []);
 
   useEffect(() => {
     // Read the PRIOR last-seen value before overwriting it with "now" —
@@ -113,11 +129,20 @@ function KaiChatExperience() {
     const launchKey = searchParams.toString();
     const prompt = searchParams.get("prompt")?.trim() || null;
     const goal = parseGoal(searchParams.get("goal"));
-    if ((!prompt && !goal) || consumedLaunchRef.current === launchKey) return;
+    // A report section's "Discuss this with Kai" (spec §6.7).
+    const entry = parseEntryPrompt(searchParams.get("entry"));
+    if ((!prompt && !goal && !entry) || consumedLaunchRef.current === launchKey)
+      return;
     consumedLaunchRef.current = launchKey;
 
     if (prompt) {
-      if (startWithPrompt(prompt)) router.replace("/kai", { scroll: false });
+      if (startWithPrompt(prompt, entry ?? undefined))
+        router.replace("/kai", { scroll: false });
+      return;
+    }
+    if (entry) {
+      startConversation(goal ?? "explain_results", entry);
+      router.replace("/kai", { scroll: false });
       return;
     }
     if (goal) {
@@ -172,7 +197,7 @@ function KaiChatExperience() {
     );
   }
 
-  if (!kaiContext.assessment) {
+  if (!kaiContext.assessment && !hasCoreResult) {
     return (
       <section className="daybreak-reveal grid flex-1 place-items-center px-2 py-8 text-center">
         <div className="rounded-story relative grid w-full max-w-[520px] justify-items-center gap-4 overflow-hidden border border-[#413664] bg-[#221248] px-6 py-10 text-[#FFFCF6] shadow-[0_24px_60px_rgba(34,18,72,0.22)]">
@@ -265,10 +290,14 @@ function KaiChatExperience() {
         </div>
       </header>
 
-      <KaiGroundingCard
-        assessment={kaiContext.assessment}
-        onOpen={() => trackEvent("kai_grounding_opened", {})}
-      />
+      {/* Legacy result facts (cluster, archetype, confidence %): CORE students
+       * never see these, the client prompt rules out internal terms. */}
+      {kaiContext.assessment && !hasCoreResult ? (
+        <KaiGroundingCard
+          assessment={kaiContext.assessment}
+          onOpen={() => trackEvent("kai_grounding_opened", {})}
+        />
+      ) : null}
 
       {!conversation ? (
         <>

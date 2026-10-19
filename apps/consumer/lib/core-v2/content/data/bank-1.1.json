@@ -1,0 +1,6205 @@
+{
+ "name": "CORE Career Suggestion Bank",
+ "version": "1.1",
+ "status": "Reviewed by founder",
+ "date": "2026-10-17",
+ "source_credit": "Job information is adapted from O*NET 31.0 (U.S. Department of Labor, Employment and Training Administration), used under the CC BY 4.0 licence, and from BLS OEWS May 2025 and international occupational prestige data.",
+ "notes": [
+  "Families appear in bank order within each curiosity (bank_order) when nothing in the student's answers distinguishes them.",
+  "Route tags: structure Set out/Open/Mixed; focus Deep/Broad/Mixed; team Together/Own/Mixed; setting Steady/Changing/Mixed; 'No data' never matches.",
+  "Arabic names (family_ar, study_fields_ar, job_ar) are complete and founder-reviewed (17 Oct 2026).",
+  "changing_work = true marks jobs shown with the 'changing work' marker and block S4-CHANGING (see Specification 6.7).",
+  "Tags and motivators use a frozen yardstick: cut-offs from the O*NET records in the 3 Oct 2026 bank (bank v1.0), so editing one job never changes another."
+ ],
+ "families": [
+  {
+   "family_id": "F-RD-1",
+   "type": "single",
+   "clusters": [
+    "RD"
+   ],
+   "bank_order": 1,
+   "family": "Medicine and health sciences",
+   "family_ar": "الطب والعلوم الصحية",
+   "study_fields": "Medicine, pharmacy, biomedical science, medical laboratory science",
+   "study_fields_ar": "الطب، الصيدلة، العلوم الطبية الحيوية، علوم المختبرات الطبية",
+   "jobs": [
+    {
+     "job_id": "F-RD-1-J1",
+     "job": "Doctor (e.g. radiologist or pathologist)",
+     "job_ar": "طبيب (مثل أخصائي الأشعة أو علم الأمراض)",
+     "onet_code": "29-1224.00",
+     "onet_title": "Radiologists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Income",
+      "Recognition",
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-1-J2",
+     "job": "Pharmacist",
+     "job_ar": "صيدلي",
+     "onet_code": "29-1051.00",
+     "onet_title": "Pharmacists",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Impact",
+      "Income",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-1-J3",
+     "job": "Medical laboratory scientist",
+     "job_ar": "أخصائي مختبرات طبية",
+     "onet_code": "29-2011.00",
+     "onet_title": "Medical and Clinical Laboratory Technologists",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Steady",
+     "often_offers": [
+      "Lifestyle",
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-1-J4",
+     "job": "Biomedical researcher",
+     "job_ar": "باحث في العلوم الطبية الحيوية",
+     "onet_code": "19-1042.00",
+     "onet_title": "Medical Scientists, Except Epidemiologists",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Together",
+     "setting": "Steady",
+     "often_offers": [
+      "Mastery",
+      "Recognition",
+      "Autonomy"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-RD-2",
+   "type": "single",
+   "clusters": [
+    "RD"
+   ],
+   "bank_order": 2,
+   "family": "Life and environmental sciences",
+   "family_ar": "علوم الحياة والبيئة",
+   "study_fields": "Biology, environmental science, marine science, food science",
+   "study_fields_ar": "الأحياء، علوم البيئة، علوم البحار، علوم الأغذية",
+   "jobs": [
+    {
+     "job_id": "F-RD-2-J1",
+     "job": "Biologist",
+     "job_ar": "عالم أحياء",
+     "onet_code": "19-1029.04",
+     "onet_title": "Biologists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Mastery",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-2-J2",
+     "job": "Marine scientist",
+     "job_ar": "عالم أحياء بحرية",
+     "onet_code": "19-1023.00",
+     "onet_title": "Zoologists and Wildlife Biologists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-2-J3",
+     "job": "Environmental scientist",
+     "job_ar": "أخصائي علوم البيئة",
+     "onet_code": "19-2041.00",
+     "onet_title": "Environmental Scientists and Specialists, Including Health",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Lifestyle",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-2-J4",
+     "job": "Food scientist",
+     "job_ar": "أخصائي علوم الأغذية",
+     "onet_code": "19-1012.00",
+     "onet_title": "Food Scientists and Technologists",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Recognition"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-RD-3",
+   "type": "single",
+   "clusters": [
+    "RD"
+   ],
+   "bank_order": 3,
+   "family": "Physical and earth sciences",
+   "family_ar": "الفيزياء والكيمياء وعلوم الأرض",
+   "study_fields": "Chemistry, physics, geology, earth and atmospheric science",
+   "study_fields_ar": "الكيمياء، الفيزياء، الجيولوجيا، علوم الأرض والغلاف الجوي",
+   "jobs": [
+    {
+     "job_id": "F-RD-3-J1",
+     "job": "Chemist",
+     "job_ar": "كيميائي",
+     "onet_code": "19-2031.00",
+     "onet_title": "Chemists",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Recognition",
+      "Lifestyle",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-3-J2",
+     "job": "Physicist",
+     "job_ar": "فيزيائي",
+     "onet_code": "19-2012.00",
+     "onet_title": "Physicists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Recognition",
+      "Income",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-3-J3",
+     "job": "Geologist",
+     "job_ar": "جيولوجي",
+     "onet_code": "19-2042.00",
+     "onet_title": "Geoscientists, Except Hydrologists and Geographers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Recognition",
+      "Autonomy"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-3-J4",
+     "job": "Meteorologist",
+     "job_ar": "خبير أرصاد جوية",
+     "onet_code": "19-2021.00",
+     "onet_title": "Atmospheric and Space Scientists",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [
+      "Recognition"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-RD-4",
+   "type": "single",
+   "clusters": [
+    "RD"
+   ],
+   "bank_order": 4,
+   "family": "Human behaviour and society",
+   "family_ar": "السلوك الإنساني والمجتمع",
+   "study_fields": "Psychology, economics, sociology, social sciences",
+   "study_fields_ar": "علم النفس، الاقتصاد، علم الاجتماع، العلوم الاجتماعية",
+   "jobs": [
+    {
+     "job_id": "F-RD-4-J1",
+     "job": "Workplace psychologist",
+     "job_ar": "أخصائي علم النفس المهني",
+     "onet_code": "19-3032.00",
+     "onet_title": "Industrial-Organizational Psychologists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Steady",
+     "often_offers": [
+      "Income",
+      "Recognition",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-4-J2",
+     "job": "Economist",
+     "job_ar": "خبير اقتصادي",
+     "onet_code": "19-3011.00",
+     "onet_title": "Economists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Mastery",
+      "Income",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-4-J3",
+     "job": "Social researcher",
+     "job_ar": "باحث اجتماعي",
+     "onet_code": "19-3041.00",
+     "onet_title": "Sociologists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Recognition",
+      "Mastery",
+      "Autonomy"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-4-J4",
+     "job": "Market researcher",
+     "job_ar": "محلل أسواق",
+     "onet_code": "13-1161.00",
+     "onet_title": "Market Research Analysts and Marketing Specialists",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Lifestyle"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-RD-5",
+   "type": "single",
+   "clusters": [
+    "RD"
+   ],
+   "bank_order": 5,
+   "family": "Data and patterns",
+   "family_ar": "البيانات والأنماط",
+   "study_fields": "Mathematics, statistics, data science, actuarial science",
+   "study_fields_ar": "الرياضيات، الإحصاء، علم البيانات، العلوم الاكتوارية",
+   "jobs": [
+    {
+     "job_id": "F-RD-5-J1",
+     "job": "Financial data analyst",
+     "job_ar": "محلل بيانات مالية",
+     "onet_code": "13-2099.01",
+     "onet_title": "Financial Quantitative Analysts",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-5-J2",
+     "job": "Statistician",
+     "job_ar": "إحصائي",
+     "onet_code": "15-2041.00",
+     "onet_title": "Statisticians",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Mixed",
+     "setting": "Steady",
+     "often_offers": [
+      "Mastery",
+      "Autonomy"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-5-J3",
+     "job": "Actuary",
+     "job_ar": "خبير اكتواري (تقدير المخاطر في التأمين)",
+     "onet_code": "15-2011.00",
+     "onet_title": "Actuaries",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Deep",
+     "team": "Mixed",
+     "setting": "Steady",
+     "often_offers": [
+      "Income",
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-5-J4",
+     "job": "Operations research analyst",
+     "job_ar": "محلل بحوث العمليات",
+     "onet_code": "15-2031.00",
+     "onet_title": "Operations Research Analysts",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Steady",
+     "often_offers": [
+      "Mastery",
+      "Autonomy"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-RD-6",
+   "type": "single",
+   "clusters": [
+    "RD"
+   ],
+   "bank_order": 6,
+   "family": "Investigation and diagnosis",
+   "family_ar": "التقصّي والتشخيص",
+   "study_fields": "Forensic science, public health, chemistry, archaeology",
+   "study_fields_ar": "علوم الأدلة الجنائية، الصحة العامة، الكيمياء، علم الآثار",
+   "jobs": [
+    {
+     "job_id": "F-RD-6-J1",
+     "job": "Forensic scientist",
+     "job_ar": "أخصائي أدلة جنائية",
+     "onet_code": "19-4092.00",
+     "onet_title": "Forensic Science Technicians",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Own",
+     "setting": "Changing",
+     "often_offers": [],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-6-J2",
+     "job": "Epidemiologist",
+     "job_ar": "أخصائي علم الأوبئة",
+     "onet_code": "19-1041.00",
+     "onet_title": "Epidemiologists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Mastery",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-6-J3",
+     "job": "Quality scientist",
+     "job_ar": "أخصائي مراقبة الجودة",
+     "onet_code": "19-4099.01",
+     "onet_title": "Quality Control Analysts",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-6-J4",
+     "job": "Archaeologist",
+     "job_ar": "عالم آثار",
+     "onet_code": "19-3091.00",
+     "onet_title": "Anthropologists and Archeologists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [
+      "Recognition",
+      "Mastery",
+      "Autonomy"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-IE-1",
+   "type": "single",
+   "clusters": [
+    "IE"
+   ],
+   "bank_order": 1,
+   "family": "Design",
+   "family_ar": "التصميم",
+   "study_fields": "Graphic design, visual communication, interior design, product design",
+   "study_fields_ar": "التصميم الجرافيكي، الاتصال المرئي، التصميم الداخلي، تصميم المنتجات",
+   "jobs": [
+    {
+     "job_id": "F-IE-1-J1",
+     "job": "Graphic designer",
+     "job_ar": "مصمم جرافيك",
+     "onet_code": "27-1024.00",
+     "onet_title": "Graphic Designers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Steady",
+     "often_offers": [
+      "Recognition",
+      "Mastery"
+     ],
+     "changing_work": true
+    },
+    {
+     "job_id": "F-IE-1-J2",
+     "job": "UX/UI designer",
+     "job_ar": "مصمم تجربة وواجهة المستخدم",
+     "onet_code": "15-1255.00",
+     "onet_title": "Web and Digital Interface Designers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Together",
+     "setting": "Steady",
+     "often_offers": [
+      "Lifestyle",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-1-J3",
+     "job": "Interior designer",
+     "job_ar": "مصمم داخلي",
+     "onet_code": "27-1025.00",
+     "onet_title": "Interior Designers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Autonomy",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-1-J4",
+     "job": "Product designer",
+     "job_ar": "مصمم منتجات",
+     "onet_code": "27-1021.00",
+     "onet_title": "Commercial and Industrial Designers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Recognition"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-IE-2",
+   "type": "single",
+   "clusters": [
+    "IE"
+   ],
+   "bank_order": 2,
+   "family": "Architecture and spaces",
+   "family_ar": "العمارة والمساحات",
+   "study_fields": "Architecture, landscape architecture, urban design",
+   "study_fields_ar": "العمارة، عمارة المناظر الطبيعية، التصميم العمراني",
+   "jobs": [
+    {
+     "job_id": "F-IE-2-J1",
+     "job": "Architect",
+     "job_ar": "مهندس معماري",
+     "onet_code": "17-1011.00",
+     "onet_title": "Architects, Except Landscape and Naval",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Autonomy",
+      "Mastery",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-2-J2",
+     "job": "Landscape architect",
+     "job_ar": "مهندس تنسيق المواقع والمناظر الطبيعية",
+     "onet_code": "17-1012.00",
+     "onet_title": "Landscape Architects",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Recognition",
+      "Autonomy"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-2-J3",
+     "job": "Architectural visualiser",
+     "job_ar": "مصمم معماري ثلاثي الأبعاد",
+     "onet_code": "17-3011.00",
+     "onet_title": "Architectural and Civil Drafters",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-2-J4",
+     "job": "Set and exhibition designer",
+     "job_ar": "مصمم ديكور المسارح والمعارض",
+     "onet_code": "27-1027.00",
+     "onet_title": "Set and Exhibit Designers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Steady",
+     "often_offers": [
+      "Mastery"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-IE-3",
+   "type": "single",
+   "clusters": [
+    "IE"
+   ],
+   "bank_order": 3,
+   "family": "Writing and storytelling",
+   "family_ar": "الكتابة ورواية القصص",
+   "study_fields": "Journalism, creative writing, Arabic or English literature, media studies",
+   "study_fields_ar": "الصحافة، الكتابة الإبداعية، الأدب العربي أو الإنجليزي، الدراسات الإعلامية",
+   "jobs": [
+    {
+     "job_id": "F-IE-3-J1",
+     "job": "Journalist",
+     "job_ar": "صحفي",
+     "onet_code": "27-3023.00",
+     "onet_title": "News Analysts, Reporters, and Journalists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Changing",
+     "often_offers": [
+      "Recognition",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-3-J2",
+     "job": "Scriptwriter",
+     "job_ar": "كاتب سيناريو",
+     "onet_code": "27-3043.00",
+     "onet_title": "Writers and Authors",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-3-J3",
+     "job": "Copywriter",
+     "job_ar": "كاتب محتوى إعلاني",
+     "onet_code": "27-3043.00",
+     "onet_title": "Writers and Authors",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-3-J4",
+     "job": "Editor",
+     "job_ar": "محرر",
+     "onet_code": "27-3041.00",
+     "onet_title": "Editors",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Autonomy",
+      "Recognition"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-IE-4",
+   "type": "single",
+   "clusters": [
+    "IE"
+   ],
+   "bank_order": 4,
+   "family": "Film, photography and animation",
+   "family_ar": "الأفلام والتصوير والرسوم المتحركة",
+   "study_fields": "Film and media production, animation, photography, digital media",
+   "study_fields_ar": "إنتاج الأفلام والإعلام، الرسوم المتحركة، التصوير الفوتوغرافي، الإعلام الرقمي",
+   "jobs": [
+    {
+     "job_id": "F-IE-4-J1",
+     "job": "Film director",
+     "job_ar": "مخرج أفلام",
+     "onet_code": "27-2012.00",
+     "onet_title": "Producers and Directors",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Autonomy",
+      "Recognition",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-4-J2",
+     "job": "Photographer",
+     "job_ar": "مصور فوتوغرافي",
+     "onet_code": "27-4021.00",
+     "onet_title": "Photographers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Own",
+     "setting": "Changing",
+     "often_offers": [],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-4-J3",
+     "job": "Video editor",
+     "job_ar": "محرر فيديو (مونتير)",
+     "onet_code": "27-4032.00",
+     "onet_title": "Film and Video Editors",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Recognition",
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-4-J4",
+     "job": "Animator",
+     "job_ar": "رسام رسوم متحركة",
+     "onet_code": "27-1014.00",
+     "onet_title": "Special Effects Artists and Animators",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Recognition",
+      "Autonomy"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-IE-5",
+   "type": "single",
+   "clusters": [
+    "IE"
+   ],
+   "bank_order": 5,
+   "family": "Music and performance",
+   "family_ar": "الموسيقى والفنون الأدائية",
+   "study_fields": "Music, performing arts, sound engineering",
+   "study_fields_ar": "الموسيقى، الفنون الأدائية، هندسة الصوت",
+   "jobs": [
+    {
+     "job_id": "F-IE-5-J1",
+     "job": "Musician",
+     "job_ar": "موسيقي",
+     "onet_code": "27-2042.00",
+     "onet_title": "Musicians and Singers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Deep",
+     "team": "Together",
+     "setting": "Steady",
+     "often_offers": [
+      "Lifestyle",
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-5-J2",
+     "job": "Actor",
+     "job_ar": "ممثل",
+     "onet_code": "27-2011.00",
+     "onet_title": "Actors",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Deep",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-5-J3",
+     "job": "Presenter",
+     "job_ar": "مقدّم برامج",
+     "onet_code": "27-3011.00",
+     "onet_title": "Broadcast Announcers and Radio Disc Jockeys",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Deep",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-5-J4",
+     "job": "Sound designer",
+     "job_ar": "مصمم صوت",
+     "onet_code": "27-4014.00",
+     "onet_title": "Sound Engineering Technicians",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Autonomy",
+      "Impact"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-IE-6",
+   "type": "single",
+   "clusters": [
+    "IE"
+   ],
+   "bank_order": 6,
+   "family": "Fashion and crafts",
+   "family_ar": "الأزياء والحِرف الفنية",
+   "study_fields": "Fashion design, textile design, jewellery design",
+   "study_fields_ar": "تصميم الأزياء، تصميم المنسوجات، تصميم المجوهرات",
+   "jobs": [
+    {
+     "job_id": "F-IE-6-J1",
+     "job": "Fashion designer",
+     "job_ar": "مصمم أزياء",
+     "onet_code": "27-1022.00",
+     "onet_title": "Fashion Designers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-6-J2",
+     "job": "Jewellery designer",
+     "job_ar": "مصمم مجوهرات",
+     "onet_code": "51-9071.00",
+     "onet_title": "Jewelers and Precious Stone and Metal Workers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-6-J3",
+     "job": "Textile designer",
+     "job_ar": "مصمم منسوجات",
+     "onet_code": "27-1022.00",
+     "onet_title": "Fashion Designers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-6-J4",
+     "job": "Makeup artist",
+     "job_ar": "خبير تجميل",
+     "onet_code": "39-5091.00",
+     "onet_title": "Makeup Artists, Theatrical and Performance",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-PW-1",
+   "type": "single",
+   "clusters": [
+    "PW"
+   ],
+   "bank_order": 1,
+   "family": "Patient care and therapy",
+   "family_ar": "رعاية المرضى والعلاج",
+   "study_fields": "Nursing, physiotherapy, speech and language therapy, medicine",
+   "study_fields_ar": "التمريض، العلاج الطبيعي، علاج النطق واللغة، الطب",
+   "jobs": [
+    {
+     "job_id": "F-PW-1-J1",
+     "job": "Nurse",
+     "job_ar": "ممرض",
+     "onet_code": "29-1141.00",
+     "onet_title": "Registered Nurses",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact",
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-1-J2",
+     "job": "Physiotherapist",
+     "job_ar": "أخصائي علاج طبيعي",
+     "onet_code": "29-1123.00",
+     "onet_title": "Physical Therapists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Impact",
+      "Lifestyle",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-1-J3",
+     "job": "Speech therapist",
+     "job_ar": "أخصائي علاج النطق",
+     "onet_code": "29-1127.00",
+     "onet_title": "Speech-Language Pathologists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Impact",
+      "Lifestyle",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-1-J4",
+     "job": "Doctor (e.g. family doctor)",
+     "job_ar": "طبيب (مثل طبيب الأسرة)",
+     "onet_code": "29-1215.00",
+     "onet_title": "Family Medicine Physicians",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Income",
+      "Recognition",
+      "Impact"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-PW-2",
+   "type": "single",
+   "clusters": [
+    "PW"
+   ],
+   "bank_order": 2,
+   "family": "Mind and counselling",
+   "family_ar": "الصحة النفسية والإرشاد",
+   "study_fields": "Psychology, counselling, clinical psychology",
+   "study_fields_ar": "علم النفس، الإرشاد النفسي، علم النفس الإكلينيكي",
+   "jobs": [
+    {
+     "job_id": "F-PW-2-J1",
+     "job": "Counsellor",
+     "job_ar": "مرشد نفسي",
+     "onet_code": "21-1014.00",
+     "onet_title": "Mental Health Counselors",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [
+      "Impact",
+      "Mastery",
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-2-J2",
+     "job": "Clinical psychologist",
+     "job_ar": "أخصائي علم النفس الإكلينيكي",
+     "onet_code": "19-3033.00",
+     "onet_title": "Clinical and Counseling Psychologists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Impact",
+      "Mastery",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-2-J3",
+     "job": "School counsellor",
+     "job_ar": "مرشد طلابي",
+     "onet_code": "21-1012.00",
+     "onet_title": "Educational, Guidance, and Career Counselors and Advisors",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Impact",
+      "Mastery",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-2-J4",
+     "job": "Family therapist",
+     "job_ar": "معالج أسري",
+     "onet_code": "21-1013.00",
+     "onet_title": "Marriage and Family Therapists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Impact",
+      "Autonomy",
+      "Mastery"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-PW-3",
+   "type": "single",
+   "clusters": [
+    "PW"
+   ],
+   "bank_order": 3,
+   "family": "Teaching and learning",
+   "family_ar": "التعليم والتعلّم",
+   "study_fields": "Education, a subject degree with a teaching qualification, special education",
+   "study_fields_ar": "التربية، شهادة في مادة دراسية مع مؤهل تربوي، التربية الخاصة",
+   "jobs": [
+    {
+     "job_id": "F-PW-3-J1",
+     "job": "Teacher",
+     "job_ar": "معلم",
+     "onet_code": "25-2031.00",
+     "onet_title": "Secondary School Teachers, Except Special and Career/Technical Education",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [
+      "Impact",
+      "Recognition",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-3-J2",
+     "job": "Special education teacher",
+     "job_ar": "معلم تربية خاصة",
+     "onet_code": "25-2058.00",
+     "onet_title": "Special Education Teachers, Secondary School",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Impact",
+      "Recognition",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-3-J3",
+     "job": "Early years educator",
+     "job_ar": "معلم طفولة مبكرة",
+     "onet_code": "25-2011.00",
+     "onet_title": "Preschool Teachers, Except Special Education",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Deep",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Lifestyle",
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-3-J4",
+     "job": "Education specialist",
+     "job_ar": "أخصائي تربوي",
+     "onet_code": "25-9031.00",
+     "onet_title": "Instructional Coordinators",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Autonomy",
+      "Mastery",
+      "Impact"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-PW-4",
+   "type": "single",
+   "clusters": [
+    "PW"
+   ],
+   "bank_order": 4,
+   "family": "Coaching and people development",
+   "family_ar": "الكوتشينج وتنمية الأفراد",
+   "study_fields": "Human resources, psychology, education",
+   "study_fields_ar": "الموارد البشرية، علم النفس، التربية",
+   "jobs": [
+    {
+     "job_id": "F-PW-4-J1",
+     "job": "Career or life coach",
+     "job_ar": "كوتش مهني أو حياتي",
+     "onet_code": "21-1012.00",
+     "onet_title": "Educational, Guidance, and Career Counselors and Advisors",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Impact",
+      "Mastery",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-4-J2",
+     "job": "Corporate trainer",
+     "job_ar": "مدرب في المؤسسات",
+     "onet_code": "13-1151.00",
+     "onet_title": "Training and Development Specialists",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Steady",
+     "often_offers": [
+      "Impact",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-4-J3",
+     "job": "Learning and development specialist",
+     "job_ar": "أخصائي التعلّم والتطوير",
+     "onet_code": "11-3131.00",
+     "onet_title": "Training and Development Managers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Steady",
+     "often_offers": [
+      "Income",
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-4-J4",
+     "job": "HR specialist",
+     "job_ar": "أخصائي موارد بشرية",
+     "onet_code": "13-1071.00",
+     "onet_title": "Human Resources Specialists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Impact",
+      "Lifestyle"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-PW-5",
+   "type": "single",
+   "clusters": [
+    "PW"
+   ],
+   "bank_order": 5,
+   "family": "Community and social care",
+   "family_ar": "الرعاية المجتمعية والاجتماعية",
+   "study_fields": "Social work, development studies, sociology, public health",
+   "study_fields_ar": "الخدمة الاجتماعية، دراسات التنمية، علم الاجتماع، الصحة العامة",
+   "jobs": [
+    {
+     "job_id": "F-PW-5-J1",
+     "job": "Social worker",
+     "job_ar": "أخصائي اجتماعي",
+     "onet_code": "21-1021.00",
+     "onet_title": "Child, Family, and School Social Workers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-5-J2",
+     "job": "Community health worker",
+     "job_ar": "عامل صحة مجتمعية",
+     "onet_code": "21-1094.00",
+     "onet_title": "Community Health Workers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact",
+      "Lifestyle",
+      "Autonomy"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-5-J3",
+     "job": "Community support worker",
+     "job_ar": "عامل دعم مجتمعي",
+     "onet_code": "21-1093.00",
+     "onet_title": "Social and Human Service Assistants",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact",
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-5-J4",
+     "job": "Youth activities leader",
+     "job_ar": "قائد أنشطة شبابية",
+     "onet_code": "39-9032.00",
+     "onet_title": "Recreation Workers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Impact",
+      "Lifestyle",
+      "Autonomy"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-PW-6",
+   "type": "single",
+   "clusters": [
+    "PW"
+   ],
+   "bank_order": 6,
+   "family": "Service and hospitality",
+   "family_ar": "الخدمة والضيافة",
+   "study_fields": "Hospitality management, tourism, customer experience",
+   "study_fields_ar": "إدارة الضيافة، السياحة، تجربة العملاء",
+   "jobs": [
+    {
+     "job_id": "F-PW-6-J1",
+     "job": "Guest relations officer",
+     "job_ar": "موظف علاقات الضيوف",
+     "onet_code": "39-6012.00",
+     "onet_title": "Concierges",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact",
+      "Lifestyle"
+     ],
+     "changing_work": true
+    },
+    {
+     "job_id": "F-PW-6-J2",
+     "job": "Cabin crew",
+     "job_ar": "طاقم الضيافة الجوية",
+     "onet_code": "53-2031.00",
+     "onet_title": "Flight Attendants",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact",
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-6-J3",
+     "job": "Patient experience coordinator",
+     "job_ar": "منسق تجربة المرضى",
+     "onet_code": "29-2099.08",
+     "onet_title": "Patient Representatives",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [
+      "Impact",
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-6-J4",
+     "job": "Tourism professional",
+     "job_ar": "أخصائي سياحة",
+     "onet_code": "39-7012.00",
+     "onet_title": "Travel Guides",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Deep",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-EI-1",
+   "type": "single",
+   "clusters": [
+    "EI"
+   ],
+   "bank_order": 1,
+   "family": "Starting and running businesses",
+   "family_ar": "تأسيس الأعمال وإدارتها",
+   "study_fields": "Business administration, entrepreneurship, management",
+   "study_fields_ar": "إدارة الأعمال، ريادة الأعمال، الإدارة",
+   "jobs": [
+    {
+     "job_id": "F-EI-1-J1",
+     "job": "Entrepreneur",
+     "job_ar": "رائد أعمال",
+     "onet_code": "11-1011.00",
+     "onet_title": "Chief Executives",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Income",
+      "Autonomy",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-1-J2",
+     "job": "Business manager",
+     "job_ar": "مدير أعمال",
+     "onet_code": "11-1021.00",
+     "onet_title": "General and Operations Managers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Autonomy",
+      "Impact",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-1-J3",
+     "job": "Startup founder",
+     "job_ar": "مؤسس شركة ناشئة",
+     "onet_code": "11-1011.00",
+     "onet_title": "Chief Executives",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Income",
+      "Autonomy",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-1-J4",
+     "job": "Family business leader",
+     "job_ar": "قائد في شركة عائلية",
+     "onet_code": "11-1021.00",
+     "onet_title": "General and Operations Managers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Autonomy",
+      "Impact",
+      "Recognition"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-EI-2",
+   "type": "single",
+   "clusters": [
+    "EI"
+   ],
+   "bank_order": 2,
+   "family": "Marketing, communications and sales",
+   "family_ar": "التسويق والاتصال والمبيعات",
+   "study_fields": "Marketing, mass communication, public relations, business",
+   "study_fields_ar": "التسويق، الإعلام، العلاقات العامة، إدارة الأعمال",
+   "jobs": [
+    {
+     "job_id": "F-EI-2-J1",
+     "job": "Marketing manager",
+     "job_ar": "مدير تسويق",
+     "onet_code": "11-2021.00",
+     "onet_title": "Marketing Managers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Income",
+      "Autonomy",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-2-J2",
+     "job": "Brand strategist",
+     "job_ar": "خبير استراتيجيات العلامات التجارية",
+     "onet_code": "11-2011.00",
+     "onet_title": "Advertising and Promotions Managers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Steady",
+     "often_offers": [
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-2-J3",
+     "job": "Public relations specialist",
+     "job_ar": "أخصائي علاقات عامة",
+     "onet_code": "27-3031.00",
+     "onet_title": "Public Relations Specialists",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Deep",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Autonomy",
+      "Mastery",
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-2-J4",
+     "job": "Sales manager",
+     "job_ar": "مدير مبيعات",
+     "onet_code": "11-2022.00",
+     "onet_title": "Sales Managers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Income",
+      "Autonomy"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-EI-3",
+   "type": "single",
+   "clusters": [
+    "EI"
+   ],
+   "bank_order": 3,
+   "family": "Law and advocacy",
+   "family_ar": "القانون والمحاماة",
+   "study_fields": "Law, Sharia and law",
+   "study_fields_ar": "القانون، الشريعة والقانون",
+   "jobs": [
+    {
+     "job_id": "F-EI-3-J1",
+     "job": "Lawyer",
+     "job_ar": "محامٍ",
+     "onet_code": "23-1011.00",
+     "onet_title": "Lawyers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [
+      "Recognition",
+      "Income",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-3-J2",
+     "job": "Legal advisor",
+     "job_ar": "مستشار قانوني",
+     "onet_code": "23-1011.00",
+     "onet_title": "Lawyers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [
+      "Recognition",
+      "Income",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-3-J3",
+     "job": "Prosecutor",
+     "job_ar": "وكيل نيابة",
+     "onet_code": "23-1011.00",
+     "onet_title": "Lawyers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [
+      "Recognition",
+      "Income",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-3-J4",
+     "job": "Judge",
+     "job_ar": "قاضٍ",
+     "onet_code": "23-1023.00",
+     "onet_title": "Judges, Magistrate Judges, and Magistrates",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Deep",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Autonomy",
+      "Recognition",
+      "Mastery"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-EI-4",
+   "type": "single",
+   "clusters": [
+    "EI"
+   ],
+   "bank_order": 4,
+   "family": "Diplomacy, government and policy",
+   "family_ar": "الدبلوماسية والحكومة والسياسات",
+   "study_fields": "International relations, political science, public policy",
+   "study_fields_ar": "العلاقات الدولية، العلوم السياسية، السياسات العامة",
+   "jobs": [
+    {
+     "job_id": "F-EI-4-J1",
+     "job": "Diplomat",
+     "job_ar": "دبلوماسي",
+     "onet_code": "19-3094.00",
+     "onet_title": "Political Scientists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Mastery",
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-4-J2",
+     "job": "Policy advisor",
+     "job_ar": "مستشار سياسات",
+     "onet_code": "19-3094.00",
+     "onet_title": "Political Scientists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Mastery",
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-4-J3",
+     "job": "Government relations specialist",
+     "job_ar": "أخصائي علاقات حكومية",
+     "onet_code": "27-3031.00",
+     "onet_title": "Public Relations Specialists",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Deep",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Autonomy",
+      "Mastery",
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-4-J4",
+     "job": "Parliament or council member",
+     "job_ar": "عضو مجلس نيابي أو استشاري",
+     "onet_code": "11-1031.00",
+     "onet_title": "Legislators",
+     "interest_check": "fits",
+     "structure": "No data",
+     "focus": "No data",
+     "team": "No data",
+     "setting": "No data",
+     "often_offers": [
+      "Impact"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-EI-5",
+   "type": "single",
+   "clusters": [
+    "EI"
+   ],
+   "bank_order": 5,
+   "family": "Investment, real estate and deals",
+   "family_ar": "الاستثمار والعقارات والصفقات",
+   "study_fields": "Finance, economics, real estate, business",
+   "study_fields_ar": "المالية، الاقتصاد، العقارات، إدارة الأعمال",
+   "jobs": [
+    {
+     "job_id": "F-EI-5-J1",
+     "job": "Investment analyst",
+     "job_ar": "محلل استثمار",
+     "onet_code": "13-2051.00",
+     "onet_title": "Financial and Investment Analysts",
+     "interest_check": "fits",
+     "structure": "No data",
+     "focus": "No data",
+     "team": "No data",
+     "setting": "No data",
+     "often_offers": [],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-5-J2",
+     "job": "Real estate developer",
+     "job_ar": "مطوّر عقاري",
+     "onet_code": "11-9141.00",
+     "onet_title": "Property, Real Estate, and Community Association Managers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Autonomy"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-5-J3",
+     "job": "Banker",
+     "job_ar": "مصرفي",
+     "onet_code": "41-3031.00",
+     "onet_title": "Securities, Commodities, and Financial Services Sales Agents",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-5-J4",
+     "job": "Wealth manager",
+     "job_ar": "مدير ثروات",
+     "onet_code": "13-2052.00",
+     "onet_title": "Personal Financial Advisors",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [
+      "Lifestyle"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-EI-6",
+   "type": "single",
+   "clusters": [
+    "EI"
+   ],
+   "bank_order": 6,
+   "family": "Events, sports and tourism management",
+   "family_ar": "إدارة الفعاليات والرياضة والسياحة",
+   "study_fields": "Event management, sports management, tourism management",
+   "study_fields_ar": "إدارة الفعاليات، الإدارة الرياضية، إدارة السياحة",
+   "jobs": [
+    {
+     "job_id": "F-EI-6-J1",
+     "job": "Event manager",
+     "job_ar": "مدير فعاليات",
+     "onet_code": "13-1121.00",
+     "onet_title": "Meeting, Convention, and Event Planners",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-6-J2",
+     "job": "Sports manager",
+     "job_ar": "مدير رياضي",
+     "onet_code": "11-9072.00",
+     "onet_title": "Entertainment and Recreation Managers, Except Gambling",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Autonomy"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-6-J3",
+     "job": "Travel consultant",
+     "job_ar": "مستشار سفر",
+     "onet_code": "41-3041.00",
+     "onet_title": "Travel Agents",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-6-J4",
+     "job": "Hotel manager",
+     "job_ar": "مدير فندق",
+     "onet_code": "11-9081.00",
+     "onet_title": "Lodging Managers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact",
+      "Autonomy"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-PE-1",
+   "type": "single",
+   "clusters": [
+    "PE"
+   ],
+   "bank_order": 1,
+   "family": "Finance and accounting",
+   "family_ar": "المالية والمحاسبة",
+   "study_fields": "Accounting, finance",
+   "study_fields_ar": "المحاسبة، المالية",
+   "jobs": [
+    {
+     "job_id": "F-PE-1-J1",
+     "job": "Accountant",
+     "job_ar": "محاسب",
+     "onet_code": "13-2011.00",
+     "onet_title": "Accountants and Auditors",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [],
+     "changing_work": true
+    },
+    {
+     "job_id": "F-PE-1-J2",
+     "job": "Financial controller",
+     "job_ar": "مراقب مالي",
+     "onet_code": "11-3031.01",
+     "onet_title": "Treasurers and Controllers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Income",
+      "Autonomy",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PE-1-J3",
+     "job": "Treasury officer (cash and liquidity)",
+     "job_ar": "أخصائي إدارة النقد والسيولة",
+     "onet_code": "11-3031.01",
+     "onet_title": "Treasurers and Controllers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Income",
+      "Autonomy",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PE-1-J4",
+     "job": "Tax specialist",
+     "job_ar": "أخصائي ضرائب",
+     "onet_code": "13-2082.00",
+     "onet_title": "Tax Preparers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-PE-2",
+   "type": "single",
+   "clusters": [
+    "PE"
+   ],
+   "bank_order": 2,
+   "family": "Audit, risk and compliance",
+   "family_ar": "التدقيق والمخاطر والامتثال",
+   "study_fields": "Accounting, finance, risk management, law",
+   "study_fields_ar": "المحاسبة، المالية، إدارة المخاطر، القانون",
+   "jobs": [
+    {
+     "job_id": "F-PE-2-J1",
+     "job": "Auditor",
+     "job_ar": "مدقق حسابات",
+     "onet_code": "13-2011.00",
+     "onet_title": "Accountants and Auditors",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [],
+     "changing_work": true
+    },
+    {
+     "job_id": "F-PE-2-J2",
+     "job": "Compliance officer",
+     "job_ar": "مسؤول امتثال",
+     "onet_code": "13-1041.00",
+     "onet_title": "Compliance Officers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PE-2-J3",
+     "job": "Risk analyst",
+     "job_ar": "محلل مخاطر",
+     "onet_code": "13-2054.00",
+     "onet_title": "Financial Risk Specialists",
+     "interest_check": "fits",
+     "structure": "No data",
+     "focus": "No data",
+     "team": "No data",
+     "setting": "No data",
+     "often_offers": [
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PE-2-J4",
+     "job": "Regulatory specialist",
+     "job_ar": "أخصائي شؤون تنظيمية",
+     "onet_code": "13-1041.07",
+     "onet_title": "Regulatory Affairs Specialists",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Deep",
+     "team": "Together",
+     "setting": "Steady",
+     "often_offers": [],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-PE-3",
+   "type": "single",
+   "clusters": [
+    "PE"
+   ],
+   "bank_order": 3,
+   "family": "Operations, logistics and supply chain",
+   "family_ar": "العمليات والخدمات اللوجستية وسلاسل الإمداد",
+   "study_fields": "Supply chain and logistics, operations management, business",
+   "study_fields_ar": "سلاسل الإمداد والخدمات اللوجستية، إدارة العمليات، إدارة الأعمال",
+   "jobs": [
+    {
+     "job_id": "F-PE-3-J1",
+     "job": "Logistics coordinator",
+     "job_ar": "منسق خدمات لوجستية",
+     "onet_code": "13-1081.00",
+     "onet_title": "Logisticians",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Autonomy"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PE-3-J2",
+     "job": "Supply chain manager",
+     "job_ar": "مدير سلاسل الإمداد",
+     "onet_code": "11-3071.04",
+     "onet_title": "Supply Chain Managers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Autonomy",
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PE-3-J3",
+     "job": "Operations manager",
+     "job_ar": "مدير عمليات",
+     "onet_code": "11-1021.00",
+     "onet_title": "General and Operations Managers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Autonomy",
+      "Impact",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PE-3-J4",
+     "job": "Procurement specialist",
+     "job_ar": "أخصائي مشتريات",
+     "onet_code": "13-1023.00",
+     "onet_title": "Purchasing Agents, Except Wholesale, Retail, and Farm Products",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-PE-4",
+   "type": "single",
+   "clusters": [
+    "PE"
+   ],
+   "bank_order": 4,
+   "family": "Project and programme management",
+   "family_ar": "إدارة المشاريع والبرامج",
+   "study_fields": "Project management, business, engineering management",
+   "study_fields_ar": "إدارة المشاريع، إدارة الأعمال، الإدارة الهندسية",
+   "jobs": [
+    {
+     "job_id": "F-PE-4-J1",
+     "job": "Project manager",
+     "job_ar": "مدير مشاريع",
+     "onet_code": "13-1082.00",
+     "onet_title": "Project Management Specialists",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Together",
+     "setting": "Steady",
+     "often_offers": [],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PE-4-J2",
+     "job": "Project coordinator",
+     "job_ar": "منسق مشاريع",
+     "onet_code": "13-1082.00",
+     "onet_title": "Project Management Specialists",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Together",
+     "setting": "Steady",
+     "often_offers": [],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PE-4-J3",
+     "job": "Project analyst",
+     "job_ar": "محلل مشاريع",
+     "onet_code": "13-1111.00",
+     "onet_title": "Management Analysts",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PE-4-J4",
+     "job": "Construction planner",
+     "job_ar": "مخطط مشاريع إنشائية",
+     "onet_code": "13-1051.00",
+     "onet_title": "Cost Estimators",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-PE-5",
+   "type": "single",
+   "clusters": [
+    "PE"
+   ],
+   "bank_order": 5,
+   "family": "Government and organisational administration",
+   "family_ar": "الإدارة الحكومية والمؤسسية",
+   "study_fields": "Public administration, business administration",
+   "study_fields_ar": "الإدارة العامة، إدارة الأعمال",
+   "jobs": [
+    {
+     "job_id": "F-PE-5-J1",
+     "job": "Government administrator",
+     "job_ar": "إداري حكومي",
+     "onet_code": "11-3012.00",
+     "onet_title": "Administrative Services Managers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact",
+      "Autonomy",
+      "Lifestyle"
+     ],
+     "changing_work": true
+    },
+    {
+     "job_id": "F-PE-5-J2",
+     "job": "Urban and regional planner",
+     "job_ar": "مخطط عمراني وإقليمي",
+     "onet_code": "19-3051.00",
+     "onet_title": "Urban and Regional Planners",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Recognition",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PE-5-J3",
+     "job": "HR administrator",
+     "job_ar": "إداري موارد بشرية",
+     "onet_code": "43-4161.00",
+     "onet_title": "Human Resources Assistants, Except Payroll and Timekeeping",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PE-5-J4",
+     "job": "Government services officer",
+     "job_ar": "موظف خدمات حكومية",
+     "onet_code": "43-4061.00",
+     "onet_title": "Eligibility Interviewers, Government Programs",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [
+      "Lifestyle"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-PE-6",
+   "type": "single",
+   "clusters": [
+    "PE"
+   ],
+   "bank_order": 6,
+   "family": "Quality, information and records",
+   "family_ar": "الجودة والمعلومات والسجلات",
+   "study_fields": "Quality management, information management, health informatics",
+   "study_fields_ar": "إدارة الجودة، إدارة المعلومات، المعلوماتية الصحية",
+   "jobs": [
+    {
+     "job_id": "F-PE-6-J1",
+     "job": "Quality assurance specialist",
+     "job_ar": "أخصائي ضمان الجودة",
+     "onet_code": "11-3051.01",
+     "onet_title": "Quality Control Systems Managers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Recognition",
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PE-6-J2",
+     "job": "IT project manager",
+     "job_ar": "مدير مشاريع تقنية المعلومات",
+     "onet_code": "15-1299.09",
+     "onet_title": "Information Technology Project Managers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Autonomy",
+      "Mastery",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PE-6-J3",
+     "job": "Document management specialist",
+     "job_ar": "أخصائي إدارة الوثائق",
+     "onet_code": "15-1299.03",
+     "onet_title": "Document Management Specialists",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Lifestyle",
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PE-6-J4",
+     "job": "Archivist",
+     "job_ar": "أمين أرشيف",
+     "onet_code": "25-4011.00",
+     "onet_title": "Archivists",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [
+      "Lifestyle",
+      "Mastery"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-TS-1",
+   "type": "single",
+   "clusters": [
+    "TS"
+   ],
+   "bank_order": 1,
+   "family": "Software and app development",
+   "family_ar": "تطوير البرمجيات والتطبيقات",
+   "study_fields": "Computer science, software engineering",
+   "study_fields_ar": "علوم الحاسوب، هندسة البرمجيات",
+   "jobs": [
+    {
+     "job_id": "F-TS-1-J1",
+     "job": "Software engineer",
+     "job_ar": "مهندس برمجيات",
+     "onet_code": "15-1252.00",
+     "onet_title": "Software Developers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Together",
+     "setting": "Steady",
+     "often_offers": [
+      "Lifestyle",
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-TS-1-J2",
+     "job": "Mobile app developer",
+     "job_ar": "مطوّر تطبيقات الهاتف",
+     "onet_code": "15-1252.00",
+     "onet_title": "Software Developers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Together",
+     "setting": "Steady",
+     "often_offers": [
+      "Lifestyle",
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-TS-1-J3",
+     "job": "Web developer",
+     "job_ar": "مطوّر مواقع إلكترونية",
+     "onet_code": "15-1254.00",
+     "onet_title": "Web Developers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Autonomy"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-TS-1-J4",
+     "job": "Game developer",
+     "job_ar": "مطوّر ألعاب",
+     "onet_code": "15-1255.01",
+     "onet_title": "Video Game Designers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Deep",
+     "team": "Together",
+     "setting": "Steady",
+     "often_offers": [
+      "Autonomy",
+      "Mastery"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-TS-2",
+   "type": "single",
+   "clusters": [
+    "TS"
+   ],
+   "bank_order": 2,
+   "family": "Artificial intelligence",
+   "family_ar": "الذكاء الاصطناعي",
+   "study_fields": "Computer science, artificial intelligence, mathematics",
+   "study_fields_ar": "علوم الحاسوب، الذكاء الاصطناعي، الرياضيات",
+   "jobs": [
+    {
+     "job_id": "F-TS-2-J1",
+     "job": "AI engineer",
+     "job_ar": "مهندس ذكاء اصطناعي",
+     "onet_code": "15-1221.00",
+     "onet_title": "Computer and Information Research Scientists",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Steady",
+     "often_offers": [
+      "Mastery",
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-TS-2-J2",
+     "job": "Machine learning engineer",
+     "job_ar": "مهندس تعلّم آلي",
+     "onet_code": "15-1221.00",
+     "onet_title": "Computer and Information Research Scientists",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Steady",
+     "often_offers": [
+      "Mastery",
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-TS-2-J3",
+     "job": "Arabic-language AI specialist",
+     "job_ar": "أخصائي ذكاء اصطناعي للغة العربية",
+     "onet_code": "15-1221.00",
+     "onet_title": "Computer and Information Research Scientists",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Steady",
+     "often_offers": [
+      "Mastery",
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-TS-2-J4",
+     "job": "Computer vision engineer",
+     "job_ar": "مهندس رؤية حاسوبية",
+     "onet_code": "15-1221.00",
+     "onet_title": "Computer and Information Research Scientists",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Steady",
+     "often_offers": [
+      "Mastery",
+      "Income"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-TS-3",
+   "type": "single",
+   "clusters": [
+    "TS"
+   ],
+   "bank_order": 3,
+   "family": "Cybersecurity",
+   "family_ar": "الأمن السيبراني",
+   "study_fields": "Cybersecurity, computer science",
+   "study_fields_ar": "الأمن السيبراني، علوم الحاسوب",
+   "jobs": [
+    {
+     "job_id": "F-TS-3-J1",
+     "job": "Cybersecurity analyst",
+     "job_ar": "محلل أمن سيبراني",
+     "onet_code": "15-1212.00",
+     "onet_title": "Information Security Analysts",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-TS-3-J2",
+     "job": "Ethical hacker (security tester)",
+     "job_ar": "هاكر أخلاقي (مختبِر أمن الأنظمة)",
+     "onet_code": "15-1299.04",
+     "onet_title": "Penetration Testers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-TS-3-J3",
+     "job": "Digital forensics specialist",
+     "job_ar": "أخصائي أدلة جنائية رقمية",
+     "onet_code": "15-1299.06",
+     "onet_title": "Digital Forensics Analysts",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-TS-3-J4",
+     "job": "Security architect",
+     "job_ar": "مصمم أنظمة الأمن السيبراني",
+     "onet_code": "15-1299.05",
+     "onet_title": "Information Security Engineers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Mixed",
+     "setting": "Steady",
+     "often_offers": [
+      "Income"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-TS-4",
+   "type": "single",
+   "clusters": [
+    "TS"
+   ],
+   "bank_order": 4,
+   "family": "Networks, cloud and infrastructure",
+   "family_ar": "الشبكات والحوسبة السحابية والبنية التحتية",
+   "study_fields": "Computer engineering, information technology, telecommunications",
+   "study_fields_ar": "هندسة الحاسوب، تقنية المعلومات، الاتصالات",
+   "jobs": [
+    {
+     "job_id": "F-TS-4-J1",
+     "job": "Network engineer",
+     "job_ar": "مهندس شبكات",
+     "onet_code": "15-1241.00",
+     "onet_title": "Computer Network Architects",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [
+      "Recognition",
+      "Income",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-TS-4-J2",
+     "job": "Cloud engineer",
+     "job_ar": "مهندس حوسبة سحابية",
+     "onet_code": "15-1241.00",
+     "onet_title": "Computer Network Architects",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [
+      "Recognition",
+      "Income",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-TS-4-J3",
+     "job": "Systems administrator",
+     "job_ar": "مسؤول أنظمة",
+     "onet_code": "15-1244.00",
+     "onet_title": "Network and Computer Systems Administrators",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-TS-4-J4",
+     "job": "Telecommunications engineer",
+     "job_ar": "مهندس اتصالات",
+     "onet_code": "15-1241.01",
+     "onet_title": "Telecommunications Engineering Specialists",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Recognition",
+      "Income"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-TS-5",
+   "type": "single",
+   "clusters": [
+    "TS"
+   ],
+   "bank_order": 5,
+   "family": "Data engineering and analytics",
+   "family_ar": "هندسة البيانات وتحليلها",
+   "study_fields": "Data science, information systems, computer science",
+   "study_fields_ar": "علم البيانات، نظم المعلومات، علوم الحاسوب",
+   "jobs": [
+    {
+     "job_id": "F-TS-5-J1",
+     "job": "Data engineer",
+     "job_ar": "مهندس بيانات",
+     "onet_code": "15-1243.00",
+     "onet_title": "Database Architects",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Income",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-TS-5-J2",
+     "job": "Business intelligence analyst",
+     "job_ar": "محلل ذكاء الأعمال",
+     "onet_code": "15-2051.01",
+     "onet_title": "Business Intelligence Analysts",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Income",
+      "Mastery",
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-TS-5-J3",
+     "job": "Database administrator",
+     "job_ar": "مسؤول قواعد بيانات",
+     "onet_code": "15-1242.00",
+     "onet_title": "Database Administrators",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Steady",
+     "often_offers": [
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-TS-5-J4",
+     "job": "GIS specialist",
+     "job_ar": "أخصائي نظم المعلومات الجغرافية",
+     "onet_code": "15-1299.02",
+     "onet_title": "Geographic Information Systems Technologists and Technicians",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Lifestyle",
+      "Income"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-TS-6",
+   "type": "single",
+   "clusters": [
+    "TS"
+   ],
+   "bank_order": 6,
+   "family": "Smart systems and digital transformation",
+   "family_ar": "الأنظمة الذكية والتحول الرقمي",
+   "study_fields": "Information systems, computer engineering",
+   "study_fields_ar": "نظم المعلومات، هندسة الحاسوب",
+   "jobs": [
+    {
+     "job_id": "F-TS-6-J1",
+     "job": "Computer systems engineer",
+     "job_ar": "مهندس أنظمة حاسوبية",
+     "onet_code": "15-1299.08",
+     "onet_title": "Computer Systems Engineers/Architects",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [
+      "Autonomy",
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-TS-6-J2",
+     "job": "IT systems analyst",
+     "job_ar": "محلل أنظمة تقنية المعلومات",
+     "onet_code": "15-1211.00",
+     "onet_title": "Computer Systems Analysts",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Deep",
+     "team": "Mixed",
+     "setting": "Steady",
+     "often_offers": [
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-TS-6-J3",
+     "job": "Digital transformation specialist",
+     "job_ar": "أخصائي تحول رقمي",
+     "onet_code": "15-1299.09",
+     "onet_title": "Information Technology Project Managers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Autonomy",
+      "Mastery",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-TS-6-J4",
+     "job": "Fintech developer",
+     "job_ar": "مطوّر تقنيات مالية",
+     "onet_code": "15-1252.00",
+     "onet_title": "Software Developers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Together",
+     "setting": "Steady",
+     "often_offers": [
+      "Lifestyle",
+      "Income"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-IR-1",
+   "type": "single",
+   "clusters": [
+    "IR"
+   ],
+   "bank_order": 1,
+   "family": "Mechanical and manufacturing engineering",
+   "family_ar": "الهندسة الميكانيكية والتصنيع",
+   "study_fields": "Mechanical engineering, mechatronics, industrial engineering",
+   "study_fields_ar": "الهندسة الميكانيكية، الميكاترونكس، الهندسة الصناعية",
+   "jobs": [
+    {
+     "job_id": "F-IR-1-J1",
+     "job": "Mechanical engineer",
+     "job_ar": "مهندس ميكانيكي",
+     "onet_code": "17-2141.00",
+     "onet_title": "Mechanical Engineers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IR-1-J2",
+     "job": "Mechatronics engineer",
+     "job_ar": "مهندس ميكاترونكس",
+     "onet_code": "17-2199.05",
+     "onet_title": "Mechatronics Engineers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Steady",
+     "often_offers": [
+      "Income",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IR-1-J3",
+     "job": "Manufacturing engineer",
+     "job_ar": "مهندس تصنيع",
+     "onet_code": "17-2112.03",
+     "onet_title": "Manufacturing Engineers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Steady",
+     "often_offers": [],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IR-1-J4",
+     "job": "Machinery maintenance technician",
+     "job_ar": "فني صيانة آلات",
+     "onet_code": "49-9041.00",
+     "onet_title": "Industrial Machinery Mechanics",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Steady",
+     "often_offers": [],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-IR-2",
+   "type": "single",
+   "clusters": [
+    "IR"
+   ],
+   "bank_order": 2,
+   "family": "Electrical, electronics and robotics",
+   "family_ar": "الكهرباء والإلكترونيات والروبوتات",
+   "study_fields": "Electrical and electronic engineering, robotics",
+   "study_fields_ar": "الهندسة الكهربائية والإلكترونية، الروبوتات",
+   "jobs": [
+    {
+     "job_id": "F-IR-2-J1",
+     "job": "Electrical engineer",
+     "job_ar": "مهندس كهربائي",
+     "onet_code": "17-2071.00",
+     "onet_title": "Electrical Engineers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Recognition",
+      "Income",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IR-2-J2",
+     "job": "Electronics engineer",
+     "job_ar": "مهندس إلكترونيات",
+     "onet_code": "17-2072.00",
+     "onet_title": "Electronics Engineers, Except Computer",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Recognition",
+      "Income",
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IR-2-J3",
+     "job": "Robotics engineer",
+     "job_ar": "مهندس روبوتات",
+     "onet_code": "17-2199.08",
+     "onet_title": "Robotics Engineers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Autonomy",
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IR-2-J4",
+     "job": "Control systems engineer",
+     "job_ar": "مهندس أنظمة تحكم",
+     "onet_code": "17-2071.00",
+     "onet_title": "Electrical Engineers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Recognition",
+      "Income",
+      "Mastery"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-IR-3",
+   "type": "single",
+   "clusters": [
+    "IR"
+   ],
+   "bank_order": 3,
+   "family": "Civil engineering and construction",
+   "family_ar": "الهندسة المدنية والإنشاءات",
+   "study_fields": "Civil engineering, architectural engineering, construction management",
+   "study_fields_ar": "الهندسة المدنية، الهندسة المعمارية، إدارة الإنشاءات",
+   "jobs": [
+    {
+     "job_id": "F-IR-3-J1",
+     "job": "Civil engineer",
+     "job_ar": "مهندس مدني",
+     "onet_code": "17-2051.00",
+     "onet_title": "Civil Engineers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Recognition",
+      "Autonomy"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IR-3-J2",
+     "job": "Structural engineer",
+     "job_ar": "مهندس إنشائي",
+     "onet_code": "17-2051.00",
+     "onet_title": "Civil Engineers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Recognition",
+      "Autonomy"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IR-3-J3",
+     "job": "Site engineer",
+     "job_ar": "مهندس موقع",
+     "onet_code": "11-9021.00",
+     "onet_title": "Construction Managers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Autonomy",
+      "Income",
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IR-3-J4",
+     "job": "Air-conditioning and refrigeration technician",
+     "job_ar": "فني تكييف وتبريد",
+     "onet_code": "49-9021.00",
+     "onet_title": "Heating, Air Conditioning, and Refrigeration Mechanics and Installers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Lifestyle"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-IR-4",
+   "type": "single",
+   "clusters": [
+    "IR"
+   ],
+   "bank_order": 4,
+   "family": "Energy: oil, gas and renewables",
+   "family_ar": "الطاقة: النفط والغاز والطاقة المتجددة",
+   "study_fields": "Petroleum, chemical, energy and nuclear engineering",
+   "study_fields_ar": "هندسة البترول، الهندسة الكيميائية، هندسة الطاقة، الهندسة النووية",
+   "jobs": [
+    {
+     "job_id": "F-IR-4-J1",
+     "job": "Petroleum engineer",
+     "job_ar": "مهندس بترول",
+     "onet_code": "17-2171.00",
+     "onet_title": "Petroleum Engineers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Income",
+      "Autonomy",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IR-4-J2",
+     "job": "Energy engineer",
+     "job_ar": "مهندس طاقة",
+     "onet_code": "17-2199.03",
+     "onet_title": "Energy Engineers, Except Wind and Solar",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IR-4-J3",
+     "job": "Power plant operator",
+     "job_ar": "مشغّل محطة كهرباء",
+     "onet_code": "51-8013.00",
+     "onet_title": "Power Plant Operators",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IR-4-J4",
+     "job": "Nuclear engineer",
+     "job_ar": "مهندس نووي",
+     "onet_code": "17-2161.00",
+     "onet_title": "Nuclear Engineers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Income",
+      "Mastery"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-IR-5",
+   "type": "single",
+   "clusters": [
+    "IR"
+   ],
+   "bank_order": 5,
+   "family": "Aerospace, automotive and marine",
+   "family_ar": "الطيران والفضاء والسيارات والبحرية",
+   "study_fields": "Aerospace engineering, aircraft maintenance, automotive and marine engineering",
+   "study_fields_ar": "هندسة الطيران والفضاء، صيانة الطائرات، هندسة السيارات، الهندسة البحرية",
+   "jobs": [
+    {
+     "job_id": "F-IR-5-J1",
+     "job": "Aircraft maintenance engineer",
+     "job_ar": "مهندس صيانة طائرات",
+     "onet_code": "49-3011.00",
+     "onet_title": "Aircraft Mechanics and Service Technicians",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Own",
+     "setting": "Changing",
+     "often_offers": [
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IR-5-J2",
+     "job": "Aerospace engineer",
+     "job_ar": "مهندس طيران وفضاء",
+     "onet_code": "17-2011.00",
+     "onet_title": "Aerospace Engineers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Recognition",
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IR-5-J3",
+     "job": "Automotive and electric vehicle engineer",
+     "job_ar": "مهندس سيارات ومركبات كهربائية",
+     "onet_code": "17-2141.02",
+     "onet_title": "Automotive Engineers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Recognition",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IR-5-J4",
+     "job": "Marine engineer",
+     "job_ar": "مهندس بحري",
+     "onet_code": "17-2121.00",
+     "onet_title": "Marine Engineers and Naval Architects",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Own",
+     "setting": "Changing",
+     "often_offers": [
+      "Recognition",
+      "Autonomy",
+      "Income"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-IR-6",
+   "type": "single",
+   "clusters": [
+    "IR"
+   ],
+   "bank_order": 6,
+   "family": "Technical specialists and prototyping",
+   "family_ar": "التخصصات الفنية والنماذج الأولية",
+   "study_fields": "Technical diplomas, applied technology programmes, engineering technology",
+   "study_fields_ar": "الدبلومات الفنية، برامج التقنية التطبيقية، تقنية الهندسة",
+   "jobs": [
+    {
+     "job_id": "F-IR-6-J1",
+     "job": "Electrical or mechanical technician",
+     "job_ar": "فني كهرباء أو ميكانيكا",
+     "onet_code": "17-3024.00",
+     "onet_title": "Electro-Mechanical and Mechatronics Technologists and Technicians",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Deep",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IR-6-J2",
+     "job": "Prototyping and 3D printing specialist",
+     "job_ar": "أخصائي نماذج أولية وطباعة ثلاثية الأبعاد",
+     "onet_code": "17-3027.00",
+     "onet_title": "Mechanical Engineering Technologists and Technicians",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IR-6-J3",
+     "job": "Biomedical equipment technician",
+     "job_ar": "فني أجهزة طبية حيوية",
+     "onet_code": "49-9062.00",
+     "onet_title": "Medical Equipment Repairers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IR-6-J4",
+     "job": "Robotics technician",
+     "job_ar": "فني روبوتات",
+     "onet_code": "17-3024.01",
+     "onet_title": "Robotics Technicians",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-AE-1",
+   "type": "single",
+   "clusters": [
+    "AE"
+   ],
+   "bank_order": 1,
+   "family": "Competitive sport and coaching",
+   "family_ar": "الرياضة التنافسية والتدريب",
+   "study_fields": "Sports science, coaching, physical education",
+   "study_fields_ar": "علوم الرياضة، التدريب الرياضي، التربية البدنية",
+   "jobs": [
+    {
+     "job_id": "F-AE-1-J1",
+     "job": "Professional athlete",
+     "job_ar": "رياضي محترف",
+     "onet_code": "27-2021.00",
+     "onet_title": "Athletes and Sports Competitors",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-AE-1-J2",
+     "job": "Sports coach",
+     "job_ar": "مدرب رياضي",
+     "onet_code": "27-2022.00",
+     "onet_title": "Coaches and Scouts",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Autonomy",
+      "Impact",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-AE-1-J3",
+     "job": "Referee",
+     "job_ar": "حكم",
+     "onet_code": "27-2023.00",
+     "onet_title": "Umpires, Referees, and Other Sports Officials",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Changing",
+     "often_offers": [],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-AE-1-J4",
+     "job": "Strength and conditioning coach",
+     "job_ar": "مدرب قوة ولياقة بدنية",
+     "onet_code": "39-9031.00",
+     "onet_title": "Exercise Trainers and Group Fitness Instructors",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact",
+      "Lifestyle"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-AE-2",
+   "type": "single",
+   "clusters": [
+    "AE"
+   ],
+   "bank_order": 2,
+   "family": "Fitness and physical education",
+   "family_ar": "اللياقة البدنية والتربية البدنية",
+   "study_fields": "Sports science, exercise science, physical education",
+   "study_fields_ar": "علوم الرياضة، علوم التمرين، التربية البدنية",
+   "jobs": [
+    {
+     "job_id": "F-AE-2-J1",
+     "job": "Fitness and wellness coordinator",
+     "job_ar": "منسق لياقة وعافية",
+     "onet_code": "11-9179.01",
+     "onet_title": "Fitness and Wellness Coordinators",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Autonomy",
+      "Impact",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-AE-2-J2",
+     "job": "Fitness trainer",
+     "job_ar": "مدرب لياقة",
+     "onet_code": "39-9031.00",
+     "onet_title": "Exercise Trainers and Group Fitness Instructors",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact",
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-AE-2-J3",
+     "job": "Movement and pilates instructor",
+     "job_ar": "مدرب حركة وبيلاتس",
+     "onet_code": "39-9031.00",
+     "onet_title": "Exercise Trainers and Group Fitness Instructors",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact",
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-AE-2-J4",
+     "job": "Rehabilitation exercise specialist",
+     "job_ar": "أخصائي تمارين تأهيلية",
+     "onet_code": "29-1128.00",
+     "onet_title": "Exercise Physiologists",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Impact",
+      "Autonomy",
+      "Mastery"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-AE-3",
+   "type": "single",
+   "clusters": [
+    "AE"
+   ],
+   "bank_order": 3,
+   "family": "Emergency and protective services",
+   "family_ar": "خدمات الطوارئ والحماية",
+   "study_fields": "Emergency medical services, police academies, civil defence training",
+   "study_fields_ar": "خدمات الإسعاف، أكاديميات الشرطة، تدريب الدفاع المدني",
+   "jobs": [
+    {
+     "job_id": "F-AE-3-J1",
+     "job": "Paramedic",
+     "job_ar": "مسعف",
+     "onet_code": "29-2043.00",
+     "onet_title": "Paramedics",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact",
+      "Autonomy"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-AE-3-J2",
+     "job": "Firefighter",
+     "job_ar": "إطفائي",
+     "onet_code": "33-2011.00",
+     "onet_title": "Firefighters",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact",
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-AE-3-J3",
+     "job": "Police officer",
+     "job_ar": "ضابط شرطة",
+     "onet_code": "33-3051.00",
+     "onet_title": "Police and Sheriff's Patrol Officers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact",
+      "Autonomy"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-AE-3-J4",
+     "job": "Civil defence officer",
+     "job_ar": "ضابط دفاع مدني",
+     "onet_code": "11-9161.00",
+     "onet_title": "Emergency Management Directors",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Recognition",
+      "Impact",
+      "Autonomy"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-AE-4",
+   "type": "single",
+   "clusters": [
+    "AE"
+   ],
+   "bank_order": 4,
+   "family": "Military and national security",
+   "family_ar": "العسكرية والأمن الوطني",
+   "study_fields": "Military and naval colleges, security studies",
+   "study_fields_ar": "الكليات العسكرية والبحرية، الدراسات الأمنية",
+   "jobs": [
+    {
+     "job_id": "F-AE-4-J1",
+     "job": "Military officer",
+     "job_ar": "ضابط عسكري",
+     "onet_code": "55-1016.00",
+     "onet_title": "Infantry Officers",
+     "interest_check": "no data",
+     "structure": "No data",
+     "focus": "No data",
+     "team": "No data",
+     "setting": "No data",
+     "often_offers": [],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-AE-4-J2",
+     "job": "Coast guard officer",
+     "job_ar": "ضابط خفر السواحل",
+     "onet_code": "53-5021.00",
+     "onet_title": "Captains, Mates, and Pilots of Water Vessels",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Autonomy"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-AE-4-J3",
+     "job": "Special forces officer",
+     "job_ar": "ضابط قوات خاصة",
+     "onet_code": "55-1017.00",
+     "onet_title": "Special Forces Officers",
+     "interest_check": "no data",
+     "structure": "No data",
+     "focus": "No data",
+     "team": "No data",
+     "setting": "No data",
+     "often_offers": [],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-AE-4-J4",
+     "job": "Security management specialist",
+     "job_ar": "أخصائي إدارة الأمن",
+     "onet_code": "13-1199.07",
+     "onet_title": "Security Management Specialists",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Own",
+     "setting": "Changing",
+     "often_offers": [
+      "Autonomy",
+      "Impact"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-AE-5",
+   "type": "single",
+   "clusters": [
+    "AE"
+   ],
+   "bank_order": 5,
+   "family": "Aviation and maritime operations",
+   "family_ar": "الطيران والعمليات البحرية",
+   "study_fields": "Pilot training, aviation, maritime studies",
+   "study_fields_ar": "التدريب على الطيران، علوم الطيران، الدراسات البحرية",
+   "jobs": [
+    {
+     "job_id": "F-AE-5-J1",
+     "job": "Airline pilot",
+     "job_ar": "طيار في شركة طيران",
+     "onet_code": "53-2011.00",
+     "onet_title": "Airline Pilots, Copilots, and Flight Engineers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Income",
+      "Autonomy",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-AE-5-J2",
+     "job": "Helicopter pilot",
+     "job_ar": "طيار مروحية",
+     "onet_code": "53-2012.00",
+     "onet_title": "Commercial Pilots",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Autonomy",
+      "Recognition",
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-AE-5-J3",
+     "job": "Ship's officer",
+     "job_ar": "ضابط سفينة",
+     "onet_code": "53-5021.00",
+     "onet_title": "Captains, Mates, and Pilots of Water Vessels",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Autonomy"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-AE-5-J4",
+     "job": "Drone operator",
+     "job_ar": "مشغّل طائرات مسيّرة",
+     "onet_code": "53-2012.00",
+     "onet_title": "Commercial Pilots",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Autonomy",
+      "Recognition",
+      "Income"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-AE-6",
+   "type": "single",
+   "clusters": [
+    "AE"
+   ],
+   "bank_order": 6,
+   "family": "Outdoors, animals and fieldwork",
+   "family_ar": "الطبيعة والحيوانات والعمل الميداني",
+   "study_fields": "Animal science, environmental studies, veterinary nursing, forestry and conservation",
+   "study_fields_ar": "علوم الحيوان، الدراسات البيئية، التمريض البيطري، الغابات وحماية البيئة",
+   "jobs": [
+    {
+     "job_id": "F-AE-6-J1",
+     "job": "Equestrian or falconry professional",
+     "job_ar": "محترف في الفروسية أو الصقارة",
+     "onet_code": "39-2011.00",
+     "onet_title": "Animal Trainers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Changing",
+     "often_offers": [
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-AE-6-J2",
+     "job": "Wildlife ranger",
+     "job_ar": "حارس محمية طبيعية",
+     "onet_code": "33-3031.00",
+     "onet_title": "Fish and Game Wardens",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-AE-6-J3",
+     "job": "Wildlife biologist",
+     "job_ar": "عالم أحياء برية",
+     "onet_code": "19-1023.00",
+     "onet_title": "Zoologists and Wildlife Biologists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-AE-6-J4",
+     "job": "Conservation and forestry technician",
+     "job_ar": "فني حماية البيئة والغابات",
+     "onet_code": "19-4071.00",
+     "onet_title": "Forest and Conservation Technicians",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-RD-EI",
+   "type": "combination",
+   "clusters": [
+    "RD",
+    "EI"
+   ],
+   "bank_order": 1,
+   "family": "Science and business",
+   "family_ar": "العلوم والأعمال",
+   "study_fields": "Biomedical science with business, intellectual property law, science policy",
+   "study_fields_ar": "العلوم الطبية الحيوية مع إدارة الأعمال، قانون الملكية الفكرية، السياسات العلمية",
+   "jobs": [
+    {
+     "job_id": "F-RD-EI-J1",
+     "job": "Biotech or pharmaceutical business manager",
+     "job_ar": "مدير أعمال في التقنية الحيوية أو الصناعات الدوائية",
+     "onet_code": "11-9121.00",
+     "onet_title": "Natural Sciences Managers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Income",
+      "Autonomy",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-EI-J2",
+     "job": "Science consultant",
+     "job_ar": "مستشار علمي",
+     "onet_code": "13-1111.00",
+     "onet_title": "Management Analysts",
+     "interest_check": "partly",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-EI-J3",
+     "job": "Patent lawyer",
+     "job_ar": "محامي براءات الاختراع",
+     "onet_code": "23-1011.00",
+     "onet_title": "Lawyers",
+     "interest_check": "partly",
+     "structure": "Open",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [
+      "Recognition",
+      "Income",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-EI-J4",
+     "job": "Science policy advisor",
+     "job_ar": "مستشار السياسات العلمية",
+     "onet_code": "19-3094.00",
+     "onet_title": "Political Scientists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Mastery",
+      "Income"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-RD-PE",
+   "type": "combination",
+   "clusters": [
+    "RD",
+    "PE"
+   ],
+   "bank_order": 1,
+   "family": "Research operations and regulation",
+   "family_ar": "إدارة البحوث وتنظيمها",
+   "study_fields": "Pharmacy, life sciences, health economics, regulatory affairs",
+   "study_fields_ar": "الصيدلة، علوم الحياة، اقتصاديات الصحة، الشؤون التنظيمية",
+   "jobs": [
+    {
+     "job_id": "F-RD-PE-J1",
+     "job": "Clinical research coordinator",
+     "job_ar": "منسق أبحاث سريرية",
+     "onet_code": "11-9121.01",
+     "onet_title": "Clinical Research Coordinators",
+     "interest_check": "partly",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Mixed",
+     "setting": "Steady",
+     "often_offers": [
+      "Income",
+      "Lifestyle",
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-PE-J2",
+     "job": "Regulatory specialist",
+     "job_ar": "أخصائي شؤون تنظيمية",
+     "onet_code": "13-1041.07",
+     "onet_title": "Regulatory Affairs Specialists",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Deep",
+     "team": "Together",
+     "setting": "Steady",
+     "often_offers": [],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-PE-J3",
+     "job": "Laboratory manager",
+     "job_ar": "مدير مختبر",
+     "onet_code": "11-9121.00",
+     "onet_title": "Natural Sciences Managers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Income",
+      "Autonomy",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-PE-J4",
+     "job": "Health economist",
+     "job_ar": "خبير اقتصاديات الصحة",
+     "onet_code": "19-3011.00",
+     "onet_title": "Economists",
+     "interest_check": "partly",
+     "structure": "Open",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Mastery",
+      "Income",
+      "Recognition"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-IE-PE",
+   "type": "combination",
+   "clusters": [
+    "IE",
+    "PE"
+   ],
+   "bank_order": 1,
+   "family": "Creative production and management",
+   "family_ar": "الإنتاج والإدارة الإبداعية",
+   "study_fields": "Media production, arts management, fashion merchandising",
+   "study_fields_ar": "الإنتاج الإعلامي، إدارة الفنون، تسويق الأزياء",
+   "jobs": [
+    {
+     "job_id": "F-IE-PE-J1",
+     "job": "Film or TV producer",
+     "job_ar": "منتج أفلام أو برامج تلفزيونية",
+     "onet_code": "27-2012.00",
+     "onet_title": "Producers and Directors",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Autonomy",
+      "Recognition",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-PE-J2",
+     "job": "Publishing manager",
+     "job_ar": "مدير نشر",
+     "onet_code": "27-3041.00",
+     "onet_title": "Editors",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Autonomy",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-PE-J3",
+     "job": "Museum curator",
+     "job_ar": "أمين متحف",
+     "onet_code": "25-4012.00",
+     "onet_title": "Curators",
+     "interest_check": "partly",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Autonomy",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-PE-J4",
+     "job": "Fashion buyer",
+     "job_ar": "مشتري أزياء",
+     "onet_code": "13-1022.00",
+     "onet_title": "Wholesale and Retail Buyers, Except Farm Products",
+     "interest_check": "partly",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Lifestyle"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-IE-TS",
+   "type": "combination",
+   "clusters": [
+    "IE",
+    "TS"
+   ],
+   "bank_order": 1,
+   "family": "Digital design and creative technology",
+   "family_ar": "التصميم الرقمي والتقنية الإبداعية",
+   "study_fields": "Interaction design, game design, digital media technology",
+   "study_fields_ar": "تصميم التفاعل، تصميم الألعاب، تقنيات الإعلام الرقمي",
+   "jobs": [
+    {
+     "job_id": "F-IE-TS-J1",
+     "job": "UX/UI designer",
+     "job_ar": "مصمم تجربة وواجهة المستخدم",
+     "onet_code": "15-1255.00",
+     "onet_title": "Web and Digital Interface Designers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Together",
+     "setting": "Steady",
+     "often_offers": [
+      "Lifestyle",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-TS-J2",
+     "job": "Game designer",
+     "job_ar": "مصمم ألعاب",
+     "onet_code": "15-1255.01",
+     "onet_title": "Video Game Designers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Deep",
+     "team": "Together",
+     "setting": "Steady",
+     "often_offers": [
+      "Autonomy",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-TS-J3",
+     "job": "Technical artist",
+     "job_ar": "فنان رقمي تقني",
+     "onet_code": "27-1014.00",
+     "onet_title": "Special Effects Artists and Animators",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Recognition",
+      "Autonomy"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-TS-J4",
+     "job": "Interactive web developer",
+     "job_ar": "مطوّر مواقع تفاعلية",
+     "onet_code": "15-1254.00",
+     "onet_title": "Web Developers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Autonomy"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-PW-TS",
+   "type": "combination",
+   "clusters": [
+    "PW",
+    "TS"
+   ],
+   "bank_order": 1,
+   "family": "Health and learning technology",
+   "family_ar": "تقنيات الصحة والتعليم",
+   "study_fields": "Health informatics, educational technology, human-computer interaction",
+   "study_fields_ar": "المعلوماتية الصحية، تقنيات التعليم، التفاعل بين الإنسان والحاسوب",
+   "jobs": [
+    {
+     "job_id": "F-PW-TS-J1",
+     "job": "Health informatics specialist",
+     "job_ar": "أخصائي معلوماتية صحية",
+     "onet_code": "15-1211.01",
+     "onet_title": "Health Informatics Specialists",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Steady",
+     "often_offers": [
+      "Mastery",
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-TS-J2",
+     "job": "Educational technology designer",
+     "job_ar": "مصمم تقنيات تعليمية",
+     "onet_code": "25-9031.00",
+     "onet_title": "Instructional Coordinators",
+     "interest_check": "partly",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Autonomy",
+      "Mastery",
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-TS-J3",
+     "job": "Health data specialist",
+     "job_ar": "أخصائي بيانات صحية",
+     "onet_code": "29-2072.00",
+     "onet_title": "Medical Records Specialists",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Together",
+     "setting": "Steady",
+     "often_offers": [
+      "Lifestyle",
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-TS-J4",
+     "job": "Rehabilitation counsellor",
+     "job_ar": "مرشد تأهيل",
+     "onet_code": "21-1015.00",
+     "onet_title": "Rehabilitation Counselors",
+     "interest_check": "partly",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact",
+      "Mastery",
+      "Lifestyle"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-PW-IR",
+   "type": "combination",
+   "clusters": [
+    "PW",
+    "IR"
+   ],
+   "bank_order": 1,
+   "family": "Engineering for people",
+   "family_ar": "الهندسة في خدمة الإنسان",
+   "study_fields": "Biomedical engineering, prosthetics and orthotics, ergonomics",
+   "study_fields_ar": "الهندسة الطبية الحيوية، الأطراف الصناعية والأجهزة التقويمية، هندسة العوامل البشرية (الأرغونوميا)",
+   "jobs": [
+    {
+     "job_id": "F-PW-IR-J1",
+     "job": "Biomedical engineer",
+     "job_ar": "مهندس طبي حيوي",
+     "onet_code": "17-2031.00",
+     "onet_title": "Bioengineers and Biomedical Engineers",
+     "interest_check": "partly",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Steady",
+     "often_offers": [
+      "Autonomy",
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-IR-J2",
+     "job": "Prosthetics and orthotics specialist",
+     "job_ar": "أخصائي أطراف صناعية وأجهزة تقويمية",
+     "onet_code": "29-2091.00",
+     "onet_title": "Orthotists and Prosthetists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [
+      "Impact",
+      "Autonomy",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-IR-J3",
+     "job": "Ergonomics specialist",
+     "job_ar": "أخصائي بيئة العمل (الأرغونوميا)",
+     "onet_code": "17-2112.01",
+     "onet_title": "Human Factors Engineers and Ergonomists",
+     "interest_check": "partly",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [
+      "Mastery",
+      "Autonomy"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-IR-J4",
+     "job": "Medical equipment specialist",
+     "job_ar": "أخصائي أجهزة طبية",
+     "onet_code": "49-9062.00",
+     "onet_title": "Medical Equipment Repairers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-PW-AE",
+   "type": "combination",
+   "clusters": [
+    "PW",
+    "AE"
+   ],
+   "bank_order": 1,
+   "family": "Movement and care",
+   "family_ar": "الحركة والرعاية",
+   "study_fields": "Physiotherapy, emergency medical services, physical education",
+   "study_fields_ar": "العلاج الطبيعي، خدمات الإسعاف، التربية البدنية",
+   "jobs": [
+    {
+     "job_id": "F-PW-AE-J1",
+     "job": "Sports physiotherapist",
+     "job_ar": "أخصائي علاج طبيعي رياضي",
+     "onet_code": "29-1123.00",
+     "onet_title": "Physical Therapists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Impact",
+      "Lifestyle",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-AE-J2",
+     "job": "Paramedic",
+     "job_ar": "مسعف",
+     "onet_code": "29-2043.00",
+     "onet_title": "Paramedics",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact",
+      "Autonomy"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-AE-J3",
+     "job": "Physical education teacher",
+     "job_ar": "معلم تربية بدنية",
+     "onet_code": "25-2031.00",
+     "onet_title": "Secondary School Teachers, Except Special and Career/Technical Education",
+     "interest_check": "partly",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [
+      "Impact",
+      "Recognition",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-AE-J4",
+     "job": "Outdoor education instructor",
+     "job_ar": "مدرب أنشطة خارجية",
+     "onet_code": "39-9032.00",
+     "onet_title": "Recreation Workers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Impact",
+      "Lifestyle",
+      "Autonomy"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-EI-IR",
+   "type": "combination",
+   "clusters": [
+    "EI",
+    "IR"
+   ],
+   "bank_order": 1,
+   "family": "Engineering business",
+   "family_ar": "أعمال الهندسة",
+   "study_fields": "Engineering with management, construction management",
+   "study_fields_ar": "الهندسة مع الإدارة، إدارة المشاريع الإنشائية",
+   "jobs": [
+    {
+     "job_id": "F-EI-IR-J1",
+     "job": "Engineering project director",
+     "job_ar": "مدير مشاريع هندسية",
+     "onet_code": "11-9041.00",
+     "onet_title": "Architectural and Engineering Managers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Income",
+      "Mastery",
+      "Autonomy"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-IR-J2",
+     "job": "Construction developer",
+     "job_ar": "مطوّر مشاريع إنشائية",
+     "onet_code": "11-9021.00",
+     "onet_title": "Construction Managers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Autonomy",
+      "Income",
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-IR-J3",
+     "job": "Technical sales engineer",
+     "job_ar": "مهندس مبيعات تقنية",
+     "onet_code": "41-9031.00",
+     "onet_title": "Sales Engineers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Changing",
+     "often_offers": [
+      "Income",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-IR-J4",
+     "job": "Hardware startup founder",
+     "job_ar": "مؤسس شركة ناشئة للأجهزة",
+     "onet_code": "11-1011.00",
+     "onet_title": "Chief Executives",
+     "interest_check": "partly",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Income",
+      "Autonomy",
+      "Mastery"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-EI-AE",
+   "type": "combination",
+   "clusters": [
+    "EI",
+    "AE"
+   ],
+   "bank_order": 1,
+   "family": "Sport and adventure business",
+   "family_ar": "أعمال الرياضة والمغامرة",
+   "study_fields": "Sports management, sports marketing, coaching, tourism business",
+   "study_fields_ar": "الإدارة الرياضية، التسويق الرياضي، التدريب الرياضي، أعمال السياحة",
+   "jobs": [
+    {
+     "job_id": "F-EI-AE-J1",
+     "job": "Sports marketing manager",
+     "job_ar": "مدير تسويق رياضي",
+     "onet_code": "11-2021.00",
+     "onet_title": "Marketing Managers",
+     "interest_check": "partly",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Income",
+      "Autonomy",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-AE-J2",
+     "job": "Sports academy head coach",
+     "job_ar": "مدرب رئيسي في أكاديمية رياضية",
+     "onet_code": "27-2022.00",
+     "onet_title": "Coaches and Scouts",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Autonomy",
+      "Impact",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-AE-J3",
+     "job": "Fitness centre manager",
+     "job_ar": "مدير مركز لياقة",
+     "onet_code": "11-9179.01",
+     "onet_title": "Fitness and Wellness Coordinators",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Autonomy",
+      "Impact",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-AE-J4",
+     "job": "Sports club director",
+     "job_ar": "مدير نادٍ رياضي",
+     "onet_code": "11-9072.00",
+     "onet_title": "Entertainment and Recreation Managers, Except Gambling",
+     "interest_check": "partly",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Autonomy"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-RD-PW",
+   "type": "combination",
+   "clusters": [
+    "RD",
+    "PW"
+   ],
+   "bank_order": 1,
+   "family": "Clinical and health sciences",
+   "family_ar": "العلوم السريرية والصحية",
+   "study_fields": "Psychology, nutrition and dietetics, genetics, public health",
+   "study_fields_ar": "علم النفس، التغذية العلاجية، علم الوراثة، الصحة العامة",
+   "jobs": [
+    {
+     "job_id": "F-RD-PW-J1",
+     "job": "Dentist",
+     "job_ar": "طبيب أسنان",
+     "onet_code": "29-1021.00",
+     "onet_title": "Dentists, General",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Autonomy",
+      "Lifestyle",
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-PW-J2",
+     "job": "Dietitian",
+     "job_ar": "أخصائي تغذية",
+     "onet_code": "29-1031.00",
+     "onet_title": "Dietitians and Nutritionists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [
+      "Impact",
+      "Lifestyle",
+      "Autonomy"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-PW-J3",
+     "job": "Genetic counsellor",
+     "job_ar": "مستشار وراثي",
+     "onet_code": "29-9092.00",
+     "onet_title": "Genetic Counselors",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Impact",
+      "Recognition",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-PW-J4",
+     "job": "Occupational health specialist",
+     "job_ar": "أخصائي الصحة المهنية",
+     "onet_code": "19-5011.00",
+     "onet_title": "Occupational Health and Safety Specialists",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Own",
+     "setting": "Changing",
+     "often_offers": [
+      "Recognition",
+      "Impact"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-IE-EI",
+   "type": "combination",
+   "clusters": [
+    "IE",
+    "EI"
+   ],
+   "bank_order": 1,
+   "family": "Creative industries and advertising",
+   "family_ar": "الصناعات الإبداعية والإعلان",
+   "study_fields": "Advertising, marketing communication, design management",
+   "study_fields_ar": "الإعلان، الاتصال التسويقي، إدارة التصميم",
+   "jobs": [
+    {
+     "job_id": "F-IE-EI-J1",
+     "job": "Advertising creative director",
+     "job_ar": "مدير إبداعي في الإعلان",
+     "onet_code": "27-1011.00",
+     "onet_title": "Art Directors",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Steady",
+     "often_offers": [
+      "Autonomy",
+      "Recognition",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-EI-J2",
+     "job": "Brand strategist",
+     "job_ar": "خبير استراتيجيات العلامات التجارية",
+     "onet_code": "11-2011.00",
+     "onet_title": "Advertising and Promotions Managers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Steady",
+     "often_offers": [
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-EI-J3",
+     "job": "Media entrepreneur",
+     "job_ar": "رائد أعمال إعلامي",
+     "onet_code": "27-2012.00",
+     "onet_title": "Producers and Directors",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Autonomy",
+      "Recognition",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-EI-J4",
+     "job": "Art director",
+     "job_ar": "مدير فني",
+     "onet_code": "27-1011.00",
+     "onet_title": "Art Directors",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Steady",
+     "often_offers": [
+      "Autonomy",
+      "Recognition",
+      "Mastery"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-PW-PE",
+   "type": "combination",
+   "clusters": [
+    "PW",
+    "PE"
+   ],
+   "bank_order": 1,
+   "family": "Care and people operations",
+   "family_ar": "إدارة الرعاية وشؤون الأفراد",
+   "study_fields": "Healthcare management, human resources, educational administration",
+   "study_fields_ar": "إدارة الرعاية الصحية، الموارد البشرية، الإدارة التربوية",
+   "jobs": [
+    {
+     "job_id": "F-PW-PE-J1",
+     "job": "Hospital or clinic administrator",
+     "job_ar": "مدير مستشفى أو عيادة",
+     "onet_code": "11-9111.00",
+     "onet_title": "Medical and Health Services Managers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Recognition",
+      "Autonomy",
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-PE-J2",
+     "job": "HR operations specialist",
+     "job_ar": "أخصائي عمليات الموارد البشرية",
+     "onet_code": "13-1071.00",
+     "onet_title": "Human Resources Specialists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Impact",
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-PE-J3",
+     "job": "School administrator",
+     "job_ar": "إداري مدرسي",
+     "onet_code": "11-9032.00",
+     "onet_title": "Education Administrators, Kindergarten through Secondary",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Recognition",
+      "Autonomy",
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-PE-J4",
+     "job": "Case manager",
+     "job_ar": "مدير حالات",
+     "onet_code": "21-1093.00",
+     "onet_title": "Social and Human Service Assistants",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact",
+      "Lifestyle"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-EI-TS",
+   "type": "combination",
+   "clusters": [
+    "EI",
+    "TS"
+   ],
+   "bank_order": 1,
+   "family": "Technology business and products",
+   "family_ar": "أعمال التقنية ومنتجاتها",
+   "study_fields": "Information systems, business with computing, e-commerce",
+   "study_fields_ar": "نظم المعلومات، إدارة الأعمال مع الحوسبة، التجارة الإلكترونية",
+   "jobs": [
+    {
+     "job_id": "F-EI-TS-J1",
+     "job": "IT manager",
+     "job_ar": "مدير تقنية المعلومات",
+     "onet_code": "11-3021.00",
+     "onet_title": "Computer and Information Systems Managers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Steady",
+     "often_offers": [
+      "Income",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-TS-J2",
+     "job": "Tech entrepreneur",
+     "job_ar": "رائد أعمال تقني",
+     "onet_code": "11-1011.00",
+     "onet_title": "Chief Executives",
+     "interest_check": "partly",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Income",
+      "Autonomy",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-TS-J3",
+     "job": "Digital marketing strategist",
+     "job_ar": "خبير التسويق الرقمي",
+     "onet_code": "13-1161.01",
+     "onet_title": "Search Marketing Strategists",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-TS-J4",
+     "job": "Technology solutions consultant",
+     "job_ar": "مستشار حلول تقنية",
+     "onet_code": "41-9031.00",
+     "onet_title": "Sales Engineers",
+     "interest_check": "partly",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Changing",
+     "often_offers": [
+      "Income",
+      "Mastery"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-PE-IR",
+   "type": "combination",
+   "clusters": [
+    "PE",
+    "IR"
+   ],
+   "bank_order": 1,
+   "family": "Industrial and facilities operations",
+   "family_ar": "العمليات الصناعية وإدارة المرافق",
+   "study_fields": "Industrial engineering, facilities management, quality engineering",
+   "study_fields_ar": "الهندسة الصناعية، إدارة المرافق، هندسة الجودة",
+   "jobs": [
+    {
+     "job_id": "F-PE-IR-J1",
+     "job": "Industrial engineer",
+     "job_ar": "مهندس صناعي",
+     "onet_code": "17-2112.00",
+     "onet_title": "Industrial Engineers",
+     "interest_check": "partly",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Autonomy"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PE-IR-J2",
+     "job": "Quality engineer",
+     "job_ar": "مهندس جودة",
+     "onet_code": "11-3051.01",
+     "onet_title": "Quality Control Systems Managers",
+     "interest_check": "partly",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Recognition",
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PE-IR-J3",
+     "job": "Facilities manager",
+     "job_ar": "مدير مرافق",
+     "onet_code": "11-3013.00",
+     "onet_title": "Facilities Managers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PE-IR-J4",
+     "job": "Production manager",
+     "job_ar": "مدير إنتاج",
+     "onet_code": "11-3051.00",
+     "onet_title": "Industrial Production Managers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Autonomy",
+      "Recognition",
+      "Income"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-PE-AE",
+   "type": "combination",
+   "clusters": [
+    "PE",
+    "AE"
+   ],
+   "bank_order": 1,
+   "family": "Field and emergency operations",
+   "family_ar": "العمليات الميدانية والطوارئ",
+   "study_fields": "Emergency and disaster management, aviation operations, maritime operations",
+   "study_fields_ar": "إدارة الطوارئ والكوارث، عمليات الطيران، العمليات البحرية",
+   "jobs": [
+    {
+     "job_id": "F-PE-AE-J1",
+     "job": "Emergency management coordinator",
+     "job_ar": "منسق إدارة الطوارئ",
+     "onet_code": "11-9161.00",
+     "onet_title": "Emergency Management Directors",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Recognition",
+      "Impact",
+      "Autonomy"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PE-AE-J2",
+     "job": "Air traffic controller",
+     "job_ar": "مراقب جوي",
+     "onet_code": "53-2021.00",
+     "onet_title": "Air Traffic Controllers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Income",
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PE-AE-J3",
+     "job": "Transport and logistics manager",
+     "job_ar": "مدير النقل والخدمات اللوجستية",
+     "onet_code": "11-3071.00",
+     "onet_title": "Transportation, Storage, and Distribution Managers",
+     "interest_check": "partly",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Income",
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PE-AE-J4",
+     "job": "Flight operations officer",
+     "job_ar": "ضابط عمليات طيران",
+     "onet_code": "53-2022.00",
+     "onet_title": "Airfield Operations Specialists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Lifestyle"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-RD-TS",
+   "type": "combination",
+   "clusters": [
+    "RD",
+    "TS"
+   ],
+   "bank_order": 1,
+   "family": "Data science and computational research",
+   "family_ar": "علم البيانات والبحث الحاسوبي",
+   "study_fields": "Data science, bioinformatics, computational science",
+   "study_fields_ar": "علم البيانات، المعلوماتية الحيوية، العلوم الحاسوبية",
+   "jobs": [
+    {
+     "job_id": "F-RD-TS-J1",
+     "job": "Data scientist",
+     "job_ar": "عالم بيانات",
+     "onet_code": "15-2051.00",
+     "onet_title": "Data Scientists",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-TS-J2",
+     "job": "Bioinformatician",
+     "job_ar": "أخصائي معلوماتية حيوية",
+     "onet_code": "19-1029.01",
+     "onet_title": "Bioinformatics Scientists",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Steady",
+     "often_offers": [
+      "Recognition",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-TS-J3",
+     "job": "Computational scientist",
+     "job_ar": "عالم علوم حاسوبية",
+     "onet_code": "15-1221.00",
+     "onet_title": "Computer and Information Research Scientists",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Steady",
+     "often_offers": [
+      "Mastery",
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-TS-J4",
+     "job": "AI researcher",
+     "job_ar": "باحث في الذكاء الاصطناعي",
+     "onet_code": "15-1221.00",
+     "onet_title": "Computer and Information Research Scientists",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Steady",
+     "often_offers": [
+      "Mastery",
+      "Income"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-IE-IR",
+   "type": "combination",
+   "clusters": [
+    "IE",
+    "IR"
+   ],
+   "bank_order": 1,
+   "family": "Design and making",
+   "family_ar": "التصميم والتصنيع",
+   "study_fields": "Industrial design, product design engineering, design and technology",
+   "study_fields_ar": "التصميم الصناعي، هندسة تصميم المنتجات، التصميم والتقنية",
+   "jobs": [
+    {
+     "job_id": "F-IE-IR-J1",
+     "job": "Industrial product designer",
+     "job_ar": "مصمم منتجات صناعية",
+     "onet_code": "27-1021.00",
+     "onet_title": "Commercial and Industrial Designers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-IR-J2",
+     "job": "Automotive designer",
+     "job_ar": "مصمم سيارات",
+     "onet_code": "27-1021.00",
+     "onet_title": "Commercial and Industrial Designers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-IR-J3",
+     "job": "Model and prop maker",
+     "job_ar": "صانع مجسّمات وأدوات مسرحية",
+     "onet_code": "51-7031.00",
+     "onet_title": "Model Makers, Wood",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-IR-J4",
+     "job": "Furniture designer-maker",
+     "job_ar": "مصمم وصانع أثاث",
+     "onet_code": "51-7011.00",
+     "onet_title": "Cabinetmakers and Bench Carpenters",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Lifestyle"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-IE-AE",
+   "type": "combination",
+   "clusters": [
+    "IE",
+    "AE"
+   ],
+   "bank_order": 1,
+   "family": "Physical performance and action media",
+   "family_ar": "الأداء الحركي وإعلام المغامرة",
+   "study_fields": "Film and media production, performing arts, sports media",
+   "study_fields_ar": "إنتاج الأفلام والإعلام، الفنون الأدائية، الإعلام الرياضي",
+   "jobs": [
+    {
+     "job_id": "F-IE-AE-J1",
+     "job": "Stunt performer",
+     "job_ar": "مؤدّي مشاهد خطرة",
+     "onet_code": "27-2011.00",
+     "onet_title": "Actors",
+     "interest_check": "partly",
+     "structure": "Set out",
+     "focus": "Deep",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-AE-J2",
+     "job": "Sports or adventure filmmaker",
+     "job_ar": "صانع أفلام رياضية أو أفلام مغامرة",
+     "onet_code": "27-4031.00",
+     "onet_title": "Camera Operators, Television, Video, and Film",
+     "interest_check": "partly",
+     "structure": "Set out",
+     "focus": "Deep",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Lifestyle",
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-AE-J3",
+     "job": "Sports photographer",
+     "job_ar": "مصور رياضي",
+     "onet_code": "27-4021.00",
+     "onet_title": "Photographers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Own",
+     "setting": "Changing",
+     "often_offers": [],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-AE-J4",
+     "job": "Acrobatic performer",
+     "job_ar": "مؤدّي عروض أكروباتية",
+     "onet_code": "27-2031.00",
+     "onet_title": "Dancers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Deep",
+     "team": "Mixed",
+     "setting": "Steady",
+     "often_offers": [
+      "Lifestyle"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-RD-IE",
+   "type": "combination",
+   "clusters": [
+    "RD",
+    "IE"
+   ],
+   "bank_order": 1,
+   "family": "Science communication and visualisation",
+   "family_ar": "التواصل العلمي وعرض العلوم بصريًا",
+   "study_fields": "Science communication, medical illustration, journalism with science",
+   "study_fields_ar": "التواصل العلمي، الرسم الطبي، الصحافة العلمية",
+   "jobs": [
+    {
+     "job_id": "F-RD-IE-J1",
+     "job": "Science journalist",
+     "job_ar": "صحفي علمي",
+     "onet_code": "27-3023.00",
+     "onet_title": "News Analysts, Reporters, and Journalists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Changing",
+     "often_offers": [
+      "Recognition",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-IE-J2",
+     "job": "Medical illustrator",
+     "job_ar": "رسام طبي",
+     "onet_code": "27-1013.00",
+     "onet_title": "Fine Artists, Including Painters, Sculptors, and Illustrators",
+     "interest_check": "partly",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Lifestyle",
+      "Autonomy"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-IE-J3",
+     "job": "Museum exhibit developer",
+     "job_ar": "مطوّر معروضات متحفية",
+     "onet_code": "25-4013.00",
+     "onet_title": "Museum Technicians and Conservators",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Lifestyle",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-IE-J4",
+     "job": "Documentary creator",
+     "job_ar": "صانع أفلام وثائقية",
+     "onet_code": "27-2012.00",
+     "onet_title": "Producers and Directors",
+     "interest_check": "partly",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Autonomy",
+      "Recognition",
+      "Mastery"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-IE-PW",
+   "type": "combination",
+   "clusters": [
+    "IE",
+    "PW"
+   ],
+   "bank_order": 1,
+   "family": "Creative arts for learning and wellbeing",
+   "family_ar": "الفنون الإبداعية للتعلّم والرفاه",
+   "study_fields": "Art therapy, education with arts, educational media",
+   "study_fields_ar": "العلاج بالفن، التعليم بالفنون، الإعلام التربوي",
+   "jobs": [
+    {
+     "job_id": "F-IE-PW-J1",
+     "job": "Art therapist",
+     "job_ar": "معالج بالفن",
+     "onet_code": "29-1129.01",
+     "onet_title": "Art Therapists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Mixed",
+     "often_offers": [
+      "Impact",
+      "Recognition",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-PW-J2",
+     "job": "Children's author or illustrator",
+     "job_ar": "كاتب أو رسام قصص أطفال",
+     "onet_code": "27-3043.00",
+     "onet_title": "Writers and Authors",
+     "interest_check": "partly",
+     "structure": "Open",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-PW-J3",
+     "job": "Educational content designer",
+     "job_ar": "مصمم محتوى تعليمي",
+     "onet_code": "25-9031.00",
+     "onet_title": "Instructional Coordinators",
+     "interest_check": "partly",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Autonomy",
+      "Mastery",
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IE-PW-J4",
+     "job": "Drama and play therapist",
+     "job_ar": "معالج بالدراما واللعب",
+     "onet_code": "29-1125.00",
+     "onet_title": "Recreational Therapists",
+     "interest_check": "partly",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact",
+      "Recognition",
+      "Lifestyle"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-PW-EI",
+   "type": "combination",
+   "clusters": [
+    "PW",
+    "EI"
+   ],
+   "bank_order": 1,
+   "family": "People leadership and social enterprise",
+   "family_ar": "قيادة الأفراد والمشاريع الاجتماعية",
+   "study_fields": "Human resources, social entrepreneurship, nonprofit management",
+   "study_fields_ar": "الموارد البشرية، ريادة الأعمال الاجتماعية، إدارة المنظمات غير الربحية",
+   "jobs": [
+    {
+     "job_id": "F-PW-EI-J1",
+     "job": "HR or talent director",
+     "job_ar": "مدير الموارد البشرية أو المواهب",
+     "onet_code": "11-3121.00",
+     "onet_title": "Human Resources Managers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Income",
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-EI-J2",
+     "job": "Social entrepreneur",
+     "job_ar": "رائد أعمال اجتماعي",
+     "onet_code": "11-9151.00",
+     "onet_title": "Social and Community Service Managers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Recognition",
+      "Impact",
+      "Autonomy"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-EI-J3",
+     "job": "NGO director",
+     "job_ar": "مدير منظمة غير ربحية",
+     "onet_code": "11-9151.00",
+     "onet_title": "Social and Community Service Managers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Recognition",
+      "Impact",
+      "Autonomy"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PW-EI-J4",
+     "job": "Recruitment consultant",
+     "job_ar": "مستشار توظيف",
+     "onet_code": "13-1071.00",
+     "onet_title": "Human Resources Specialists",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Impact",
+      "Lifestyle"
+     ],
+     "changing_work": true
+    }
+   ]
+  },
+  {
+   "family_id": "F-EI-PE",
+   "type": "combination",
+   "clusters": [
+    "EI",
+    "PE"
+   ],
+   "bank_order": 1,
+   "family": "Business management and consulting",
+   "family_ar": "إدارة الأعمال والاستشارات",
+   "study_fields": "Business administration, management, finance",
+   "study_fields_ar": "إدارة الأعمال، الإدارة، المالية",
+   "jobs": [
+    {
+     "job_id": "F-EI-PE-J1",
+     "job": "Business analyst",
+     "job_ar": "محلل أعمال",
+     "onet_code": "13-1111.00",
+     "onet_title": "Management Analysts",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-PE-J2",
+     "job": "Operations director",
+     "job_ar": "مدير العمليات",
+     "onet_code": "11-1021.00",
+     "onet_title": "General and Operations Managers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Autonomy",
+      "Impact",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-PE-J3",
+     "job": "Procurement and contracts manager",
+     "job_ar": "مدير المشتريات والعقود",
+     "onet_code": "11-3061.00",
+     "onet_title": "Purchasing Managers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Income",
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-EI-PE-J4",
+     "job": "Bank branch manager",
+     "job_ar": "مدير فرع بنك",
+     "onet_code": "11-3031.00",
+     "onet_title": "Financial Managers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Steady",
+     "often_offers": [
+      "Income",
+      "Autonomy",
+      "Recognition"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-PE-TS",
+   "type": "combination",
+   "clusters": [
+    "PE",
+    "TS"
+   ],
+   "bank_order": 1,
+   "family": "Business systems and IT governance",
+   "family_ar": "أنظمة الأعمال وحوكمة تقنية المعلومات",
+   "study_fields": "Information systems, management information systems, logistics",
+   "study_fields_ar": "نظم المعلومات، نظم المعلومات الإدارية، الخدمات اللوجستية",
+   "jobs": [
+    {
+     "job_id": "F-PE-TS-J1",
+     "job": "Information systems manager",
+     "job_ar": "مدير نظم المعلومات",
+     "onet_code": "11-3021.00",
+     "onet_title": "Computer and Information Systems Managers",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Steady",
+     "often_offers": [
+      "Income",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PE-TS-J2",
+     "job": "IT project manager",
+     "job_ar": "مدير مشاريع تقنية المعلومات",
+     "onet_code": "15-1299.09",
+     "onet_title": "Information Technology Project Managers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Autonomy",
+      "Mastery",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PE-TS-J3",
+     "job": "Document management specialist",
+     "job_ar": "أخصائي إدارة الوثائق",
+     "onet_code": "15-1299.03",
+     "onet_title": "Document Management Specialists",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Lifestyle",
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-PE-TS-J4",
+     "job": "Logistics data analyst",
+     "job_ar": "محلل بيانات لوجستية",
+     "onet_code": "13-1081.02",
+     "onet_title": "Logistics Analysts",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-TS-IR",
+   "type": "combination",
+   "clusters": [
+    "TS",
+    "IR"
+   ],
+   "bank_order": 1,
+   "family": "Robotics and smart machines",
+   "family_ar": "الروبوتات والآلات الذكية",
+   "study_fields": "Mechatronics, computer engineering, robotics",
+   "study_fields_ar": "الميكاترونكس، هندسة الحاسوب، الروبوتات",
+   "jobs": [
+    {
+     "job_id": "F-TS-IR-J1",
+     "job": "Embedded systems engineer",
+     "job_ar": "مهندس أنظمة مدمجة",
+     "onet_code": "17-2061.00",
+     "onet_title": "Computer Hardware Engineers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Steady",
+     "often_offers": [
+      "Income",
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-TS-IR-J2",
+     "job": "Automation engineer",
+     "job_ar": "مهندس أتمتة",
+     "onet_code": "17-2199.08",
+     "onet_title": "Robotics Engineers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Autonomy",
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-TS-IR-J3",
+     "job": "Drone engineer",
+     "job_ar": "مهندس طائرات مسيّرة",
+     "onet_code": "17-2011.00",
+     "onet_title": "Aerospace Engineers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Recognition",
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-TS-IR-J4",
+     "job": "Smart devices engineer",
+     "job_ar": "مهندس أجهزة ذكية",
+     "onet_code": "17-2072.00",
+     "onet_title": "Electronics Engineers, Except Computer",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Recognition",
+      "Income",
+      "Lifestyle"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-TS-AE",
+   "type": "combination",
+   "clusters": [
+    "TS",
+    "AE"
+   ],
+   "bank_order": 1,
+   "family": "Sports and field technology",
+   "family_ar": "التقنية الرياضية والميدانية",
+   "study_fields": "Sports analytics, aviation technology, computer engineering",
+   "study_fields_ar": "تحليلات الرياضة، تقنيات الطيران، هندسة الحاسوب",
+   "jobs": [
+    {
+     "job_id": "F-TS-AE-J1",
+     "job": "Sports performance analyst",
+     "job_ar": "محلل أداء رياضي",
+     "onet_code": "15-2051.00",
+     "onet_title": "Data Scientists",
+     "interest_check": "partly",
+     "structure": "Mixed",
+     "focus": "Deep",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-TS-AE-J2",
+     "job": "Drone operator",
+     "job_ar": "مشغّل طائرات مسيّرة",
+     "onet_code": "53-2012.00",
+     "onet_title": "Commercial Pilots",
+     "interest_check": "partly",
+     "structure": "Open",
+     "focus": "Mixed",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Autonomy",
+      "Recognition",
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-TS-AE-J3",
+     "job": "Telecom tower specialist",
+     "job_ar": "أخصائي أبراج الاتصالات",
+     "onet_code": "49-2021.00",
+     "onet_title": "Radio, Cellular, and Tower Equipment Installers and Repairers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-TS-AE-J4",
+     "job": "Avionics technician",
+     "job_ar": "فني إلكترونيات الطيران",
+     "onet_code": "49-2091.00",
+     "onet_title": "Avionics Technicians",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-RD-IR",
+   "type": "combination",
+   "clusters": [
+    "RD",
+    "IR"
+   ],
+   "bank_order": 1,
+   "family": "Engineering science and R&D",
+   "family_ar": "العلوم الهندسية والبحث والتطوير",
+   "study_fields": "Materials science, biomedical engineering, chemical engineering",
+   "study_fields_ar": "علوم المواد، الهندسة الطبية الحيوية، الهندسة الكيميائية",
+   "jobs": [
+    {
+     "job_id": "F-RD-IR-J1",
+     "job": "Materials scientist",
+     "job_ar": "عالم مواد",
+     "onet_code": "19-2032.00",
+     "onet_title": "Materials Scientists",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Own",
+     "setting": "Steady",
+     "often_offers": [
+      "Recognition",
+      "Income",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-IR-J2",
+     "job": "Biomedical engineer",
+     "job_ar": "مهندس طبي حيوي",
+     "onet_code": "17-2031.00",
+     "onet_title": "Bioengineers and Biomedical Engineers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Steady",
+     "often_offers": [
+      "Autonomy",
+      "Income"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-IR-J3",
+     "job": "R&D engineer",
+     "job_ar": "مهندس بحث وتطوير",
+     "onet_code": "17-2141.00",
+     "onet_title": "Mechanical Engineers",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Recognition"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-IR-J4",
+     "job": "Chemical engineer",
+     "job_ar": "مهندس كيميائي",
+     "onet_code": "17-2041.00",
+     "onet_title": "Chemical Engineers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Mixed",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Recognition",
+      "Income"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-RD-AE",
+   "type": "combination",
+   "clusters": [
+    "RD",
+    "AE"
+   ],
+   "bank_order": 1,
+   "family": "Sports, field and animal sciences",
+   "family_ar": "علوم الرياضة والعمل الميداني وعلوم الحيوان",
+   "study_fields": "Sports science, exercise physiology, marine biology, veterinary medicine",
+   "study_fields_ar": "علوم الرياضة، فسيولوجيا التمرين، الأحياء البحرية، الطب البيطري",
+   "jobs": [
+    {
+     "job_id": "F-RD-AE-J1",
+     "job": "Sports scientist",
+     "job_ar": "أخصائي علوم الرياضة",
+     "onet_code": "29-1128.00",
+     "onet_title": "Exercise Physiologists",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Impact",
+      "Autonomy",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-AE-J2",
+     "job": "Exercise physiologist",
+     "job_ar": "أخصائي فسيولوجيا التمرين",
+     "onet_code": "29-1128.00",
+     "onet_title": "Exercise Physiologists",
+     "interest_check": "fits",
+     "structure": "Mixed",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Mixed",
+     "often_offers": [
+      "Impact",
+      "Autonomy",
+      "Mastery"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-AE-J3",
+     "job": "Conservation scientist",
+     "job_ar": "أخصائي حماية الطبيعة",
+     "onet_code": "19-1031.00",
+     "onet_title": "Conservation Scientists",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Own",
+     "setting": "Changing",
+     "often_offers": [
+      "Recognition",
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-RD-AE-J4",
+     "job": "Veterinarian",
+     "job_ar": "طبيب بيطري",
+     "onet_code": "29-1131.00",
+     "onet_title": "Veterinarians",
+     "interest_check": "fits",
+     "structure": "Open",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Mixed",
+     "often_offers": [
+      "Mastery",
+      "Autonomy",
+      "Impact"
+     ],
+     "changing_work": false
+    }
+   ]
+  },
+  {
+   "family_id": "F-IR-AE",
+   "type": "combination",
+   "clusters": [
+    "IR",
+    "AE"
+   ],
+   "bank_order": 1,
+   "family": "Hands-on technical work in the field",
+   "family_ar": "العمل الفني الميداني",
+   "study_fields": "Engineering technology, motorsport engineering, aircraft maintenance",
+   "study_fields_ar": "تقنية الهندسة، هندسة رياضة السيارات، صيانة الطائرات",
+   "jobs": [
+    {
+     "job_id": "F-IR-AE-J1",
+     "job": "Oil and gas field technician",
+     "job_ar": "فني حقول النفط والغاز",
+     "onet_code": "47-5013.00",
+     "onet_title": "Service Unit Operators, Oil and Gas",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [
+      "Impact"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IR-AE-J2",
+     "job": "Automotive test technician",
+     "job_ar": "فني اختبار السيارات",
+     "onet_code": "17-3027.01",
+     "onet_title": "Automotive Engineering Technicians",
+     "interest_check": "partly",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Mixed",
+     "setting": "Changing",
+     "often_offers": [],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IR-AE-J3",
+     "job": "Aircraft maintenance engineer",
+     "job_ar": "مهندس صيانة طائرات",
+     "onet_code": "49-3011.00",
+     "onet_title": "Aircraft Mechanics and Service Technicians",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Own",
+     "setting": "Changing",
+     "often_offers": [
+      "Lifestyle"
+     ],
+     "changing_work": false
+    },
+    {
+     "job_id": "F-IR-AE-J4",
+     "job": "Underwater technician (commercial diver)",
+     "job_ar": "فني أعمال تحت الماء (غوّاص تجاري)",
+     "onet_code": "49-9092.00",
+     "onet_title": "Commercial Divers",
+     "interest_check": "fits",
+     "structure": "Set out",
+     "focus": "Broad",
+     "team": "Together",
+     "setting": "Changing",
+     "often_offers": [],
+     "changing_work": false
+    }
+   ]
+  }
+ ]
+}

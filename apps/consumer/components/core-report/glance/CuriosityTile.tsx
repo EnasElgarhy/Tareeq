@@ -55,109 +55,136 @@ export function CuriosityTile({ model }: { model: ReportModel }) {
       className={`relative scroll-mt-20 overflow-hidden text-[#fffcf6] ${styles.curiosity}`}
       style={{ background: CURIOSITY_TILE_BG }}
     >
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute -bottom-16 -end-4 font-heading text-[220px] font-black leading-none text-[#fffcf6]/[0.06]"
-      >
-        C
-      </span>
-      <h3
-        id="core-glance-c-title"
-        className="daybreak-heading relative text-[24px] leading-tight lg:text-[28px]"
-      >
-        <Block id="S2-C-TITLE" />
-      </h3>
-
-      <div className="relative mx-auto mt-5 w-full max-w-[300px] lg:max-w-[420px]">
-        <div className="grid gap-x-3 gap-y-2.5" style={columns}>
-          {codes.map((code, i) => (
-            <p
-              key={code}
-              className="flex flex-col items-center justify-end text-center font-heading text-[16px] font-bold leading-tight"
-              style={hasStrands ? { gridRow: 1, gridColumn: i + 1 } : undefined}
-            >
-              <Block id={`CUR-${code}-NAME`} />
-            </p>
-          ))}
-          {hasStrands ? (
-            <>
-              {isLevel ? (
-                <span
-                  aria-hidden="true"
-                  className="self-center border-t-2 border-dashed border-[#fffcf6]/30"
-                  style={{
-                    gridRow: 2,
-                    gridColumn: "1 / -1",
-                    marginInline: `${100 / (2 * count)}%`,
-                  }}
-                />
-              ) : null}
-              {codes.map((code, i) => (
-                <CuriosityBadge
-                  key={`badge-${code}`}
-                  code={code}
-                  index={i}
-                  column={i + 1}
-                />
-              ))}
-            </>
-          ) : null}
-        </div>
-
-        {hasStrands ? (
-          <div className="relative">
-            {isLevel ? (
-              <span className="absolute left-1/2 top-[14%] z-[1] -translate-x-1/2 whitespace-nowrap rounded-full bg-[#5e3c24] px-2.5 py-1 text-[12px] font-bold">
-                {t("core.glance.almost_level")}
-              </span>
-            ) : null}
-            <svg
-              viewBox={`0 0 ${W} ${H}`}
-              fill="none"
-              aria-hidden="true"
-              className="-mt-1 block w-full rtl:-scale-x-100"
-            >
-              {codes.map((code, i) => (
-                <path
-                  key={code}
-                  d={strandPath(i, count, isBraided)}
-                  stroke={STRANDS[i].stroke}
-                  strokeWidth={8}
-                  strokeLinecap="round"
-                />
-              ))}
-            </svg>
-          </div>
-        ) : (
-          <ul className="mt-3 grid grid-cols-4 gap-2" aria-hidden="true">
-            {codes.map((code) => {
+      <div className={styles.curiosityLayout}>
+        <div className={styles.curiosityIntro}>
+          <h3
+            id="core-glance-c-title"
+            className="daybreak-heading text-[24px] leading-tight lg:text-[28px]"
+          >
+            <Block id="S2-C-TITLE" />
+          </h3>
+          <ul className={styles.curiosityLegend}>
+            {codes.map((code, i) => {
               const Icon = CURIOSITY_ICON[code];
+              const strand = STRANDS[i % STRANDS.length];
               return (
-                <li
-                  key={code}
-                  className="grid aspect-square place-items-center rounded-full bg-[#fffcf6] text-[color:var(--daybreak-gold-ink)]"
-                >
-                  <Icon size={22} weight="duotone" />
+                <li key={code}>
+                  <span
+                    aria-hidden="true"
+                    className="grid size-10 shrink-0 place-items-center rounded-full border-2 bg-[#fffcf6]"
+                    style={{ borderColor: strand.stroke, color: strand.icon }}
+                  >
+                    <Icon size={20} weight="duotone" />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="font-heading text-[16px] font-bold leading-tight">
+                      <Block id={`CUR-${code}-NAME`} />
+                    </p>
+                    <p className="mt-1 text-[14px] leading-snug text-[#fffcf6]/70">
+                      <Block id={`CUR-${code}-PULL`} />
+                    </p>
+                  </div>
                 </li>
               );
             })}
           </ul>
-        )}
-      </div>
+        </div>
 
-      <p
-        className={`relative mx-auto flex w-fit max-w-full items-center gap-2 rounded-[20px] bg-[#fffcf6] px-4 py-3 text-center text-[14.5px] font-bold leading-snug text-[color:var(--day-ink)] ${hasStrands ? "-mt-1" : "mt-5"}`}
-      >
-        <Sparkle />
-        <span>
-          {pillBlocks.map((id, i) => (
-            <Fragment key={id}>
-              {i > 0 ? " " : null}
-              <Block id={id} />
-            </Fragment>
-          ))}
-        </span>
-      </p>
+        <div className={styles.curiosityVisual}>
+          <div className="relative mx-auto mt-5 w-full max-w-[300px] lg:mt-0 lg:max-w-[400px]">
+            <div className="grid gap-x-3 gap-y-2.5" style={columns}>
+              {codes.map((code, i) => (
+                <p
+                  key={code}
+                  className="flex flex-col items-center justify-end text-center font-heading text-[16px] font-bold leading-tight"
+                  style={
+                    hasStrands ? { gridRow: 1, gridColumn: i + 1 } : undefined
+                  }
+                >
+                  <Block id={`CUR-${code}-NAME`} />
+                </p>
+              ))}
+              {hasStrands ? (
+                <>
+                  {isLevel ? (
+                    <span
+                      aria-hidden="true"
+                      className="self-center border-t-2 border-dashed border-[#fffcf6]/30"
+                      style={{
+                        gridRow: 2,
+                        gridColumn: "1 / -1",
+                        marginInline: `${100 / (2 * count)}%`,
+                      }}
+                    />
+                  ) : null}
+                  {codes.map((code, i) => (
+                    <CuriosityBadge
+                      key={`badge-${code}`}
+                      code={code}
+                      index={i}
+                      column={i + 1}
+                    />
+                  ))}
+                </>
+              ) : null}
+            </div>
+
+            {hasStrands ? (
+              <div className="relative">
+                {isLevel ? (
+                  <span className="absolute left-1/2 top-[14%] z-[1] -translate-x-1/2 whitespace-nowrap rounded-full bg-[#5e3c24] px-2.5 py-1 text-[12px] font-bold">
+                    {t("core.glance.almost_level")}
+                  </span>
+                ) : null}
+                <svg
+                  viewBox={`0 0 ${W} ${H}`}
+                  fill="none"
+                  aria-hidden="true"
+                  className="-mt-1 block w-full rtl:-scale-x-100"
+                >
+                  {codes.map((code, i) => (
+                    <path
+                      key={code}
+                      d={strandPath(i, count, isBraided)}
+                      stroke={STRANDS[i].stroke}
+                      strokeWidth={8}
+                      strokeLinecap="round"
+                    />
+                  ))}
+                </svg>
+              </div>
+            ) : (
+              <ul className="mt-3 grid grid-cols-4 gap-2" aria-hidden="true">
+                {codes.map((code) => {
+                  const Icon = CURIOSITY_ICON[code];
+                  return (
+                    <li
+                      key={code}
+                      className="grid aspect-square place-items-center rounded-full bg-[#fffcf6] text-[color:var(--daybreak-gold-ink)]"
+                    >
+                      <Icon size={22} weight="duotone" />
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+
+          <p
+            className={`relative mx-auto flex w-fit max-w-full items-center gap-2 rounded-[20px] bg-[#fffcf6] px-4 py-3 text-center text-[14.5px] font-bold leading-snug text-[color:var(--day-ink)] ${hasStrands ? "-mt-1" : "mt-5"}`}
+          >
+            <Sparkle />
+            <span>
+              {pillBlocks.map((id, i) => (
+                <Fragment key={id}>
+                  {i > 0 ? " " : null}
+                  <Block id={id} />
+                </Fragment>
+              ))}
+            </span>
+          </p>
+        </div>
+      </div>
     </section>
   );
 }

@@ -212,14 +212,40 @@
   padding: var(--report-space-lg);
   border-radius: var(--report-radius);
 }
-.curiosity > h3 {
-  font-size: 1.25rem;
-  line-height: 1.3;
-  font-weight: 650;
+.curiosityLayout {
+  position: relative;
+  display: grid;
+  gap: var(--report-space-lg);
 }
-.curiosity > div {
-  margin-top: var(--report-space-lg);
-  max-width: 360px;
+/* The legend repeats the diagram's names, so phones show the diagram only. */
+.curiosityLegend {
+  display: none;
+}
+/* Desktop: title and meaning on the left, the strand diagram on the right,
+   so the wide card has no empty margins around a small centred drawing. */
+@media (min-width: 1024px) {
+  .curiosity {
+    padding: 2.75rem 3rem;
+  }
+  .curiosityVisual {
+    padding-block: var(--report-space-xs);
+  }
+  .curiosityLayout {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: center;
+    column-gap: 3rem;
+  }
+  .curiosityLegend {
+    display: grid;
+    gap: var(--report-space-md);
+    margin-top: var(--report-space-lg);
+    max-width: 30rem;
+  }
+  .curiosityLegend > li {
+    display: flex;
+    align-items: center;
+    gap: var(--report-space-sm);
+  }
 }
 .overview {
   gap: var(--report-space-lg);
@@ -333,17 +359,161 @@
   border-radius: var(--report-radius-sm);
   box-shadow: none;
 }
+/* Kai asks a question as a chat message, then offers one-tap answers. */
 .kaiPrompt {
-  background: var(--report-accent-soft);
-  border: 1px solid var(--report-rule);
-  border-radius: var(--report-radius);
+  display: grid;
+  gap: 0.875rem;
   padding: var(--report-space-lg);
+  border: 1px solid #e4d8c4;
+  border-radius: var(--report-radius);
+  background: #fffcf6;
+  box-shadow: 0 12px 30px -24px rgb(42 31 79 / 0.45);
 }
-.kaiPrompt p {
-  font-size: 0.9375rem;
-  font-weight: 550;
-  line-height: 1.5;
-  color: var(--day-ink);
+.kaiHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.kaiName {
+  display: flex;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 750;
+  color: #2a1f4f;
+}
+.kaiName span {
+  font-weight: 500;
+  color: #5c4a96;
+}
+.kaiBubbleSlot {
+  display: grid;
+}
+.kaiBubbleSlot > * {
+  grid-area: 1 / 1;
+  align-self: start;
+  transition:
+    opacity 260ms ease,
+    transform 360ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.kaiBubbleSlot > [data-visible="false"] {
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+}
+.kaiBubble {
+  justify-self: start;
+  max-width: 38rem;
+  padding: 0.875rem 1.125rem;
+  border-radius: 6px 20px 20px 20px;
+  background: #ece8f7;
+  color: #2a1f4f;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+:global([dir="rtl"]) .kaiBubble,
+:global([dir="rtl"]) .kaiTyping {
+  border-radius: 20px 6px 20px 20px;
+}
+.kaiTyping {
+  justify-self: start;
+  display: inline-flex;
+  gap: 5px;
+  padding: 0.9rem 1.1rem;
+  border-radius: 6px 20px 20px 20px;
+  background: #ece8f7;
+}
+.kaiTyping i {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #5c4a96;
+  animation: kaiDot 1s ease-in-out infinite;
+}
+.kaiTyping i:nth-child(2) {
+  animation-delay: 150ms;
+}
+.kaiTyping i:nth-child(3) {
+  animation-delay: 300ms;
+}
+.kaiAnswers {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  transition: opacity 320ms ease;
+}
+.kaiAnswers[data-visible="false"] {
+  opacity: 0;
+  pointer-events: none;
+}
+.kaiChip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0.5rem 1rem;
+  border: 1px solid #c3b4ee;
+  border-radius: 20px;
+  line-height: 1.3;
+  text-align: start;
+  background: #fff;
+  color: #3c3489;
+  font-size: 0.875rem;
+  font-weight: 650;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    transform 150ms ease;
+}
+.kaiChip:hover {
+  border-color: #5c4a96;
+  background: #ece8f7;
+  transform: translateY(-1px);
+}
+.kaiMore {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 40px;
+  padding-inline: 0.5rem;
+  color: #5c4a96;
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+.kaiMore:hover {
+  color: #2a1f4f;
+}
+.kaiChip:focus-visible,
+.kaiMore:focus-visible {
+  outline: 2px solid #5c4a96;
+  outline-offset: 2px;
+}
+@keyframes kaiDot {
+  0%,
+  60%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kaiTyping i {
+    animation: none;
+  }
+  .kaiBubbleSlot > *,
+  .kaiAnswers {
+    transition: none;
+  }
+}
+@media (min-width: 640px) {
+  .kaiPrompt {
+    padding: var(--report-space-xl);
+  }
 }
 
 @media (max-width: 480px) {
@@ -375,61 +545,78 @@
     height: 240px;
   }
 }
-@media (min-width: 1280px) {
-  .report {
-    grid-template-columns: 168px minmax(0, 1fr);
-    align-items: start;
-    column-gap: var(--report-space-xl);
-  }
+/* Desktop: the app already has a sidebar, so chapters run as one sticky
+   horizontal bar above the reading column instead of a second sidebar. */
+@media (min-width: 1024px) {
   .navigation {
-    top: 0;
-    display: grid;
     gap: var(--report-space-md);
-    padding-block: var(--report-space-xs);
-    border-bottom: 0;
-    background: transparent;
-  }
-  .navigationTitle {
-    display: block;
-    font-size: 0.75rem;
-    font-weight: 650;
-    color: var(--day-ink-3);
-    padding-inline: var(--report-space-sm);
+    padding-block: var(--report-space-sm);
   }
   .mobileNavigation {
     display: none;
   }
   .chapterList {
-    display: grid;
+    display: flex;
+    flex: 1;
+    min-width: 0;
     gap: 0.25rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 0.25rem;
+    border: 1px solid var(--report-rule);
+    border-radius: 999px;
+    background: var(--report-paper);
+  }
+  .chapterList::-webkit-scrollbar {
+    display: none;
+  }
+  .chapterList > li {
+    flex-shrink: 0;
   }
   .chapter {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: var(--report-space-sm);
-    width: 100%;
-    min-height: 46px;
-    padding: var(--report-space-sm);
-    border-radius: var(--report-radius-sm);
+    gap: var(--report-space-xs);
+    min-height: 40px;
+    padding-inline: 0.875rem;
+    border-radius: 999px;
     font-size: 0.8125rem;
-    font-weight: 550;
-    text-align: start;
+    font-weight: 600;
+    white-space: nowrap;
     color: var(--day-ink-2);
+    transition:
+      background-color 150ms ease,
+      color 150ms ease;
   }
   .chapter > svg {
     flex-shrink: 0;
   }
   .chapter:hover {
-    background: var(--report-paper);
+    background: var(--report-accent-soft);
+    color: var(--day-ink);
+  }
+  .chapter:focus-visible {
+    outline: 2px solid var(--report-accent);
+    outline-offset: 2px;
   }
   .chapter[aria-current="page"] {
-    background: var(--report-accent-soft);
-    color: var(--report-accent);
+    background: var(--report-accent);
+    color: var(--day-card);
     font-weight: 700;
   }
   .progress {
+    flex-shrink: 0;
     max-width: none;
-    padding-inline: var(--report-space-sm);
+    white-space: nowrap;
+    font-size: 0.75rem;
+    color: var(--day-ink-3);
+  }
+}
+/* Icons only where every chapter label still fits on one line. */
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .chapter > svg,
+  .progress {
+    display: none;
   }
 }
 
@@ -438,19 +625,70 @@
   grid-template-columns: minmax(0, 1fr);
   gap: 1.5rem;
 }
+/* The first screen: a dawn hero with the headline over open sky, then the
+   student's leading curiosities as illustrated cards. */
 .discoveryCover {
   min-width: 0;
-  padding: 1.5rem;
+  overflow: hidden;
   border: 1px solid var(--report-rule);
   border-radius: 1.5rem;
-  background: #eee6d8;
+  background: var(--day-card);
   color: var(--day-ink);
+  box-shadow: 0 18px 40px -24px rgb(42 33 24 / 0.35);
 }
-.coverHeading {
+/* Phones: the scene stands on its own (Kai and the trails in full) and
+   fades into a violet panel that carries the headline, so no text sits on
+   the busy part of the art. Wider screens set the text over open sky. */
+.coverHero {
+  position: relative;
+  isolation: isolate;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 100px;
-  gap: 0.75rem;
-  align-items: center;
+  background: #2f2560;
+}
+.coverHero picture {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  height: 15.5rem;
+}
+.coverHeroArt {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 86% 72%;
+  animation: coverDrift 14s ease-out both;
+}
+.coverHero::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 15.5rem;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgb(47 37 96 / 0) 55%,
+    rgb(47 37 96 / 0.7) 85%,
+    #2f2560 100%
+  );
+}
+.coverHeroText {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 0.625rem;
+  padding: 0.25rem 1.25rem 1.5rem;
+  color: #fffcf6;
+}
+.coverHeroText > * {
+  animation: coverRise 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.coverHeroText > :nth-child(2) {
+  animation-delay: 90ms;
+}
+.coverHeroText > :nth-child(3) {
+  animation-delay: 180ms;
 }
 .eyebrow {
   display: flex;
@@ -463,43 +701,73 @@
   color: var(--daybreak-gold-ink);
   line-height: 1.6;
 }
+.coverHeroText .eyebrow {
+  color: #f4c660;
+}
 .coverTitle {
-  margin-top: 0.75rem;
-  max-width: 15ch;
-  font-size: clamp(1.65rem, 3vw, 2.75rem);
-  line-height: 1.09;
+  max-width: 14ch;
+  font-size: clamp(2rem, 1.2rem + 3.4vw, 3.5rem);
+  line-height: 1.04;
   letter-spacing: -0.03em;
   text-wrap: balance;
-}
-.coverArt {
-  width: 100%;
-  height: 120px;
-  object-fit: contain;
+  text-shadow: 0 2px 18px rgb(20 12 50 / 0.35);
 }
 .coverBody {
-  margin-top: 1rem;
-  max-width: 53ch;
+  max-width: 40ch;
   font-size: 0.9375rem;
-  line-height: 1.65;
-  color: var(--day-ink-2);
+  line-height: 1.6;
+  color: rgb(255 252 246 / 0.86);
+}
+.coverReveal {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.25rem;
 }
 .resultLabel {
-  margin-top: 1.5rem;
   font-size: 0.75rem;
   font-weight: 650;
   color: var(--daybreak-gold-ink);
 }
 .coverResults {
   display: grid;
-  margin-top: 0.625rem;
-  gap: 0;
+  gap: 0.75rem;
 }
 .coverResults > li {
-  display: flex;
-  gap: 0.875rem;
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
   align-items: center;
-  padding-block: 1rem;
-  border-top: 1px solid rgba(69, 43, 23, 0.14);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--strand) 70%, transparent);
+  border-radius: 1.125rem;
+  background: color-mix(in srgb, var(--strand) 16%, var(--day-card));
+  animation: coverRise 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+.coverResultArt {
+  display: grid;
+  place-items: center;
+  height: 5.5rem;
+  overflow: hidden;
+}
+.coverResultArt img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 40%;
+  transform: scale(1.35);
+}
+.coverResultText {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  height: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--day-card);
+}
+/* The row's art already carries the icon on phones. */
+.coverResultText > span:first-child {
+  display: none;
 }
 .coverResults :is(h2, h3) {
   font-size: 1.125rem;
@@ -511,6 +779,39 @@
   font-size: 0.8125rem;
   line-height: 1.45;
   color: var(--day-ink-2);
+}
+/* Arabic reads from the right: mirror the scene so the open sky sits
+   behind the headline. `scale` leaves the drift animation's transform free. */
+:global([dir="rtl"]) .coverHeroArt {
+  scale: -1 1;
+}
+@media (min-width: 640px) {
+  :global([dir="rtl"]) .coverHero::after {
+    background: linear-gradient(
+      270deg,
+      rgb(36 26 74 / 0.6) 0%,
+      rgb(36 26 74 / 0.25) 45%,
+      rgb(36 26 74 / 0) 70%
+    );
+  }
+}
+@keyframes coverRise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+@keyframes coverDrift {
+  from {
+    transform: scale(1.06);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .coverHeroArt,
+  .coverHeroText > *,
+  .coverResults > li {
+    animation: none;
+  }
 }
 .coverButton {
   display: flex;
@@ -640,29 +941,69 @@
   letter-spacing: 0;
 }
 @media (min-width: 640px) {
-  .discoveryCover {
-    padding: 2rem;
+  .coverHero {
+    align-items: center;
+    min-height: 24rem;
+    background: #3b2e6e;
   }
-  .coverHeading {
-    grid-template-columns: minmax(0, 1fr) 180px;
+  .coverHero picture {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    height: auto;
   }
-  .coverArt {
-    height: 180px;
+  .coverHeroArt {
+    object-position: 78% 60%;
+  }
+  .coverHero::after {
+    inset: 0;
+    height: auto;
+    z-index: -1;
+    background: linear-gradient(
+      90deg,
+      rgb(36 26 74 / 0.6) 0%,
+      rgb(36 26 74 / 0.25) 45%,
+      rgb(36 26 74 / 0) 70%
+    );
+  }
+  .coverHeroText {
+    padding: 2.5rem;
+    max-width: min(34rem, 56%);
+  }
+  .coverTitle {
+    font-size: clamp(2rem, 1.1rem + 2.4vw, 3.25rem);
+  }
+  .coverReveal {
+    padding: 1.75rem 2rem 2rem;
+  }
+  .coverResults {
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: 1rem;
+  }
+  .coverResults > li {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+  }
+  .coverResultArt {
+    height: 11rem;
+    padding-top: 0.5rem;
+  }
+  .coverResultArt img {
+    object-fit: contain;
+    transform: none;
+  }
+  .coverResultText {
+    height: auto;
+    padding: 0.875rem 1rem 1rem;
+  }
+  .coverResultText > span:first-child {
+    display: grid;
   }
 }
 @media (min-width: 1024px) {
   .lockedReport {
     grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.85fr);
     align-items: start;
-  }
-  .lockedReport .coverHeading {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .lockedReport .coverArt {
-    grid-row: 2;
-    height: 190px;
-    max-width: 320px;
-    justify-self: center;
   }
   .unlockOffer {
     position: sticky;
@@ -811,4 +1152,215 @@
   width: 100%;
   height: 120px;
   object-fit: contain;
+}
+
+/* At a glance as a card deck (?layout=stack): one card on top, the next
+   two peeking underneath like stacked profile cards. */
+.stack {
+  display: grid;
+  gap: var(--report-space-md);
+  width: 100%;
+  min-width: 0;
+}
+.stackDeck {
+  display: grid;
+  /* Room for the peeking cards below the top one. */
+  padding-bottom: 2rem;
+}
+.stackCard {
+  grid-area: 1 / 1;
+  align-self: start;
+  border-radius: var(--report-radius);
+  box-shadow:
+    0 1px 2px rgb(33 23 61 / 0.06),
+    0 14px 32px -12px rgb(33 23 61 / 0.22);
+  transform-origin: 50% 100%;
+  transition:
+    transform 280ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 280ms ease;
+  touch-action: pan-y;
+  user-select: none;
+  cursor: grab;
+}
+.stackCard[data-dragging="true"] {
+  transition: none;
+  cursor: grabbing;
+}
+.stackCard[aria-hidden="true"] {
+  cursor: default;
+}
+/* Cards underneath show only their edge, not a strip of their content. */
+.stackCard[aria-hidden="true"] > section > * {
+  visibility: hidden;
+}
+/* Cards keep their own surface; give plain cards an opaque one so the
+   cards underneath never show through. */
+.stackCard > section {
+  height: 100%;
+  background-color: var(--report-paper);
+}
+.stackTabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.375rem;
+}
+.stackTab {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 14px;
+  padding: 0.5rem 0.25rem 0.45rem;
+  color: var(--day-ink-3);
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
+}
+.stackTab[aria-current="true"] {
+  background: var(--report-paper);
+  color: var(--day-ink);
+  box-shadow: 0 6px 16px -10px rgb(33 23 61 / 0.35);
+}
+.stackTab:focus-visible {
+  outline: 2px solid var(--report-accent);
+  outline-offset: 2px;
+}
+.stackTabLetter {
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--tab-color);
+  color: var(--tab-color);
+  font-size: 0.8125rem;
+  font-weight: 800;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
+}
+.stackTab[aria-current="true"] .stackTabLetter {
+  background: var(--tab-color);
+  color: var(--day-card);
+}
+.stackTabLabel {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+.stackControls {
+  position: sticky;
+  bottom: 0.75rem;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--report-space-sm, 0.5rem);
+  margin-inline: auto;
+  width: min(100%, 22rem);
+  border: 1px solid var(--report-rule);
+  border-radius: 999px;
+  padding: 0.375rem;
+  background: color-mix(in srgb, var(--report-paper) 88%, transparent);
+  box-shadow: 0 12px 28px -14px rgb(33 23 61 / 0.45);
+  backdrop-filter: blur(10px);
+}
+.stackCard[data-nudging="true"] {
+  animation: stack-nudge 1.6s cubic-bezier(0.45, 0, 0.25, 1) 1;
+}
+@keyframes stack-nudge {
+  0%,
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  25% {
+    transform: translateX(-34px) rotate(-3deg);
+  }
+  45% {
+    transform: translateX(0) rotate(0deg);
+  }
+  65% {
+    transform: translateX(-18px) rotate(-1.5deg);
+  }
+  80% {
+    transform: translateX(0) rotate(0deg);
+  }
+}
+:global([dir="rtl"]) .stackCard[data-nudging="true"] {
+  animation-name: stack-nudge-rtl;
+}
+@keyframes stack-nudge-rtl {
+  0%,
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  25% {
+    transform: translateX(34px) rotate(3deg);
+  }
+  45% {
+    transform: translateX(0) rotate(0deg);
+  }
+  65% {
+    transform: translateX(18px) rotate(1.5deg);
+  }
+  80% {
+    transform: translateX(0) rotate(0deg);
+  }
+}
+.stackButton {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  border: 1px solid var(--report-rule);
+  background: var(--report-paper);
+  color: var(--day-ink);
+  transition:
+    background-color 150ms ease,
+    transform 150ms ease;
+}
+.stackButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+.stackButton:disabled {
+  opacity: 0.4;
+}
+.stackButtonPrimary {
+  border-color: transparent;
+  background: var(--report-accent);
+  color: var(--day-card);
+}
+.stackButton:focus-visible {
+  outline: 2px solid var(--report-accent);
+  outline-offset: 3px;
+}
+.stackHint {
+  display: grid;
+  min-width: 0;
+  justify-items: center;
+  text-align: center;
+  line-height: 1.25;
+}
+.stackHintCount {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--day-ink);
+}
+.stackHintSwipe {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.6875rem;
+  color: var(--day-ink-3);
+}
+@media (prefers-reduced-motion: reduce) {
+  .stackCard {
+    transition: none;
+    animation: none !important;
+  }
 }

@@ -12,7 +12,8 @@ import {
 } from "@/lib/payments/report-access-storage";
 import { stripeReportPaymentService } from "@/lib/payments/report-payment-service";
 import { resolveCurrentAssessmentId } from "@/lib/results/assessment-identity";
-import { readGeneratedReport, readResultRegistration } from "@/lib/results/storage";
+import { readCurrentReportGeneratedAt } from "@/lib/results/current-report";
+import { readResultRegistration } from "@/lib/results/storage";
 
 /**
  * The one client-side answer to "may this visitor use the paid surfaces?".
@@ -56,8 +57,8 @@ export function markPaidAccessUnpaid() {
 }
 
 function currentReportId(): string | null {
-  const report = readGeneratedReport();
-  return report ? reportIdFromGeneratedAt(report.generatedAt) : null;
+  const generatedAt = readCurrentReportGeneratedAt();
+  return generatedAt ? reportIdFromGeneratedAt(generatedAt) : null;
 }
 
 /** `null` means the cache cannot answer and the server has to be asked. */

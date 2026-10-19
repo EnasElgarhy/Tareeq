@@ -1,3 +1,4 @@
+import type { CoreEntryPromptId } from "@/lib/kai/core/core-context";
 import type { KaiLearningResource } from "@/lib/kai/resource-types";
 import type { KaiMessageIntent } from "@/lib/kai/intent";
 
@@ -250,6 +251,8 @@ export interface KaiConversation {
   id: string;
   goal: KaiConversationGoal;
   title?: string;
+  /** CORE: the report section question that opened this conversation (spec §6.7). */
+  entryPromptId?: CoreEntryPromptId;
   messages: KaiMessage[];
   /** A short rolling summary of the conversation so far — sent to Gemini
    * instead of the full message history once it grows long. */

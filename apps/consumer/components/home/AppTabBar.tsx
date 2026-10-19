@@ -25,11 +25,11 @@ export function AppTabBar() {
           const isActive = isNavItemActive(tab, pathname);
           const Icon = tab.icon;
           return (
-            <li key={tab.href} className="flex-1">
+            <li key={tab.href} className="min-w-0 flex-1">
               <Link
                 href={tab.href}
                 aria-current={isActive ? "page" : undefined}
-                className="group flex flex-col items-center gap-1 rounded-[18px] px-2 py-1.5 transition active:scale-95"
+                className="group flex flex-col items-center gap-1 rounded-[18px] px-0.5 py-1.5 transition active:scale-95"
               >
                 <span
                   className="grid size-9 place-items-center rounded-2xl transition"
@@ -49,7 +49,7 @@ export function AppTabBar() {
                   <Icon size={20} strokeWidth={isActive ? 2.4 : 1.9} />
                 </span>
                 <span
-                  className="text-[10px] font-bold transition"
+                  className="w-full truncate whitespace-nowrap text-center text-[10px] font-bold leading-tight transition"
                   style={{
                     color: isActive
                       ? "#F4C660"

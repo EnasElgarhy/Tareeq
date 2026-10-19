@@ -1,0 +1,52 @@
+.avatar {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.portrait {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e3dcf5;
+  box-shadow:
+    0 0 0 2px #fffcf6,
+    0 0 0 3.5px #c3b4ee;
+}
+/* All frames stay loaded and stacked; only the visible one shows, so a
+   blink or a word never waits on the network. */
+.portrait img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform-origin: 50% 90%;
+  animation: breathe 4.2s ease-in-out infinite;
+}
+.portrait img[data-visible="true"] {
+  opacity: 1;
+}
+.online {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  width: 28%;
+  height: 28%;
+  min-width: 10px;
+  min-height: 10px;
+  border-radius: 999px;
+  background: #4cc38a;
+  box-shadow: 0 0 0 2px #fffcf6;
+}
+@keyframes breathe {
+  50% {
+    transform: translateY(-1.5%) scale(1.02);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .portrait img {
+    animation: none;
+  }
+}

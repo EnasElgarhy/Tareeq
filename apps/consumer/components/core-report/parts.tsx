@@ -2,11 +2,11 @@
 
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { Fragment, type ReactNode } from "react";
+import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { KaiAvatar } from "@/components/kai/KaiAvatar";
 import { wordingFor } from "@/lib/core-v2/content/wording";
 import type { AxisZone } from "@/lib/core-v2/types";
-import { KaiPortrait } from "./glance/KaiPortrait";
 import styles from "./ReportDesign.module.css";
 
 /* ------------------------------------------------------------------ wording */
@@ -30,21 +30,38 @@ function withBold(text: string): ReactNode {
   );
 }
 
+/**
+ * Some file 04 blocks open with their own label ("Watch: search for…",
+ * "Try:"). `part` splits at that first colon so the label can be the step
+ * heading: "lead" is the label, "rest" the sentence after it.
+ */
+function pickPart(text: string, part: "all" | "lead" | "rest"): string {
+  if (part === "all") return text;
+  const colon = text.indexOf(":");
+  if (colon < 0) return part === "lead" ? text : "";
+  if (part === "lead") return text.slice(0, colon).trim();
+  // The sentence now starts the paragraph, so it takes a capital.
+  const rest = text.slice(colon + 1).trim();
+  return rest.charAt(0).toUpperCase() + rest.slice(1);
+}
+
 /** A block's text, with optional [fill] replacements; pending blocks stay visible as a marker. */
 export function Block({
   id,
   fills,
+  part = "all",
 }: {
   id: string;
   fills?: Readonly<Record<string, string>>;
+  part?: "all" | "lead" | "rest";
 }) {
   const text = useWording()(id);
   if (text === null) return <Pending id={id} />;
   const filled = Object.entries(fills ?? {}).reduce(
-    (current, [key, value]) => current.replace(`[${key}]`, value),
+    (current, [key, value]) => current.split(`[${key}]`).join(value),
     text,
   );
-  return <>{withBold(filled)}</>;
+  return <>{withBold(pickPart(filled, part))}</>;
 }
 
 export function Pending({ id }: { id: string }) {
@@ -179,28 +196,115 @@ export function ZoneBar({
  * as the entry prompt. Kai's portrait on the lavender tile, as in the deck
  * header, so the question reads as Kai asking it.
  */
-export function KaiPrompt({ questionId }: { questionId: string }) {
-  const question = useWording()(questionId);
-  const href = question
-    ? `/kai?goal=explain_results&prompt=${encodeURIComponent(question)}`
-    : "/kai?goal=explain_results";
+/** How long Kai "types" before her message appears, then how long she talks. */
+const KAI_TYPING_MS = 1100;
+const KAI_TALKING_MS = 1700;
+
+type KaiPhase = "waiting" | "typing" | "talking" | "done";
+
+/** The section question travels as ENTRY_PROMPT (`entry`); a tapped answer as the first message. */
+function kaiHref(questionId: string, answer: string | null): string {
+  const base = `/kai?goal=explain_results&entry=${encodeURIComponent(questionId)}`;
+  return answer ? `${base}&prompt=${encodeURIComponent(answer)}` : base;
+}
+
+/**
+ * Kai asks the student a question about this chapter. When the card first
+ * scrolls into view she "types", then her message appears while she talks,
+ * then one-tap answers start a real conversation with that answer.
+ */
+export function KaiPrompt({
+  questionId,
+  answers = [],
+}: {
+  questionId: string;
+  /** Ready-made replies; each opens the Kai chat with it as the first message. */
+  answers?: readonly string[];
+}) {
+  const { t } = useLocale();
+  const cardRef = useRef<HTMLElement>(null);
+  const [phase, setPhase] = useState<KaiPhase>("waiting");
+
+  useEffect(() => {
+    const node = cardRef.current;
+    const isReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (!node || isReduced || !("IntersectionObserver" in window)) {
+      setPhase("done");
+      return;
+    }
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        observer.disconnect();
+        setPhase("typing");
+        timers.push(setTimeout(() => setPhase("talking"), KAI_TYPING_MS));
+        timers.push(
+          setTimeout(() => setPhase("done"), KAI_TYPING_MS + KAI_TALKING_MS),
+        );
+      },
+      { threshold: 0.6 },
+    );
+    observer.observe(node);
+    return () => {
+      observer.disconnect();
+      timers.forEach(clearTimeout);
+    };
+  }, []);
+
+  const isMessageShown = phase === "talking" || phase === "done";
+
   return (
-    <div
-      className={`flex flex-col gap-4 sm:flex-row sm:items-center ${styles.kaiPrompt}`}
-    >
-      <div className="flex min-w-0 flex-1 items-center gap-3.5">
-        <KaiPortrait size="sm" />
-        <p className="min-w-0 font-heading text-[16px] font-bold leading-snug text-[#2a1f4f]">
+    <aside ref={cardRef} className={styles.kaiPrompt} data-phase={phase}>
+      <div className={styles.kaiHeader}>
+        <KaiAvatar size={44} isTalking={phase === "talking"} />
+        <p className={styles.kaiName}>
+          {t("home.tab.kai")}
+          <span>
+            {isMessageShown ? t("core.kai.asks") : t("core.kai.typing")}
+          </span>
+        </p>
+      </div>
+
+      <div className={styles.kaiBubbleSlot}>
+        <span
+          aria-hidden="true"
+          className={styles.kaiTyping}
+          data-visible={!isMessageShown}
+        >
+          <i />
+          <i />
+          <i />
+        </span>
+        <p
+          className={`font-heading ${styles.kaiBubble}`}
+          data-visible={isMessageShown}
+        >
           <Block id={questionId} />
         </p>
       </div>
-      <Link
-        href={href}
-        className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[color:var(--daybreak-violet-deep)] px-4 py-2.5 text-[13.5px] font-bold text-white transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2a1f4f] focus-visible:ring-offset-2 focus-visible:ring-offset-[#e3dcf5]"
-      >
-        <Block id="KAI-BUTTON" />
-        <ArrowRight size={15} aria-hidden="true" className="rtl:-scale-x-100" />
-      </Link>
-    </div>
+
+      <div className={styles.kaiAnswers} data-visible={phase === "done"}>
+        {answers.map((answer) => (
+          <Link
+            key={answer}
+            href={kaiHref(questionId, answer)}
+            className={styles.kaiChip}
+          >
+            {answer}
+          </Link>
+        ))}
+        <Link href={kaiHref(questionId, null)} className={styles.kaiMore}>
+          <Block id="KAI-BUTTON" />
+          <ArrowRight
+            size={15}
+            aria-hidden="true"
+            className="rtl:-scale-x-100"
+          />
+        </Link>
+      </div>
+    </aside>
   );
 }

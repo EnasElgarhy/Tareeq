@@ -1,3 +1,4 @@
+import type { CoreResult } from "@/lib/core-v2/types";
 import type { CompassResult } from "@/lib/scoring";
 import type { AssessmentVersionRef } from "@/lib/assessment/content";
 
@@ -13,6 +14,8 @@ export type LocalAssessmentProgress = {
   updatedAt: string;
   completedAt?: string;
   result?: CompassResult;
+  /** CORE 2.0 attempts (question set 5.1) store this instead of `result`. */
+  coreResult?: CoreResult;
 };
 
 type CreateLocalAssessmentOptions = {
@@ -191,6 +194,24 @@ export function completeLocalAssessment(
     completedAt: now,
     updatedAt: now,
     result,
+  };
+
+  return writeLocalAssessment(next);
+}
+
+/** Completes a CORE 2.0 attempt; the report is built from `coreResult`. */
+export function completeLocalCoreAssessment(
+  coreResult: CoreResult,
+  currentIndex: number,
+  version?: AssessmentVersionRef,
+) {
+  const now = new Date().toISOString();
+  const next: LocalAssessmentProgress = {
+    ...ensureLocalAssessment(version),
+    currentIndex,
+    completedAt: now,
+    updatedAt: now,
+    coreResult,
   };
 
   return writeLocalAssessment(next);

@@ -34,7 +34,7 @@ const SECTION_ICONS = {
 
 /**
  * The CORE 2.0 report inside the Compass tab: one section per screen, a
- * chapter sidebar on desktop, a selector on mobile, and Back / Next at
+ * sticky chapter bar on desktop, a selector on mobile, and Back / Next at
  * the end of each section. The open section lives in the URL (?section=S3) so the browser
  * back button, refresh and shared links land on the same screen.
  */

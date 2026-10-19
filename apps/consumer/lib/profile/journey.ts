@@ -1,4 +1,5 @@
 import type { StringKey } from "@/lib/i18n/strings";
+import { readCurrentReportGeneratedAt } from "@/lib/results/current-report";
 import {
   readGeneratedReport,
   readResultRegistration,
@@ -143,10 +144,13 @@ export function readProfileSnapshot(): ProfileSnapshot {
     typeof window === "undefined" ? null : readResultRegistration();
   const coreReport =
     typeof window === "undefined" ? null : readGeneratedReport();
+  // A CORE 2.0 report also completes the Compass module.
+  const reportGeneratedAt =
+    typeof window === "undefined" ? null : readCurrentReportGeneratedAt();
 
   const modules = ASSESSMENT_MODULES.map((mod) => {
     if (mod.id === "core-compass") {
-      const completed = Boolean(coreReport);
+      const completed = Boolean(reportGeneratedAt);
       return {
         id: mod.id,
         name: mod.name,
@@ -155,13 +159,13 @@ export function readProfileSnapshot(): ProfileSnapshot {
         durationLabel: mod.durationLabel,
         icon: mod.icon,
         status: (completed ? "completed" : "available") as ModuleStatus,
-        completedAt: coreReport?.generatedAt ?? null,
+        completedAt: reportGeneratedAt,
         route: completed ? "/compass" : mod.route,
       };
     }
     // Locked modules — visible but greyed out. They become "available"
     // once their prerequisite is complete (currently the CORE Compass).
-    const prereqMet = Boolean(coreReport);
+    const prereqMet = Boolean(reportGeneratedAt);
     return {
       id: mod.id,
       name: mod.name,

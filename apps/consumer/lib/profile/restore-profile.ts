@@ -12,6 +12,13 @@ import {
   writeGeneratedReport,
   writeResultRegistration,
 } from "@/lib/results/storage";
+import {
+  CORE_QUESTION_SET_LABEL,
+  coreAnswersFromLetters,
+} from "@/lib/core-v2/assessment";
+import { scoreCore } from "@/lib/core-v2/scoring";
+import { writeCoreReport } from "@/lib/core-v2/storage";
+import type { CoreResult } from "@/lib/core-v2/types";
 import { computeScore } from "@/lib/scoring";
 import type { CompassResult } from "@/lib/scoring";
 
@@ -67,6 +74,20 @@ export function restoreProfileFromAssessment({
   const answers = readAnswers(assessment.answers);
   if (!answers || !assessment.id || !assessment.completed_at) return null;
 
+  // A CORE 2.0 attempt (question set 5.1) restores the new report; scoring its
+  // answers with the legacy rules would produce a meaningless legacy result.
+  const coreResult = readStoredCoreResult(assessment.result, answers);
+  if (coreResult) {
+    return restoreCoreProfile({
+      assessment,
+      answers,
+      coreResult,
+      completedAt: assessment.completed_at,
+      displayName,
+      email,
+    });
+  }
+
   const result =
     readStoredResult(assessment.result) ??
     computeScore(answers, assessmentQuestions);
@@ -116,6 +137,81 @@ export function restoreProfileFromAssessment({
           : "Restored from your saved assessment.",
     }),
     generatedAt: completedAt,
+  });
+
+  return readProfileSnapshot();
+}
+
+/**
+ * The CORE 2.0 result of a saved attempt: the stored result when it is one,
+ * otherwise re-scored from answers that belong to question set 5.1.
+ */
+function readStoredCoreResult(
+  value: unknown,
+  answers: Record<string, string>,
+): CoreResult | null {
+  const stored = value as Partial<CoreResult> | null;
+  if (stored && typeof stored === "object" && stored.scoringVersion === "2.0") {
+    return stored as CoreResult;
+  }
+  if (!("P1-01" in answers)) return null;
+  try {
+    return scoreCore(coreAnswersFromLetters(answers));
+  } catch {
+    return null;
+  }
+}
+
+function restoreCoreProfile({
+  assessment,
+  answers,
+  coreResult,
+  completedAt,
+  displayName,
+  email,
+}: {
+  assessment: SavedAssessmentRecord;
+  answers: Record<string, string>;
+  coreResult: CoreResult;
+  completedAt: string;
+  displayName: string;
+  email: string;
+}) {
+  const savedRegistration = readResultRegistration();
+  const resolvedEmail =
+    email.trim() ||
+    assessment.respondent_email?.trim() ||
+    savedRegistration?.email ||
+    "";
+  const resolvedName =
+    displayName.trim() ||
+    assessment.respondent_name?.trim() ||
+    savedRegistration?.name ||
+    resolvedEmail.split("@")[0] ||
+    "You";
+
+  writeLocalAssessment({
+    assessmentId: assessment.id,
+    versionId: assessment.version_id ?? null,
+    versionLabel: CORE_QUESTION_SET_LABEL,
+    answers,
+    currentIndex: Math.max(Object.keys(answers).length - 1, 0),
+    startedAt: assessment.started_at ?? completedAt,
+    updatedAt: completedAt,
+    completedAt,
+    coreResult,
+  });
+  writeResultRegistration({
+    name: resolvedName,
+    email: resolvedEmail,
+    verifiedAt: completedAt,
+    consent: savedRegistration?.consent ?? createEmptyResultConsent(),
+    assessmentId: assessment.id,
+  });
+  writeCoreReport({
+    generatedAt: completedAt,
+    result: coreResult,
+    isFlagged: false,
   });
 
   return readProfileSnapshot();

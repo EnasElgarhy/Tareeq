@@ -1,3 +1,4 @@
+import { CORE_ASSESSMENT_QUESTIONS } from "@/lib/core-v2/assessment";
 import { defaultLocale } from "@/lib/content/seed";
 import { assessmentQuestions } from "@/lib/assessment/questions";
 
@@ -68,10 +69,12 @@ function getLocalizedText(text: LocalizedRecord, locale: string) {
 
 export function getKaiNarrationManifest(locale = defaultLocale) {
   return [
-    ...assessmentQuestions.map((question) => ({
-      id: question.externalId,
-      text: getLocalizedText(question.title as LocalizedRecord, locale),
-    })),
+    ...[...assessmentQuestions, ...CORE_ASSESSMENT_QUESTIONS].map(
+      (question) => ({
+        id: question.externalId,
+        text: getLocalizedText(question.title as LocalizedRecord, locale),
+      }),
+    ),
     ...KAI_SECTION_ENCOURAGEMENTS.map((line) => ({
       id: line.audioId,
       text: getLocalizedText(line.text as LocalizedRecord, locale),

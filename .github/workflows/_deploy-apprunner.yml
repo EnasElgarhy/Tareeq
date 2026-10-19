@@ -27,6 +27,8 @@ name: Deploy to App Runner (reusable)
 #   vars.AWS_REGION                      - eu-north-1
 #   vars.ECR_REPOSITORY                  - tareeq-consumer or tareeq-admin
 #   vars.APP_RUNNER_SERVICE_ARN          - the target service for this app+env
+#   vars.NEXT_PUBLIC_CORE_V2_LIVE        - "true" switches students onto CORE 2.0 (unset = off)
+#   vars.NEXT_PUBLIC_CORE_V2_PREVIEW     - "true" allows /compass?preview=core-v2 (unset = off)
 #
 # All other runtime secrets (SUPABASE_SERVICE_ROLE_KEY, ANTHROPIC_API_KEY,
 # ELEVENLABS_API_KEY, GEMINI_API_KEY, DATABASE_URL, ...) are NOT handled
@@ -116,6 +118,8 @@ jobs:
           docker build \
             --build-arg NEXT_PUBLIC_SUPABASE_URL="${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}" \
             --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY="${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" \
+            --build-arg NEXT_PUBLIC_CORE_V2_LIVE="${{ vars.NEXT_PUBLIC_CORE_V2_LIVE }}" \
+            --build-arg NEXT_PUBLIC_CORE_V2_PREVIEW="${{ vars.NEXT_PUBLIC_CORE_V2_PREVIEW }}" \
             -t "$REGISTRY/$REPOSITORY:$IMAGE_TAG" \
             -t "$REGISTRY/$REPOSITORY:${{ inputs.environment }}" \
             .

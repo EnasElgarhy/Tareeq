@@ -1,18 +1,33 @@
 "use client";
 
 import {
-  BookOpen,
+  AudioLines,
+  Bike,
+  Blocks,
+  ChartLine,
   ChevronDown,
-  CircleHelp,
   Eye,
   GraduationCap as LearningIcon,
   HandHeart,
+  Hammer,
+  Lightbulb,
+  ListChecks,
   MessageCircleQuestion,
+  Mountain,
+  PenLine,
   Puzzle,
+  Rocket,
+  ScanSearch,
   Search,
-  Sparkles,
+  Settings2,
+  SquareCode,
+  Timer,
+  Users,
+  Wrench,
+  LayoutGrid,
+  Megaphone,
 } from "lucide-react";
-import { GraduationCap, MagnifyingGlass } from "@phosphor-icons/react";
+import { GraduationCap, MagnifyingGlass, Robot } from "@phosphor-icons/react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import type { ReportModel } from "@/lib/core-v2/report-model";
 import type { FamilyView, JobView, MeetCard } from "@/lib/core-v2/section4";
@@ -26,7 +41,8 @@ import {
 } from "./glance/deck";
 import { CURIOSITY_ICON, MOTIVATOR_ICON } from "./glance/icons";
 import { CURIOSITY_TILE_BG, LETTER_FILL } from "./glance/palette";
-import { Block, KaiPrompt } from "./parts";
+import { Block, KaiPrompt, useWording } from "./parts";
+import { CURIOSITY_SCENES } from "./glance/scenes";
 import styles from "./ReportDesign.module.css";
 
 const PHRASE_FOR_SIDE: Record<string, string> = {
@@ -70,18 +86,29 @@ function CuriosityTitle({
   );
 }
 
-const CURIOSITY_SCENES: Partial<Record<CuriosityCode, string>> = {
-  RD: "/report/curiosity-research-v1.webp",
-  PW: "/report/curiosity-wellbeing-v1.webp",
-};
+/** One icon per "you might notice it when" example (S3-xx-EX1..3). */
 const OBSERVATION_ICONS = {
   RD: [MessageCircleQuestion, Search, Puzzle],
+  IE: [PenLine, AudioLines, Lightbulb],
   PW: [HandHeart, Eye, LearningIcon],
+  EI: [Users, Megaphone, Rocket],
+  PE: [ListChecks, ScanSearch, LayoutGrid],
+  TS: [Settings2, SquareCode, ChartLine],
+  IR: [Wrench, Hammer, Blocks],
+  AE: [Timer, Mountain, Bike],
 } as const;
-const DEFAULT_OBSERVATION_ICONS = [CircleHelp, BookOpen, Sparkles];
 
 /** A curiosity world, followed by visual cues from the original report wording. */
 export function CuriositySection({ model }: { model: ReportModel }) {
+  const { t } = useLocale();
+  const wording = useWording();
+  const answers = [
+    ...model.result.leadingCuriosities.flatMap((code) => {
+      const name = wording(`CUR-${code}-NAME`);
+      return name ? [t("core.kai.answer_most").replace("{name}", name)] : [];
+    }),
+    t("core.kai.answer_unsure"),
+  ];
   return (
     <div className={styles.curiosityStories}>
       <DeckHeader letter="C" titleId="S3-TITLE" introId="S3-INTRO" />
@@ -90,10 +117,7 @@ export function CuriositySection({ model }: { model: ReportModel }) {
         const headingId = `core-s3-${code}`;
         const scene = CURIOSITY_SCENES[code];
         const DomainIcon = CURIOSITY_ICON[code];
-        const observationIcons =
-          code === "RD" || code === "PW"
-            ? OBSERVATION_ICONS[code]
-            : DEFAULT_OBSERVATION_ICONS;
+        const observationIcons = OBSERVATION_ICONS[code];
         return (
           <section
             key={code}
@@ -159,7 +183,7 @@ export function CuriositySection({ model }: { model: ReportModel }) {
           </section>
         );
       })}
-      <KaiPrompt questionId="S3-KAI-Q" />
+      <KaiPrompt questionId="S3-KAI-Q" answers={answers} />
     </div>
   );
 }
@@ -212,12 +236,48 @@ function MatchChip({
   );
 }
 
+/** Marks a job flagged changing_work (spec §6.7); the card's S4-CHANGING note explains it. */
+function ChangingMarker({ job }: { job: JobView }) {
+  const { t } = useLocale();
+  if (!job.isChangingWork) return null;
+  return (
+    <Robot
+      size={15}
+      weight="duotone"
+      role="img"
+      aria-label={t("core.jobs.changing")}
+      className="ms-1.5 inline-block shrink-0 align-[-2px] text-[color:var(--day-ink-3)]"
+    >
+      <title>{t("core.jobs.changing")}</title>
+    </Robot>
+  );
+}
+
+/** S4-CHANGING, once at the bottom of a card that shows a marked job. */
+function ChangingNote({ isShown }: { isShown: boolean }) {
+  if (!isShown) return null;
+  return (
+    <p className="flex gap-2 text-[12.5px] leading-relaxed text-[color:var(--day-ink-2)]">
+      <Robot
+        size={18}
+        weight="duotone"
+        aria-hidden="true"
+        className="shrink-0 text-[color:var(--day-ink)]"
+      />
+      <span>
+        <Block id="S4-CHANGING" />
+      </span>
+    </p>
+  );
+}
+
 function JobRow({ job, model }: { job: JobView; model: ReportModel }) {
   const name = model.job(job.jobId).name;
   if (!job.isHighlighted) {
     return (
       <li className="px-1 py-1 text-[13.5px] text-[color:var(--day-ink-2)]">
         {name}
+        <ChangingMarker job={job} />
       </li>
     );
   }
@@ -228,6 +288,7 @@ function JobRow({ job, model }: { job: JobView; model: ReportModel }) {
     <li className={`grid ${styles.job}`}>
       <p className="text-[15px] font-bold text-[color:var(--day-ink)]">
         {name}
+        <ChangingMarker job={job} />
       </p>
       {sides.length > 0 ? (
         <MatchLine letter="O" labelId="S4-MATCH-WORK">
@@ -340,16 +401,22 @@ function MeetCardView({ card, model }: { card: MeetCard; model: ReportModel }) {
               className="rounded-full bg-[color:var(--day-inset)] px-2.5 py-1 text-[12px] font-semibold text-[color:var(--day-ink)]"
             >
               {model.job(job.jobId).name}
+              <ChangingMarker job={job} />
             </li>
           ))}
         </ul>
+        {card.hasChangingNote ? (
+          <div className="mt-2 text-start">
+            <ChangingNote isShown />
+          </div>
+        ) : null}
       </div>
     </section>
   );
 }
 
 function FamilyCard({ view, model }: { view: FamilyView; model: ReportModel }) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const family = model.family(view.familyId);
   return (
     <details
@@ -402,7 +469,7 @@ function FamilyCard({ view, model }: { view: FamilyView; model: ReportModel }) {
               <strong className="font-bold text-[color:var(--day-ink)]">
                 <Block id="S4-STUDY-LABEL" />
               </strong>{" "}
-              {family.studyFields.join(", ")}
+              {family.studyFields.join(locale === "ar" ? "، " : ", ")}
             </span>
           </p>
         ) : null}
@@ -422,13 +489,38 @@ function FamilyCard({ view, model }: { view: FamilyView; model: ReportModel }) {
             <Block id={view.worthChecking} />
           </span>
         </p>
+        <ChangingNote isShown={view.hasChangingNote} />
       </div>
     </details>
   );
 }
 
+/** "A and B" / "A, B and C" in English; "أ و ب" / "أ، ب و ج" in Arabic. */
+function joinNames(names: string[], locale: string, and: string): string {
+  if (names.length < 2) return names.join("");
+  const comma = locale === "ar" ? "، " : ", ";
+  return `${names.slice(0, -1).join(comma)}${and}${names[names.length - 1]}`;
+}
+
+/** Open results: S4-ALSO names leading curiosities that have no meet card. */
+function AlsoCuriosities({ codes }: { codes: readonly CuriosityCode[] }) {
+  const { t, locale } = useLocale();
+  const wording = useWording();
+  if (codes.length === 0) return null;
+  const names = codes.map((code) => wording(`CUR-${code}-NAME`) ?? code);
+  return (
+    <p className="text-[14px] leading-relaxed text-[color:var(--day-ink-2)]">
+      <Block
+        id="S4-ALSO"
+        fills={{ curiosities: joinNames(names, locale, t("core.list.and")) }}
+      />
+    </p>
+  );
+}
+
 /** Section 4 · What this means for you (spec §6.4). */
 export function MeaningSection({ model }: { model: ReportModel }) {
+  const { t } = useLocale();
   const { section4 } = model;
   return (
     <div className="grid gap-4">
@@ -441,13 +533,15 @@ export function MeaningSection({ model }: { model: ReportModel }) {
       {section4.meetCards.map((card) => (
         <MeetCardView key={card.familyId} card={card} model={model} />
       ))}
+      <AlsoCuriosities codes={section4.alsoCuriosities} />
       {section4.directions.map((direction) => (
         <section
           key={direction.curiosity}
           className={`grid ${styles.direction}`}
         >
           <CuriosityTitle code={direction.curiosity} model={model} />
-          <div className="grid gap-3 lg:grid-cols-2 lg:items-start">
+          {/* One family card per row, so each job list reads top to bottom. */}
+          <div className="grid gap-3">
             {direction.full.map((view) => (
               <FamilyCard key={view.familyId} view={view} model={model} />
             ))}
@@ -477,7 +571,10 @@ export function MeaningSection({ model }: { model: ReportModel }) {
       <p className="text-[12.5px] italic text-[color:var(--day-ink-3)]">
         <Block id="P2-QUALIFIER" />
       </p>
-      <KaiPrompt questionId="S4-KAI-Q" />
+      <KaiPrompt
+        questionId="S4-KAI-Q"
+        answers={[t("core.kai.s4_day"), t("core.kai.s4_fit")]}
+      />
     </div>
   );
 }

@@ -32,9 +32,16 @@ export function shiftsToRaise(shifts: readonly Shift[]): Shift[] {
     .slice(0, MAX_SHIFTS_RAISED);
 }
 
-/** True when there were previous leaders and none of them still lead. */
+/**
+ * True when both attempts have leaders and none of the previous ones still
+ * lead. A side with no small set of motivators is not a shift (file 08, shifts).
+ */
 function noneStillLead<T>(previous: readonly T[], current: readonly T[]): boolean {
-  return previous.length > 0 && !previous.some((code) => current.includes(code));
+  return (
+    previous.length > 0 &&
+    current.length > 0 &&
+    !previous.some((code) => current.includes(code))
+  );
 }
 
 /** Compare only with the previous attempt of the same scoring version. */

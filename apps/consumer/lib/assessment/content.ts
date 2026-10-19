@@ -1,3 +1,8 @@
+import {
+  CORE_ASSESSMENT_QUESTIONS,
+  CORE_QUESTION_SET_LABEL,
+} from "@/lib/core-v2/assessment";
+import { IS_CORE_V2_LIVE } from "@/lib/core-v2/live";
 import { contentVersion } from "@/lib/content/seed";
 import { assessmentQuestions } from "@/lib/assessment/questions";
 import {
@@ -172,11 +177,25 @@ export function mapCmsAssessmentQuestions(rows: CmsQuestionRow[]): Question[] {
 }
 
 export function getSeedAssessmentContent(): AssessmentContentSnapshot {
+  if (IS_CORE_V2_LIVE) return getCoreAssessmentContent();
   return {
     versionId: null,
     versionLabel: contentVersion.label,
     source: "seed",
     questions: assessmentQuestions,
+  };
+}
+
+/** CORE 2.0: the existing background questions, then question set 5.1. */
+export function getCoreAssessmentContent(): AssessmentContentSnapshot {
+  return {
+    versionId: null,
+    versionLabel: CORE_QUESTION_SET_LABEL,
+    source: "seed",
+    questions: [
+      ...assessmentQuestions.filter((question) => question.pillar === 0),
+      ...CORE_ASSESSMENT_QUESTIONS,
+    ],
   };
 }
 

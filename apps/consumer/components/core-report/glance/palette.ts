@@ -10,7 +10,13 @@ export const LETTER_FILL = {
   E: "var(--daybreak-violet-deep)",
 } as const;
 
-export const CURIOSITY_TILE_BG = "var(--daybreak-cocoa)";
+/** Cocoa with a faint topographic map whose two trails meet (Gemini
+ * artwork), washed darker on the text side so white copy keeps contrast. */
+export const CURIOSITY_TILE_BG = [
+  "linear-gradient(90deg, rgb(74 44 23 / 0.45) 0%, rgb(74 44 23 / 0.15) 60%, rgb(74 44 23 / 0) 100%)",
+  'url("/report/curiosity-card-bg-topo.webp") right center / cover no-repeat',
+  "var(--daybreak-cocoa)",
+].join(", ");
 
 /** Strand / ring colour and icon colour per leading curiosity, by position. */
 export const STRANDS = [

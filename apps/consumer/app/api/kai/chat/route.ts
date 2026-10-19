@@ -44,6 +44,8 @@ import {
 } from "@/lib/kai/gemini-stream";
 import { buildMemoryCandidates } from "@/lib/kai/memory/memory-builder";
 import { detectDegenerateOutput } from "@/lib/kai/repetition";
+import { recordCoreKaiEvents } from "@/lib/kai/core/core-events";
+import { runCoreKaiTurn } from "@/lib/kai/core/core-turn";
 import {
   hasPaidReportAccess,
   paidAccessError,
@@ -128,6 +130,8 @@ async function callGeminiOnce(
   schemaOverride?: object,
   onText: (text: string) => void = () => undefined,
   timeoutMs = 15_000,
+  // CORE students: the client's Kai prompt replaces the legacy one.
+  systemPromptOverride?: string,
 ): Promise<GeminiAttempt> {
   let geminiResponse: Response;
   const grounded = shouldGroundIntent(intentHint);
@@ -144,9 +148,11 @@ async function callGeminiOnce(
           systemInstruction: {
             parts: [
               {
-                text: grounded
-                  ? buildFactualSystemPrompt(context.user.locale)
-                  : buildSystemPrompt(context.user.locale),
+                text:
+                  systemPromptOverride ??
+                  (grounded
+                    ? buildFactualSystemPrompt(context.user.locale)
+                    : buildSystemPrompt(context.user.locale)),
               },
             ],
           },
@@ -348,11 +354,14 @@ export async function POST(request: Request) {
       };
 
       void (async () => {
-        const { kind, context, message } = validated.value;
+        const { kind, context, message, core } = validated.value;
         const apiKey = process.env.GEMINI_API_KEY;
         const coachingModel = process.env.GEMINI_MODEL || DEFAULT_MODEL;
+        // CORE: the client prompt covers scope and safeguarding. The legacy
+        // medical regex would also intercept distress ("I feel like I can't
+        // breathe" is the client's own safeguarding example).
         const scopeRedirect =
-          kind === "reply" && message
+          !core && kind === "reply" && message
             ? medicalScopeRedirect(message, context.user.locale)
             : null;
 
@@ -403,6 +412,60 @@ export async function POST(request: Request) {
                 "[kai/chat] Failed to persist fallback reply",
                 error,
               );
+            }
+          }
+          send({ type: "complete", data: result });
+          close();
+          return;
+        }
+
+        if (core) {
+          const modelStartedAt = performance.now();
+          const remainingTimeout = () =>
+            Math.max(1_000, 15_000 - (performance.now() - requestStartedAt));
+          const turn = await runCoreKaiTurn({
+            core,
+            context,
+            kind,
+            message,
+            canRetry: () => performance.now() - requestStartedAt < 8_000,
+            callModel: ({ systemPrompt, prompt, responseSchema }) =>
+              callGeminiOnce(
+                apiKey,
+                coachingModel,
+                context,
+                prompt,
+                undefined,
+                responseSchema,
+                emitText,
+                remainingTimeout(),
+                systemPrompt,
+              ),
+          });
+          recordCoreKaiEvents(turn.events, {
+            threadId: validated.value.threadId,
+            requestId: validated.value.requestId,
+          });
+          const result: KaiChatResult = {
+            message: turn.message,
+            summary: turn.summary,
+            source: turn.source,
+            coreEvents: turn.events.length > 0 ? turn.events : undefined,
+            timings: {
+              firstTextMs,
+              modelMs: Math.round(performance.now() - modelStartedAt),
+              totalMs: Math.round(performance.now() - requestStartedAt),
+              attempts: turn.attempts,
+              ...(turn.recoveredViaSimplified
+                ? { recoveredViaSimplified: true }
+                : {}),
+            },
+          };
+          if (repositoryAvailable) {
+            try {
+              await completeKaiRun(supabase, validated.value, result);
+            } catch (error) {
+              console.error("[kai/chat] Failed to persist CORE reply", error);
             }
           }
           send({ type: "complete", data: result });

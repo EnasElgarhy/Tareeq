@@ -33,21 +33,20 @@ export function CoreReportScreen({
   email,
   preview,
 }: CoreReportScreenProps) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const model = useMemo(
-    () => buildReportModel(result, bank, { isFlagged, isFlagsLive }),
-    [result, bank, isFlagged, isFlagsLive],
+    () => buildReportModel(result, bank, { isFlagged, isFlagsLive }, locale),
+    [result, bank, isFlagged, isFlagsLive, locale],
   );
 
   const report = (
     <>
-      <header className="grid gap-1 pt-1 lg:pt-2">
-        <h1 className="daybreak-heading text-[30px] leading-tight text-[color:var(--day-ink)] lg:text-[38px]">
+      {/* The page name stays the h1 for screen readers but reads as a quiet
+          label, so each chapter's own title is the one big heading. */}
+      <header className="pt-1 lg:pt-2">
+        <h1 className="text-[12px] font-bold uppercase tracking-[0.12em] text-[color:var(--day-ink-3)]">
           {t("home.compass.title")}
         </h1>
-        <p className="max-w-[58ch] text-[13px] leading-relaxed text-[color:var(--day-ink-2)] lg:text-[15px]">
-          {t("home.compass.subtitle")}
-        </p>
       </header>
       <CoreReport model={model} generatedAt={generatedAt} />
     </>

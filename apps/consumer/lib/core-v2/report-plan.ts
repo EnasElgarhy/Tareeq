@@ -8,13 +8,16 @@ import { AXIS_CODES, type CoreResult } from "./types";
  */
 
 const TRY_LIMIT = 3;
-const TALK_AND_ASK_LIMIT = 4;
 
 export type SectionId = "FLAG-NOTE" | "S1" | "S2" | "S3" | "S4" | "S5" | "S6" | "S7";
 
 export interface NextStepsPlan {
-  /** Best-matching job of the first family shown in Section 4; fills [job] in S5-WATCH. */
-  watchJobId: string;
+  /**
+   * Fill [job 1] and [job 2] in S5-WATCH: the best-matching job of the first
+   * family shown, then the best of the second family shown that differs
+   * (agreed 8 Oct 2026; file 08 section5).
+   */
+  watchJobIds: [string, string];
   /** First family shown in Section 4; fills [family] in S5-TALK. */
   talkFamilyId: string;
   tryBlocks: string[];
@@ -22,39 +25,44 @@ export interface NextStepsPlan {
   askBlocks: string[];
 }
 
-/** The first family Section 4 shows: the first meet card, else the first direction's first family. */
-function firstShownFamily(section4: Section4) {
-  const [meet] = section4.meetCards;
-  if (meet) return { familyId: meet.familyId, bestJobId: meet.jobs[0]?.jobId };
-  const family = section4.directions[0]?.full[0];
-  if (family) return { familyId: family.familyId, bestJobId: family.jobs[0]?.jobId };
-  return null;
+/** Family cards in display order: meet cards, then each direction's full cards. */
+function shownCards(section4: Section4) {
+  return [...section4.meetCards, ...section4.directions.flatMap((d) => d.full)];
 }
 
-export function planNextSteps(result: CoreResult, section4: Section4): NextStepsPlan {
-  const first = firstShownFamily(section4);
-  if (!first?.bestJobId) {
+export function planNextSteps(
+  result: CoreResult,
+  section4: Section4,
+  nameOf: (jobId: string) => string,
+): NextStepsPlan {
+  const [first, second] = shownCards(section4);
+  const job1 = first?.jobs[0];
+  if (!first || !job1) {
     throw new Error("Section 4 shows no family, so next steps have nothing to point to");
   }
+  const pool = [...(second?.jobs ?? []), ...first.jobs.slice(1)];
+  const job2 = pool.find((job) => nameOf(job.jobId) !== nameOf(job1.jobId));
+  if (!job2) throw new Error("Section 4 shows no second job for S5-WATCH");
 
   const tryBlocks = result.leadingCuriosities
     .slice(0, TRY_LIMIT)
     .map((code) => `S5-TRY-${code}`);
 
-  // No small set: the typical-day question stands in (pending founder decision).
-  const talkBlocks = result.noSmallSet
-    ? ["S4-CHECK-DAY"]
-    : result.topTwoMotivators.map((code) => `S5-YARD-${code}`);
+  // No small set of motivators: two general questions instead (agreed 13 Oct 2026).
+  const talkBlocks =
+    result.topTwoMotivators.length > 0
+      ? result.topTwoMotivators.map((code) => `S5-YARD-${code}`)
+      : ["S5-TALK-DAY", "S5-TALK-TRADEOFF"];
 
   const firstLeaningAxis = AXIS_CODES.find((axis) => result.axes[axis].lean !== null);
   const [firstTopMotivator] = result.topTwoMotivators;
   const askBlocks = [
     ...(firstLeaningAxis ? [`S5-SCHOOL-${firstLeaningAxis.toUpperCase()}`] : []),
     ...(firstTopMotivator ? [`S5-SCHOOL-${firstTopMotivator}`] : []),
-  ].slice(0, Math.max(0, TALK_AND_ASK_LIMIT - talkBlocks.length));
+  ];
 
   return {
-    watchJobId: first.bestJobId,
+    watchJobIds: [job1.jobId, job2.jobId],
     talkFamilyId: first.familyId,
     tryBlocks,
     talkBlocks,

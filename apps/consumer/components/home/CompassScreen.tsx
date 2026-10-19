@@ -10,10 +10,11 @@ import { ReportAccessExperience } from "@/components/results/report-access/Repor
 import { LockedReportStory } from "@/components/results/report-access/story/LockedReportStory";
 import { trackEvent } from "@/lib/analytics/track";
 import { readLocalAssessment } from "@/lib/assessment/progress";
-import { CAREER_BANK } from "@/lib/core-v2/content/career-bank";
-import { SAMPLE_BANK, SAMPLE_STUDENT } from "@/lib/core-v2/content/sample";
+import { SAMPLE_STUDENT } from "@/lib/core-v2/content/sample";
 import { scoreCore } from "@/lib/core-v2/scoring";
 import { IS_CORE_PREVIEW_ALLOWED } from "@/lib/core-v2/preview";
+import { IS_CORE_V2_LIVE } from "@/lib/core-v2/live";
+import { coreBank } from "@/lib/core-v2/content/core-content";
 import { readCoreReport, type StoredCoreReport } from "@/lib/core-v2/storage";
 import {
   readGeneratedReport,
@@ -41,7 +42,7 @@ const PREVIEW_GENERATED_AT = "2026-10-01T00:00:00.000Z";
  * lands here from the analyzing screen.
  */
 export function CompassScreen() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const searchParams = useSearchParams();
   const [state, setState] = useState<CompassState | null>(null);
   const isPreview =
@@ -49,8 +50,8 @@ export function CompassScreen() {
 
   useEffect(() => {
     const report = readGeneratedReport();
-    // A real CORE 2.0 report needs the real career bank (file 05) to render.
-    const coreReport = CAREER_BANK ? readCoreReport() : null;
+    // Real CORE 2.0 reports show only while CORE 2.0 is switched on.
+    const coreReport = IS_CORE_V2_LIVE ? readCoreReport() : null;
     setState({ report, coreReport, registration: readResultRegistration() });
     if (report || coreReport) {
       trackEvent("results_viewed", {
@@ -66,7 +67,7 @@ export function CompassScreen() {
       <CoreReportScreen
         generatedAt={PREVIEW_GENERATED_AT}
         result={scoreCore(SAMPLE_STUDENT)}
-        bank={SAMPLE_BANK}
+        bank={coreBank(locale)}
         isFlagged={false}
         isFlagsLive={false}
         email={state.registration?.email ?? ""}
@@ -75,12 +76,12 @@ export function CompassScreen() {
     );
   }
 
-  if (state.coreReport && CAREER_BANK) {
+  if (state.coreReport) {
     return (
       <CoreReportScreen
         generatedAt={state.coreReport.generatedAt}
         result={state.coreReport.result}
-        bank={CAREER_BANK}
+        bank={coreBank(locale)}
         isFlagged={state.coreReport.isFlagged}
         isFlagsLive={false}
         email={state.registration?.email ?? ""}

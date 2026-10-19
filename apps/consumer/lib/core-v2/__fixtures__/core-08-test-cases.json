@@ -1,0 +1,7442 @@
+[
+ {
+  "case": "01_clear_single",
+  "what_it_tests": "Clear result, one leading curiosity; all four axes leaning; two leading motivators",
+  "answers": {
+   "P1-02": "IE",
+   "P1-07": "RD",
+   "P1-01": "RD",
+   "P1-13": "RD",
+   "P1-04": "PW",
+   "P1-12": "PW",
+   "P1-16": "TS",
+   "P1-08": "TS",
+   "P1-10": "IR",
+   "P1-14": "AE",
+   "P1-11": "RD",
+   "P1-15": "RD",
+   "P1-09": "RD",
+   "P1-05": "RD",
+   "P1-03": "RD",
+   "P1-06": "TS",
+   "P3-01": "MAS",
+   "P3-02": "IMP",
+   "P3-07": "IMP",
+   "P3-08": "SEC",
+   "P3-03": "IMP",
+   "P3-04": "MAS",
+   "P3-09": "MAS",
+   "P3-10": "IMP",
+   "P3-05": "REC",
+   "P3-06": "IMP",
+   "P3-11": "IMP",
+   "P3-12": "MAS",
+   "P3-13": "REC",
+   "P3-14": "MAS",
+   "P2-01": "S",
+   "P2-03": "S",
+   "P2-05": "S",
+   "P2-07": "S",
+   "P2-02": "D",
+   "P2-04": "D",
+   "P2-06": "D",
+   "P2-08": "D",
+   "P4-01": "T",
+   "P4-03": "O",
+   "P4-05": "O",
+   "P4-07": "O",
+   "P4-02": "CH",
+   "P4-04": "CH",
+   "P4-06": "CH",
+   "P4-08": "CH"
+  },
+  "expected_results": {
+   "p1": {
+    "counts": {
+     "RD": 8,
+     "IE": 1,
+     "PW": 2,
+     "EI": 0,
+     "PE": 0,
+     "TS": 3,
+     "IR": 1,
+     "AE": 1
+    },
+    "L": 8,
+    "margin": 5,
+    "clarity": "Clear",
+    "leaders": [
+     "RD"
+    ],
+    "reading": "single",
+    "leading_share_pct": 100
+   },
+   "axes": {
+    "structure": {
+     "counted_option": "S",
+     "count": 4,
+     "lean": "S",
+     "zone": 1
+    },
+    "focus": {
+     "counted_option": "D",
+     "count": 4,
+     "lean": "D",
+     "zone": 1
+    },
+    "team": {
+     "counted_option": "T",
+     "count": 1,
+     "lean": "O",
+     "zone": 3
+    },
+    "setting": {
+     "counted_option": "CH",
+     "count": 4,
+     "lean": "CH",
+     "zone": 3
+    }
+   },
+   "p3": {
+    "counts": {
+     "REC": 2,
+     "IMP": 6,
+     "MAS": 5,
+     "AUT": 0,
+     "SEC": 1,
+     "INC": 0,
+     "FAM": 0,
+     "LIF": 0
+    },
+    "leading": [
+     "IMP",
+     "MAS"
+    ],
+    "no_small_set": false,
+    "others": [
+     "REC",
+     "AUT",
+     "SEC",
+     "INC",
+     "FAM",
+     "LIF"
+    ],
+    "top_two": [
+     "IMP",
+     "MAS"
+    ]
+   }
+  },
+  "expected_report": {
+   "flag_note": null,
+   "section_order": [
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7"
+   ],
+   "S2": {
+    "C": {
+     "curiosities": [
+      {
+       "name": "CUR-RD-NAME",
+       "pull": "CUR-RD-PULL"
+      }
+     ],
+     "lines": [
+      "S2-C-CLEAR"
+     ]
+    },
+    "O": {
+     "bars": [
+      {
+       "head": "S2-O-BAR1-HEAD",
+       "zone": 1
+      },
+      {
+       "head": "S2-O-BAR2-HEAD",
+       "zone": 1
+      }
+     ],
+     "qualifier": "P2-QUALIFIER"
+    },
+    "R": {
+     "no_small_set": false,
+     "cards": [
+      "DRV-IMP-NAME",
+      "DRV-MAS-NAME"
+     ],
+     "others_label": "S2-R-OTHERS",
+     "others": [
+      "DRV-REC-NAME",
+      "DRV-AUT-NAME",
+      "DRV-SEC-NAME",
+      "DRV-INC-NAME",
+      "DRV-FAM-NAME",
+      "DRV-LIF-NAME"
+     ]
+    },
+    "E": {
+     "line": "S2-E-LINE",
+     "bars": [
+      {
+       "head": "S2-E-BAR1-HEAD",
+       "zone": 3
+      },
+      {
+       "head": "S2-E-BAR2-HEAD",
+       "zone": 3
+      }
+     ]
+    }
+   },
+   "S3": {
+    "compact": false,
+    "curiosities": [
+     {
+      "desc": "S3-RD-DESC",
+      "examples": [
+       "S3-RD-EX1",
+       "S3-RD-EX2",
+       "S3-RD-EX3"
+      ]
+     }
+    ],
+    "kai_question": "S3-KAI-Q"
+   },
+   "S4": {
+    "meet": [],
+    "directions": [
+     {
+      "curiosity": "RD",
+      "full": [
+       {
+        "family_id": "F-RD-5",
+        "family": "Data and patterns",
+        "family_score": 1.6667,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-RD-5-J1",
+          "job": "Financial data analyst",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-DEEP",
+             "S4-PH-OWN"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-5-J2",
+          "job": "Statistician",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-DEEP"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-5-J3",
+          "job": "Actuary",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-DEEP"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-5-J4",
+          "job": "Operations research analyst",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Mathematics, statistics, data science, actuarial science",
+        "worth_checking": "S4-CHECK-SETTING",
+        "bank_order": 4,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-RD-4",
+        "family": "Human behaviour and society",
+        "family_score": 1.3333,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-RD-4-J2",
+          "job": "Economist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-DEEP",
+             "S4-PH-OWN"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-4-J3",
+          "job": "Social researcher",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-OWN"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-4-J4",
+          "job": "Market researcher",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-DEEP",
+             "S4-PH-OWN"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-4-J1",
+          "job": "Workplace psychologist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Psychology, economics, sociology, social sciences",
+        "worth_checking": "S4-CHECK-SETTING",
+        "bank_order": 3,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-RD-6",
+        "family": "Investigation and diagnosis",
+        "family_score": 1.3333,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-RD-6-J1",
+          "job": "Forensic scientist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-OWN",
+             "S4-PH-CHANGING"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-6-J3",
+          "job": "Quality scientist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-DEEP",
+             "S4-PH-OWN"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-6-J4",
+          "job": "Archaeologist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-OWN"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-6-J2",
+          "job": "Epidemiologist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Forensic science, public health, chemistry, archaeology",
+        "worth_checking": "S4-CHECK-STRUCTURE",
+        "bank_order": 5,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       }
+      ],
+      "more": [
+       {
+        "family_id": "F-RD-3",
+        "family": "Physical and earth sciences"
+       },
+       {
+        "family_id": "F-RD-1",
+        "family": "Medicine and health sciences"
+       },
+       {
+        "family_id": "F-RD-2",
+        "family": "Life and environmental sciences"
+       }
+      ],
+      "closest_label": "F-RD-5"
+     }
+    ],
+    "no_match": false,
+    "also": null
+   },
+   "S5": {
+    "watch": {
+     "block": "S5-WATCH",
+     "job1": "Financial data analyst",
+     "job1_en_fill": "a financial data analyst",
+     "job2": "Economist",
+     "job2_en_fill": "an economist"
+    },
+    "try": [
+     "S5-TRY-RD"
+    ],
+    "talk": {
+     "block": "S5-TALK",
+     "family": "Data and patterns",
+     "family_en_fill": "data and patterns",
+     "questions": [
+      "S5-YARD-IMP",
+      "S5-YARD-MAS"
+     ]
+    },
+    "ask": {
+     "block": "S5-ASK",
+     "questions": [
+      "S5-SCHOOL-STRUCTURE",
+      "S5-SCHOOL-IMP"
+     ]
+    }
+   }
+  }
+ },
+ {
+  "case": "02_leaning_single",
+  "what_it_tests": "Leaning result; axes leaning the other way; motivators income and autonomy",
+  "answers": {
+   "P1-02": "PE",
+   "P1-07": "RD",
+   "P1-01": "EI",
+   "P1-13": "PE",
+   "P1-04": "PE",
+   "P1-12": "TS",
+   "P1-16": "TS",
+   "P1-08": "TS",
+   "P1-10": "IR",
+   "P1-14": "EI",
+   "P1-11": "IR",
+   "P1-15": "EI",
+   "P1-09": "TS",
+   "P1-05": "EI",
+   "P1-03": "TS",
+   "P1-06": "TS",
+   "P3-01": "REC",
+   "P3-02": "AUT",
+   "P3-07": "AUT",
+   "P3-08": "INC",
+   "P3-03": "INC",
+   "P3-04": "AUT",
+   "P3-09": "INC",
+   "P3-10": "AUT",
+   "P3-05": "AUT",
+   "P3-06": "INC",
+   "P3-11": "LIF",
+   "P3-12": "INC",
+   "P3-13": "INC",
+   "P3-14": "LIF",
+   "P2-01": "F",
+   "P2-03": "F",
+   "P2-05": "F",
+   "P2-07": "F",
+   "P2-02": "D",
+   "P2-04": "B",
+   "P2-06": "B",
+   "P2-08": "B",
+   "P4-01": "T",
+   "P4-03": "T",
+   "P4-05": "T",
+   "P4-07": "O",
+   "P4-02": "ST",
+   "P4-04": "ST",
+   "P4-06": "ST",
+   "P4-08": "ST"
+  },
+  "expected_results": {
+   "p1": {
+    "counts": {
+     "RD": 1,
+     "IE": 0,
+     "PW": 0,
+     "EI": 4,
+     "PE": 3,
+     "TS": 6,
+     "IR": 2,
+     "AE": 0
+    },
+    "L": 6,
+    "margin": 2,
+    "clarity": "Leaning",
+    "leaders": [
+     "TS"
+    ],
+    "reading": "single",
+    "leading_share_pct": 75
+   },
+   "axes": {
+    "structure": {
+     "counted_option": "S",
+     "count": 0,
+     "lean": "F",
+     "zone": 3
+    },
+    "focus": {
+     "counted_option": "D",
+     "count": 1,
+     "lean": "B",
+     "zone": 3
+    },
+    "team": {
+     "counted_option": "T",
+     "count": 3,
+     "lean": "T",
+     "zone": 1
+    },
+    "setting": {
+     "counted_option": "CH",
+     "count": 0,
+     "lean": "ST",
+     "zone": 1
+    }
+   },
+   "p3": {
+    "counts": {
+     "REC": 1,
+     "IMP": 0,
+     "MAS": 0,
+     "AUT": 5,
+     "SEC": 0,
+     "INC": 6,
+     "FAM": 0,
+     "LIF": 2
+    },
+    "leading": [
+     "AUT",
+     "INC"
+    ],
+    "no_small_set": false,
+    "others": [
+     "REC",
+     "IMP",
+     "MAS",
+     "SEC",
+     "FAM",
+     "LIF"
+    ],
+    "top_two": [
+     "INC",
+     "AUT"
+    ]
+   }
+  },
+  "expected_report": {
+   "flag_note": null,
+   "section_order": [
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7"
+   ],
+   "S2": {
+    "C": {
+     "curiosities": [
+      {
+       "name": "CUR-TS-NAME",
+       "pull": "CUR-TS-PULL"
+      }
+     ],
+     "lines": [
+      "S2-C-LEANING"
+     ]
+    },
+    "O": {
+     "bars": [
+      {
+       "head": "S2-O-BAR1-HEAD",
+       "zone": 3
+      },
+      {
+       "head": "S2-O-BAR2-HEAD",
+       "zone": 3
+      }
+     ],
+     "qualifier": "P2-QUALIFIER"
+    },
+    "R": {
+     "no_small_set": false,
+     "cards": [
+      "DRV-AUT-NAME",
+      "DRV-INC-NAME"
+     ],
+     "others_label": "S2-R-OTHERS",
+     "others": [
+      "DRV-REC-NAME",
+      "DRV-IMP-NAME",
+      "DRV-MAS-NAME",
+      "DRV-SEC-NAME",
+      "DRV-FAM-NAME",
+      "DRV-LIF-NAME"
+     ]
+    },
+    "E": {
+     "line": "S2-E-LINE",
+     "bars": [
+      {
+       "head": "S2-E-BAR1-HEAD",
+       "zone": 1
+      },
+      {
+       "head": "S2-E-BAR2-HEAD",
+       "zone": 1
+      }
+     ]
+    }
+   },
+   "S3": {
+    "compact": false,
+    "curiosities": [
+     {
+      "desc": "S3-TS-DESC",
+      "examples": [
+       "S3-TS-EX1",
+       "S3-TS-EX2",
+       "S3-TS-EX3"
+      ]
+     }
+    ],
+    "kai_question": "S3-KAI-Q"
+   },
+   "S4": {
+    "meet": [],
+    "directions": [
+     {
+      "curiosity": "TS",
+      "full": [
+       {
+        "family_id": "F-TS-1",
+        "family": "Software and app development",
+        "family_score": 1.8333,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-TS-1-J1",
+          "job": "Software engineer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-TOGETHER",
+             "S4-PH-STEADY"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-1-J2",
+          "job": "Mobile app developer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-TOGETHER",
+             "S4-PH-STEADY"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-1-J4",
+          "job": "Game developer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-TOGETHER",
+             "S4-PH-STEADY"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-AUT-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-1-J3",
+          "job": "Web developer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-STEADY"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-AUT-NAME"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Computer science, software engineering",
+        "worth_checking": "S4-CHECK-FOCUS",
+        "bank_order": 0,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-TS-6",
+        "family": "Smart systems and digital transformation",
+        "family_score": 1.8333,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-TS-6-J2",
+          "job": "IT systems analyst",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-OPEN",
+             "S4-PH-STEADY"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-6-J3",
+          "job": "Digital transformation specialist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-BROAD",
+             "S4-PH-TOGETHER"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-AUT-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-6-J4",
+          "job": "Fintech developer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-TOGETHER",
+             "S4-PH-STEADY"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-6-J1",
+          "job": "Computer systems engineer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-AUT-NAME",
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Information systems, computer engineering",
+        "worth_checking": "S4-CHECK-FOCUS",
+        "bank_order": 5,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-TS-5",
+        "family": "Data engineering and analytics",
+        "family_score": 1.5,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-TS-5-J3",
+          "job": "Database administrator",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-OPEN",
+             "S4-PH-TOGETHER",
+             "S4-PH-STEADY"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-5-J1",
+          "job": "Data engineer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-STEADY"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-5-J2",
+          "job": "Business intelligence analyst",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-STEADY"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-5-J4",
+          "job": "GIS specialist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-STEADY"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Data science, information systems, computer science",
+        "worth_checking": "S4-CHECK-TEAM",
+        "bank_order": 4,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       }
+      ],
+      "more": [
+       {
+        "family_id": "F-TS-2",
+        "family": "Artificial intelligence"
+       },
+       {
+        "family_id": "F-TS-3",
+        "family": "Cybersecurity"
+       },
+       {
+        "family_id": "F-TS-4",
+        "family": "Networks, cloud and infrastructure"
+       }
+      ],
+      "closest_label": "F-TS-1"
+     }
+    ],
+    "no_match": false,
+    "also": null
+   },
+   "S5": {
+    "watch": {
+     "block": "S5-WATCH",
+     "job1": "Software engineer",
+     "job1_en_fill": "a software engineer",
+     "job2": "IT systems analyst",
+     "job2_en_fill": "an IT systems analyst"
+    },
+    "try": [
+     "S5-TRY-TS"
+    ],
+    "talk": {
+     "block": "S5-TALK",
+     "family": "Software and app development",
+     "family_en_fill": "software and app development",
+     "questions": [
+      "S5-YARD-INC",
+      "S5-YARD-AUT"
+     ]
+    },
+    "ask": {
+     "block": "S5-ASK",
+     "questions": [
+      "S5-SCHOOL-STRUCTURE",
+      "S5-SCHOOL-INC"
+     ]
+    }
+   }
+  }
+ },
+ {
+  "case": "03_close_coherent",
+  "what_it_tests": "Close result, two neighbouring curiosities (the report design example)",
+  "answers": {
+   "P1-02": "IE",
+   "P1-07": "RD",
+   "P1-01": "RD",
+   "P1-13": "RD",
+   "P1-04": "PW",
+   "P1-12": "PW",
+   "P1-16": "PE",
+   "P1-08": "TS",
+   "P1-10": "IE",
+   "P1-14": "PW",
+   "P1-11": "RD",
+   "P1-15": "RD",
+   "P1-09": "PW",
+   "P1-05": "PE",
+   "P1-03": "RD",
+   "P1-06": "PW",
+   "P3-01": "MAS",
+   "P3-02": "IMP",
+   "P3-07": "IMP",
+   "P3-08": "SEC",
+   "P3-03": "IMP",
+   "P3-04": "MAS",
+   "P3-09": "MAS",
+   "P3-10": "IMP",
+   "P3-05": "SEC",
+   "P3-06": "IMP",
+   "P3-11": "IMP",
+   "P3-12": "MAS",
+   "P3-13": "FAM",
+   "P3-14": "MAS",
+   "P2-01": "S",
+   "P2-03": "S",
+   "P2-05": "S",
+   "P2-07": "S",
+   "P2-02": "D",
+   "P2-04": "D",
+   "P2-06": "B",
+   "P2-08": "B",
+   "P4-01": "T",
+   "P4-03": "T",
+   "P4-05": "T",
+   "P4-07": "T",
+   "P4-02": "ST",
+   "P4-04": "ST",
+   "P4-06": "CH",
+   "P4-08": "CH"
+  },
+  "expected_results": {
+   "p1": {
+    "counts": {
+     "RD": 6,
+     "IE": 2,
+     "PW": 5,
+     "EI": 0,
+     "PE": 2,
+     "TS": 1,
+     "IR": 0,
+     "AE": 0
+    },
+    "L": 6,
+    "margin": 1,
+    "clarity": "Close",
+    "leaders": [
+     "RD",
+     "PW"
+    ],
+    "reading": "coherent",
+    "leading_share_pct": 75
+   },
+   "axes": {
+    "structure": {
+     "counted_option": "S",
+     "count": 4,
+     "lean": "S",
+     "zone": 1
+    },
+    "focus": {
+     "counted_option": "D",
+     "count": 2,
+     "lean": "MIX",
+     "zone": 2
+    },
+    "team": {
+     "counted_option": "T",
+     "count": 4,
+     "lean": "T",
+     "zone": 1
+    },
+    "setting": {
+     "counted_option": "CH",
+     "count": 2,
+     "lean": "MIX",
+     "zone": 2
+    }
+   },
+   "p3": {
+    "counts": {
+     "REC": 0,
+     "IMP": 6,
+     "MAS": 5,
+     "AUT": 0,
+     "SEC": 2,
+     "INC": 0,
+     "FAM": 1,
+     "LIF": 0
+    },
+    "leading": [
+     "IMP",
+     "MAS"
+    ],
+    "no_small_set": false,
+    "others": [
+     "REC",
+     "AUT",
+     "SEC",
+     "INC",
+     "FAM",
+     "LIF"
+    ],
+    "top_two": [
+     "IMP",
+     "MAS"
+    ]
+   }
+  },
+  "expected_report": {
+   "flag_note": null,
+   "section_order": [
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7"
+   ],
+   "S2": {
+    "C": {
+     "curiosities": [
+      {
+       "name": "CUR-RD-NAME",
+       "pull": "CUR-RD-PULL"
+      },
+      {
+       "name": "CUR-PW-NAME",
+       "pull": "CUR-PW-PULL"
+      }
+     ],
+     "lines": [
+      "S2-C-CLOSE",
+      "S2-C-COHERENT"
+     ]
+    },
+    "O": {
+     "bars": [
+      {
+       "head": "S2-O-BAR1-HEAD",
+       "zone": 1
+      },
+      {
+       "head": "S2-O-BAR2-HEAD",
+       "zone": 2
+      }
+     ],
+     "qualifier": "P2-QUALIFIER"
+    },
+    "R": {
+     "no_small_set": false,
+     "cards": [
+      "DRV-IMP-NAME",
+      "DRV-MAS-NAME"
+     ],
+     "others_label": "S2-R-OTHERS",
+     "others": [
+      "DRV-REC-NAME",
+      "DRV-AUT-NAME",
+      "DRV-SEC-NAME",
+      "DRV-INC-NAME",
+      "DRV-FAM-NAME",
+      "DRV-LIF-NAME"
+     ]
+    },
+    "E": {
+     "line": "S2-E-LINE",
+     "bars": [
+      {
+       "head": "S2-E-BAR1-HEAD",
+       "zone": 1
+      },
+      {
+       "head": "S2-E-BAR2-HEAD",
+       "zone": 2
+      }
+     ]
+    }
+   },
+   "S3": {
+    "compact": false,
+    "curiosities": [
+     {
+      "desc": "S3-RD-DESC",
+      "examples": [
+       "S3-RD-EX1",
+       "S3-RD-EX2",
+       "S3-RD-EX3"
+      ]
+     },
+     {
+      "desc": "S3-PW-DESC",
+      "examples": [
+       "S3-PW-EX1",
+       "S3-PW-EX2",
+       "S3-PW-EX3"
+      ]
+     }
+    ],
+    "kai_question": "S3-KAI-Q"
+   },
+   "S4": {
+    "meet": [
+     {
+      "family_id": "F-RD-PW",
+      "family": "Clinical and health sciences",
+      "family_score": 1.3333,
+      "highlighted_jobs": 4,
+      "jobs": [
+       {
+        "job_id": "F-RD-PW-J3",
+        "job": "Genetic counsellor",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-WORK",
+          "phrases": [
+           "S4-PH-TOGETHER"
+          ]
+         },
+         {
+          "block": "S4-MATCH-DRV",
+          "drivers": [
+           "DRV-IMP-NAME",
+           "DRV-MAS-NAME"
+          ]
+         }
+        ]
+       },
+       {
+        "job_id": "F-RD-PW-J1",
+        "job": "Dentist",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-WORK",
+          "phrases": [
+           "S4-PH-TOGETHER"
+          ]
+         }
+        ]
+       },
+       {
+        "job_id": "F-RD-PW-J2",
+        "job": "Dietitian",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-DRV",
+          "drivers": [
+           "DRV-IMP-NAME"
+          ]
+         }
+        ]
+       },
+       {
+        "job_id": "F-RD-PW-J4",
+        "job": "Occupational health specialist",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-DRV",
+          "drivers": [
+           "DRV-IMP-NAME"
+          ]
+         }
+        ]
+       }
+      ],
+      "curiosities": [
+       "RD",
+       "PW"
+      ],
+      "meet_line": "S4-MEET-CLOSE",
+      "repeated_jobs_hidden": [],
+      "changing_note": null
+     }
+    ],
+    "directions": [
+     {
+      "curiosity": "RD",
+      "full": [
+       {
+        "family_id": "F-RD-5",
+        "family": "Data and patterns",
+        "family_score": 1.5,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-RD-5-J1",
+          "job": "Financial data analyst",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-5-J4",
+          "job": "Operations research analyst",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-5-J3",
+          "job": "Actuary",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-5-J2",
+          "job": "Statistician",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Mathematics, statistics, data science, actuarial science",
+        "worth_checking": "S4-CHECK-TEAM",
+        "bank_order": 4,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-RD-1",
+        "family": "Medicine and health sciences",
+        "family_score": 1.3333,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-RD-1-J2",
+          "job": "Pharmacist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-IMP-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-1-J4",
+          "job": "Biomedical researcher",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-TOGETHER"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-1-J1",
+          "job": "Doctor (e.g. radiologist or pathologist)",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-IMP-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-1-J3",
+          "job": "Medical laboratory scientist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-IMP-NAME"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Medicine, pharmacy, biomedical science, medical laboratory science",
+        "worth_checking": "S4-CHECK-STRUCTURE",
+        "bank_order": 0,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-RD-2",
+        "family": "Life and environmental sciences",
+        "family_score": 0.8333,
+        "highlighted_jobs": 3,
+        "jobs": [
+         {
+          "job_id": "F-RD-2-J3",
+          "job": "Environmental scientist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-2-J4",
+          "job": "Food scientist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-2-J1",
+          "job": "Biologist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-2-J2",
+          "job": "Marine scientist",
+          "highlight": false,
+          "changing_work": false,
+          "lines": []
+         }
+        ],
+        "study_fields": "Biology, environmental science, marine science, food science",
+        "worth_checking": "S4-CHECK-STRUCTURE",
+        "bank_order": 1,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       }
+      ],
+      "more": [
+       {
+        "family_id": "F-RD-3",
+        "family": "Physical and earth sciences"
+       },
+       {
+        "family_id": "F-RD-6",
+        "family": "Investigation and diagnosis"
+       },
+       {
+        "family_id": "F-RD-4",
+        "family": "Human behaviour and society"
+       }
+      ],
+      "closest_label": "F-RD-5"
+     },
+     {
+      "curiosity": "PW",
+      "full": [
+       {
+        "family_id": "F-PW-1",
+        "family": "Patient care and therapy",
+        "family_score": 2.1667,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-PW-1-J2",
+          "job": "Physiotherapist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-TOGETHER"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-IMP-NAME",
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-PW-1-J1",
+          "job": "Nurse",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-TOGETHER"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-IMP-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-PW-1-J3",
+          "job": "Speech therapist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-TOGETHER"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-IMP-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-PW-1-J4",
+          "job": "Doctor (e.g. family doctor)",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-TOGETHER"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-IMP-NAME"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Nursing, physiotherapy, speech and language therapy, medicine",
+        "worth_checking": "S4-CHECK-STRUCTURE",
+        "bank_order": 0,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-PW-3",
+        "family": "Teaching and learning",
+        "family_score": 2.1667,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-PW-3-J2",
+          "job": "Special education teacher",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-TOGETHER"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-IMP-NAME",
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-PW-3-J4",
+          "job": "Education specialist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-TOGETHER"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-IMP-NAME",
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-PW-3-J3",
+          "job": "Early years educator",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-IMP-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-PW-3-J1",
+          "job": "Teacher",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-IMP-NAME",
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Education, a subject degree with a teaching qualification, special education",
+        "worth_checking": "S4-CHECK-STRUCTURE",
+        "bank_order": 2,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-PW-4",
+        "family": "Coaching and people development",
+        "family_score": 1.8333,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-PW-4-J1",
+          "job": "Career or life coach",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-TOGETHER"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-IMP-NAME",
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-PW-4-J3",
+          "job": "Learning and development specialist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-TOGETHER"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-IMP-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-PW-4-J4",
+          "job": "HR specialist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-TOGETHER"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-IMP-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-PW-4-J2",
+          "job": "Corporate trainer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-IMP-NAME"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Human resources, psychology, education",
+        "worth_checking": "S4-CHECK-STRUCTURE",
+        "bank_order": 3,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       }
+      ],
+      "more": [
+       {
+        "family_id": "F-PW-5",
+        "family": "Community and social care"
+       },
+       {
+        "family_id": "F-PW-2",
+        "family": "Mind and counselling"
+       },
+       {
+        "family_id": "F-PW-6",
+        "family": "Service and hospitality"
+       }
+      ],
+      "closest_label": "F-PW-1"
+     }
+    ],
+    "no_match": false,
+    "also": null
+   },
+   "S5": {
+    "watch": {
+     "block": "S5-WATCH",
+     "job1": "Genetic counsellor",
+     "job1_en_fill": "a genetic counsellor",
+     "job2": "Financial data analyst",
+     "job2_en_fill": "a financial data analyst"
+    },
+    "try": [
+     "S5-TRY-RD",
+     "S5-TRY-PW"
+    ],
+    "talk": {
+     "block": "S5-TALK",
+     "family": "Clinical and health sciences",
+     "family_en_fill": "clinical and health sciences",
+     "questions": [
+      "S5-YARD-IMP",
+      "S5-YARD-MAS"
+     ]
+    },
+    "ask": {
+     "block": "S5-ASK",
+     "questions": [
+      "S5-SCHOOL-STRUCTURE",
+      "S5-SCHOOL-IMP"
+     ]
+    }
+   }
+  }
+ },
+ {
+  "case": "04_close_diverse",
+  "what_it_tests": "Close result, two curiosities far apart on the circle",
+  "answers": {
+   "P1-02": "IE",
+   "P1-07": "RD",
+   "P1-01": "RD",
+   "P1-13": "PE",
+   "P1-04": "PW",
+   "P1-12": "PE",
+   "P1-16": "PE",
+   "P1-08": "AE",
+   "P1-10": "PE",
+   "P1-14": "IE",
+   "P1-11": "IE",
+   "P1-15": "IE",
+   "P1-09": "AE",
+   "P1-05": "PE",
+   "P1-03": "IE",
+   "P1-06": "IE",
+   "P3-01": "REC",
+   "P3-02": "AUT",
+   "P3-07": "REC",
+   "P3-08": "LIF",
+   "P3-03": "INC",
+   "P3-04": "AUT",
+   "P3-09": "LIF",
+   "P3-10": "AUT",
+   "P3-05": "LIF",
+   "P3-06": "INC",
+   "P3-11": "LIF",
+   "P3-12": "AUT",
+   "P3-13": "AUT",
+   "P3-14": "LIF",
+   "P2-01": "S",
+   "P2-03": "F",
+   "P2-05": "F",
+   "P2-07": "F",
+   "P2-02": "D",
+   "P2-04": "D",
+   "P2-06": "D",
+   "P2-08": "B",
+   "P4-01": "O",
+   "P4-03": "O",
+   "P4-05": "O",
+   "P4-07": "O",
+   "P4-02": "ST",
+   "P4-04": "ST",
+   "P4-06": "ST",
+   "P4-08": "CH"
+  },
+  "expected_results": {
+   "p1": {
+    "counts": {
+     "RD": 2,
+     "IE": 6,
+     "PW": 1,
+     "EI": 0,
+     "PE": 5,
+     "TS": 0,
+     "IR": 0,
+     "AE": 2
+    },
+    "L": 6,
+    "margin": 1,
+    "clarity": "Close",
+    "leaders": [
+     "IE",
+     "PE"
+    ],
+    "reading": "diverse",
+    "leading_share_pct": 75
+   },
+   "axes": {
+    "structure": {
+     "counted_option": "S",
+     "count": 1,
+     "lean": "F",
+     "zone": 3
+    },
+    "focus": {
+     "counted_option": "D",
+     "count": 3,
+     "lean": "D",
+     "zone": 1
+    },
+    "team": {
+     "counted_option": "T",
+     "count": 0,
+     "lean": "O",
+     "zone": 3
+    },
+    "setting": {
+     "counted_option": "CH",
+     "count": 1,
+     "lean": "ST",
+     "zone": 1
+    }
+   },
+   "p3": {
+    "counts": {
+     "REC": 2,
+     "IMP": 0,
+     "MAS": 0,
+     "AUT": 5,
+     "SEC": 0,
+     "INC": 2,
+     "FAM": 0,
+     "LIF": 5
+    },
+    "leading": [
+     "AUT",
+     "LIF"
+    ],
+    "no_small_set": false,
+    "others": [
+     "REC",
+     "IMP",
+     "MAS",
+     "SEC",
+     "INC",
+     "FAM"
+    ],
+    "top_two": [
+     "AUT",
+     "LIF"
+    ]
+   }
+  },
+  "expected_report": {
+   "flag_note": null,
+   "section_order": [
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7"
+   ],
+   "S2": {
+    "C": {
+     "curiosities": [
+      {
+       "name": "CUR-IE-NAME",
+       "pull": "CUR-IE-PULL"
+      },
+      {
+       "name": "CUR-PE-NAME",
+       "pull": "CUR-PE-PULL"
+      }
+     ],
+     "lines": [
+      "S2-C-CLOSE",
+      "S2-C-DIVERSE"
+     ]
+    },
+    "O": {
+     "bars": [
+      {
+       "head": "S2-O-BAR1-HEAD",
+       "zone": 3
+      },
+      {
+       "head": "S2-O-BAR2-HEAD",
+       "zone": 1
+      }
+     ],
+     "qualifier": "P2-QUALIFIER"
+    },
+    "R": {
+     "no_small_set": false,
+     "cards": [
+      "DRV-AUT-NAME",
+      "DRV-LIF-NAME"
+     ],
+     "others_label": "S2-R-OTHERS",
+     "others": [
+      "DRV-REC-NAME",
+      "DRV-IMP-NAME",
+      "DRV-MAS-NAME",
+      "DRV-SEC-NAME",
+      "DRV-INC-NAME",
+      "DRV-FAM-NAME"
+     ]
+    },
+    "E": {
+     "line": "S2-E-LINE",
+     "bars": [
+      {
+       "head": "S2-E-BAR1-HEAD",
+       "zone": 3
+      },
+      {
+       "head": "S2-E-BAR2-HEAD",
+       "zone": 1
+      }
+     ]
+    }
+   },
+   "S3": {
+    "compact": false,
+    "curiosities": [
+     {
+      "desc": "S3-IE-DESC",
+      "examples": [
+       "S3-IE-EX1",
+       "S3-IE-EX2",
+       "S3-IE-EX3"
+      ]
+     },
+     {
+      "desc": "S3-PE-DESC",
+      "examples": [
+       "S3-PE-EX1",
+       "S3-PE-EX2",
+       "S3-PE-EX3"
+      ]
+     }
+    ],
+    "kai_question": "S3-KAI-Q"
+   },
+   "S4": {
+    "meet": [
+     {
+      "family_id": "F-IE-PE",
+      "family": "Creative production and management",
+      "family_score": 1.5,
+      "highlighted_jobs": 4,
+      "jobs": [
+       {
+        "job_id": "F-IE-PE-J4",
+        "job": "Fashion buyer",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-WORK",
+          "phrases": [
+           "S4-PH-OWN",
+           "S4-PH-STEADY"
+          ]
+         },
+         {
+          "block": "S4-MATCH-DRV",
+          "drivers": [
+           "DRV-LIF-NAME"
+          ]
+         }
+        ]
+       },
+       {
+        "job_id": "F-IE-PE-J1",
+        "job": "Film or TV producer",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-WORK",
+          "phrases": [
+           "S4-PH-DEEP"
+          ]
+         },
+         {
+          "block": "S4-MATCH-DRV",
+          "drivers": [
+           "DRV-AUT-NAME"
+          ]
+         }
+        ]
+       },
+       {
+        "job_id": "F-IE-PE-J2",
+        "job": "Publishing manager",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-WORK",
+          "phrases": [
+           "S4-PH-OPEN"
+          ]
+         },
+         {
+          "block": "S4-MATCH-DRV",
+          "drivers": [
+           "DRV-AUT-NAME"
+          ]
+         }
+        ]
+       },
+       {
+        "job_id": "F-IE-PE-J3",
+        "job": "Museum curator",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-WORK",
+          "phrases": [
+           "S4-PH-OPEN"
+          ]
+         },
+         {
+          "block": "S4-MATCH-DRV",
+          "drivers": [
+           "DRV-AUT-NAME"
+          ]
+         }
+        ]
+       }
+      ],
+      "curiosities": [
+       "IE",
+       "PE"
+      ],
+      "meet_line": "S4-MEET-FAR",
+      "repeated_jobs_hidden": [],
+      "changing_note": null
+     }
+    ],
+    "directions": [
+     {
+      "curiosity": "IE",
+      "full": [
+       {
+        "family_id": "F-IE-3",
+        "family": "Writing and storytelling",
+        "family_score": 2.1667,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-IE-3-J2",
+          "job": "Scriptwriter",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-OPEN",
+             "S4-PH-DEEP",
+             "S4-PH-OWN",
+             "S4-PH-STEADY"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-IE-3-J3",
+          "job": "Copywriter",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-OPEN",
+             "S4-PH-DEEP",
+             "S4-PH-OWN",
+             "S4-PH-STEADY"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-IE-3-J1",
+          "job": "Journalist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-OPEN",
+             "S4-PH-DEEP",
+             "S4-PH-OWN"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-IE-3-J4",
+          "job": "Editor",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-OPEN"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-AUT-NAME"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Journalism, creative writing, Arabic or English literature, media studies",
+        "worth_checking": "S4-CHECK-TEAM",
+        "bank_order": 2,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-IE-6",
+        "family": "Fashion and crafts",
+        "family_score": 1.6667,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-IE-6-J1",
+          "job": "Fashion designer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-DEEP",
+             "S4-PH-OWN",
+             "S4-PH-STEADY"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-IE-6-J2",
+          "job": "Jewellery designer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-OPEN",
+             "S4-PH-OWN"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-LIF-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-IE-6-J3",
+          "job": "Textile designer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-DEEP",
+             "S4-PH-OWN",
+             "S4-PH-STEADY"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-IE-6-J4",
+          "job": "Makeup artist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-DEEP"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Fashion design, textile design, jewellery design",
+        "worth_checking": "S4-CHECK-STRUCTURE",
+        "bank_order": 5,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-IE-5",
+        "family": "Music and performance",
+        "family_score": 1.5,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-IE-5-J1",
+          "job": "Musician",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-DEEP",
+             "S4-PH-STEADY"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-LIF-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-IE-5-J4",
+          "job": "Sound designer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-OWN",
+             "S4-PH-STEADY"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-AUT-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-IE-5-J3",
+          "job": "Presenter",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-DEEP"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-LIF-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-IE-5-J2",
+          "job": "Actor",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-DEEP"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Music, performing arts, sound engineering",
+        "worth_checking": "S4-CHECK-STRUCTURE",
+        "bank_order": 4,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       }
+      ],
+      "more": [
+       {
+        "family_id": "F-IE-4",
+        "family": "Film, photography and animation"
+       },
+       {
+        "family_id": "F-IE-1",
+        "family": "Design"
+       },
+       {
+        "family_id": "F-IE-2",
+        "family": "Architecture and spaces"
+       }
+      ],
+      "closest_label": "F-IE-3"
+     },
+     {
+      "curiosity": "PE",
+      "full": [
+       {
+        "family_id": "F-PE-1",
+        "family": "Finance and accounting",
+        "family_score": 2.0,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-PE-1-J2",
+          "job": "Financial controller",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-DEEP",
+             "S4-PH-OWN",
+             "S4-PH-STEADY"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-AUT-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-PE-1-J3",
+          "job": "Treasury officer (cash and liquidity)",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-DEEP",
+             "S4-PH-OWN",
+             "S4-PH-STEADY"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-AUT-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-PE-1-J1",
+          "job": "Accountant",
+          "highlight": true,
+          "changing_work": true,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-OWN",
+             "S4-PH-STEADY"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-PE-1-J4",
+          "job": "Tax specialist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-OWN",
+             "S4-PH-STEADY"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Accounting, finance",
+        "worth_checking": "S4-CHECK-STRUCTURE",
+        "bank_order": 0,
+        "repeated_jobs_hidden": [],
+        "changing_note": "S4-CHANGING"
+       },
+       {
+        "family_id": "F-PE-6",
+        "family": "Quality, information and records",
+        "family_score": 1.1667,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-PE-6-J3",
+          "job": "Document management specialist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-OWN",
+             "S4-PH-STEADY"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-LIF-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-PE-6-J4",
+          "job": "Archivist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-OWN"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-LIF-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-PE-6-J1",
+          "job": "Quality assurance specialist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-OPEN"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-PE-6-J2",
+          "job": "IT project manager",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-AUT-NAME"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Quality management, information management, health informatics",
+        "worth_checking": "S4-CHECK-STRUCTURE",
+        "bank_order": 5,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-PE-4",
+        "family": "Project and programme management",
+        "family_score": 1.0,
+        "highlighted_jobs": 3,
+        "jobs": [
+         {
+          "job_id": "F-PE-4-J1",
+          "job": "Project manager",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-DEEP",
+             "S4-PH-STEADY"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-PE-4-J2",
+          "job": "Project coordinator",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-DEEP",
+             "S4-PH-STEADY"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-PE-4-J4",
+          "job": "Construction planner",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-OWN",
+             "S4-PH-STEADY"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-PE-4-J3",
+          "job": "Project analyst",
+          "highlight": false,
+          "changing_work": false,
+          "lines": []
+         }
+        ],
+        "study_fields": "Project management, business, engineering management",
+        "worth_checking": "S4-CHECK-TEAM",
+        "bank_order": 3,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       }
+      ],
+      "more": [
+       {
+        "family_id": "F-PE-5",
+        "family": "Government and organisational administration"
+       },
+       {
+        "family_id": "F-PE-3",
+        "family": "Operations, logistics and supply chain"
+       },
+       {
+        "family_id": "F-PE-2",
+        "family": "Audit, risk and compliance"
+       }
+      ],
+      "closest_label": "F-PE-1"
+     }
+    ],
+    "no_match": false,
+    "also": null
+   },
+   "S5": {
+    "watch": {
+     "block": "S5-WATCH",
+     "job1": "Fashion buyer",
+     "job1_en_fill": "a fashion buyer",
+     "job2": "Scriptwriter",
+     "job2_en_fill": "a scriptwriter"
+    },
+    "try": [
+     "S5-TRY-IE",
+     "S5-TRY-PE"
+    ],
+    "talk": {
+     "block": "S5-TALK",
+     "family": "Creative production and management",
+     "family_en_fill": "creative production and management",
+     "questions": [
+      "S5-YARD-AUT",
+      "S5-YARD-LIF"
+     ]
+    },
+    "ask": {
+     "block": "S5-ASK",
+     "questions": [
+      "S5-SCHOOL-STRUCTURE",
+      "S5-SCHOOL-AUT"
+     ]
+    }
+   }
+  }
+ },
+ {
+  "case": "05_close_three",
+  "what_it_tests": "Close result with three leading curiosities",
+  "answers": {
+   "P1-02": "IE",
+   "P1-07": "RD",
+   "P1-01": "RD",
+   "P1-13": "RD",
+   "P1-04": "PE",
+   "P1-12": "TS",
+   "P1-16": "TS",
+   "P1-08": "IR",
+   "P1-10": "IR",
+   "P1-14": "PW",
+   "P1-11": "IR",
+   "P1-15": "RD",
+   "P1-09": "TS",
+   "P1-05": "RD",
+   "P1-03": "TS",
+   "P1-06": "IR",
+   "P3-01": "MAS",
+   "P3-02": "INC",
+   "P3-07": "MAS",
+   "P3-08": "INC",
+   "P3-03": "INC",
+   "P3-04": "MAS",
+   "P3-09": "MAS",
+   "P3-10": "AUT",
+   "P3-05": "REC",
+   "P3-06": "MAS",
+   "P3-11": "LIF",
+   "P3-12": "INC",
+   "P3-13": "INC",
+   "P3-14": "MAS",
+   "P2-01": "S",
+   "P2-03": "S",
+   "P2-05": "S",
+   "P2-07": "F",
+   "P2-02": "D",
+   "P2-04": "D",
+   "P2-06": "D",
+   "P2-08": "D",
+   "P4-01": "T",
+   "P4-03": "O",
+   "P4-05": "O",
+   "P4-07": "O",
+   "P4-02": "ST",
+   "P4-04": "CH",
+   "P4-06": "CH",
+   "P4-08": "CH"
+  },
+  "expected_results": {
+   "p1": {
+    "counts": {
+     "RD": 5,
+     "IE": 1,
+     "PW": 1,
+     "EI": 0,
+     "PE": 1,
+     "TS": 4,
+     "IR": 4,
+     "AE": 0
+    },
+    "L": 5,
+    "margin": 1,
+    "clarity": "Close",
+    "leaders": [
+     "RD",
+     "TS",
+     "IR"
+    ],
+    "reading": "coherent",
+    "leading_share_pct": 62
+   },
+   "axes": {
+    "structure": {
+     "counted_option": "S",
+     "count": 3,
+     "lean": "S",
+     "zone": 1
+    },
+    "focus": {
+     "counted_option": "D",
+     "count": 4,
+     "lean": "D",
+     "zone": 1
+    },
+    "team": {
+     "counted_option": "T",
+     "count": 1,
+     "lean": "O",
+     "zone": 3
+    },
+    "setting": {
+     "counted_option": "CH",
+     "count": 3,
+     "lean": "CH",
+     "zone": 3
+    }
+   },
+   "p3": {
+    "counts": {
+     "REC": 1,
+     "IMP": 0,
+     "MAS": 6,
+     "AUT": 1,
+     "SEC": 0,
+     "INC": 5,
+     "FAM": 0,
+     "LIF": 1
+    },
+    "leading": [
+     "MAS",
+     "INC"
+    ],
+    "no_small_set": false,
+    "others": [
+     "REC",
+     "IMP",
+     "AUT",
+     "SEC",
+     "FAM",
+     "LIF"
+    ],
+    "top_two": [
+     "MAS",
+     "INC"
+    ]
+   }
+  },
+  "expected_report": {
+   "flag_note": null,
+   "section_order": [
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7"
+   ],
+   "S2": {
+    "C": {
+     "curiosities": [
+      {
+       "name": "CUR-RD-NAME",
+       "pull": "CUR-RD-PULL"
+      },
+      {
+       "name": "CUR-TS-NAME",
+       "pull": "CUR-TS-PULL"
+      },
+      {
+       "name": "CUR-IR-NAME",
+       "pull": "CUR-IR-PULL"
+      }
+     ],
+     "lines": [
+      "S2-C-CLOSE",
+      "S2-C-COHERENT"
+     ]
+    },
+    "O": {
+     "bars": [
+      {
+       "head": "S2-O-BAR1-HEAD",
+       "zone": 1
+      },
+      {
+       "head": "S2-O-BAR2-HEAD",
+       "zone": 1
+      }
+     ],
+     "qualifier": "P2-QUALIFIER"
+    },
+    "R": {
+     "no_small_set": false,
+     "cards": [
+      "DRV-MAS-NAME",
+      "DRV-INC-NAME"
+     ],
+     "others_label": "S2-R-OTHERS",
+     "others": [
+      "DRV-REC-NAME",
+      "DRV-IMP-NAME",
+      "DRV-AUT-NAME",
+      "DRV-SEC-NAME",
+      "DRV-FAM-NAME",
+      "DRV-LIF-NAME"
+     ]
+    },
+    "E": {
+     "line": "S2-E-LINE",
+     "bars": [
+      {
+       "head": "S2-E-BAR1-HEAD",
+       "zone": 3
+      },
+      {
+       "head": "S2-E-BAR2-HEAD",
+       "zone": 3
+      }
+     ]
+    }
+   },
+   "S3": {
+    "compact": false,
+    "curiosities": [
+     {
+      "desc": "S3-RD-DESC",
+      "examples": [
+       "S3-RD-EX1",
+       "S3-RD-EX2",
+       "S3-RD-EX3"
+      ]
+     },
+     {
+      "desc": "S3-TS-DESC",
+      "examples": [
+       "S3-TS-EX1",
+       "S3-TS-EX2",
+       "S3-TS-EX3"
+      ]
+     },
+     {
+      "desc": "S3-IR-DESC",
+      "examples": [
+       "S3-IR-EX1",
+       "S3-IR-EX2",
+       "S3-IR-EX3"
+      ]
+     }
+    ],
+    "kai_question": "S3-KAI-Q"
+   },
+   "S4": {
+    "meet": [
+     {
+      "family_id": "F-RD-TS",
+      "family": "Data science and computational research",
+      "family_score": 1.3333,
+      "highlighted_jobs": 4,
+      "jobs": [
+       {
+        "job_id": "F-RD-TS-J1",
+        "job": "Data scientist",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-WORK",
+          "phrases": [
+           "S4-PH-DEEP",
+           "S4-PH-OWN"
+          ]
+         },
+         {
+          "block": "S4-MATCH-DRV",
+          "drivers": [
+           "DRV-INC-NAME"
+          ]
+         }
+        ]
+       },
+       {
+        "job_id": "F-RD-TS-J3",
+        "job": "Computational scientist",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-DRV",
+          "drivers": [
+           "DRV-MAS-NAME",
+           "DRV-INC-NAME"
+          ]
+         }
+        ]
+       },
+       {
+        "job_id": "F-RD-TS-J4",
+        "job": "AI researcher",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-DRV",
+          "drivers": [
+           "DRV-MAS-NAME",
+           "DRV-INC-NAME"
+          ]
+         }
+        ]
+       },
+       {
+        "job_id": "F-RD-TS-J2",
+        "job": "Bioinformatician",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-DRV",
+          "drivers": [
+           "DRV-MAS-NAME"
+          ]
+         }
+        ]
+       }
+      ],
+      "curiosities": [
+       "RD",
+       "TS"
+      ],
+      "meet_line": "S4-MEET-CLOSE",
+      "repeated_jobs_hidden": [],
+      "changing_note": null
+     },
+     {
+      "family_id": "F-RD-IR",
+      "family": "Engineering science and R&D",
+      "family_score": 1.3333,
+      "highlighted_jobs": 3,
+      "jobs": [
+       {
+        "job_id": "F-RD-IR-J1",
+        "job": "Materials scientist",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-WORK",
+          "phrases": [
+           "S4-PH-SET",
+           "S4-PH-OWN"
+          ]
+         },
+         {
+          "block": "S4-MATCH-DRV",
+          "drivers": [
+           "DRV-MAS-NAME",
+           "DRV-INC-NAME"
+          ]
+         }
+        ]
+       },
+       {
+        "job_id": "F-RD-IR-J2",
+        "job": "Biomedical engineer",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-WORK",
+          "phrases": [
+           "S4-PH-SET"
+          ]
+         },
+         {
+          "block": "S4-MATCH-DRV",
+          "drivers": [
+           "DRV-INC-NAME"
+          ]
+         }
+        ]
+       },
+       {
+        "job_id": "F-RD-IR-J4",
+        "job": "Chemical engineer",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-WORK",
+          "phrases": [
+           "S4-PH-SET"
+          ]
+         },
+         {
+          "block": "S4-MATCH-DRV",
+          "drivers": [
+           "DRV-INC-NAME"
+          ]
+         }
+        ]
+       },
+       {
+        "job_id": "F-RD-IR-J3",
+        "job": "R&D engineer",
+        "highlight": false,
+        "changing_work": false,
+        "lines": []
+       }
+      ],
+      "curiosities": [
+       "RD",
+       "IR"
+      ],
+      "meet_line": "S4-MEET-CLOSE",
+      "repeated_jobs_hidden": [],
+      "changing_note": null
+     }
+    ],
+    "directions": [
+     {
+      "curiosity": "RD",
+      "full": [
+       {
+        "family_id": "F-RD-5",
+        "family": "Data and patterns",
+        "family_score": 1.8333,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-RD-5-J1",
+          "job": "Financial data analyst",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-DEEP",
+             "S4-PH-OWN"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-5-J3",
+          "job": "Actuary",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-DEEP"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-5-J2",
+          "job": "Statistician",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-DEEP"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-5-J4",
+          "job": "Operations research analyst",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Mathematics, statistics, data science, actuarial science",
+        "worth_checking": "S4-CHECK-SETTING",
+        "bank_order": 4,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-RD-4",
+        "family": "Human behaviour and society",
+        "family_score": 1.6667,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-RD-4-J2",
+          "job": "Economist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-DEEP",
+             "S4-PH-OWN"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME",
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-4-J1",
+          "job": "Workplace psychologist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME",
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-4-J3",
+          "job": "Social researcher",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-OWN"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-4-J4",
+          "job": "Market researcher",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-DEEP",
+             "S4-PH-OWN"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Psychology, economics, sociology, social sciences",
+        "worth_checking": "S4-CHECK-SETTING",
+        "bank_order": 3,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-RD-3",
+        "family": "Physical and earth sciences",
+        "family_score": 1.3333,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-RD-3-J2",
+          "job": "Physicist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-OWN"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME",
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-3-J1",
+          "job": "Chemist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-OWN"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-3-J4",
+          "job": "Meteorologist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-OWN"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-3-J3",
+          "job": "Geologist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-CHANGING"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Chemistry, physics, geology, earth and atmospheric science",
+        "worth_checking": "S4-CHECK-SETTING",
+        "bank_order": 2,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       }
+      ],
+      "more": [
+       {
+        "family_id": "F-RD-6",
+        "family": "Investigation and diagnosis"
+       },
+       {
+        "family_id": "F-RD-2",
+        "family": "Life and environmental sciences"
+       },
+       {
+        "family_id": "F-RD-1",
+        "family": "Medicine and health sciences"
+       }
+      ],
+      "closest_label": "F-RD-5"
+     },
+     {
+      "curiosity": "TS",
+      "full": [
+       {
+        "family_id": "F-TS-4",
+        "family": "Networks, cloud and infrastructure",
+        "family_score": 2.3333,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-TS-4-J1",
+          "job": "Network engineer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-OWN"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME",
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-4-J2",
+          "job": "Cloud engineer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-OWN"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME",
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-4-J3",
+          "job": "Systems administrator",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-DEEP",
+             "S4-PH-OWN"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-4-J4",
+          "job": "Telecommunications engineer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-CHANGING"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Computer engineering, information technology, telecommunications",
+        "worth_checking": "S4-CHECK-FOCUS",
+        "bank_order": 3,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-TS-3",
+        "family": "Cybersecurity",
+        "family_score": 1.8333,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-TS-3-J3",
+          "job": "Digital forensics specialist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-DEEP",
+             "S4-PH-OWN"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-3-J1",
+          "job": "Cybersecurity analyst",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-OWN"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-3-J2",
+          "job": "Ethical hacker (security tester)",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-OWN"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-3-J4",
+          "job": "Security architect",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-DEEP"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Cybersecurity, computer science",
+        "worth_checking": "S4-CHECK-SETTING",
+        "bank_order": 2,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-TS-5",
+        "family": "Data engineering and analytics",
+        "family_score": 1.8333,
+        "highlighted_jobs": 3,
+        "jobs": [
+         {
+          "job_id": "F-TS-5-J1",
+          "job": "Data engineer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-DEEP",
+             "S4-PH-OWN"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME",
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-5-J2",
+          "job": "Business intelligence analyst",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-DEEP",
+             "S4-PH-OWN"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME",
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-5-J4",
+          "job": "GIS specialist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-OWN"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-5-J3",
+          "job": "Database administrator",
+          "highlight": false,
+          "changing_work": false,
+          "lines": []
+         }
+        ],
+        "study_fields": "Data science, information systems, computer science",
+        "worth_checking": "S4-CHECK-SETTING",
+        "bank_order": 4,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       }
+      ],
+      "more": [
+       {
+        "family_id": "F-TS-1",
+        "family": "Software and app development"
+       },
+       {
+        "family_id": "F-TS-6",
+        "family": "Smart systems and digital transformation"
+       },
+       {
+        "family_id": "F-TS-2",
+        "family": "Artificial intelligence"
+       }
+      ],
+      "closest_label": "F-TS-4"
+     },
+     {
+      "curiosity": "IR",
+      "full": [
+       {
+        "family_id": "F-IR-4",
+        "family": "Energy: oil, gas and renewables",
+        "family_score": 1.6667,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-IR-4-J4",
+          "job": "Nuclear engineer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-OWN"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME",
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-IR-4-J2",
+          "job": "Energy engineer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-CHANGING"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-IR-4-J3",
+          "job": "Power plant operator",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-CHANGING"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-IR-4-J1",
+          "job": "Petroleum engineer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Petroleum, chemical, energy and nuclear engineering",
+        "worth_checking": "S4-CHECK-FOCUS",
+        "bank_order": 3,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-IR-5",
+        "family": "Aerospace, automotive and marine",
+        "family_score": 1.6667,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-IR-5-J4",
+          "job": "Marine engineer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-OWN",
+             "S4-PH-CHANGING"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-IR-5-J1",
+          "job": "Aircraft maintenance engineer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-OWN",
+             "S4-PH-CHANGING"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-IR-5-J2",
+          "job": "Aerospace engineer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-IR-5-J3",
+          "job": "Automotive and electric vehicle engineer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Aerospace engineering, aircraft maintenance, automotive and marine engineering",
+        "worth_checking": "S4-CHECK-FOCUS",
+        "bank_order": 4,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-IR-3",
+        "family": "Civil engineering and construction",
+        "family_score": 1.5,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-IR-3-J3",
+          "job": "Site engineer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-CHANGING"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-IR-3-J1",
+          "job": "Civil engineer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-CHANGING"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-IR-3-J2",
+          "job": "Structural engineer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-CHANGING"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-IR-3-J4",
+          "job": "Air-conditioning and refrigeration technician",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-CHANGING"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Civil engineering, architectural engineering, construction management",
+        "worth_checking": "S4-CHECK-FOCUS",
+        "bank_order": 2,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       }
+      ],
+      "more": [
+       {
+        "family_id": "F-IR-2",
+        "family": "Electrical, electronics and robotics"
+       },
+       {
+        "family_id": "F-IR-6",
+        "family": "Technical specialists and prototyping"
+       },
+       {
+        "family_id": "F-IR-1",
+        "family": "Mechanical and manufacturing engineering"
+       }
+      ],
+      "closest_label": "F-IR-4"
+     }
+    ],
+    "no_match": false,
+    "also": null
+   },
+   "S5": {
+    "watch": {
+     "block": "S5-WATCH",
+     "job1": "Data scientist",
+     "job1_en_fill": "a data scientist",
+     "job2": "Materials scientist",
+     "job2_en_fill": "a materials scientist"
+    },
+    "try": [
+     "S5-TRY-RD",
+     "S5-TRY-TS",
+     "S5-TRY-IR"
+    ],
+    "talk": {
+     "block": "S5-TALK",
+     "family": "Data science and computational research",
+     "family_en_fill": "data science and computational research",
+     "questions": [
+      "S5-YARD-MAS",
+      "S5-YARD-INC"
+     ]
+    },
+    "ask": {
+     "block": "S5-ASK",
+     "questions": [
+      "S5-SCHOOL-STRUCTURE",
+      "S5-SCHOOL-MAS"
+     ]
+    }
+   }
+  }
+ },
+ {
+  "case": "06_open",
+  "what_it_tests": "Open result: several curiosities level; next steps move up",
+  "answers": {
+   "P1-02": "IE",
+   "P1-07": "RD",
+   "P1-01": "RD",
+   "P1-13": "PE",
+   "P1-04": "PW",
+   "P1-12": "PW",
+   "P1-16": "TS",
+   "P1-08": "EI",
+   "P1-10": "IE",
+   "P1-14": "PW",
+   "P1-11": "AE",
+   "P1-15": "EI",
+   "P1-09": "AE",
+   "P1-05": "AE",
+   "P1-03": "EI",
+   "P1-06": "TS",
+   "P3-01": "REC",
+   "P3-02": "IMP",
+   "P3-07": "IMP",
+   "P3-08": "SEC",
+   "P3-03": "SEC",
+   "P3-04": "FAM",
+   "P3-09": "LIF",
+   "P3-10": "FAM",
+   "P3-05": "SEC",
+   "P3-06": "FAM",
+   "P3-11": "FAM",
+   "P3-12": "SEC",
+   "P3-13": "FAM",
+   "P3-14": "SEC",
+   "P2-01": "S",
+   "P2-03": "S",
+   "P2-05": "F",
+   "P2-07": "F",
+   "P2-02": "D",
+   "P2-04": "D",
+   "P2-06": "D",
+   "P2-08": "B",
+   "P4-01": "T",
+   "P4-03": "T",
+   "P4-05": "T",
+   "P4-07": "T",
+   "P4-02": "ST",
+   "P4-04": "CH",
+   "P4-06": "CH",
+   "P4-08": "CH"
+  },
+  "expected_results": {
+   "p1": {
+    "counts": {
+     "RD": 2,
+     "IE": 2,
+     "PW": 3,
+     "EI": 3,
+     "PE": 1,
+     "TS": 2,
+     "IR": 0,
+     "AE": 3
+    },
+    "L": 3,
+    "margin": 0,
+    "clarity": "Open",
+    "leaders": [
+     "PW",
+     "EI",
+     "AE",
+     "RD",
+     "IE",
+     "TS"
+    ],
+    "reading": "diverse",
+    "leading_share_pct": 38
+   },
+   "axes": {
+    "structure": {
+     "counted_option": "S",
+     "count": 2,
+     "lean": "MIX",
+     "zone": 2
+    },
+    "focus": {
+     "counted_option": "D",
+     "count": 3,
+     "lean": "D",
+     "zone": 1
+    },
+    "team": {
+     "counted_option": "T",
+     "count": 4,
+     "lean": "T",
+     "zone": 1
+    },
+    "setting": {
+     "counted_option": "CH",
+     "count": 3,
+     "lean": "CH",
+     "zone": 3
+    }
+   },
+   "p3": {
+    "counts": {
+     "REC": 1,
+     "IMP": 2,
+     "MAS": 0,
+     "AUT": 0,
+     "SEC": 5,
+     "INC": 0,
+     "FAM": 5,
+     "LIF": 1
+    },
+    "leading": [
+     "SEC",
+     "FAM"
+    ],
+    "no_small_set": false,
+    "others": [
+     "REC",
+     "IMP",
+     "MAS",
+     "AUT",
+     "INC",
+     "LIF"
+    ],
+    "top_two": [
+     "SEC",
+     "FAM"
+    ]
+   }
+  },
+  "expected_report": {
+   "flag_note": null,
+   "section_order": [
+    "S1",
+    "S2",
+    "S5",
+    "S3",
+    "S4",
+    "S6",
+    "S7"
+   ],
+   "S2": {
+    "C": {
+     "curiosities": [
+      {
+       "name": "CUR-PW-NAME",
+       "pull": "CUR-PW-PULL"
+      },
+      {
+       "name": "CUR-EI-NAME",
+       "pull": "CUR-EI-PULL"
+      },
+      {
+       "name": "CUR-AE-NAME",
+       "pull": "CUR-AE-PULL"
+      },
+      {
+       "name": "CUR-RD-NAME",
+       "pull": "CUR-RD-PULL"
+      },
+      {
+       "name": "CUR-IE-NAME",
+       "pull": "CUR-IE-PULL"
+      },
+      {
+       "name": "CUR-TS-NAME",
+       "pull": "CUR-TS-PULL"
+      }
+     ],
+     "lines": [
+      "S2-C-OPEN"
+     ]
+    },
+    "O": {
+     "bars": [
+      {
+       "head": "S2-O-BAR1-HEAD",
+       "zone": 2
+      },
+      {
+       "head": "S2-O-BAR2-HEAD",
+       "zone": 1
+      }
+     ],
+     "qualifier": "P2-QUALIFIER"
+    },
+    "R": {
+     "no_small_set": false,
+     "cards": [
+      "DRV-SEC-NAME",
+      "DRV-FAM-NAME"
+     ],
+     "others_label": "S2-R-OTHERS",
+     "others": [
+      "DRV-REC-NAME",
+      "DRV-IMP-NAME",
+      "DRV-MAS-NAME",
+      "DRV-AUT-NAME",
+      "DRV-INC-NAME",
+      "DRV-LIF-NAME"
+     ]
+    },
+    "E": {
+     "line": "S2-E-LINE",
+     "bars": [
+      {
+       "head": "S2-E-BAR1-HEAD",
+       "zone": 1
+      },
+      {
+       "head": "S2-E-BAR2-HEAD",
+       "zone": 3
+      }
+     ]
+    }
+   },
+   "S3": {
+    "compact": true,
+    "curiosities": [
+     {
+      "desc": "S3-PW-DESC",
+      "examples": [
+       "S3-PW-EX1",
+       "S3-PW-EX2",
+       "S3-PW-EX3"
+      ]
+     },
+     {
+      "desc": "S3-EI-DESC",
+      "examples": [
+       "S3-EI-EX1",
+       "S3-EI-EX2",
+       "S3-EI-EX3"
+      ]
+     },
+     {
+      "desc": "S3-AE-DESC",
+      "examples": [
+       "S3-AE-EX1",
+       "S3-AE-EX2",
+       "S3-AE-EX3"
+      ]
+     },
+     {
+      "desc": "S3-RD-DESC",
+      "examples": [
+       "S3-RD-EX1",
+       "S3-RD-EX2",
+       "S3-RD-EX3"
+      ]
+     },
+     {
+      "desc": "S3-IE-DESC",
+      "examples": [
+       "S3-IE-EX1",
+       "S3-IE-EX2",
+       "S3-IE-EX3"
+      ]
+     },
+     {
+      "desc": "S3-TS-DESC",
+      "examples": [
+       "S3-TS-EX1",
+       "S3-TS-EX2",
+       "S3-TS-EX3"
+      ]
+     }
+    ],
+    "kai_question": "S3-KAI-Q"
+   },
+   "S4": {
+    "meet": [
+     {
+      "family_id": "F-PW-AE",
+      "family": "Movement and care",
+      "family_score": 0.5,
+      "highlighted_jobs": 2,
+      "jobs": [
+       {
+        "job_id": "F-PW-AE-J1",
+        "job": "Sports physiotherapist",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-WORK",
+          "phrases": [
+           "S4-PH-TOGETHER"
+          ]
+         }
+        ]
+       },
+       {
+        "job_id": "F-PW-AE-J2",
+        "job": "Paramedic",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-WORK",
+          "phrases": [
+           "S4-PH-CHANGING"
+          ]
+         }
+        ]
+       },
+       {
+        "job_id": "F-PW-AE-J3",
+        "job": "Physical education teacher",
+        "highlight": false,
+        "changing_work": false,
+        "lines": []
+       },
+       {
+        "job_id": "F-PW-AE-J4",
+        "job": "Outdoor education instructor",
+        "highlight": false,
+        "changing_work": false,
+        "lines": []
+       }
+      ],
+      "curiosities": [
+       "PW",
+       "AE"
+      ],
+      "meet_line": "S4-MEET-FAR",
+      "repeated_jobs_hidden": [],
+      "changing_note": null
+     },
+     {
+      "family_id": "F-EI-AE",
+      "family": "Sport and adventure business",
+      "family_score": 1.0,
+      "highlighted_jobs": 3,
+      "jobs": [
+       {
+        "job_id": "F-EI-AE-J4",
+        "job": "Sports club director",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-WORK",
+          "phrases": [
+           "S4-PH-TOGETHER",
+           "S4-PH-CHANGING"
+          ]
+         }
+        ]
+       },
+       {
+        "job_id": "F-EI-AE-J1",
+        "job": "Sports marketing manager",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-WORK",
+          "phrases": [
+           "S4-PH-TOGETHER"
+          ]
+         }
+        ]
+       },
+       {
+        "job_id": "F-EI-AE-J3",
+        "job": "Fitness centre manager",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-WORK",
+          "phrases": [
+           "S4-PH-TOGETHER"
+          ]
+         }
+        ]
+       },
+       {
+        "job_id": "F-EI-AE-J2",
+        "job": "Sports academy head coach",
+        "highlight": false,
+        "changing_work": false,
+        "lines": []
+       }
+      ],
+      "curiosities": [
+       "EI",
+       "AE"
+      ],
+      "meet_line": "S4-MEET-FAR",
+      "repeated_jobs_hidden": [],
+      "changing_note": null
+     },
+     {
+      "family_id": "F-RD-EI",
+      "family": "Science and business",
+      "family_score": 1.0,
+      "highlighted_jobs": 3,
+      "jobs": [
+       {
+        "job_id": "F-RD-EI-J3",
+        "job": "Patent lawyer",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-WORK",
+          "phrases": [
+           "S4-PH-DEEP"
+          ]
+         }
+        ]
+       },
+       {
+        "job_id": "F-RD-EI-J1",
+        "job": "Biotech or pharmaceutical business manager",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-WORK",
+          "phrases": [
+           "S4-PH-TOGETHER"
+          ]
+         }
+        ]
+       },
+       {
+        "job_id": "F-RD-EI-J2",
+        "job": "Science consultant",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-WORK",
+          "phrases": [
+           "S4-PH-CHANGING"
+          ]
+         }
+        ]
+       },
+       {
+        "job_id": "F-RD-EI-J4",
+        "job": "Science policy advisor",
+        "highlight": false,
+        "changing_work": false,
+        "lines": []
+       }
+      ],
+      "curiosities": [
+       "EI",
+       "RD"
+      ],
+      "meet_line": "S4-MEET-FAR",
+      "repeated_jobs_hidden": [],
+      "changing_note": null
+     }
+    ],
+    "directions": [],
+    "no_match": false,
+    "also": {
+     "block": "S4-ALSO",
+     "curiosities": [
+      "CUR-IE-NAME",
+      "CUR-TS-NAME"
+     ]
+    }
+   },
+   "S5": {
+    "watch": {
+     "block": "S5-WATCH",
+     "job1": "Sports physiotherapist",
+     "job1_en_fill": "a sports physiotherapist",
+     "job2": "Sports club director",
+     "job2_en_fill": "a sports club director"
+    },
+    "try": [
+     "S5-TRY-PW",
+     "S5-TRY-EI",
+     "S5-TRY-AE"
+    ],
+    "talk": {
+     "block": "S5-TALK",
+     "family": "Movement and care",
+     "family_en_fill": "movement and care",
+     "questions": [
+      "S5-YARD-SEC",
+      "S5-YARD-FAM"
+     ]
+    },
+    "ask": {
+     "block": "S5-ASK",
+     "questions": [
+      "S5-SCHOOL-FOCUS",
+      "S5-SCHOOL-SEC"
+     ]
+    }
+   }
+  }
+ },
+ {
+  "case": "07_no_small_set",
+  "what_it_tests": "Motivators: no small set stood out",
+  "answers": {
+   "P1-02": "IE",
+   "P1-07": "RD",
+   "P1-01": "EI",
+   "P1-13": "PE",
+   "P1-04": "PE",
+   "P1-12": "PE",
+   "P1-16": "PE",
+   "P1-08": "EI",
+   "P1-10": "EI",
+   "P1-14": "EI",
+   "P1-11": "RD",
+   "P1-15": "EI",
+   "P1-09": "PW",
+   "P1-05": "EI",
+   "P1-03": "EI",
+   "P1-06": "PW",
+   "P3-01": "REC",
+   "P3-02": "IMP",
+   "P3-07": "REC",
+   "P3-08": "SEC",
+   "P3-03": "IMP",
+   "P3-04": "MAS",
+   "P3-09": "MAS",
+   "P3-10": "AUT",
+   "P3-05": "AUT",
+   "P3-06": "INC",
+   "P3-11": "FAM",
+   "P3-12": "SEC",
+   "P3-13": "INC",
+   "P3-14": "LIF",
+   "P2-01": "S",
+   "P2-03": "S",
+   "P2-05": "S",
+   "P2-07": "F",
+   "P2-02": "D",
+   "P2-04": "B",
+   "P2-06": "B",
+   "P2-08": "B",
+   "P4-01": "T",
+   "P4-03": "T",
+   "P4-05": "T",
+   "P4-07": "O",
+   "P4-02": "ST",
+   "P4-04": "ST",
+   "P4-06": "ST",
+   "P4-08": "CH"
+  },
+  "expected_results": {
+   "p1": {
+    "counts": {
+     "RD": 2,
+     "IE": 1,
+     "PW": 2,
+     "EI": 7,
+     "PE": 4,
+     "TS": 0,
+     "IR": 0,
+     "AE": 0
+    },
+    "L": 7,
+    "margin": 3,
+    "clarity": "Clear",
+    "leaders": [
+     "EI"
+    ],
+    "reading": "single",
+    "leading_share_pct": 88
+   },
+   "axes": {
+    "structure": {
+     "counted_option": "S",
+     "count": 3,
+     "lean": "S",
+     "zone": 1
+    },
+    "focus": {
+     "counted_option": "D",
+     "count": 1,
+     "lean": "B",
+     "zone": 3
+    },
+    "team": {
+     "counted_option": "T",
+     "count": 3,
+     "lean": "T",
+     "zone": 1
+    },
+    "setting": {
+     "counted_option": "CH",
+     "count": 1,
+     "lean": "ST",
+     "zone": 1
+    }
+   },
+   "p3": {
+    "counts": {
+     "REC": 2,
+     "IMP": 2,
+     "MAS": 2,
+     "AUT": 2,
+     "SEC": 2,
+     "INC": 2,
+     "FAM": 1,
+     "LIF": 1
+    },
+    "leading": [],
+    "no_small_set": true,
+    "others": [
+     "REC",
+     "IMP",
+     "MAS",
+     "AUT",
+     "SEC",
+     "INC",
+     "FAM",
+     "LIF"
+    ],
+    "top_two": []
+   }
+  },
+  "expected_report": {
+   "flag_note": null,
+   "section_order": [
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7"
+   ],
+   "S2": {
+    "C": {
+     "curiosities": [
+      {
+       "name": "CUR-EI-NAME",
+       "pull": "CUR-EI-PULL"
+      }
+     ],
+     "lines": [
+      "S2-C-CLEAR"
+     ]
+    },
+    "O": {
+     "bars": [
+      {
+       "head": "S2-O-BAR1-HEAD",
+       "zone": 1
+      },
+      {
+       "head": "S2-O-BAR2-HEAD",
+       "zone": 3
+      }
+     ],
+     "qualifier": "P2-QUALIFIER"
+    },
+    "R": {
+     "no_small_set": true,
+     "line": "S2-R-NOSET",
+     "labels": [
+      "DRV-REC-NAME",
+      "DRV-IMP-NAME",
+      "DRV-MAS-NAME",
+      "DRV-AUT-NAME",
+      "DRV-SEC-NAME",
+      "DRV-INC-NAME",
+      "DRV-FAM-NAME",
+      "DRV-LIF-NAME"
+     ]
+    },
+    "E": {
+     "line": "S2-E-LINE",
+     "bars": [
+      {
+       "head": "S2-E-BAR1-HEAD",
+       "zone": 1
+      },
+      {
+       "head": "S2-E-BAR2-HEAD",
+       "zone": 1
+      }
+     ]
+    }
+   },
+   "S3": {
+    "compact": false,
+    "curiosities": [
+     {
+      "desc": "S3-EI-DESC",
+      "examples": [
+       "S3-EI-EX1",
+       "S3-EI-EX2",
+       "S3-EI-EX3"
+      ]
+     }
+    ],
+    "kai_question": "S3-KAI-Q"
+   },
+   "S4": {
+    "meet": [],
+    "directions": [
+     {
+      "curiosity": "EI",
+      "full": [
+       {
+        "family_id": "F-EI-2",
+        "family": "Marketing, communications and sales",
+        "family_score": 1.5,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-EI-2-J2",
+          "job": "Brand strategist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-BROAD",
+             "S4-PH-TOGETHER",
+             "S4-PH-STEADY"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-EI-2-J1",
+          "job": "Marketing manager",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-TOGETHER"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-EI-2-J3",
+          "job": "Public relations specialist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-EI-2-J4",
+          "job": "Sales manager",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-TOGETHER"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Marketing, mass communication, public relations, business",
+        "worth_checking": "S4-CHECK-STRUCTURE",
+        "bank_order": 1,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-EI-4",
+        "family": "Diplomacy, government and policy",
+        "family_score": 1.25,
+        "highlighted_jobs": 3,
+        "jobs": [
+         {
+          "job_id": "F-EI-4-J1",
+          "job": "Diplomat",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-BROAD",
+             "S4-PH-STEADY"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-EI-4-J2",
+          "job": "Policy advisor",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-BROAD",
+             "S4-PH-STEADY"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-EI-4-J3",
+          "job": "Government relations specialist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-EI-4-J4",
+          "job": "Parliament or council member",
+          "highlight": false,
+          "changing_work": false,
+          "lines": []
+         }
+        ],
+        "study_fields": "International relations, political science, public policy",
+        "worth_checking": "S4-CHECK-STRUCTURE",
+        "bank_order": 3,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-EI-1",
+        "family": "Starting and running businesses",
+        "family_score": 1.0,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-EI-1-J1",
+          "job": "Entrepreneur",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-BROAD"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-EI-1-J2",
+          "job": "Business manager",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-TOGETHER"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-EI-1-J3",
+          "job": "Startup founder",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-BROAD"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-EI-1-J4",
+          "job": "Family business leader",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-TOGETHER"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Business administration, entrepreneurship, management",
+        "worth_checking": "S4-CHECK-STRUCTURE",
+        "bank_order": 0,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       }
+      ],
+      "more": [
+       {
+        "family_id": "F-EI-6",
+        "family": "Events, sports and tourism management"
+       },
+       {
+        "family_id": "F-EI-3",
+        "family": "Law and advocacy"
+       },
+       {
+        "family_id": "F-EI-5",
+        "family": "Investment, real estate and deals"
+       }
+      ],
+      "closest_label": "F-EI-2"
+     }
+    ],
+    "no_match": false,
+    "also": null
+   },
+   "S5": {
+    "watch": {
+     "block": "S5-WATCH",
+     "job1": "Brand strategist",
+     "job1_en_fill": "a brand strategist",
+     "job2": "Diplomat",
+     "job2_en_fill": "a diplomat"
+    },
+    "try": [
+     "S5-TRY-EI"
+    ],
+    "talk": {
+     "block": "S5-TALK",
+     "family": "Marketing, communications and sales",
+     "family_en_fill": "marketing, communications and sales",
+     "questions": [
+      "S5-TALK-DAY",
+      "S5-TALK-TRADEOFF"
+     ]
+    },
+    "ask": {
+     "block": "S5-ASK",
+     "questions": [
+      "S5-SCHOOL-STRUCTURE"
+     ]
+    }
+   }
+  }
+ },
+ {
+  "case": "08_no_match",
+  "what_it_tests": "All axes evenly split and only Security/Family leading: nothing to highlight",
+  "answers": {
+   "P1-02": "AE",
+   "P1-07": "PW",
+   "P1-01": "PW",
+   "P1-13": "IR",
+   "P1-04": "IR",
+   "P1-12": "PW",
+   "P1-16": "AE",
+   "P1-08": "AE",
+   "P1-10": "IR",
+   "P1-14": "AE",
+   "P1-11": "AE",
+   "P1-15": "EI",
+   "P1-09": "AE",
+   "P1-05": "AE",
+   "P1-03": "EI",
+   "P1-06": "IR",
+   "P3-01": "SEC",
+   "P3-02": "LIF",
+   "P3-07": "REC",
+   "P3-08": "SEC",
+   "P3-03": "SEC",
+   "P3-04": "FAM",
+   "P3-09": "LIF",
+   "P3-10": "FAM",
+   "P3-05": "SEC",
+   "P3-06": "FAM",
+   "P3-11": "FAM",
+   "P3-12": "SEC",
+   "P3-13": "FAM",
+   "P3-14": "SEC",
+   "P2-01": "S",
+   "P2-03": "S",
+   "P2-05": "F",
+   "P2-07": "F",
+   "P2-02": "D",
+   "P2-04": "D",
+   "P2-06": "B",
+   "P2-08": "B",
+   "P4-01": "T",
+   "P4-03": "T",
+   "P4-05": "O",
+   "P4-07": "O",
+   "P4-02": "ST",
+   "P4-04": "ST",
+   "P4-06": "CH",
+   "P4-08": "CH"
+  },
+  "expected_results": {
+   "p1": {
+    "counts": {
+     "RD": 0,
+     "IE": 0,
+     "PW": 3,
+     "EI": 2,
+     "PE": 0,
+     "TS": 0,
+     "IR": 4,
+     "AE": 7
+    },
+    "L": 7,
+    "margin": 3,
+    "clarity": "Clear",
+    "leaders": [
+     "AE"
+    ],
+    "reading": "single",
+    "leading_share_pct": 88
+   },
+   "axes": {
+    "structure": {
+     "counted_option": "S",
+     "count": 2,
+     "lean": "MIX",
+     "zone": 2
+    },
+    "focus": {
+     "counted_option": "D",
+     "count": 2,
+     "lean": "MIX",
+     "zone": 2
+    },
+    "team": {
+     "counted_option": "T",
+     "count": 2,
+     "lean": "MIX",
+     "zone": 2
+    },
+    "setting": {
+     "counted_option": "CH",
+     "count": 2,
+     "lean": "MIX",
+     "zone": 2
+    }
+   },
+   "p3": {
+    "counts": {
+     "REC": 1,
+     "IMP": 0,
+     "MAS": 0,
+     "AUT": 0,
+     "SEC": 6,
+     "INC": 0,
+     "FAM": 5,
+     "LIF": 2
+    },
+    "leading": [
+     "SEC",
+     "FAM"
+    ],
+    "no_small_set": false,
+    "others": [
+     "REC",
+     "IMP",
+     "MAS",
+     "AUT",
+     "INC",
+     "LIF"
+    ],
+    "top_two": [
+     "SEC",
+     "FAM"
+    ]
+   }
+  },
+  "expected_report": {
+   "flag_note": null,
+   "section_order": [
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7"
+   ],
+   "S2": {
+    "C": {
+     "curiosities": [
+      {
+       "name": "CUR-AE-NAME",
+       "pull": "CUR-AE-PULL"
+      }
+     ],
+     "lines": [
+      "S2-C-CLEAR"
+     ]
+    },
+    "O": {
+     "bars": [
+      {
+       "head": "S2-O-BAR1-HEAD",
+       "zone": 2
+      },
+      {
+       "head": "S2-O-BAR2-HEAD",
+       "zone": 2
+      }
+     ],
+     "qualifier": "P2-QUALIFIER"
+    },
+    "R": {
+     "no_small_set": false,
+     "cards": [
+      "DRV-SEC-NAME",
+      "DRV-FAM-NAME"
+     ],
+     "others_label": "S2-R-OTHERS",
+     "others": [
+      "DRV-REC-NAME",
+      "DRV-IMP-NAME",
+      "DRV-MAS-NAME",
+      "DRV-AUT-NAME",
+      "DRV-INC-NAME",
+      "DRV-LIF-NAME"
+     ]
+    },
+    "E": {
+     "line": "S2-E-LINE",
+     "bars": [
+      {
+       "head": "S2-E-BAR1-HEAD",
+       "zone": 2
+      },
+      {
+       "head": "S2-E-BAR2-HEAD",
+       "zone": 2
+      }
+     ]
+    }
+   },
+   "S3": {
+    "compact": false,
+    "curiosities": [
+     {
+      "desc": "S3-AE-DESC",
+      "examples": [
+       "S3-AE-EX1",
+       "S3-AE-EX2",
+       "S3-AE-EX3"
+      ]
+     }
+    ],
+    "kai_question": "S3-KAI-Q"
+   },
+   "S4": {
+    "meet": [],
+    "directions": [
+     {
+      "curiosity": "AE",
+      "full": [
+       {
+        "family_id": "F-AE-1",
+        "family": "Competitive sport and coaching",
+        "family_score": 0.0,
+        "highlighted_jobs": 0,
+        "jobs": [
+         {
+          "job_id": "F-AE-1-J1",
+          "job": "Professional athlete",
+          "highlight": false,
+          "changing_work": false,
+          "lines": []
+         },
+         {
+          "job_id": "F-AE-1-J2",
+          "job": "Sports coach",
+          "highlight": false,
+          "changing_work": false,
+          "lines": []
+         },
+         {
+          "job_id": "F-AE-1-J3",
+          "job": "Referee",
+          "highlight": false,
+          "changing_work": false,
+          "lines": []
+         },
+         {
+          "job_id": "F-AE-1-J4",
+          "job": "Strength and conditioning coach",
+          "highlight": false,
+          "changing_work": false,
+          "lines": []
+         }
+        ],
+        "study_fields": "Sports science, coaching, physical education",
+        "worth_checking": "S4-CHECK-DAY",
+        "bank_order": 0,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-AE-2",
+        "family": "Fitness and physical education",
+        "family_score": 0.0,
+        "highlighted_jobs": 0,
+        "jobs": [
+         {
+          "job_id": "F-AE-2-J1",
+          "job": "Fitness and wellness coordinator",
+          "highlight": false,
+          "changing_work": false,
+          "lines": []
+         },
+         {
+          "job_id": "F-AE-2-J2",
+          "job": "Fitness trainer",
+          "highlight": false,
+          "changing_work": false,
+          "lines": []
+         },
+         {
+          "job_id": "F-AE-2-J3",
+          "job": "Movement and pilates instructor",
+          "highlight": false,
+          "changing_work": false,
+          "lines": []
+         },
+         {
+          "job_id": "F-AE-2-J4",
+          "job": "Rehabilitation exercise specialist",
+          "highlight": false,
+          "changing_work": false,
+          "lines": []
+         }
+        ],
+        "study_fields": "Sports science, exercise science, physical education",
+        "worth_checking": "S4-CHECK-DAY",
+        "bank_order": 1,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-AE-3",
+        "family": "Emergency and protective services",
+        "family_score": 0.0,
+        "highlighted_jobs": 0,
+        "jobs": [
+         {
+          "job_id": "F-AE-3-J1",
+          "job": "Paramedic",
+          "highlight": false,
+          "changing_work": false,
+          "lines": []
+         },
+         {
+          "job_id": "F-AE-3-J2",
+          "job": "Firefighter",
+          "highlight": false,
+          "changing_work": false,
+          "lines": []
+         },
+         {
+          "job_id": "F-AE-3-J3",
+          "job": "Police officer",
+          "highlight": false,
+          "changing_work": false,
+          "lines": []
+         },
+         {
+          "job_id": "F-AE-3-J4",
+          "job": "Civil defence officer",
+          "highlight": false,
+          "changing_work": false,
+          "lines": []
+         }
+        ],
+        "study_fields": "Emergency medical services, police academies, civil defence training",
+        "worth_checking": "S4-CHECK-DAY",
+        "bank_order": 2,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       }
+      ],
+      "more": [
+       {
+        "family_id": "F-AE-4",
+        "family": "Military and national security"
+       },
+       {
+        "family_id": "F-AE-5",
+        "family": "Aviation and maritime operations"
+       },
+       {
+        "family_id": "F-AE-6",
+        "family": "Outdoors, animals and fieldwork"
+       }
+      ],
+      "closest_label": null
+     }
+    ],
+    "no_match": true,
+    "also": null
+   },
+   "S5": {
+    "watch": {
+     "block": "S5-WATCH",
+     "job1": "Professional athlete",
+     "job1_en_fill": "a professional athlete",
+     "job2": "Fitness and wellness coordinator",
+     "job2_en_fill": "a fitness and wellness coordinator"
+    },
+    "try": [
+     "S5-TRY-AE"
+    ],
+    "talk": {
+     "block": "S5-TALK",
+     "family": "Competitive sport and coaching",
+     "family_en_fill": "competitive sport and coaching",
+     "questions": [
+      "S5-YARD-SEC",
+      "S5-YARD-FAM"
+     ]
+    },
+    "ask": {
+     "block": "S5-ASK",
+     "questions": [
+      "S5-SCHOOL-SEC"
+     ]
+    }
+   }
+  }
+ },
+ {
+  "case": "09_flagged",
+  "what_it_tests": "Same as case 01, but the attempt is flagged and flags are live: flag note shows",
+  "answers": {
+   "P1-02": "IE",
+   "P1-07": "RD",
+   "P1-01": "RD",
+   "P1-13": "RD",
+   "P1-04": "PW",
+   "P1-12": "PW",
+   "P1-16": "TS",
+   "P1-08": "TS",
+   "P1-10": "IR",
+   "P1-14": "AE",
+   "P1-11": "RD",
+   "P1-15": "RD",
+   "P1-09": "RD",
+   "P1-05": "RD",
+   "P1-03": "RD",
+   "P1-06": "TS",
+   "P3-01": "MAS",
+   "P3-02": "IMP",
+   "P3-07": "IMP",
+   "P3-08": "SEC",
+   "P3-03": "IMP",
+   "P3-04": "MAS",
+   "P3-09": "MAS",
+   "P3-10": "IMP",
+   "P3-05": "REC",
+   "P3-06": "IMP",
+   "P3-11": "IMP",
+   "P3-12": "MAS",
+   "P3-13": "REC",
+   "P3-14": "MAS",
+   "P2-01": "S",
+   "P2-03": "S",
+   "P2-05": "S",
+   "P2-07": "S",
+   "P2-02": "D",
+   "P2-04": "D",
+   "P2-06": "D",
+   "P2-08": "D",
+   "P4-01": "T",
+   "P4-03": "O",
+   "P4-05": "O",
+   "P4-07": "O",
+   "P4-02": "CH",
+   "P4-04": "CH",
+   "P4-06": "CH",
+   "P4-08": "CH"
+  },
+  "expected_results": {
+   "p1": {
+    "counts": {
+     "RD": 8,
+     "IE": 1,
+     "PW": 2,
+     "EI": 0,
+     "PE": 0,
+     "TS": 3,
+     "IR": 1,
+     "AE": 1
+    },
+    "L": 8,
+    "margin": 5,
+    "clarity": "Clear",
+    "leaders": [
+     "RD"
+    ],
+    "reading": "single",
+    "leading_share_pct": 100
+   },
+   "axes": {
+    "structure": {
+     "counted_option": "S",
+     "count": 4,
+     "lean": "S",
+     "zone": 1
+    },
+    "focus": {
+     "counted_option": "D",
+     "count": 4,
+     "lean": "D",
+     "zone": 1
+    },
+    "team": {
+     "counted_option": "T",
+     "count": 1,
+     "lean": "O",
+     "zone": 3
+    },
+    "setting": {
+     "counted_option": "CH",
+     "count": 4,
+     "lean": "CH",
+     "zone": 3
+    }
+   },
+   "p3": {
+    "counts": {
+     "REC": 2,
+     "IMP": 6,
+     "MAS": 5,
+     "AUT": 0,
+     "SEC": 1,
+     "INC": 0,
+     "FAM": 0,
+     "LIF": 0
+    },
+    "leading": [
+     "IMP",
+     "MAS"
+    ],
+    "no_small_set": false,
+    "others": [
+     "REC",
+     "AUT",
+     "SEC",
+     "INC",
+     "FAM",
+     "LIF"
+    ],
+    "top_two": [
+     "IMP",
+     "MAS"
+    ]
+   }
+  },
+  "expected_report": {
+   "flag_note": "FLAG-NOTE",
+   "section_order": [
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7"
+   ],
+   "S2": {
+    "C": {
+     "curiosities": [
+      {
+       "name": "CUR-RD-NAME",
+       "pull": "CUR-RD-PULL"
+      }
+     ],
+     "lines": [
+      "S2-C-CLEAR"
+     ]
+    },
+    "O": {
+     "bars": [
+      {
+       "head": "S2-O-BAR1-HEAD",
+       "zone": 1
+      },
+      {
+       "head": "S2-O-BAR2-HEAD",
+       "zone": 1
+      }
+     ],
+     "qualifier": "P2-QUALIFIER"
+    },
+    "R": {
+     "no_small_set": false,
+     "cards": [
+      "DRV-IMP-NAME",
+      "DRV-MAS-NAME"
+     ],
+     "others_label": "S2-R-OTHERS",
+     "others": [
+      "DRV-REC-NAME",
+      "DRV-AUT-NAME",
+      "DRV-SEC-NAME",
+      "DRV-INC-NAME",
+      "DRV-FAM-NAME",
+      "DRV-LIF-NAME"
+     ]
+    },
+    "E": {
+     "line": "S2-E-LINE",
+     "bars": [
+      {
+       "head": "S2-E-BAR1-HEAD",
+       "zone": 3
+      },
+      {
+       "head": "S2-E-BAR2-HEAD",
+       "zone": 3
+      }
+     ]
+    }
+   },
+   "S3": {
+    "compact": false,
+    "curiosities": [
+     {
+      "desc": "S3-RD-DESC",
+      "examples": [
+       "S3-RD-EX1",
+       "S3-RD-EX2",
+       "S3-RD-EX3"
+      ]
+     }
+    ],
+    "kai_question": "S3-KAI-Q"
+   },
+   "S4": {
+    "meet": [],
+    "directions": [
+     {
+      "curiosity": "RD",
+      "full": [
+       {
+        "family_id": "F-RD-5",
+        "family": "Data and patterns",
+        "family_score": 1.6667,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-RD-5-J1",
+          "job": "Financial data analyst",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-DEEP",
+             "S4-PH-OWN"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-5-J2",
+          "job": "Statistician",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-DEEP"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-5-J3",
+          "job": "Actuary",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-DEEP"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-5-J4",
+          "job": "Operations research analyst",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Mathematics, statistics, data science, actuarial science",
+        "worth_checking": "S4-CHECK-SETTING",
+        "bank_order": 4,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-RD-4",
+        "family": "Human behaviour and society",
+        "family_score": 1.3333,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-RD-4-J2",
+          "job": "Economist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-DEEP",
+             "S4-PH-OWN"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-4-J3",
+          "job": "Social researcher",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-OWN"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-4-J4",
+          "job": "Market researcher",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-DEEP",
+             "S4-PH-OWN"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-4-J1",
+          "job": "Workplace psychologist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Psychology, economics, sociology, social sciences",
+        "worth_checking": "S4-CHECK-SETTING",
+        "bank_order": 3,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-RD-6",
+        "family": "Investigation and diagnosis",
+        "family_score": 1.3333,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-RD-6-J1",
+          "job": "Forensic scientist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-OWN",
+             "S4-PH-CHANGING"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-6-J3",
+          "job": "Quality scientist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-DEEP",
+             "S4-PH-OWN"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-6-J4",
+          "job": "Archaeologist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-OWN"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-RD-6-J2",
+          "job": "Epidemiologist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-MAS-NAME"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Forensic science, public health, chemistry, archaeology",
+        "worth_checking": "S4-CHECK-STRUCTURE",
+        "bank_order": 5,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       }
+      ],
+      "more": [
+       {
+        "family_id": "F-RD-3",
+        "family": "Physical and earth sciences"
+       },
+       {
+        "family_id": "F-RD-1",
+        "family": "Medicine and health sciences"
+       },
+       {
+        "family_id": "F-RD-2",
+        "family": "Life and environmental sciences"
+       }
+      ],
+      "closest_label": "F-RD-5"
+     }
+    ],
+    "no_match": false,
+    "also": null
+   },
+   "S5": {
+    "watch": {
+     "block": "S5-WATCH",
+     "job1": "Financial data analyst",
+     "job1_en_fill": "a financial data analyst",
+     "job2": "Economist",
+     "job2_en_fill": "an economist"
+    },
+    "try": [
+     "S5-TRY-RD"
+    ],
+    "talk": {
+     "block": "S5-TALK",
+     "family": "Data and patterns",
+     "family_en_fill": "data and patterns",
+     "questions": [
+      "S5-YARD-IMP",
+      "S5-YARD-MAS"
+     ]
+    },
+    "ask": {
+     "block": "S5-ASK",
+     "questions": [
+      "S5-SCHOOL-STRUCTURE",
+      "S5-SCHOOL-IMP"
+     ]
+    }
+   }
+  }
+ },
+ {
+  "case": "12_no_repeat_and_changing_note",
+  "what_it_tests": "A job already shown on an earlier card is hidden on later cards (repeated_jobs_hidden), and the S4-CHANGING note appears once on cards that show a changing_work job (Spec 6.7, 6.8)",
+  "answers": {
+   "P1-01": "IR",
+   "P1-02": "IE",
+   "P1-03": "IE",
+   "P1-04": "PE",
+   "P1-05": "PE",
+   "P1-06": "TS",
+   "P1-07": "IE",
+   "P1-08": "TS",
+   "P1-09": "TS",
+   "P1-10": "PE",
+   "P1-11": "IR",
+   "P1-12": "PE",
+   "P1-13": "TS",
+   "P1-14": "IE",
+   "P1-15": "PW",
+   "P1-16": "TS",
+   "P2-01": "F",
+   "P2-02": "D",
+   "P2-03": "S",
+   "P2-04": "B",
+   "P2-05": "S",
+   "P2-06": "B",
+   "P2-07": "S",
+   "P2-08": "D",
+   "P3-01": "FAM",
+   "P3-02": "INC",
+   "P3-03": "INC",
+   "P3-04": "AUT",
+   "P3-05": "AUT",
+   "P3-06": "IMP",
+   "P3-07": "REC",
+   "P3-08": "INC",
+   "P3-09": "LIF",
+   "P3-10": "IMP",
+   "P3-11": "FAM",
+   "P3-12": "AUT",
+   "P3-13": "AUT",
+   "P3-14": "SEC",
+   "P4-01": "O",
+   "P4-02": "ST",
+   "P4-03": "T",
+   "P4-04": "ST",
+   "P4-05": "T",
+   "P4-06": "CH",
+   "P4-07": "O",
+   "P4-08": "ST"
+  },
+  "expected_results": {
+   "p1": {
+    "counts": {
+     "RD": 0,
+     "IE": 4,
+     "PW": 1,
+     "EI": 0,
+     "PE": 4,
+     "TS": 5,
+     "IR": 2,
+     "AE": 0
+    },
+    "L": 5,
+    "margin": 1,
+    "clarity": "Close",
+    "leaders": [
+     "TS",
+     "IE",
+     "PE"
+    ],
+    "reading": "diverse",
+    "leading_share_pct": 62
+   },
+   "axes": {
+    "structure": {
+     "counted_option": "S",
+     "count": 3,
+     "lean": "S",
+     "zone": 1
+    },
+    "focus": {
+     "counted_option": "D",
+     "count": 2,
+     "lean": "MIX",
+     "zone": 2
+    },
+    "team": {
+     "counted_option": "T",
+     "count": 2,
+     "lean": "MIX",
+     "zone": 2
+    },
+    "setting": {
+     "counted_option": "CH",
+     "count": 1,
+     "lean": "ST",
+     "zone": 1
+    }
+   },
+   "p3": {
+    "counts": {
+     "REC": 1,
+     "IMP": 2,
+     "MAS": 0,
+     "AUT": 4,
+     "SEC": 1,
+     "INC": 3,
+     "FAM": 2,
+     "LIF": 1
+    },
+    "leading": [
+     "AUT",
+     "INC"
+    ],
+    "no_small_set": false,
+    "others": [
+     "REC",
+     "IMP",
+     "MAS",
+     "SEC",
+     "FAM",
+     "LIF"
+    ],
+    "top_two": [
+     "AUT",
+     "INC"
+    ]
+   }
+  },
+  "expected_report": {
+   "flag_note": null,
+   "section_order": [
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7"
+   ],
+   "S2": {
+    "C": {
+     "curiosities": [
+      {
+       "name": "CUR-TS-NAME",
+       "pull": "CUR-TS-PULL"
+      },
+      {
+       "name": "CUR-IE-NAME",
+       "pull": "CUR-IE-PULL"
+      },
+      {
+       "name": "CUR-PE-NAME",
+       "pull": "CUR-PE-PULL"
+      }
+     ],
+     "lines": [
+      "S2-C-CLOSE",
+      "S2-C-DIVERSE"
+     ]
+    },
+    "O": {
+     "bars": [
+      {
+       "head": "S2-O-BAR1-HEAD",
+       "zone": 1
+      },
+      {
+       "head": "S2-O-BAR2-HEAD",
+       "zone": 2
+      }
+     ],
+     "qualifier": "P2-QUALIFIER"
+    },
+    "R": {
+     "no_small_set": false,
+     "cards": [
+      "DRV-AUT-NAME",
+      "DRV-INC-NAME"
+     ],
+     "others_label": "S2-R-OTHERS",
+     "others": [
+      "DRV-REC-NAME",
+      "DRV-IMP-NAME",
+      "DRV-MAS-NAME",
+      "DRV-SEC-NAME",
+      "DRV-FAM-NAME",
+      "DRV-LIF-NAME"
+     ]
+    },
+    "E": {
+     "line": "S2-E-LINE",
+     "bars": [
+      {
+       "head": "S2-E-BAR1-HEAD",
+       "zone": 2
+      },
+      {
+       "head": "S2-E-BAR2-HEAD",
+       "zone": 1
+      }
+     ]
+    }
+   },
+   "S3": {
+    "compact": false,
+    "curiosities": [
+     {
+      "desc": "S3-TS-DESC",
+      "examples": [
+       "S3-TS-EX1",
+       "S3-TS-EX2",
+       "S3-TS-EX3"
+      ]
+     },
+     {
+      "desc": "S3-IE-DESC",
+      "examples": [
+       "S3-IE-EX1",
+       "S3-IE-EX2",
+       "S3-IE-EX3"
+      ]
+     },
+     {
+      "desc": "S3-PE-DESC",
+      "examples": [
+       "S3-PE-EX1",
+       "S3-PE-EX2",
+       "S3-PE-EX3"
+      ]
+     }
+    ],
+    "kai_question": "S3-KAI-Q"
+   },
+   "S4": {
+    "meet": [
+     {
+      "family_id": "F-IE-TS",
+      "family": "Digital design and creative technology",
+      "family_score": 2.1667,
+      "highlighted_jobs": 4,
+      "jobs": [
+       {
+        "job_id": "F-IE-TS-J2",
+        "job": "Game designer",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-WORK",
+          "phrases": [
+           "S4-PH-SET",
+           "S4-PH-STEADY"
+          ]
+         },
+         {
+          "block": "S4-MATCH-DRV",
+          "drivers": [
+           "DRV-AUT-NAME"
+          ]
+         }
+        ]
+       },
+       {
+        "job_id": "F-IE-TS-J3",
+        "job": "Technical artist",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-WORK",
+          "phrases": [
+           "S4-PH-SET"
+          ]
+         },
+         {
+          "block": "S4-MATCH-DRV",
+          "drivers": [
+           "DRV-AUT-NAME"
+          ]
+         }
+        ]
+       },
+       {
+        "job_id": "F-IE-TS-J4",
+        "job": "Interactive web developer",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-WORK",
+          "phrases": [
+           "S4-PH-STEADY"
+          ]
+         },
+         {
+          "block": "S4-MATCH-DRV",
+          "drivers": [
+           "DRV-AUT-NAME"
+          ]
+         }
+        ]
+       },
+       {
+        "job_id": "F-IE-TS-J1",
+        "job": "UX/UI designer",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-WORK",
+          "phrases": [
+           "S4-PH-STEADY"
+          ]
+         }
+        ]
+       }
+      ],
+      "curiosities": [
+       "TS",
+       "IE"
+      ],
+      "meet_line": "S4-MEET-FAR",
+      "repeated_jobs_hidden": [],
+      "changing_note": null
+     },
+     {
+      "family_id": "F-PE-TS",
+      "family": "Business systems and IT governance",
+      "family_score": 1.5,
+      "highlighted_jobs": 3,
+      "jobs": [
+       {
+        "job_id": "F-PE-TS-J3",
+        "job": "Document management specialist",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-WORK",
+          "phrases": [
+           "S4-PH-SET",
+           "S4-PH-STEADY"
+          ]
+         },
+         {
+          "block": "S4-MATCH-DRV",
+          "drivers": [
+           "DRV-INC-NAME"
+          ]
+         }
+        ]
+       },
+       {
+        "job_id": "F-PE-TS-J1",
+        "job": "Information systems manager",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-WORK",
+          "phrases": [
+           "S4-PH-STEADY"
+          ]
+         },
+         {
+          "block": "S4-MATCH-DRV",
+          "drivers": [
+           "DRV-INC-NAME"
+          ]
+         }
+        ]
+       },
+       {
+        "job_id": "F-PE-TS-J2",
+        "job": "IT project manager",
+        "highlight": true,
+        "changing_work": false,
+        "lines": [
+         {
+          "block": "S4-MATCH-DRV",
+          "drivers": [
+           "DRV-AUT-NAME"
+          ]
+         }
+        ]
+       },
+       {
+        "job_id": "F-PE-TS-J4",
+        "job": "Logistics data analyst",
+        "highlight": false,
+        "changing_work": false,
+        "lines": []
+       }
+      ],
+      "curiosities": [
+       "TS",
+       "PE"
+      ],
+      "meet_line": "S4-MEET-CLOSE",
+      "repeated_jobs_hidden": [],
+      "changing_note": null
+     }
+    ],
+    "directions": [
+     {
+      "curiosity": "TS",
+      "full": [
+       {
+        "family_id": "F-TS-1",
+        "family": "Software and app development",
+        "family_score": 2.3333,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-TS-1-J4",
+          "job": "Game developer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-STEADY"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-AUT-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-1-J1",
+          "job": "Software engineer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-STEADY"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-1-J2",
+          "job": "Mobile app developer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-STEADY"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-1-J3",
+          "job": "Web developer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-STEADY"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-AUT-NAME"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Computer science, software engineering",
+        "worth_checking": "S4-CHECK-DAY",
+        "bank_order": 0,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-TS-4",
+        "family": "Networks, cloud and infrastructure",
+        "family_score": 2.1667,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-TS-4-J3",
+          "job": "Systems administrator",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-STEADY"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-4-J1",
+          "job": "Network engineer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-4-J2",
+          "job": "Cloud engineer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-4-J4",
+          "job": "Telecommunications engineer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Computer engineering, information technology, telecommunications",
+        "worth_checking": "S4-CHECK-SETTING",
+        "bank_order": 3,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-TS-5",
+        "family": "Data engineering and analytics",
+        "family_score": 2.1667,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-TS-5-J4",
+          "job": "GIS specialist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-STEADY"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-5-J1",
+          "job": "Data engineer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-STEADY"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-5-J2",
+          "job": "Business intelligence analyst",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-STEADY"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-TS-5-J3",
+          "job": "Database administrator",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-STEADY"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Data science, information systems, computer science",
+        "worth_checking": "S4-CHECK-STRUCTURE",
+        "bank_order": 4,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       }
+      ],
+      "more": [
+       {
+        "family_id": "F-TS-2",
+        "family": "Artificial intelligence"
+       },
+       {
+        "family_id": "F-TS-3",
+        "family": "Cybersecurity"
+       },
+       {
+        "family_id": "F-TS-6",
+        "family": "Smart systems and digital transformation"
+       }
+      ],
+      "closest_label": "F-TS-1"
+     },
+     {
+      "curiosity": "IE",
+      "full": [
+       {
+        "family_id": "F-IE-5",
+        "family": "Music and performance",
+        "family_score": 2.1667,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-IE-5-J4",
+          "job": "Sound designer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-STEADY"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-AUT-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-IE-5-J1",
+          "job": "Musician",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-STEADY"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-IE-5-J2",
+          "job": "Actor",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-IE-5-J3",
+          "job": "Presenter",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Music, performing arts, sound engineering",
+        "worth_checking": "S4-CHECK-SETTING",
+        "bank_order": 4,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-IE-2",
+        "family": "Architecture and spaces",
+        "family_score": 1.6667,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-IE-2-J1",
+          "job": "Architect",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-AUT-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-IE-2-J2",
+          "job": "Landscape architect",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-AUT-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-IE-2-J3",
+          "job": "Architectural visualiser",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-IE-2-J4",
+          "job": "Set and exhibition designer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-STEADY"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Architecture, landscape architecture, urban design",
+        "worth_checking": "S4-CHECK-SETTING",
+        "bank_order": 1,
+        "repeated_jobs_hidden": [],
+        "changing_note": null
+       },
+       {
+        "family_id": "F-IE-1",
+        "family": "Design",
+        "family_score": 1.5,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-IE-1-J3",
+          "job": "Interior designer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-AUT-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-IE-1-J1",
+          "job": "Graphic designer",
+          "highlight": true,
+          "changing_work": true,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-STEADY"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-IE-1-J4",
+          "job": "Product designer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Graphic design, visual communication, interior design, product design",
+        "worth_checking": "S4-CHECK-SETTING",
+        "bank_order": 0,
+        "repeated_jobs_hidden": [
+         "UX/UI designer"
+        ],
+        "changing_note": "S4-CHANGING"
+       }
+      ],
+      "more": [
+       {
+        "family_id": "F-IE-6",
+        "family": "Fashion and crafts"
+       },
+       {
+        "family_id": "F-IE-4",
+        "family": "Film, photography and animation"
+       },
+       {
+        "family_id": "F-IE-3",
+        "family": "Writing and storytelling"
+       }
+      ],
+      "closest_label": "F-IE-5"
+     },
+     {
+      "curiosity": "PE",
+      "full": [
+       {
+        "family_id": "F-PE-1",
+        "family": "Finance and accounting",
+        "family_score": 2.6667,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-PE-1-J1",
+          "job": "Accountant",
+          "highlight": true,
+          "changing_work": true,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-STEADY"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-PE-1-J2",
+          "job": "Financial controller",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-STEADY"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-AUT-NAME",
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-PE-1-J3",
+          "job": "Treasury officer (cash and liquidity)",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-STEADY"
+            ]
+           },
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-AUT-NAME",
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-PE-1-J4",
+          "job": "Tax specialist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-STEADY"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Accounting, finance",
+        "worth_checking": "S4-CHECK-DAY",
+        "bank_order": 0,
+        "repeated_jobs_hidden": [],
+        "changing_note": "S4-CHANGING"
+       },
+       {
+        "family_id": "F-PE-2",
+        "family": "Audit, risk and compliance",
+        "family_score": 1.8333,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-PE-2-J1",
+          "job": "Auditor",
+          "highlight": true,
+          "changing_work": true,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-STEADY"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-PE-2-J4",
+          "job": "Regulatory specialist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET",
+             "S4-PH-STEADY"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-PE-2-J2",
+          "job": "Compliance officer",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-PE-2-J3",
+          "job": "Risk analyst",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Accounting, finance, risk management, law",
+        "worth_checking": "S4-CHECK-SETTING",
+        "bank_order": 1,
+        "repeated_jobs_hidden": [],
+        "changing_note": "S4-CHANGING"
+       },
+       {
+        "family_id": "F-PE-6",
+        "family": "Quality, information and records",
+        "family_score": 1.5,
+        "highlighted_jobs": 4,
+        "jobs": [
+         {
+          "job_id": "F-PE-6-J4",
+          "job": "Archivist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-WORK",
+            "phrases": [
+             "S4-PH-SET"
+            ]
+           }
+          ]
+         },
+         {
+          "job_id": "F-PE-6-J1",
+          "job": "Quality assurance specialist",
+          "highlight": true,
+          "changing_work": false,
+          "lines": [
+           {
+            "block": "S4-MATCH-DRV",
+            "drivers": [
+             "DRV-INC-NAME"
+            ]
+           }
+          ]
+         }
+        ],
+        "study_fields": "Quality management, information management, health informatics",
+        "worth_checking": "S4-CHECK-STRUCTURE",
+        "bank_order": 5,
+        "repeated_jobs_hidden": [
+         "Document management specialist",
+         "IT project manager"
+        ],
+        "changing_note": null
+       }
+      ],
+      "more": [
+       {
+        "family_id": "F-PE-4",
+        "family": "Project and programme management"
+       },
+       {
+        "family_id": "F-PE-3",
+        "family": "Operations, logistics and supply chain"
+       },
+       {
+        "family_id": "F-PE-5",
+        "family": "Government and organisational administration"
+       }
+      ],
+      "closest_label": "F-PE-1"
+     }
+    ],
+    "no_match": false,
+    "also": null
+   },
+   "S5": {
+    "watch": {
+     "block": "S5-WATCH",
+     "job1": "Game designer",
+     "job1_en_fill": "a game designer",
+     "job2": "Document management specialist",
+     "job2_en_fill": "a document management specialist"
+    },
+    "try": [
+     "S5-TRY-TS",
+     "S5-TRY-IE",
+     "S5-TRY-PE"
+    ],
+    "talk": {
+     "block": "S5-TALK",
+     "family": "Digital design and creative technology",
+     "family_en_fill": "digital design and creative technology",
+     "questions": [
+      "S5-YARD-AUT",
+      "S5-YARD-INC"
+     ]
+    },
+    "ask": {
+     "block": "S5-ASK",
+     "questions": [
+      "S5-SCHOOL-STRUCTURE",
+      "S5-SCHOOL-AUT"
+     ]
+    }
+   }
+  }
+ },
+ {
+  "case": "10_shift_example",
+  "what_it_tests": "Meaningful shifts when case 01 is followed by case 02",
+  "previous_answers": {
+   "P1-02": "IE",
+   "P1-07": "RD",
+   "P1-01": "RD",
+   "P1-13": "RD",
+   "P1-04": "PW",
+   "P1-12": "PW",
+   "P1-16": "TS",
+   "P1-08": "TS",
+   "P1-10": "IR",
+   "P1-14": "AE",
+   "P1-11": "RD",
+   "P1-15": "RD",
+   "P1-09": "RD",
+   "P1-05": "RD",
+   "P1-03": "RD",
+   "P1-06": "TS",
+   "P3-01": "MAS",
+   "P3-02": "IMP",
+   "P3-07": "IMP",
+   "P3-08": "SEC",
+   "P3-03": "IMP",
+   "P3-04": "MAS",
+   "P3-09": "MAS",
+   "P3-10": "IMP",
+   "P3-05": "REC",
+   "P3-06": "IMP",
+   "P3-11": "IMP",
+   "P3-12": "MAS",
+   "P3-13": "REC",
+   "P3-14": "MAS",
+   "P2-01": "S",
+   "P2-03": "S",
+   "P2-05": "S",
+   "P2-07": "S",
+   "P2-02": "D",
+   "P2-04": "D",
+   "P2-06": "D",
+   "P2-08": "D",
+   "P4-01": "T",
+   "P4-03": "O",
+   "P4-05": "O",
+   "P4-07": "O",
+   "P4-02": "CH",
+   "P4-04": "CH",
+   "P4-06": "CH",
+   "P4-08": "CH"
+  },
+  "answers": {
+   "P1-02": "PE",
+   "P1-07": "RD",
+   "P1-01": "EI",
+   "P1-13": "PE",
+   "P1-04": "PE",
+   "P1-12": "TS",
+   "P1-16": "TS",
+   "P1-08": "TS",
+   "P1-10": "IR",
+   "P1-14": "EI",
+   "P1-11": "IR",
+   "P1-15": "EI",
+   "P1-09": "TS",
+   "P1-05": "EI",
+   "P1-03": "TS",
+   "P1-06": "TS",
+   "P3-01": "REC",
+   "P3-02": "AUT",
+   "P3-07": "AUT",
+   "P3-08": "INC",
+   "P3-03": "INC",
+   "P3-04": "AUT",
+   "P3-09": "INC",
+   "P3-10": "AUT",
+   "P3-05": "AUT",
+   "P3-06": "INC",
+   "P3-11": "LIF",
+   "P3-12": "INC",
+   "P3-13": "INC",
+   "P3-14": "LIF",
+   "P2-01": "F",
+   "P2-03": "F",
+   "P2-05": "F",
+   "P2-07": "F",
+   "P2-02": "D",
+   "P2-04": "B",
+   "P2-06": "B",
+   "P2-08": "B",
+   "P4-01": "T",
+   "P4-03": "T",
+   "P4-05": "T",
+   "P4-07": "O",
+   "P4-02": "ST",
+   "P4-04": "ST",
+   "P4-06": "ST",
+   "P4-08": "ST"
+  },
+  "expected_shifts": [
+   {
+    "pillar": 1,
+    "from": [
+     "RD"
+    ],
+    "to": [
+     "TS"
+    ]
+   },
+   {
+    "pillar": 3,
+    "from": [
+     "IMP",
+     "MAS"
+    ],
+    "to": [
+     "AUT",
+     "INC"
+    ]
+   },
+   {
+    "pillar": 2,
+    "axis": "structure",
+    "from_zone": 1,
+    "to_zone": 3
+   },
+   {
+    "pillar": 2,
+    "axis": "focus",
+    "from_zone": 1,
+    "to_zone": 3
+   },
+   {
+    "pillar": 4,
+    "axis": "team",
+    "from_zone": 3,
+    "to_zone": 1
+   },
+   {
+    "pillar": 4,
+    "axis": "setting",
+    "from_zone": 3,
+    "to_zone": 1
+   }
+  ]
+ },
+ {
+  "case": "11_flag_example",
+  "what_it_tests": "Rushed and same-position answering in Part 1 only",
+  "timings_ms": {
+   "P1-01": 1500,
+   "P1-02": 1500,
+   "P1-03": 1500,
+   "P1-04": 1500,
+   "P1-05": 1500,
+   "P1-06": 1500,
+   "P1-07": 1500,
+   "P1-08": 1500,
+   "P1-09": 1500,
+   "P1-10": 1500,
+   "P1-11": 1500,
+   "P1-12": 1500,
+   "P1-13": 1500,
+   "P1-14": 1500,
+   "P1-15": 1500,
+   "P1-16": 1500,
+   "P2-01": 6000,
+   "P2-02": 6000,
+   "P2-03": 6000,
+   "P2-04": 6000,
+   "P2-05": 6000,
+   "P2-06": 6000,
+   "P2-07": 6000,
+   "P2-08": 6000,
+   "P3-01": 6000,
+   "P3-02": 6000,
+   "P3-03": 6000,
+   "P3-04": 6000,
+   "P3-05": 6000,
+   "P3-06": 6000,
+   "P3-07": 6000,
+   "P3-08": 6000,
+   "P3-09": 6000,
+   "P3-10": 6000,
+   "P3-11": 6000,
+   "P3-12": 6000,
+   "P3-13": 6000,
+   "P3-14": 6000,
+   "P4-01": 6000,
+   "P4-02": 6000,
+   "P4-03": 6000,
+   "P4-04": 6000,
+   "P4-05": 6000,
+   "P4-06": 6000,
+   "P4-07": 6000,
+   "P4-08": 6000
+  },
+  "positions": {
+   "P1-01": 1,
+   "P1-02": 1,
+   "P1-03": 1,
+   "P1-04": 1,
+   "P1-05": 1,
+   "P1-06": 1,
+   "P1-07": 1,
+   "P1-08": 1,
+   "P1-09": 1,
+   "P1-10": 1,
+   "P1-11": 1,
+   "P1-12": 1,
+   "P1-13": 1,
+   "P1-14": 1,
+   "P1-15": 1,
+   "P1-16": 1,
+   "P2-01": 1,
+   "P2-02": 2,
+   "P2-03": 1,
+   "P2-04": 2,
+   "P2-05": 1,
+   "P2-06": 2,
+   "P2-07": 1,
+   "P2-08": 2,
+   "P3-01": 1,
+   "P3-02": 2,
+   "P3-03": 1,
+   "P3-04": 2,
+   "P3-05": 1,
+   "P3-06": 2,
+   "P3-07": 1,
+   "P3-08": 2,
+   "P3-09": 1,
+   "P3-10": 2,
+   "P3-11": 1,
+   "P3-12": 2,
+   "P3-13": 1,
+   "P3-14": 2,
+   "P4-01": 1,
+   "P4-02": 2,
+   "P4-03": 1,
+   "P4-04": 2,
+   "P4-05": 1,
+   "P4-06": 2,
+   "P4-07": 1,
+   "P4-08": 2
+  },
+  "expected_flags": {
+   "P1": {
+    "rushed": true,
+    "same_position": true,
+    "median_ms": 1500.0,
+    "max_same_position_share": 1.0,
+    "flagged": true
+   },
+   "P2": {
+    "rushed": false,
+    "same_position": false,
+    "median_ms": 6000.0,
+    "max_same_position_share": 0.5,
+    "flagged": false
+   },
+   "P3": {
+    "rushed": false,
+    "same_position": false,
+    "median_ms": 6000.0,
+    "max_same_position_share": 0.5,
+    "flagged": false
+   },
+   "P4": {
+    "rushed": false,
+    "same_position": false,
+    "median_ms": 6000.0,
+    "max_same_position_share": 0.5,
+    "flagged": false
+   }
+  }
+ }
+]
