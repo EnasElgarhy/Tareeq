@@ -29,6 +29,9 @@ name: Deploy to App Runner (reusable)
 #   vars.APP_RUNNER_SERVICE_ARN          - the target service for this app+env
 #   vars.NEXT_PUBLIC_CORE_V2_LIVE        - "true" switches students onto CORE 2.0 (unset = off)
 #   vars.NEXT_PUBLIC_CORE_V2_PREVIEW     - "true" allows /compass?preview=core-v2 (unset = off)
+#   vars.NEXT_PUBLIC_SITE_URL, NEXT_PUBLIC_POSTHOG_*, NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+#   NEXT_PUBLIC_REPORT_LIST_PRICE_MINOR / _OFFER_PERCENT / _CURRENCY
+#                                        - consumer build-time values (unset = app defaults)
 #
 # All other runtime secrets (SUPABASE_SERVICE_ROLE_KEY, ANTHROPIC_API_KEY,
 # ELEVENLABS_API_KEY, GEMINI_API_KEY, DATABASE_URL, ...) are NOT handled
@@ -120,6 +123,14 @@ jobs:
             --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY="${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" \
             --build-arg NEXT_PUBLIC_CORE_V2_LIVE="${{ vars.NEXT_PUBLIC_CORE_V2_LIVE }}" \
             --build-arg NEXT_PUBLIC_CORE_V2_PREVIEW="${{ vars.NEXT_PUBLIC_CORE_V2_PREVIEW }}" \
+            --build-arg NEXT_PUBLIC_SITE_URL="${{ vars.NEXT_PUBLIC_SITE_URL }}" \
+            --build-arg NEXT_PUBLIC_POSTHOG_ENABLED="${{ vars.NEXT_PUBLIC_POSTHOG_ENABLED }}" \
+            --build-arg NEXT_PUBLIC_POSTHOG_KEY="${{ vars.NEXT_PUBLIC_POSTHOG_KEY }}" \
+            --build-arg NEXT_PUBLIC_POSTHOG_HOST="${{ vars.NEXT_PUBLIC_POSTHOG_HOST }}" \
+            --build-arg NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="${{ vars.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}" \
+            --build-arg NEXT_PUBLIC_REPORT_LIST_PRICE_MINOR="${{ vars.NEXT_PUBLIC_REPORT_LIST_PRICE_MINOR }}" \
+            --build-arg NEXT_PUBLIC_REPORT_OFFER_PERCENT="${{ vars.NEXT_PUBLIC_REPORT_OFFER_PERCENT }}" \
+            --build-arg NEXT_PUBLIC_REPORT_CURRENCY="${{ vars.NEXT_PUBLIC_REPORT_CURRENCY }}" \
             -t "$REGISTRY/$REPOSITORY:$IMAGE_TAG" \
             -t "$REGISTRY/$REPOSITORY:${{ inputs.environment }}" \
             .
