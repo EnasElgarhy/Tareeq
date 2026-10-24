@@ -1,0 +1,1309 @@
+{
+ "name": "CORE report wording",
+ "date": "2026-10-02",
+ "languages": [
+  "en",
+  "ar"
+ ],
+ "notes": [
+  "Text in [brackets] is filled in from the student's results.",
+  "Which block shows when: Developer Specification section 6."
+ ],
+ "blocks": [
+  {
+   "block_id": "FLAG-NOTE",
+   "section": "0 · Flag note (only when an attempt is flagged; top of report)",
+   "purpose": "Shown above Section 1 for flagged attempts",
+   "text_en": "Some answers were given faster than it usually takes to read all the options, so parts of this result may not fully reflect you. You can take the assessment again free of charge.",
+   "text_ar": "أُجيب عن بعض الأسئلة بسرعة أكبر من الوقت اللازم عادةً لقراءة جميع الخيارات، لذلك قد لا تعكس بعض أجزاء هذه النتيجة صورتك بالكامل. يمكن إعادة التقييم مجانًا."
+  },
+  {
+   "block_id": "S1-TITLE",
+   "section": "1 · Before you read",
+   "purpose": "Section title",
+   "text_en": "Before you read",
+   "text_ar": "قبل القراءة"
+  },
+  {
+   "block_id": "S1-B1",
+   "section": "1 · Before you read",
+   "purpose": "Bullet",
+   "text_en": "This report shows where your curiosity points, how you like to work, and what motivates you most, based on your answers today.",
+   "text_ar": "يعرض هذا التقرير إلى أين يتّجه فضولك، وطريقتك المفضّلة في العمل، وأكثر ما يحفّزك، بناءً على إجاباتك اليوم."
+  },
+  {
+   "block_id": "S1-B2",
+   "section": "1 · Before you read",
+   "purpose": "Bullet",
+   "text_en": "It's not a test score, and it doesn't decide anything for you.",
+   "text_ar": "ليس درجة في اختبار، ولا يقرّر شيئًا نيابةً عنك."
+  },
+  {
+   "block_id": "S1-B3",
+   "section": "1 · Before you read",
+   "purpose": "Bullet",
+   "text_en": "You know yourself best. Keep what feels right, and question what doesn't.",
+   "text_ar": "لا أحد يعرفك أكثر منك. ما يبدو صحيحًا يستحق الانتباه، وما لا يبدو كذلك يستحق التساؤل."
+  },
+  {
+   "block_id": "S1-B4",
+   "section": "1 · Before you read",
+   "purpose": "Bullet",
+   "text_en": "It suggests directions to explore, not one single answer.",
+   "text_ar": "يقترح توجّهات للاستكشاف، لا إجابة واحدة."
+  },
+  {
+   "block_id": "S1-B5",
+   "section": "1 · Before you read",
+   "purpose": "Bullet",
+   "text_en": "Interests change as you grow. That's normal.",
+   "text_ar": "الاهتمامات تتغيّر مع النمو، وهذا أمر طبيعي."
+  },
+  {
+   "block_id": "S1-B6",
+   "section": "1 · Before you read",
+   "purpose": "Bullet",
+   "text_en": "Talk it through with Kai at any point.",
+   "text_ar": "الحديث مع كاي متاح في أي وقت."
+  },
+  {
+   "block_id": "S1-KEY-TITLE",
+   "section": "1 · Before you read",
+   "purpose": "Heading of the four-part key",
+   "text_en": "Your report follows the four letters of CORE:",
+   "text_ar": "يتناول تقريرك أربعة جوانب:"
+  },
+  {
+   "block_id": "S1-KEY-C",
+   "section": "1 · Before you read",
+   "purpose": "Key line (question word in bold)",
+   "text_en": "C · Curiosities: what sparks your curiosity",
+   "text_ar": "الفضول: ما الذي يثير فضولك"
+  },
+  {
+   "block_id": "S1-KEY-O",
+   "section": "1 · Before you read",
+   "purpose": "Key line (question word in bold)",
+   "text_en": "O · Operating style: how you like to work",
+   "text_ar": "أسلوب العمل: كيف تحبّ أن تعمل"
+  },
+  {
+   "block_id": "S1-KEY-R",
+   "section": "1 · Before you read",
+   "purpose": "Key line (question word in bold)",
+   "text_en": "R · Rewards: why one path appeals more than another",
+   "text_ar": "المحفّزات: لماذا يجذبك مسار أكثر من غيره"
+  },
+  {
+   "block_id": "S1-KEY-E",
+   "section": "1 · Before you read",
+   "purpose": "Key line (question word in bold)",
+   "text_en": "E · Ecosystem: where, meaning your work setting",
+   "text_ar": "البيئة: أين، أي أجواء العمل"
+  },
+  {
+   "block_id": "S2-TITLE",
+   "section": "2 · At a glance",
+   "purpose": "Section title",
+   "text_en": "Your CORE picture at a glance",
+   "text_ar": "لمحة عن صورتك في تقييم كور"
+  },
+  {
+   "block_id": "S2-C-TITLE",
+   "section": "2 · At a glance",
+   "purpose": "C card title",
+   "text_en": "What sparks your curiosity",
+   "text_ar": "ما يثير فضولك"
+  },
+  {
+   "block_id": "S2-C-CLEAR",
+   "section": "2 · At a glance",
+   "purpose": "Direction Clarity: Clear",
+   "text_en": "One direction stands well ahead.",
+   "text_ar": "توجّه واحد يتقدّم نتائجك بوضوح."
+  },
+  {
+   "block_id": "S2-C-LEANING",
+   "section": "2 · At a glance",
+   "purpose": "Direction Clarity: Leaning",
+   "text_en": "One direction is ahead, with others still in play.",
+   "text_ar": "توجّه واحد يتقدّم اهتماماتك، مع بقاء توجّهات أخرى حاضرة."
+  },
+  {
+   "block_id": "S2-C-CLOSE",
+   "section": "2 · At a glance",
+   "purpose": "Direction Clarity: Close",
+   "text_en": "Two or more directions are nearly level.",
+   "text_ar": "توجّهان أو أكثر متقاربان جدًا."
+  },
+  {
+   "block_id": "S2-C-OPEN",
+   "section": "2 · At a glance",
+   "purpose": "Direction Clarity: Open",
+   "text_en": "You're curious about many things, and that's a strength at your age. Exploring with Kai and trying things out will help your direction become clearer, and taking CORE again later can show how your interests are taking shape.",
+   "text_ar": "فضولك واسع ومتنوّع، وهذه نقطة قوة في هذه المرحلة من العمر. الاستكشاف مع كاي وتجربة الأشياء بنفسك سيساعدان على أن يصبح توجّهك أوضح، كما يمكن لإعادة تقييم كور لاحقًا أن تُظهر كيف تتشكّل اهتماماتك."
+  },
+  {
+   "block_id": "S2-C-COHERENT",
+   "section": "2 · At a glance",
+   "purpose": "Two or more leading curiosities, close on the circle",
+   "text_en": "They connect into one direction.",
+   "text_ar": "تلتقي في توجّه واحد مترابط."
+  },
+  {
+   "block_id": "S2-C-DIVERSE",
+   "section": "2 · At a glance",
+   "purpose": "Two or more leading curiosities, far apart",
+   "text_en": "You have diverse interests. Few people combine these, and some fields need exactly that.",
+   "text_ar": "اهتماماتك متنوّعة. قليلون يجمعون بينها، وبعض المجالات تحتاج إلى هذا المزيج تحديدًا."
+  },
+  {
+   "block_id": "CUR-RD-NAME",
+   "section": "2 · At a glance",
+   "purpose": "Curiosity name",
+   "text_en": "Research & Discovery",
+   "text_ar": "البحث والاكتشاف"
+  },
+  {
+   "block_id": "CUR-RD-PULL",
+   "section": "2 · At a glance",
+   "purpose": "Curiosity one-line pull",
+   "text_en": "Finding out why things happen",
+   "text_ar": "معرفة سبب حدوث الأشياء"
+  },
+  {
+   "block_id": "CUR-IE-NAME",
+   "section": "2 · At a glance",
+   "purpose": "Curiosity name",
+   "text_en": "Imagination & Expression",
+   "text_ar": "الخيال والتعبير"
+  },
+  {
+   "block_id": "CUR-IE-PULL",
+   "section": "2 · At a glance",
+   "purpose": "Curiosity one-line pull",
+   "text_en": "Creating something new that carries meaning",
+   "text_ar": "ابتكار شيء جديد يحمل معنى"
+  },
+  {
+   "block_id": "CUR-PW-NAME",
+   "section": "2 · At a glance",
+   "purpose": "Curiosity name",
+   "text_en": "People & Wellbeing",
+   "text_ar": "خدمة الناس ودعمهم"
+  },
+  {
+   "block_id": "CUR-PW-PULL",
+   "section": "2 · At a glance",
+   "purpose": "Curiosity one-line pull",
+   "text_en": "Understanding people and helping them",
+   "text_ar": "فهم الناس ومساعدتهم"
+  },
+  {
+   "block_id": "CUR-EI-NAME",
+   "section": "2 · At a glance",
+   "purpose": "Curiosity name",
+   "text_en": "Enterprise & Influence",
+   "text_ar": "الريادة والتأثير"
+  },
+  {
+   "block_id": "CUR-EI-PULL",
+   "section": "2 · At a glance",
+   "purpose": "Curiosity one-line pull",
+   "text_en": "Making things happen through people",
+   "text_ar": "تحقيق الأمور من خلال الناس"
+  },
+  {
+   "block_id": "CUR-PE-NAME",
+   "section": "2 · At a glance",
+   "purpose": "Curiosity name",
+   "text_en": "Planning & Execution",
+   "text_ar": "التخطيط والتنفيذ"
+  },
+  {
+   "block_id": "CUR-PE-PULL",
+   "section": "2 · At a glance",
+   "purpose": "Curiosity one-line pull",
+   "text_en": "Making things run properly, start to finish",
+   "text_ar": "جعل الأمور تسير بإتقان من البداية إلى النهاية"
+  },
+  {
+   "block_id": "CUR-TS-NAME",
+   "section": "2 · At a glance",
+   "purpose": "Curiosity name",
+   "text_en": "Technology & Systems",
+   "text_ar": "التكنولوجيا والأنظمة"
+  },
+  {
+   "block_id": "CUR-TS-PULL",
+   "section": "2 · At a glance",
+   "purpose": "Curiosity one-line pull",
+   "text_en": "Building digital systems that work",
+   "text_ar": "بناء أنظمة رقمية تعمل"
+  },
+  {
+   "block_id": "CUR-IR-NAME",
+   "section": "2 · At a glance",
+   "purpose": "Curiosity name",
+   "text_en": "Invention & Repair",
+   "text_ar": "الابتكار والتصنيع"
+  },
+  {
+   "block_id": "CUR-IR-PULL",
+   "section": "2 · At a glance",
+   "purpose": "Curiosity one-line pull",
+   "text_en": "Making physical things work",
+   "text_ar": "صنع الأشياء وتشغيلها بيديك"
+  },
+  {
+   "block_id": "CUR-AE-NAME",
+   "section": "2 · At a glance",
+   "purpose": "Curiosity name",
+   "text_en": "Action & Endurance",
+   "text_ar": "الحركة والميدان"
+  },
+  {
+   "block_id": "CUR-AE-PULL",
+   "section": "2 · At a glance",
+   "purpose": "Curiosity one-line pull",
+   "text_en": "Being active and physical in the real world",
+   "text_ar": "النشاط البدني والحركة في الميدان"
+  },
+  {
+   "block_id": "S2-O-TITLE",
+   "section": "2 · At a glance",
+   "purpose": "O card title",
+   "text_en": "How you like to work",
+   "text_ar": "طريقتك في العمل"
+  },
+  {
+   "block_id": "BAR-MID",
+   "section": "2 · At a glance",
+   "purpose": "Middle zone of every bar (O and E cards)",
+   "text_en": "A mix of both",
+   "text_ar": "مزيج من الاثنين"
+  },
+  {
+   "block_id": "S2-O-BAR1-HEAD",
+   "section": "2 · At a glance",
+   "purpose": "O bar 1 heading",
+   "text_en": "How set out you like the work",
+   "text_ar": "مدى تفضيلك لأن تكون المهام محدّدة"
+  },
+  {
+   "block_id": "S2-O-BAR1-A",
+   "section": "2 · At a glance",
+   "purpose": "O bar 1, structured end",
+   "text_en": "Steps and expectations set out for you",
+   "text_ar": "خطوات وتوقّعات محدّدة لك مسبقًا"
+  },
+  {
+   "block_id": "S2-O-BAR1-B",
+   "section": "2 · At a glance",
+   "purpose": "O bar 1, flexible end",
+   "text_en": "Room to find your own way",
+   "text_ar": "مساحة لإيجاد طريقتك الخاصة"
+  },
+  {
+   "block_id": "S2-O-BAR2-HEAD",
+   "section": "2 · At a glance",
+   "purpose": "O bar 2 heading",
+   "text_en": "Going deep or covering a range",
+   "text_ar": "التعمّق أم التنوّع في العمل"
+  },
+  {
+   "block_id": "S2-O-BAR2-A",
+   "section": "2 · At a glance",
+   "purpose": "O bar 2, depth end",
+   "text_en": "Going deep into one thing until you know it well",
+   "text_ar": "التعمّق في موضوع واحد حتى إتقانه"
+  },
+  {
+   "block_id": "S2-O-BAR2-B",
+   "section": "2 · At a glance",
+   "purpose": "O bar 2, breadth end",
+   "text_en": "Understanding many topics and how they connect",
+   "text_ar": "الإلمام بمواضيع متعددة والربط بينها"
+  },
+  {
+   "block_id": "P2-QUALIFIER",
+   "section": "2 · At a glance",
+   "purpose": "Mandatory Pillar 2 qualifier (wherever Pillar 2 results appear)",
+   "text_en": "This describes how you answered, not how you'll do.",
+   "text_ar": "يصف هذا طريقة إجابتك، لا مستوى أدائك."
+  },
+  {
+   "block_id": "S2-R-TITLE",
+   "section": "2 · At a glance",
+   "purpose": "R card title",
+   "text_en": "What motivates you most",
+   "text_ar": "أكثر ما يحفّزك"
+  },
+  {
+   "block_id": "S2-R-OTHERS",
+   "section": "2 · At a glance",
+   "purpose": "Label above non-leading drivers",
+   "text_en": "Also part of the picture",
+   "text_ar": "أيضًا جزء من الصورة"
+  },
+  {
+   "block_id": "S2-R-NOSET",
+   "section": "2 · At a glance",
+   "purpose": "When no small set of drivers stood out",
+   "text_en": "Many things matter to you. Kai can help you see which come first.",
+   "text_ar": "أمور كثيرة تهمّك، ويمكن لكاي مساعدتك على ترتيبها."
+  },
+  {
+   "block_id": "DRV-REC-NAME",
+   "section": "2 · At a glance",
+   "purpose": "Driver name (fixed display order)",
+   "text_en": "Being looked up to for what you do",
+   "text_ar": "تقدير الناس لما تقوم به"
+  },
+  {
+   "block_id": "DRV-IMP-NAME",
+   "section": "2 · At a glance",
+   "purpose": "Driver name (fixed display order)",
+   "text_en": "Making a difference for others and your community",
+   "text_ar": "إحداث فرق للآخرين ولمجتمعك"
+  },
+  {
+   "block_id": "DRV-MAS-NAME",
+   "section": "2 · At a glance",
+   "purpose": "Driver name (fixed display order)",
+   "text_en": "Getting really good at something difficult",
+   "text_ar": "إتقان شيء صعب"
+  },
+  {
+   "block_id": "DRV-AUT-NAME",
+   "section": "2 · At a glance",
+   "purpose": "Driver name (fixed display order)",
+   "text_en": "Being in charge of your own work",
+   "text_ar": "التحكّم في عملك بنفسك"
+  },
+  {
+   "block_id": "DRV-SEC-NAME",
+   "section": "2 · At a glance",
+   "purpose": "Driver name (fixed display order)",
+   "text_en": "A steady, secure career",
+   "text_ar": "وظيفة مستقرة وآمنة"
+  },
+  {
+   "block_id": "DRV-INC-NAME",
+   "section": "2 · At a glance",
+   "purpose": "Driver name (fixed display order)",
+   "text_en": "High earnings",
+   "text_ar": "دخل مرتفع"
+  },
+  {
+   "block_id": "DRV-FAM-NAME",
+   "section": "2 · At a glance",
+   "purpose": "Driver name (fixed display order)",
+   "text_en": "A path your family is proud of",
+   "text_ar": "طريق تفخر به عائلتك"
+  },
+  {
+   "block_id": "DRV-LIF-NAME",
+   "section": "2 · At a glance",
+   "purpose": "Driver name (fixed display order)",
+   "text_en": "A life beyond work",
+   "text_ar": "وقت لحياتك خارج العمل"
+  },
+  {
+   "block_id": "S2-E-TITLE",
+   "section": "2 · At a glance",
+   "purpose": "E card title",
+   "text_en": "Your work setting",
+   "text_ar": "أجواء العمل"
+  },
+  {
+   "block_id": "S2-E-LINE",
+   "section": "2 · At a glance",
+   "purpose": "E card explanatory line, under the title",
+   "text_en": "Whether you'd rather work alongside others or on your own, and how much you'd like your days to change.",
+   "text_ar": "إن كنت تفضّل العمل مع الآخرين أو بمفردك، وإلى أيّ مدى تحبّ أن تتغيّر أيام عملك."
+  },
+  {
+   "block_id": "S2-E-BAR1-HEAD",
+   "section": "2 · At a glance",
+   "purpose": "E bar 1 heading",
+   "text_en": "Team or individual work",
+   "text_ar": "العمل الجماعي أو الفردي"
+  },
+  {
+   "block_id": "S2-E-BAR1-A",
+   "section": "2 · At a glance",
+   "purpose": "E bar 1, together end",
+   "text_en": "Working side by side with others",
+   "text_ar": "العمل جنبًا إلى جنب مع الآخرين"
+  },
+  {
+   "block_id": "S2-E-BAR1-B",
+   "section": "2 · At a glance",
+   "purpose": "E bar 1, own end",
+   "text_en": "Working on your own",
+   "text_ar": "العمل بشكل فردي"
+  },
+  {
+   "block_id": "S2-E-BAR2-HEAD",
+   "section": "2 · At a glance",
+   "purpose": "E bar 2 heading",
+   "text_en": "A steady or changing work setting",
+   "text_ar": "بيئة عمل ثابتة أو متغيرة"
+  },
+  {
+   "block_id": "S2-E-BAR2-A",
+   "section": "2 · At a glance",
+   "purpose": "E bar 2, steady end",
+   "text_en": "A familiar place and rhythm",
+   "text_ar": "مكان وإيقاع مألوفان"
+  },
+  {
+   "block_id": "S2-E-BAR2-B",
+   "section": "2 · At a glance",
+   "purpose": "E bar 2, changing end",
+   "text_en": "Something different every day",
+   "text_ar": "تنوّع وتجدّد كل يوم"
+  },
+  {
+   "block_id": "S2-NEXT",
+   "section": "2 · At a glance",
+   "purpose": "Bottom-of-page link (arrow points right in English, left in Arabic)",
+   "text_en": "Next: where this could lead →",
+   "text_ar": "التالي: إلى أين قد يقودك ذلك ←"
+  },
+  {
+   "block_id": "S3-TITLE",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Section title",
+   "text_en": "What sparks your curiosity",
+   "text_ar": "ما يثير فضولك"
+  },
+  {
+   "block_id": "S3-INTRO",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Intro",
+   "text_en": "Your answers suggest your curiosity leans toward the following. Each one describes what draws your interest and drives your curiosity, not a school subject.",
+   "text_ar": "تشير إجاباتك إلى أن فضولك يميل نحو ما يلي. وكل منها يعبّر عمّا يشدّ اهتمامك ويحرّك فضولك، لا عن مادة دراسية بعينها."
+  },
+  {
+   "block_id": "S3-NOTICE-LABEL",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Label before the three examples",
+   "text_en": "You might notice it when:",
+   "text_ar": "قد يظهر ذلك عندما:"
+  },
+  {
+   "block_id": "S3-RD-DESC",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Description under the curiosity name",
+   "text_en": "You want to know why. The answer itself is the reward: understanding how something works, what causes it, and what the evidence says.",
+   "text_ar": "الرغبة في معرفة السبب. الإجابة نفسها هي المكافأة: فهم كيف يعمل الشيء، وما الذي يسبّبه، وماذا تقول الأدلة."
+  },
+  {
+   "block_id": "S3-RD-EX1",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Example (bullet)",
+   "text_en": "you keep asking \"but why?\" after the lesson ends",
+   "text_ar": "يبقى سؤال «لماذا؟» حاضرًا بعد انتهاء الدرس"
+  },
+  {
+   "block_id": "S3-RD-EX2",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Example (bullet)",
+   "text_en": "you look things up just to understand them",
+   "text_ar": "يكون البحث عن المعلومة لمجرد فهمها"
+  },
+  {
+   "block_id": "S3-RD-EX3",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Example (bullet)",
+   "text_en": "a puzzle or mystery stays on your mind",
+   "text_ar": "يشغل لغز أو مسألة تفكيرك"
+  },
+  {
+   "block_id": "S3-IE-DESC",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Description under the curiosity name",
+   "text_en": "You want to make something that didn't exist before, with your own style, meaning or feeling in it. The making itself is the reward.",
+   "text_ar": "الرغبة في صنع شيء لم يكن موجودًا من قبل، يحمل أسلوبك أو معنى أو شعورًا خاصًا. الإبداع نفسه هو المكافأة."
+  },
+  {
+   "block_id": "S3-IE-EX1",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Example (bullet)",
+   "text_en": "you add your own touch to things, even when no one asked",
+   "text_ar": "تكون لك لمستك الخاصة في الأشياء، حتى حين لا يُطلب ذلك"
+  },
+  {
+   "block_id": "S3-IE-EX2",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Example (bullet)",
+   "text_en": "you picture how something could look, sound or read differently",
+   "text_ar": "يحضر في ذهنك كيف يمكن أن يبدو الشيء أو يُسمع أو يُقرأ بشكل مختلف"
+  },
+  {
+   "block_id": "S3-IE-EX3",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Example (bullet)",
+   "text_en": "time flies when you're drawing, writing, filming or designing",
+   "text_ar": "يمرّ الوقت سريعًا أثناء الرسم أو الكتابة أو التصوير أو التصميم"
+  },
+  {
+   "block_id": "S3-PW-DESC",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Description under the curiosity name",
+   "text_en": "People themselves interest you: how they think and feel, and how to help them through things. Seeing someone better off is the reward.",
+   "text_ar": "الناس أنفسهم محور اهتمامك: كيف يفكّرون ويشعرون، وكيف يمكن مساعدتهم. رؤية شخص في حال أفضل هي المكافأة."
+  },
+  {
+   "block_id": "S3-PW-EX1",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Example (bullet)",
+   "text_en": "friends come to you when something is wrong",
+   "text_ar": "يلجأ إليك أصدقاؤك حين يواجهون مشكلة"
+  },
+  {
+   "block_id": "S3-PW-EX2",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Example (bullet)",
+   "text_en": "you notice when someone is upset or left out",
+   "text_ar": "يلفت انتباهك من يشعر بالضيق أو بأنه مُستبعَد"
+  },
+  {
+   "block_id": "S3-PW-EX3",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Example (bullet)",
+   "text_en": "you'd rather help someone learn than do it for them",
+   "text_ar": "تكون مساعدة أحد على التعلّم أحبّ إليك من إنجاز الأمر عنه"
+  },
+  {
+   "block_id": "S3-EI-DESC",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Description under the curiosity name",
+   "text_en": "You like getting things moving: starting something, making a case, getting a group behind an idea. Seeing the result happen is the reward.",
+   "text_ar": "تحريك الأمور هو ما يشدّك: بدء شيء جديد، أو الدفاع عن فكرة، أو جمع الناس حول هدف. رؤية النتيجة تتحقّق هي المكافأة."
+  },
+  {
+   "block_id": "S3-EI-EX1",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Example (bullet)",
+   "text_en": "the plan comes from you and others get on board",
+   "text_ar": "تأتي الخطة منك ويقتنع بها الآخرون"
+  },
+  {
+   "block_id": "S3-EI-EX2",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Example (bullet)",
+   "text_en": "you enjoy persuading or negotiating",
+   "text_ar": "يكون الإقناع أو التفاوض ممتعًا بالنسبة إليك"
+  },
+  {
+   "block_id": "S3-EI-EX3",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Example (bullet)",
+   "text_en": "turning an idea into something real gives you a buzz",
+   "text_ar": "يمنحك تحويل فكرة إلى واقع شعورًا بالإنجاز"
+  },
+  {
+   "block_id": "S3-PE-DESC",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Description under the curiosity name",
+   "text_en": "You like things organised, accurate and carried through to the end. Setting up the plan and seeing it run smoothly is the reward.",
+   "text_ar": "التنظيم والدقة وإتمام العمل حتى نهايته. وضع الخطة ورؤيتها تسير بسلاسة هو المكافأة."
+  },
+  {
+   "block_id": "S3-PE-EX1",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Example (bullet)",
+   "text_en": "you're usually the one keeping track of who does what and when",
+   "text_ar": "تكون متابعة المهام ومواعيدها مسؤوليتك عادةً"
+  },
+  {
+   "block_id": "S3-PE-EX2",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Example (bullet)",
+   "text_en": "mistakes and loose ends stay on your mind until they're fixed",
+   "text_ar": "تبقى الأخطاء والأمور المعلّقة في بالك حتى تُحلّ"
+  },
+  {
+   "block_id": "S3-PE-EX3",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Example (bullet)",
+   "text_en": "a clear list or a tidy plan feels satisfying",
+   "text_ar": "تمنحك قائمة واضحة أو خطة مرتّبة شعورًا بالرضا"
+  },
+  {
+   "block_id": "S3-TS-DESC",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Description under the curiosity name",
+   "text_en": "Digital systems pull you in: building them, connecting them, and making them do something useful with information. Seeing it work is the reward.",
+   "text_ar": "الأنظمة الرقمية هي ما يشدّك: بناؤها وربطها، وجعلها تستفيد من المعلومات لتقديم شيء مفيد. رؤيتها تعمل هي المكافأة."
+  },
+  {
+   "block_id": "S3-TS-EX1",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Example (bullet)",
+   "text_en": "you wonder how an app or a game was built",
+   "text_ar": "يثير فضولك كيف صُمّم تطبيق أو لعبة"
+  },
+  {
+   "block_id": "S3-TS-EX2",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Example (bullet)",
+   "text_en": "others ask you to set up or fix their devices",
+   "text_ar": "يلجأ إليك الآخرون لإعداد أجهزتهم أو إصلاحها"
+  },
+  {
+   "block_id": "S3-TS-EX3",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Example (bullet)",
+   "text_en": "you think \"there should be an app for this\", and want to make it",
+   "text_ar": "تخطر لك فكرة «لماذا لا يوجد تطبيق لهذا؟» مع رغبة في صنعه"
+  },
+  {
+   "block_id": "S3-IR-DESC",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Description under the curiosity name",
+   "text_en": "The physical mechanism itself pulls you in. Getting something to work in your hands is the reward.",
+   "text_ar": "الآلية المادية نفسها هي ما يشدّك. أن يعمل الشيء بين يديك هو المكافأة."
+  },
+  {
+   "block_id": "S3-IR-EX1",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Example (bullet)",
+   "text_en": "you take things apart to see what's inside",
+   "text_ar": "يكون تفكيك الأشياء لمعرفة ما بداخلها ممتعًا"
+  },
+  {
+   "block_id": "S3-IR-EX2",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Example (bullet)",
+   "text_en": "you'd rather build it than read about it",
+   "text_ar": "يكون بناء الشيء أحبّ إليك من القراءة عنه"
+  },
+  {
+   "block_id": "S3-IR-EX3",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Example (bullet)",
+   "text_en": "fixing something broken feels satisfying",
+   "text_ar": "يمنحك إصلاح شيء معطّل شعورًا بالرضا"
+  },
+  {
+   "block_id": "S3-AE-DESC",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Description under the curiosity name",
+   "text_en": "Using your body in the real world pulls you in: training, moving, being outdoors, and rising to a physical challenge. Doing it is the reward.",
+   "text_ar": "استخدام جسدك في العالم الحقيقي هو ما يشدّك: التدريب والحركة والوجود في الهواء الطلق ومواجهة التحديات البدنية. القيام بالشيء نفسه هو المكافأة."
+  },
+  {
+   "block_id": "S3-AE-EX1",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Example (bullet)",
+   "text_en": "you feel at your best when you're moving",
+   "text_ar": "تكون في أفضل حالاتك وأنت في حركة"
+  },
+  {
+   "block_id": "S3-AE-EX2",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Example (bullet)",
+   "text_en": "you enjoy testing your stamina or learning a physical skill",
+   "text_ar": "يكون اختبار قدرتك على التحمّل أو تعلّم مهارة بدنية ممتعًا"
+  },
+  {
+   "block_id": "S3-AE-EX3",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Example (bullet)",
+   "text_en": "you'd rather be out in the field than at a desk",
+   "text_ar": "يكون الميدان أحبّ إليك من المكتب"
+  },
+  {
+   "block_id": "KAI-BUTTON",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Label on every Kai button (opens Kai with the section question)",
+   "text_en": "Discuss this with Kai",
+   "text_ar": "مناقشة هذا مع كاي"
+  },
+  {
+   "block_id": "S3-KAI-Q",
+   "section": "3 · What sparks your curiosity",
+   "purpose": "Question passed to Kai",
+   "text_en": "Which of these curiosities feels most like you, and which feels least?",
+   "text_ar": "أيّ مما سبق هو الأقرب إليك، وأيّه الأبعد؟"
+  },
+  {
+   "block_id": "S4-TITLE",
+   "section": "4 · What this means for you",
+   "purpose": "Section title",
+   "text_en": "What this means for you: where your curiosities could lead",
+   "text_ar": "ماذا يعني ذلك لك: إلى أين قد يقودك فضولك"
+  },
+  {
+   "block_id": "S4-INTRO",
+   "section": "4 · What this means for you",
+   "purpose": "Intro",
+   "text_en": "These are the job families your curiosities point to, starting with those closest to your answers about how you like to work, what motivates you, and your work setting. They're areas to explore, not a list to choose from.",
+   "text_ar": "هذه مجموعات المهن التي يشير إليها فضولك، بدءًا بالأقرب إلى إجاباتك عن طريقتك المفضّلة في العمل، وما يحفّزك، وأجواء العمل التي تفضّلها. إنها مجالات للاستكشاف، لا قائمة للاختيار منها."
+  },
+  {
+   "block_id": "S4-MEET-TITLE",
+   "section": "4 · What this means for you",
+   "purpose": "Combination family heading",
+   "text_en": "Where your curiosities meet",
+   "text_ar": "حيث تلتقي اهتماماتك"
+  },
+  {
+   "block_id": "S4-MEET-CLOSE",
+   "section": "4 · What this means for you",
+   "purpose": "Combination line, close curiosities",
+   "text_en": "These fields bring your curiosities together.",
+   "text_ar": "تجمع هذه المجالات بين اهتماماتك."
+  },
+  {
+   "block_id": "S4-MEET-FAR",
+   "section": "4 · What this means for you",
+   "purpose": "Combination line, far-apart curiosities",
+   "text_en": "Few people combine these curiosities, and these fields need exactly that.",
+   "text_ar": "قليلون يجمعون بين هذه الاهتمامات، وهذه المجالات تحتاج إلى هذا المزيج تحديدًا."
+  },
+  {
+   "block_id": "S4-CLOSEST",
+   "section": "4 · What this means for you",
+   "purpose": "Label on the first family of each curiosity",
+   "text_en": "Closest to your answers",
+   "text_ar": "الأقرب إلى إجاباتك"
+  },
+  {
+   "block_id": "S4-MATCH-WORK",
+   "section": "4 · What this means for you",
+   "purpose": "Line under a job that matches the student's work style (followed by phrases)",
+   "text_en": "Matches how you like to work. This work usually offers:",
+   "text_ar": "يتوافق مع طريقتك في العمل. يوفّر هذا العمل عادةً:"
+  },
+  {
+   "block_id": "S4-MATCH-DRV",
+   "section": "4 · What this means for you",
+   "purpose": "Line under a job that offers a leading driver (followed by driver names)",
+   "text_en": "Often offers what motivates you:",
+   "text_ar": "يوفّر غالبًا ما يحفّزك:"
+  },
+  {
+   "block_id": "S4-PH-SET",
+   "section": "4 · What this means for you",
+   "purpose": "Work-style phrase (joined with ·)",
+   "text_en": "clear steps and expectations",
+   "text_ar": "خطوات وتوقّعات واضحة"
+  },
+  {
+   "block_id": "S4-PH-OPEN",
+   "section": "4 · What this means for you",
+   "purpose": "Work-style phrase (joined with ·)",
+   "text_en": "room to find your own way",
+   "text_ar": "مساحة لإيجاد طريقتك الخاصة"
+  },
+  {
+   "block_id": "S4-PH-DEEP",
+   "section": "4 · What this means for you",
+   "purpose": "Work-style phrase (joined with ·)",
+   "text_en": "a deep focus on one topic",
+   "text_ar": "تركيز عميق على موضوع واحد"
+  },
+  {
+   "block_id": "S4-PH-BROAD",
+   "section": "4 · What this means for you",
+   "purpose": "Work-style phrase (joined with ·)",
+   "text_en": "a wide range of topics",
+   "text_ar": "تنوّع واسع في المواضيع"
+  },
+  {
+   "block_id": "S4-PH-TOGETHER",
+   "section": "4 · What this means for you",
+   "purpose": "Work-style phrase (joined with ·)",
+   "text_en": "close teamwork",
+   "text_ar": "عمل جماعي وثيق"
+  },
+  {
+   "block_id": "S4-PH-OWN",
+   "section": "4 · What this means for you",
+   "purpose": "Work-style phrase (joined with ·)",
+   "text_en": "full responsibility for your own piece",
+   "text_ar": "مسؤولية كاملة عن جزء محدّد"
+  },
+  {
+   "block_id": "S4-PH-STEADY",
+   "section": "4 · What this means for you",
+   "purpose": "Work-style phrase (joined with ·)",
+   "text_en": "a familiar place and rhythm",
+   "text_ar": "مكان وإيقاع مألوفان"
+  },
+  {
+   "block_id": "S4-PH-CHANGING",
+   "section": "4 · What this means for you",
+   "purpose": "Work-style phrase (joined with ·)",
+   "text_en": "something different most days",
+   "text_ar": "شيء مختلف في معظم الأيام"
+  },
+  {
+   "block_id": "S4-STUDY-LABEL",
+   "section": "4 · What this means for you",
+   "purpose": "Label",
+   "text_en": "Study fields:",
+   "text_ar": "مجالات الدراسة:"
+  },
+  {
+   "block_id": "S4-CHECK-LABEL",
+   "section": "4 · What this means for you",
+   "purpose": "Label",
+   "text_en": "Worth checking:",
+   "text_ar": "يستحق التحقق:"
+  },
+  {
+   "block_id": "S4-CHECK-STRUCTURE",
+   "section": "4 · What this means for you",
+   "purpose": "Worth-checking question (one per family; rule in Scoring/Developer docs)",
+   "text_en": "How much of the work is set out for you, and how much do you decide yourself?",
+   "text_ar": "ما مقدار العمل المحدّد مسبقًا، وما مقدار ما يُترك لقرارك؟"
+  },
+  {
+   "block_id": "S4-CHECK-FOCUS",
+   "section": "4 · What this means for you",
+   "purpose": "Worth-checking question (one per family; rule in Scoring/Developer docs)",
+   "text_en": "Does it focus deeply on one topic, or draw on many?",
+   "text_ar": "هل يركّز على موضوع واحد بعمق، أم يجمع بين مواضيع متعددة؟"
+  },
+  {
+   "block_id": "S4-CHECK-TEAM",
+   "section": "4 · What this means for you",
+   "purpose": "Worth-checking question (one per family; rule in Scoring/Developer docs)",
+   "text_en": "How much of the work is done with others?",
+   "text_ar": "ما مقدار العمل الذي يُنجَز مع الآخرين؟"
+  },
+  {
+   "block_id": "S4-CHECK-SETTING",
+   "section": "4 · What this means for you",
+   "purpose": "Worth-checking question (one per family; rule in Scoring/Developer docs)",
+   "text_en": "How much do the place and the people change from day to day?",
+   "text_ar": "إلى أي حد يتغيّر المكان والأشخاص من يوم لآخر؟"
+  },
+  {
+   "block_id": "S4-CHECK-DAY",
+   "section": "4 · What this means for you",
+   "purpose": "Worth-checking question (one per family; rule in Scoring/Developer docs)",
+   "text_en": "What does a typical day look like, according to someone who does it?",
+   "text_ar": "كيف يبدو يوم العمل النموذجي، بحسب من يمارس هذه المهنة؟"
+  },
+  {
+   "block_id": "S4-MORE-LABEL",
+   "section": "4 · What this means for you",
+   "purpose": "Label before collapsed families",
+   "text_en": "More families in this direction:",
+   "text_ar": "مجموعات أخرى في هذا التوجّه:"
+  },
+  {
+   "block_id": "S4-REQ-NOTE",
+   "section": "4 · What this means for you",
+   "purpose": "Entry requirements note",
+   "text_en": "Study fields are the usual routes. Entry requirements differ by country, school system and university, so check them with your school counsellor and on university websites.",
+   "text_ar": "مجالات الدراسة هذه هي المسارات المعتادة. وتختلف شروط القبول بحسب البلد والنظام التعليمي والجامعة، لذا يُنصح بالتحقق منها مع المرشد الأكاديمي في المدرسة وعبر مواقع الجامعات."
+  },
+  {
+   "block_id": "S4-NOMATCH",
+   "section": "4 · What this means for you",
+   "purpose": "When no job matches",
+   "text_en": "Your answers combined both sides in how you like to work, so these families are shown in their usual order. Every one is worth a look.",
+   "text_ar": "جمعت إجاباتك عن طريقة العمل بين الجانبين، لذلك تظهر هذه المجموعات بترتيبها المعتاد. وكل منها يستحق الاطلاع."
+  },
+  {
+   "block_id": "S4-ALSO",
+   "section": "4 · What this means for you",
+   "purpose": "Open results only: names leading curiosities that have no meeting card ([curiosities] joined: A and B / A, B and C)",
+   "text_en": "Your answers also show you're curious about [curiosities]. Kai can help you explore where these could lead too.",
+   "text_ar": "تُظهر إجاباتك أيضًا فضولك نحو [أسماء الجوانب]. يمكنك التحدث إلى كاي لمساعدتك على استكشاف إلى أين قد تقودك هذه أيضًا."
+  },
+  {
+   "block_id": "S4-CHANGING",
+   "section": "4 · What this means for you",
+   "purpose": "Shown once at the bottom of a family card when the card shows at least one job flagged changing_work = true; the flagged jobs carry a small marker next to their name (agreed 17 Oct 2026)",
+   "text_en": "AI and automation are taking over some of this work, so fewer of these jobs are expected in future. The skills behind it still matter. Ask Kai what this could mean for you.",
+   "text_ar": "يتولّى الذكاء الاصطناعي والأتمتة جزءًا من هذا العمل، لذلك يُتوقّع أن يقلّ عدد هذه الوظائف مستقبلًا. لكن المهارات التي يقوم عليها لا تزال مهمة. اسأل كاي عمّا قد يعنيه ذلك بالنسبة إليك."
+  },
+  {
+   "block_id": "S4-KAI-Q",
+   "section": "4 · What this means for you",
+   "purpose": "Question passed to Kai",
+   "text_en": "Which family would you like to know more about? Ask what a typical day looks like, or how it measures up against what motivates you.",
+   "text_ar": "أيّ مجموعة تودّ معرفة المزيد عنها؟ يمكن السؤال عن شكل يوم العمل فيها، أو عن مدى توافقها مع ما يحفّزك."
+  },
+  {
+   "block_id": "S5-TITLE",
+   "section": "5 · Your next steps",
+   "purpose": "Section title",
+   "text_en": "Your next steps: how to explore further",
+   "text_ar": "خطواتك التالية للاستكشاف"
+  },
+  {
+   "block_id": "S5-INTRO",
+   "section": "5 · Your next steps",
+   "purpose": "Intro",
+   "text_en": "The best way to know whether a direction suits you is to get a taste of it and ask the right people.",
+   "text_ar": "أفضل طريقة لمعرفة ما إذا كان توجّه ما يناسبك هي تجربته وطرح الأسئلة الصحيحة على الأشخاص المناسبين."
+  },
+  {
+   "block_id": "S5-WATCH",
+   "section": "5 · Your next steps",
+   "purpose": "Step 1 ([job 1] and [job 2] filled in with a/an + job name, e.g. 'an economist': the best-matching jobs of the first two families shown in Section 4)",
+   "text_en": "Watch: search for \"a day in the life of [job 1]\" and \"a day in the life of [job 2]\". Notice what you'd enjoy and what you wouldn't in each, and how they compare.",
+   "text_ar": "المشاهدة: البحث عن «يوم في حياة [المهنة 1]» و«يوم في حياة [المهنة 2]»، وملاحظة ما قد يعجبك وما قد لا يعجبك في كلٍّ منهما، وكيف تختلفان."
+  },
+  {
+   "block_id": "S5-TRY-LABEL",
+   "section": "5 · Your next steps",
+   "purpose": "Step 2 label",
+   "text_en": "Try:",
+   "text_ar": "التجربة:"
+  },
+  {
+   "block_id": "S5-TRY-RD",
+   "section": "5 · Your next steps",
+   "purpose": "Try activity for this curiosity",
+   "text_en": "Pick a question that puzzles you and spend a week finding the answer.",
+   "text_ar": "اختيار سؤال يحيّرك وقضاء أسبوع في البحث عن إجابته."
+  },
+  {
+   "block_id": "S5-TRY-IE",
+   "section": "5 · Your next steps",
+   "purpose": "Try activity for this curiosity",
+   "text_en": "Make something and share it: a short video, a design or a piece of writing.",
+   "text_ar": "صنع شيء ومشاركته: فيديو قصير أو تصميم أو نص."
+  },
+  {
+   "block_id": "S5-TRY-PW",
+   "section": "5 · Your next steps",
+   "purpose": "Try activity for this curiosity",
+   "text_en": "Volunteer, or help someone learn something, and notice how it feels.",
+   "text_ar": "التطوّع، أو مساعدة شخص على تعلّم شيء، وملاحظة شعورك أثناء ذلك."
+  },
+  {
+   "block_id": "S5-TRY-EI",
+   "section": "5 · Your next steps",
+   "purpose": "Try activity for this curiosity",
+   "text_en": "Start something small: a stall at a school market, a club, or a fundraising idea.",
+   "text_ar": "بدء مشروع صغير: ركن بيع في سوق المدرسة، أو نادٍ، أو فكرة لجمع التبرعات."
+  },
+  {
+   "block_id": "S5-TRY-PE",
+   "section": "5 · Your next steps",
+   "purpose": "Try activity for this curiosity",
+   "text_en": "Take charge of organising something real: a trip, an event or a family occasion.",
+   "text_ar": "تولّي تنظيم شيء حقيقي: رحلة أو فعالية أو مناسبة عائلية."
+  },
+  {
+   "block_id": "S5-TRY-TS",
+   "section": "5 · Your next steps",
+   "purpose": "Try activity for this curiosity",
+   "text_en": "Build something digital, like a simple website, app or game, with a free beginner course.",
+   "text_ar": "بناء شيء رقمي، مثل موقع أو تطبيق أو لعبة بسيطة، عبر دورة مجانية للمبتدئين."
+  },
+  {
+   "block_id": "S5-TRY-IR",
+   "section": "5 · Your next steps",
+   "purpose": "Try activity for this curiosity",
+   "text_en": "Build or fix something with your hands: a model, a gadget, or something broken at home.",
+   "text_ar": "بناء شيء أو إصلاحه بيديك: نموذج أو جهاز صغير أو شيء معطّل في البيت."
+  },
+  {
+   "block_id": "S5-TRY-AE",
+   "section": "5 · Your next steps",
+   "purpose": "Try activity for this curiosity",
+   "text_en": "Join a training programme or an outdoor activity you haven't tried before.",
+   "text_ar": "الانضمام إلى برنامج تدريبي أو نشاط خارجي لم تجرّبه من قبل."
+  },
+  {
+   "block_id": "S5-TALK",
+   "section": "5 · Your next steps",
+   "purpose": "Step 3 ([family] filled in; followed by yardstick questions)",
+   "text_en": "Talk: find someone who works in [family] and ask them:",
+   "text_ar": "الحديث: التحدّث مع شخص يعمل في [المجموعة] وسؤاله:"
+  },
+  {
+   "block_id": "S5-TALK-DAY",
+   "section": "5 · Your next steps",
+   "purpose": "Talk question when no small set of motivators stood out (1 of 2)",
+   "text_en": "What does a typical day look like for you?",
+   "text_ar": "كيف يبدو يوم عملك المعتاد؟"
+  },
+  {
+   "block_id": "S5-TALK-TRADEOFF",
+   "section": "5 · Your next steps",
+   "purpose": "Talk question when no small set of motivators stood out (2 of 2)",
+   "text_en": "What does this work give you, and what does it ask you to give up?",
+   "text_ar": "ماذا يمنحك هذا العمل، وماذا يتطلّب منك أن تتنازل عنه؟"
+  },
+  {
+   "block_id": "S5-YARD-REC",
+   "section": "5 · Your next steps",
+   "purpose": "Yardstick question (top two drivers)",
+   "text_en": "How is this work seen and respected where you want to live?",
+   "text_ar": "كيف يُنظر إلى هذا العمل ويُقدَّر في المكان الذي تخطّط للعيش فيه؟"
+  },
+  {
+   "block_id": "S5-YARD-IMP",
+   "section": "5 · Your next steps",
+   "purpose": "Yardstick question (top two drivers)",
+   "text_en": "Who does this work help, and would you see the difference?",
+   "text_ar": "من يستفيد من هذا العمل، وهل يمكن رؤية الأثر؟"
+  },
+  {
+   "block_id": "S5-YARD-MAS",
+   "section": "5 · Your next steps",
+   "purpose": "Yardstick question (top two drivers)",
+   "text_en": "How long does it take to get really good at it, and does it keep challenging you?",
+   "text_ar": "كم يستغرق إتقانه، وهل يبقى فيه تحدٍّ مستمر؟"
+  },
+  {
+   "block_id": "S5-YARD-AUT",
+   "section": "5 · Your next steps",
+   "purpose": "Yardstick question (top two drivers)",
+   "text_en": "How much say would you have over how and when you work?",
+   "text_ar": "ما مقدار التحكّم في طريقة العمل وتوقيته؟"
+  },
+  {
+   "block_id": "S5-YARD-SEC",
+   "section": "5 · Your next steps",
+   "purpose": "Yardstick question (top two drivers)",
+   "text_en": "How stable are these jobs in your country, in both government and private sectors?",
+   "text_ar": "ما مدى استقرار هذه الوظائف في بلدك، في القطاعين الحكومي والخاص؟"
+  },
+  {
+   "block_id": "S5-YARD-INC",
+   "section": "5 · Your next steps",
+   "purpose": "Yardstick question (top two drivers)",
+   "text_en": "What do people earn starting out and later on, where you want to work?",
+   "text_ar": "كم يكسب العاملون فيه في البداية ولاحقًا، في المكان الذي تخطّط للعمل فيه؟"
+  },
+  {
+   "block_id": "S5-YARD-FAM",
+   "section": "5 · Your next steps",
+   "purpose": "Yardstick question (top two drivers)",
+   "text_en": "What does your family know about this path, and what do they hope for you?",
+   "text_ar": "ماذا تعرف عائلتك عن هذا المسار، وما الذي تأمله لك؟"
+  },
+  {
+   "block_id": "S5-YARD-LIF",
+   "section": "5 · Your next steps",
+   "purpose": "Yardstick question (top two drivers)",
+   "text_en": "What are the usual hours, and how much time is left for life outside work?",
+   "text_ar": "ما ساعات العمل المعتادة، وكم يبقى من وقت لحياتك خارج العمل؟"
+  },
+  {
+   "block_id": "S5-ASK",
+   "section": "5 · Your next steps",
+   "purpose": "Step 4 (followed by one work-style + one driver question)",
+   "text_en": "Ask schools and universities: at an open day or a school visit, ask staff or students:",
+   "text_ar": "السؤال في المدارس والجامعات: في يوم مفتوح أو زيارة مدرسية، سؤال العاملين أو الطلاب:"
+  },
+  {
+   "block_id": "S5-SCHOOL-STRUCTURE",
+   "section": "5 · Your next steps",
+   "purpose": "School/university question",
+   "text_en": "How much of the course is set out step by step, and how much is independent work?",
+   "text_ar": "ما مقدار المحتوى المنظّم خطوة بخطوة في البرنامج، وما مقدار العمل المستقل؟"
+  },
+  {
+   "block_id": "S5-SCHOOL-FOCUS",
+   "section": "5 · Your next steps",
+   "purpose": "School/university question",
+   "text_en": "Can you specialise early, or does the programme cover many subjects first?",
+   "text_ar": "هل يمكن التخصّص مبكرًا، أم يغطي البرنامج مواد متعددة أولًا؟"
+  },
+  {
+   "block_id": "S5-SCHOOL-TEAM",
+   "section": "5 · Your next steps",
+   "purpose": "School/university question",
+   "text_en": "How much of the work is done in groups, and how much on your own?",
+   "text_ar": "ما مقدار العمل الجماعي في البرنامج، وما مقدار العمل الفردي؟"
+  },
+  {
+   "block_id": "S5-SCHOOL-SETTING",
+   "section": "5 · Your next steps",
+   "purpose": "School/university question",
+   "text_en": "Are there placements, field trips or work in different places?",
+   "text_ar": "هل يتضمّن البرنامج تدريبًا عمليًا أو رحلات ميدانية أو عملًا في أماكن مختلفة؟"
+  },
+  {
+   "block_id": "S5-SCHOOL-REC",
+   "section": "5 · Your next steps",
+   "purpose": "School/university question",
+   "text_en": "How is this programme recognised, and by whom?",
+   "text_ar": "ما مدى الاعتراف بهذا البرنامج، ومن يعترف به؟"
+  },
+  {
+   "block_id": "S5-SCHOOL-IMP",
+   "section": "5 · Your next steps",
+   "purpose": "School/university question",
+   "text_en": "Are there projects or placements that help the community?",
+   "text_ar": "هل توجد مشاريع أو تدريبات تخدم المجتمع؟"
+  },
+  {
+   "block_id": "S5-SCHOOL-MAS",
+   "section": "5 · Your next steps",
+   "purpose": "School/university question",
+   "text_en": "Can you go on to specialise or do further study?",
+   "text_ar": "هل توجد إمكانية للتخصّص أو مواصلة الدراسات العليا لاحقًا؟"
+  },
+  {
+   "block_id": "S5-SCHOOL-AUT",
+   "section": "5 · Your next steps",
+   "purpose": "School/university question",
+   "text_en": "How much choice do students have over subjects and projects?",
+   "text_ar": "ما مقدار حرية الطلاب في اختيار المواد والمشاريع؟"
+  },
+  {
+   "block_id": "S5-SCHOOL-SEC",
+   "section": "5 · Your next steps",
+   "purpose": "School/university question",
+   "text_en": "What do graduates go on to do, and how quickly do they find work?",
+   "text_ar": "ماذا يعمل الخريجون، وكم يستغرقون للعثور على عمل؟"
+  },
+  {
+   "block_id": "S5-SCHOOL-INC",
+   "section": "5 · Your next steps",
+   "purpose": "School/university question",
+   "text_en": "What do graduates typically earn in their first jobs?",
+   "text_ar": "كم يكسب الخريجون عادةً في وظائفهم الأولى؟"
+  },
+  {
+   "block_id": "S5-SCHOOL-FAM",
+   "section": "5 · Your next steps",
+   "purpose": "School/university question",
+   "text_en": "Can your family join an open day or meet an adviser?",
+   "text_ar": "هل يمكن لعائلتك حضور يوم مفتوح أو مقابلة مرشد أكاديمي؟"
+  },
+  {
+   "block_id": "S5-SCHOOL-LIF",
+   "section": "5 · Your next steps",
+   "purpose": "School/university question",
+   "text_en": "What's the weekly workload like, and how much free time do students usually have?",
+   "text_ar": "ما حجم الدراسة الأسبوعي، وكم يبقى للطلاب عادةً من وقت فراغ؟"
+  },
+  {
+   "block_id": "S5-KAI-Q",
+   "section": "5 · Your next steps",
+   "purpose": "Question passed to Kai",
+   "text_en": "Before a visit, Kai can help you prepare your questions. Afterwards, tell Kai what you tried and what you noticed.",
+   "text_ar": "قبل الزيارة، يمكن لكاي مساعدتك على إعداد أسئلتك. وبعدها، يمكن مشاركة كاي بما جرّبته وما لاحظته."
+  },
+  {
+   "block_id": "S6-TITLE",
+   "section": "6 · For parents",
+   "purpose": "Section title",
+   "text_en": "For parents",
+   "text_ar": "لأولياء الأمور"
+  },
+  {
+   "block_id": "S6-B1",
+   "section": "6 · For parents",
+   "purpose": "Bullet",
+   "text_en": "This report describes your child's answers today: what sparks their curiosity and what motivates them. It isn't a measure of ability or a prediction.",
+   "text_ar": "يصف هذا التقرير إجابات ابنكم أو ابنتكم اليوم: ما يثير فضوله وما يحفّزه. وهو ليس مقياسًا للقدرات ولا تنبّؤًا بالمستقبل."
+  },
+  {
+   "block_id": "S6-B2",
+   "section": "6 · For parents",
+   "purpose": "Bullet",
+   "text_en": "Your interest helps most when you explore together. Ask what feels right to them, rather than what they should choose.",
+   "text_ar": "يكون دعمكم أكثر فائدة عند الاستكشاف معًا، بالسؤال عمّا يشعر أنه مناسب له، لا عمّا يجب أن يختاره."
+  },
+  {
+   "block_id": "S6-B3",
+   "section": "6 · For parents",
+   "purpose": "Bullet",
+   "text_en": "Take the questions in \"Your next steps\" to open days and school meetings together.",
+   "text_ar": "يمكن اصطحاب الأسئلة الواردة في «خطواتك التالية» إلى الأيام المفتوحة واللقاءات المدرسية معًا."
+  },
+  {
+   "block_id": "S6-B4",
+   "section": "6 · For parents",
+   "purpose": "Bullet",
+   "text_en": "If your hopes for your child differ from what they're curious about, talk it through. Both views matter, and Kai can help your child prepare for that conversation.",
+   "text_ar": "إذا اختلفت آمالكم عمّا يثير فضوله، فالحوار هو الطريق: كلا الرأيين مهم، ويمكن لكاي مساعدته على الاستعداد لهذا الحديث."
+  },
+  {
+   "block_id": "S6-B5",
+   "section": "6 · For parents",
+   "purpose": "Bullet",
+   "text_en": "Entry requirements differ by country and university. Your child's school counsellor is the best person to confirm them.",
+   "text_ar": "تختلف شروط القبول بحسب البلد والجامعة، والمرشد الأكاديمي في المدرسة هو الأقدر على تأكيدها."
+  },
+  {
+   "block_id": "S7-TITLE",
+   "section": "7 · About this report",
+   "purpose": "Section title",
+   "text_en": "About this report: what it is and what it isn't",
+   "text_ar": "عن هذا التقرير: ما يقدّمه وما لا يقدّمه"
+  },
+  {
+   "block_id": "S7-IS-LABEL",
+   "section": "7 · About this report",
+   "purpose": "Label",
+   "text_en": "It is:",
+   "text_ar": "هذا التقرير:"
+  },
+  {
+   "block_id": "S7-IS-1",
+   "section": "7 · About this report",
+   "purpose": "Bullet",
+   "text_en": "a description of your answers today, to help you explore",
+   "text_ar": "وصف لإجاباتك اليوم، لمساعدتك على الاستكشاف"
+  },
+  {
+   "block_id": "S7-IS-2",
+   "section": "7 · About this report",
+   "purpose": "Bullet",
+   "text_en": "based on well-known ideas about interests and work, with job suggestions drawn from international job data",
+   "text_ar": "قائم على أفكار معروفة عن الاهتمامات والعمل، مع اقتراحات مهنية مستمدة من بيانات دولية عن المهن"
+  },
+  {
+   "block_id": "S7-ISNT-LABEL",
+   "section": "7 · About this report",
+   "purpose": "Label",
+   "text_en": "It isn't:",
+   "text_ar": "وهذا التقرير ليس:"
+  },
+  {
+   "block_id": "S7-ISNT-1",
+   "section": "7 · About this report",
+   "purpose": "Bullet",
+   "text_en": "a test of ability, intelligence or personality",
+   "text_ar": "اختبارًا للقدرات أو الذكاء أو الشخصية"
+  },
+  {
+   "block_id": "S7-ISNT-2",
+   "section": "7 · About this report",
+   "purpose": "Bullet",
+   "text_en": "a prediction of success, grades or how happy you'll be",
+   "text_ar": "تنبّؤًا بالنجاح أو الدرجات أو مدى رضاك مستقبلًا"
+  },
+  {
+   "block_id": "S7-ISNT-3",
+   "section": "7 · About this report",
+   "purpose": "Bullet",
+   "text_en": "a comparison with other students",
+   "text_ar": "مقارنة بالطلاب الآخرين"
+  },
+  {
+   "block_id": "S7-ISNT-4",
+   "section": "7 · About this report",
+   "purpose": "Bullet",
+   "text_en": "a decision. The choice is always yours.",
+   "text_ar": "قرارًا. فالاختيار يبقى دائمًا لك."
+  },
+  {
+   "block_id": "S7-CREDIT",
+   "section": "7 · About this report",
+   "purpose": "Data credit (required by the O*NET licence)",
+   "text_en": "Job information is adapted from O*NET (U.S. Department of Labor), used under a CC BY 4.0 licence, and from international occupation and wage data. Jobs, pay and requirements can differ where you live.",
+   "text_ar": "معلومات المهن مقتبسة من قاعدة بيانات أونت التابعة لوزارة العمل الأمريكية، وفق ترخيص المشاع الإبداعي، ومن بيانات دولية عن المهن والأجور. وقد تختلف المهن والأجور وشروط القبول في بلدك."
+  }
+ ]
+}
