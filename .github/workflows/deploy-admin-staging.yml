@@ -1,12 +1,17 @@
 name: Deploy admin — staging
 
 on:
+  workflow_dispatch: {}
   push:
     branches: [staging]
     paths:
       - "apps/admin/**"
       - ".github/workflows/deploy-admin-staging.yml"
       - ".github/workflows/_deploy-apprunner.yml"
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   deploy:

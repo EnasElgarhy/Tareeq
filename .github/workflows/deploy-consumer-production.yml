@@ -1,12 +1,17 @@
 name: Deploy consumer — production
 
 on:
+  workflow_dispatch: {}
   push:
     branches: [main]
     paths:
       - "apps/consumer/**"
       - ".github/workflows/deploy-consumer-production.yml"
       - ".github/workflows/_deploy-apprunner.yml"
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   deploy:

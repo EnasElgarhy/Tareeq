@@ -1,12 +1,17 @@
 name: Deploy admin — production
 
 on:
+  workflow_dispatch: {}
   push:
     branches: [main]
     paths:
       - "apps/admin/**"
       - ".github/workflows/deploy-admin-production.yml"
       - ".github/workflows/_deploy-apprunner.yml"
+
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   deploy:
