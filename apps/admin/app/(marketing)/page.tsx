@@ -1,12 +1,9 @@
 import { redirect } from "next/navigation";
 
 /**
- * Root route → Meet Kai.
- *
- * The v1 marketing landing page is retired. First-time visitors land
- * directly on the redesigned ceremony entry (`/intro` — Meet Kai) so
- * the assessment flow is the only experience on production.
+ * Root route → the admin panel. This app serves admins only; students use
+ * the consumer app, so the root never opens the assessment here.
  */
 export default function RootPage(): never {
-  redirect("/intro");
+  redirect("/admin");
 }
