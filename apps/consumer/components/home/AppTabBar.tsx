@@ -9,7 +9,7 @@ import { NAV_ITEMS, isNavItemActive } from "@/components/home/nav-items";
  * The app's bottom tab bar — the spine of the post-result experience on
  * phone/tablet. Sits pinned to the bottom of the shell. The active tab wears
  * the user's cluster accent (threaded via `--app-accent`) for ownership.
- * Hidden at `lg:` in favor of `AppSidebarNav`.
+ * Hidden at `lg:` in favor of `AppTopNav`.
  */
 export function AppTabBar() {
   const { t } = useLocale();

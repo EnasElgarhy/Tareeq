@@ -31,7 +31,7 @@ import { GraduationCap, MagnifyingGlass, Robot } from "@phosphor-icons/react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import type { ReportModel } from "@/lib/core-v2/report-model";
 import type { FamilyView, JobView, MeetCard } from "@/lib/core-v2/section4";
-import type { AxisCode, CuriosityCode } from "@/lib/core-v2/types";
+import { AXES, type AxisCode, type CuriosityCode } from "@/lib/core-v2/types";
 import {
   CuriosityRing,
   DeckHeader,
@@ -209,12 +209,53 @@ function MatchLine({
   );
 }
 
+/**
+ * S4-MATCH-WORK (spec §6.4): one line, then the phrases grouped by pillar:
+ * how you like to work (Part 2) under O, the work setting (Part 4) under E.
+ */
+function WorkMatchLine({ axes, model }: { axes: readonly AxisCode[]; model: ReportModel }) {
+  const groups = (
+    [
+      { letter: "O", part: 2 },
+      { letter: "E", part: 4 },
+    ] as const
+  )
+    .map(({ letter, part }) => ({
+      letter,
+      sides: axes
+        .filter((axis) => AXES[axis].part === part)
+        .map((axis) => model.result.axes[axis].lean)
+        .filter((side) => side !== null),
+    }))
+    .filter((group) => group.sides.length > 0);
+  if (groups.length === 0) return null;
+  return (
+    <div className="grid gap-1.5">
+      <p className="text-[12px] leading-snug text-[color:var(--day-ink-2)]">
+        <Block id="S4-MATCH-WORK" />
+      </p>
+      {groups.map(({ letter, sides }) => (
+        <div key={letter} className="flex items-start gap-2">
+          <LetterTile letter={letter} size="sm" />
+          <ul className="flex flex-wrap gap-1.5">
+            {sides.map((side) => (
+              <MatchChip key={side} letter={letter} icon={sideIcon(side)}>
+                <Block id={PHRASE_FOR_SIDE[side]} />
+              </MatchChip>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function MatchChip({
   letter,
   icon: Icon,
   children,
 }: {
-  letter: "O" | "R";
+  letter: "O" | "R" | "E";
   icon: ReturnType<typeof sideIcon>;
   children: React.ReactNode;
 }) {
@@ -281,24 +322,13 @@ function JobRow({ job, model }: { job: JobView; model: ReportModel }) {
       </li>
     );
   }
-  const sides = job.workTags
-    .map((axis: AxisCode) => model.result.axes[axis].lean)
-    .filter((side) => side !== null);
   return (
     <li className={`grid ${styles.job}`}>
       <p className="text-[15px] font-bold text-[color:var(--day-ink)]">
         {name}
         <ChangingMarker job={job} />
       </p>
-      {sides.length > 0 ? (
-        <MatchLine letter="O" labelId="S4-MATCH-WORK">
-          {sides.map((side) => (
-            <MatchChip key={side} letter="O" icon={sideIcon(side)}>
-              <Block id={PHRASE_FOR_SIDE[side]} />
-            </MatchChip>
-          ))}
-        </MatchLine>
-      ) : null}
+      <WorkMatchLine axes={job.workTags} model={model} />
       {job.motivators.length > 0 ? (
         <MatchLine letter="R" labelId="S4-MATCH-DRV">
           {job.motivators.map((code) => (

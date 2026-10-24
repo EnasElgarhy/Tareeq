@@ -38,7 +38,7 @@
   display: flex;
   align-items: center;
   gap: var(--report-space-md);
-  padding-block: var(--report-space-sm);
+  padding-block: var(--report-space-xs);
   background: var(--day-bg);
   border-bottom: 1px solid var(--report-rule);
 }
@@ -56,7 +56,7 @@
 .mobileNavigation select {
   appearance: none;
   width: 100%;
-  min-height: 46px;
+  min-height: 40px;
   padding: var(--report-space-sm) 2.5rem var(--report-space-sm)
     var(--report-space-md);
   border: 1px solid var(--report-rule);
@@ -117,17 +117,21 @@
   background: var(--report-paper);
   border: 1px solid var(--report-rule);
 }
+/* The website's primary call to action: gold gradient pill, dark ink. */
 .nextButton {
   margin-inline-start: auto;
   min-width: 0;
-  background: var(--report-accent);
-  color: var(--day-elevated);
+  border-radius: 999px;
+  background: var(--gold-gradient, linear-gradient(135deg, #f4c660 0%, #f5d57f 100%));
+  color: #14101f;
+  box-shadow: 0 10px 22px -10px rgba(122, 74, 33, 0.45);
 }
 .backButton:hover {
   background: var(--day-inset);
 }
 .nextButton:hover {
-  background: var(--daybreak-violet);
+  filter: brightness(1.04);
+  transform: translateY(-1px);
 }
 .report :is(button, a, select):focus-visible {
   outline: 2px solid var(--report-accent);
@@ -437,6 +441,24 @@
 .kaiTyping i:nth-child(3) {
   animation-delay: 300ms;
 }
+/* The answers take no room until Kai has asked, then open smoothly. */
+.kaiAnswersWrap {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 360ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.kaiAnswersWrap[data-visible="false"] {
+  grid-template-rows: 0fr;
+}
+.kaiAnswersWrap > .kaiAnswers {
+  min-height: 0;
+  overflow: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  .kaiAnswersWrap {
+    transition: none;
+  }
+}
 .kaiAnswers {
   display: flex;
   flex-wrap: wrap;
@@ -545,78 +567,82 @@
     height: 240px;
   }
 }
-/* Desktop: the app already has a sidebar, so chapters run as one sticky
-   horizontal bar above the reading column instead of a second sidebar. */
+/*
+ * Desktop: the app has a top bar, so the report reads as two columns. A
+ * sticky chapter rail on the start side lists the seven sections in order
+ * (they are a real sequence); the reading column keeps a comfortable width.
+ */
 @media (min-width: 1024px) {
+  .report {
+    scroll-margin-top: 2rem;
+    grid-template-columns: 220px minmax(0, 880px);
+    justify-content: center;
+    align-items: start;
+    column-gap: 48px;
+  }
   .navigation {
+    top: 0;
+    display: grid;
     gap: var(--report-space-md);
-    padding-block: var(--report-space-sm);
+    padding: 4px 0 0;
+    background: transparent;
+    border-bottom: 0;
+  }
+  .navigationTitle {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--day-ink-3);
   }
   .mobileNavigation {
     display: none;
   }
   .chapterList {
-    display: flex;
-    flex: 1;
-    min-width: 0;
-    gap: 0.25rem;
-    overflow-x: auto;
-    scrollbar-width: none;
-    padding: 0.25rem;
-    border: 1px solid var(--report-rule);
-    border-radius: 999px;
-    background: var(--report-paper);
-  }
-  .chapterList::-webkit-scrollbar {
-    display: none;
-  }
-  .chapterList > li {
-    flex-shrink: 0;
+    display: grid;
+    gap: 2px;
+    counter-reset: chapter;
+    border-inline-start: 2px solid var(--report-rule);
   }
   .chapter {
-    display: inline-flex;
+    position: relative;
+    display: flex;
     align-items: center;
-    gap: var(--report-space-xs);
+    gap: 10px;
+    width: 100%;
     min-height: 40px;
-    padding-inline: 0.875rem;
-    border-radius: 999px;
-    font-size: 0.8125rem;
+    margin-inline-start: -2px;
+    padding-inline: 14px 8px;
+    border-inline-start: 2px solid transparent;
+    font-size: 0.875rem;
     font-weight: 600;
-    white-space: nowrap;
+    text-align: start;
     color: var(--day-ink-2);
-    transition:
-      background-color 150ms ease,
-      color 150ms ease;
+    transition: color 150ms ease, border-color 150ms ease;
   }
   .chapter > svg {
     flex-shrink: 0;
+    opacity: 0.7;
   }
   .chapter:hover {
-    background: var(--report-accent-soft);
     color: var(--day-ink);
   }
   .chapter:focus-visible {
-    outline: 2px solid var(--report-accent);
+    outline: 2px solid #6d5ba8;
     outline-offset: 2px;
   }
   .chapter[aria-current="page"] {
-    background: var(--report-accent);
-    color: var(--day-card);
+    border-inline-start-color: #f4c660;
+    color: var(--day-ink);
     font-weight: 700;
   }
+  .chapter[aria-current="page"] > svg {
+    opacity: 1;
+    color: #6d5ba8;
+  }
   .progress {
-    flex-shrink: 0;
     max-width: none;
-    white-space: nowrap;
     font-size: 0.75rem;
     color: var(--day-ink-3);
-  }
-}
-/* Icons only where every chapter label still fits on one line. */
-@media (min-width: 1024px) and (max-width: 1439px) {
-  .chapter > svg,
-  .progress {
-    display: none;
   }
 }
 

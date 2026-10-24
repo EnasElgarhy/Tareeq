@@ -2,14 +2,14 @@
 
 import type { ReportModel } from "@/lib/core-v2/report-model";
 import type { SectionId } from "@/lib/core-v2/report-plan";
-import { CuriositySection, MeaningSection } from "./CareerSections";
+import { FlagNote } from "./ClosingSections";
 import {
   AboutSection,
-  FlagNote,
   NextStepsSection,
   ParentsSection,
-} from "./ClosingSections";
-import { AtAGlance, BeforeYouRead } from "./GlanceSections";
+} from "./v3/ClosingSections";
+import { GlanceSection, OpeningSection } from "./v3/OpeningSections";
+import { CuriositySection, MeaningSection } from "./v3/StorySections";
 
 /** Maps a section id to its screen. */
 export function ReportSection({
@@ -27,9 +27,9 @@ export function ReportSection({
     case "FLAG-NOTE":
       return <FlagNote />;
     case "S1":
-      return <BeforeYouRead model={model} onExplore={() => onNavigate("S2")} />;
+      return <OpeningSection generatedAt={generatedAt} onExplore={() => onNavigate("S2")} />;
     case "S2":
-      return <AtAGlance model={model} generatedAt={generatedAt} />;
+      return <GlanceSection model={model} generatedAt={generatedAt} />;
     case "S3":
       return <CuriositySection model={model} />;
     case "S4":

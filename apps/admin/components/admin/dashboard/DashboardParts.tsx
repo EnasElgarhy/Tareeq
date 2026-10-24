@@ -1,13 +1,24 @@
 import Link from "next/link";
 import { cache } from "react";
 import { AnimatedNumber } from "@/components/admin/dashboard/AnimatedNumber";
+import { GenerationBadge } from "@/components/admin/GenerationBadge";
 import { StatusBadge } from "@/components/admin/ui/Badge";
 import { Card } from "@/components/admin/ui/Card";
-import { CLUSTERS } from "@/lib/admin/clusters";
+import {
+  filterAttemptsByGeneration,
+  versionIdsOf,
+} from "@/lib/admin/assessment-generation";
+import { loadVersionGenerations } from "@/lib/admin/assessment-generation.server";
 import {
   countQuestionsByVersion,
   listContentVersions,
 } from "@/lib/admin/content";
+import {
+  CORE_PACKAGE_VERSIONS,
+  CORE_QUESTION_SET,
+  countItems,
+} from "@/lib/admin/core/framework";
+import { tallyLeadingCuriosities } from "@/lib/admin/core/result";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 /** Deduped within a request so Coverage + Health share one versions fetch. */
@@ -21,17 +32,35 @@ const getVersionsData = cache(async () => {
 
 /* ======================== Stats ======================== */
 
+/** CORE 2.0 attempts only, never mixed with the archived v4 assessment. */
+const getCoreAttempts = cache(async () => {
+  const sb = createSupabaseAdminClient();
+  const generations = await loadVersionGenerations();
+  const coreIds = versionIdsOf(generations, "core-2.0");
+  if (coreIds.length === 0) return [];
+  const { data, error } = await sb
+    .from("assessments")
+    .select("version_id,completed_at,result")
+    .in("version_id", coreIds);
+  if (error) throw new Error(error.message);
+  const rows = (data ?? []) as {
+    version_id: string;
+    completed_at: string | null;
+    result: unknown;
+  }[];
+  return filterAttemptsByGeneration(rows, generations, "core-2.0");
+});
+
 async function getCounts() {
   const sb = createSupabaseAdminClient();
   const head = { count: "exact" as const, head: true };
   try {
-    const [s, c, u] = await Promise.all([
-      sb.from("assessments").select("*", head),
-      sb.from("assessments").select("*", head).not("completed_at", "is", null),
+    const [attempts, u] = await Promise.all([
+      getCoreAttempts(),
       sb.from("user_accounts").select("*", head),
     ]);
-    const started = s.count ?? 0;
-    const completed = c.count ?? 0;
+    const started = attempts.length;
+    const completed = attempts.filter((a) => a.completed_at).length;
     return {
       started,
       completed,
@@ -90,7 +119,7 @@ export async function StatsSection() {
       className="grid grid-cols-2 gap-4 xl:grid-cols-4"
     >
       <StatCard index={0} label="Registered users" value={c.users} />
-      <StatCard index={1} label="Assessments completed" value={c.completed} />
+      <StatCard index={1} label="CORE 2.0 completed" value={c.completed} />
       <StatCard
         index={2}
         label="Completion rate"
@@ -98,7 +127,7 @@ export async function StatsSection() {
         suffix="%"
         sub={`${c.completed} of ${c.started} started`}
       />
-      <StatCard index={3} label="Assessments started" value={c.started} />
+      <StatCard index={3} label="CORE 2.0 started" value={c.started} />
     </section>
   );
 }
@@ -123,88 +152,51 @@ export function StatsSkeleton() {
   );
 }
 
-/* ======================== Cluster coverage ======================== */
-
-async function getCoverage() {
-  const { versions } = await getVersionsData();
-  const active = versions.find((v) => v.is_active) ?? null;
-  const coverage: Record<string, number> = {};
-  if (active) {
-    const sb = createSupabaseAdminClient();
-    const { data: qs } = await sb
-      .from("questions")
-      .select("question_options(cluster_code)")
-      .eq("version_id", active.id);
-    for (const q of qs ?? []) {
-      const opts =
-        (q as { question_options: { cluster_code: string | null }[] })
-          .question_options ?? [];
-      for (const o of opts) {
-        if (o.cluster_code)
-          coverage[o.cluster_code] = (coverage[o.cluster_code] ?? 0) + 1;
-      }
-    }
-  }
-  return { active, coverage };
-}
+/* ======================== Leading curiosities (CORE 2.0) ======================== */
 
 export async function CoverageSection() {
-  const { active, coverage } = await getCoverage();
-  const total = Object.values(coverage).reduce((a, b) => a + b, 0);
-  const pct = (code: string) =>
-    total > 0 ? Math.round(((coverage[code] ?? 0) / total) * 100) : 0;
+  const attempts = await getCoreAttempts().catch(() => []);
+  const completed = attempts.filter((a) => a.completed_at);
+  const tally = tallyLeadingCuriosities(
+    CORE_QUESTION_SET,
+    completed.map((a) => a.result),
+  );
+  const max = Math.max(1, ...tally.map((t) => t.count));
 
   return (
     <Card className="adm-fade-up p-5 lg:col-span-3">
       <div className="mb-4 flex items-baseline justify-between">
-        <h2 className="text-base font-bold text-adm-ink">Cluster coverage</h2>
+        <h2 className="text-base font-bold text-adm-ink">
+          Leading curiosities
+        </h2>
         <p className="text-xs text-adm-ink-muted">
-          {active ? `Live · ${active.label}` : "No live version"}
+          CORE 2.0 · {completed.length} completed
         </p>
       </div>
-      {total > 0 ? (
-        <>
-          <div
-            className="adm-grow-x flex h-4 overflow-hidden rounded-full"
-            role="img"
-            aria-label={CLUSTERS.map((c) => `${c.name} ${pct(c.code)}%`).join(
-              ", ",
-            )}
-          >
-            {CLUSTERS.map((c) => (
-              <span
-                key={c.code}
-                className="h-full"
-                style={{
-                  width: `${pct(c.code)}%`,
-                  backgroundColor: `var(${c.cssVar})`,
-                }}
-              />
-            ))}
-          </div>
-          <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2 sm:grid-cols-4">
-            {CLUSTERS.map((c, i) => (
-              <li
-                key={c.code}
-                className="adm-fade-up flex items-center gap-2 text-[13px]"
-                style={{ animationDelay: `${120 + i * 40}ms` }}
-              >
+      {completed.length > 0 ? (
+        <ul className="grid gap-2">
+          {tally.map((t, i) => (
+            <li
+              key={t.code}
+              className="adm-fade-up grid grid-cols-[10rem_1fr_2.5rem] items-center gap-3 text-[13px]"
+              style={{ animationDelay: `${120 + i * 40}ms` }}
+            >
+              <span className="truncate text-adm-ink-soft">{t.name}</span>
+              <span className="h-2.5 overflow-hidden rounded-full bg-adm-sand">
                 <span
-                  aria-hidden="true"
-                  className="h-2.5 w-2.5 shrink-0 rounded-sm"
-                  style={{ backgroundColor: `var(${c.cssVar})` }}
+                  className="adm-grow-x block h-full rounded-full bg-adm-violet"
+                  style={{ width: `${Math.round((t.count / max) * 100)}%` }}
                 />
-                <span className="text-adm-ink-soft">{c.name}</span>
-                <span className="ml-auto font-bold text-adm-ink">
-                  {pct(c.code)}%
-                </span>
-              </li>
-            ))}
-          </ul>
-        </>
+              </span>
+              <span className="text-right font-bold text-adm-ink">
+                {t.count}
+              </span>
+            </li>
+          ))}
+        </ul>
       ) : (
         <p className="py-6 text-center text-sm text-adm-ink-muted">
-          No scored answers in the live assessment yet.
+          No completed CORE 2.0 assessments yet.
         </p>
       )}
     </Card>
@@ -228,9 +220,16 @@ export function CoverageSkeleton() {
 /* ======================== Content health ======================== */
 
 export async function HealthSection() {
-  const { versions, counts } = await getVersionsData();
-  const active = versions.find((v) => v.is_active) ?? null;
-  const draft = versions.find((v) => !v.is_active) ?? null;
+  const [{ versions, counts }, generations] = await Promise.all([
+    getVersionsData(),
+    loadVersionGenerations(),
+  ]);
+  const legacyIds = new Set(versionIdsOf(generations, "legacy-v4"));
+  const archived = versions.filter((v) => legacyIds.has(v.id));
+  const archivedQuestions = archived.reduce(
+    (n, v) => n + (counts[v.id] ?? 0),
+    0,
+  );
 
   return (
     <Card
@@ -239,40 +238,35 @@ export async function HealthSection() {
     >
       <h2 className="mb-4 text-base font-bold text-adm-ink">Content health</h2>
       <div className="space-y-3">
-        {active && (
+        <Link
+          href="/admin/content/core"
+          className="adm-lift block rounded-adm-md border border-adm-line bg-adm-sand/70 p-4 hover:border-adm-violet"
+        >
+          <div className="flex items-center justify-between gap-2">
+            <p className="truncate text-sm font-bold text-adm-ink">CORE 2.0</p>
+            <StatusBadge status="published" />
+          </div>
+          <p className="mt-1 text-xs text-adm-ink-muted">
+            Question set {CORE_PACKAGE_VERSIONS.questionSet} ·{" "}
+            {countItems(CORE_QUESTION_SET)} questions · current assessment
+          </p>
+        </Link>
+        {archived.length > 0 && (
           <Link
-            href={`/admin/content/${active.id}`}
-            className="adm-lift block rounded-adm-md border border-adm-line bg-adm-sand/70 p-4 hover:border-adm-violet"
-          >
-            <div className="flex items-center justify-between gap-2">
-              <p className="truncate text-sm font-bold text-adm-ink">
-                {active.label}
-              </p>
-              <StatusBadge status="published" />
-            </div>
-            <p className="mt-1 text-xs text-adm-ink-muted">
-              {counts[active.id] ?? 0} questions · live for all students
-            </p>
-          </Link>
-        )}
-        {draft && (
-          <Link
-            href={`/admin/content/${draft.id}`}
+            href="/admin/content#archived-assessments"
             className="adm-lift block rounded-adm-md border border-dashed border-adm-line-strong p-4 hover:border-adm-violet"
           >
             <div className="flex items-center justify-between gap-2">
               <p className="truncate text-sm font-bold text-adm-ink">
-                {draft.label}
+                Archived v4
               </p>
-              <StatusBadge status="draft" />
+              <GenerationBadge generation="legacy-v4" />
             </div>
             <p className="mt-1 text-xs text-adm-ink-muted">
-              {counts[draft.id] ?? 0} questions · in progress
+              {archived.length} {archived.length === 1 ? "version" : "versions"}{" "}
+              · {archivedQuestions} questions · read-only
             </p>
           </Link>
-        )}
-        {!active && !draft && (
-          <p className="text-sm text-adm-ink-muted">No content versions yet.</p>
         )}
       </div>
     </Card>

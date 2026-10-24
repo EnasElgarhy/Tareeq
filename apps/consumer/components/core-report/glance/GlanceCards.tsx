@@ -96,8 +96,16 @@ function MixMark({ isChosen }: { isChosen: boolean }) {
   );
 }
 
-/** O: the three zones side by side, the student's one filled. */
-function ZoneChoices({ axis, zone }: { axis: Axis; zone: AxisZone }) {
+/** O and E (spec §6.2): the three zones side by side, the student's one filled. */
+function ZoneChoices({
+  axis,
+  zone,
+  letter,
+}: {
+  axis: Axis;
+  zone: AxisZone;
+  letter: "O" | "E";
+}) {
   const [SideA, SideB] = AXIS_SIDE_ICON[axis.axis];
   const options = [
     { value: 1 as const, id: axis.sideAId, Icon: SideA },
@@ -121,7 +129,7 @@ function ZoneChoices({ axis, zone }: { axis: Axis; zone: AxisZone }) {
                   ? "font-bold text-white"
                   : "bg-[color:var(--day-inset)] font-medium text-[color:var(--day-ink-2)]"
               }`}
-              style={isChosen ? { background: LETTER_FILL.O } : undefined}
+              style={isChosen ? { background: LETTER_FILL[letter] } : undefined}
             >
               {Icon ? (
                 <Icon
@@ -150,6 +158,7 @@ export function WorkStyleCard({ model }: { model: ReportModel }) {
           key={axis.axis}
           axis={axis}
           zone={model.result.axes[axis.axis].zone}
+          letter="O"
         />
       ))}
       <p className="text-[13px] italic text-[color:var(--day-ink-3)]">
@@ -221,48 +230,6 @@ export function MotivatorsCard({ model }: { model: ReportModel }) {
   );
 }
 
-/** E: the student's answer on each axis as one row; a lean is filled, a mix is quiet. */
-function SettingRow({ axis, zone }: { axis: Axis; zone: AxisZone }) {
-  const [SideA, SideB] = AXIS_SIDE_ICON[axis.axis];
-  const isLean = zone !== 2;
-  const Icon = zone === 1 ? SideA : zone === 3 ? SideB : null;
-  const answerId =
-    zone === 1 ? axis.sideAId : zone === 3 ? axis.sideBId : MID_BLOCK;
-  return (
-    <li
-      className={`flex items-center gap-3 rounded-[16px] px-3.5 py-3 ${
-        isLean
-          ? "text-white"
-          : "bg-[color:var(--day-inset)] text-[color:var(--day-ink)]"
-      }`}
-      style={isLean ? { background: LETTER_FILL.E } : undefined}
-    >
-      {Icon ? (
-        <Icon
-          size={26}
-          weight="duotone"
-          aria-hidden="true"
-          className="shrink-0"
-        />
-      ) : (
-        <span className="grid w-[26px] shrink-0 place-items-center">
-          <MixMark isChosen={false} />
-        </span>
-      )}
-      <span className="min-w-0">
-        <span
-          className={`block text-[12px] ${isLean ? "text-[#e3dcf5]" : "text-[color:var(--day-ink-2)]"}`}
-        >
-          <Block id={axis.headId} />
-        </span>
-        <span className="block text-[15px] font-bold leading-snug">
-          <Block id={answerId} />
-        </span>
-      </span>
-    </li>
-  );
-}
-
 export function SettingCard({ model }: { model: ReportModel }) {
   const { t } = useLocale();
   return (
@@ -278,19 +245,18 @@ export function SettingCard({ model }: { model: ReportModel }) {
           loading="lazy"
           className={styles.settingArt}
         />
-        <div className="grid gap-4">
+        <div className="grid gap-5">
           <p className="text-[14px] leading-relaxed text-[color:var(--day-ink-2)]">
             <Block id="S2-E-LINE" />
           </p>
-          <ul className="grid gap-2">
-            {E_AXES.map((axis) => (
-              <SettingRow
-                key={axis.axis}
-                axis={axis}
-                zone={model.result.axes[axis.axis].zone}
-              />
-            ))}
-          </ul>
+          {E_AXES.map((axis) => (
+            <ZoneChoices
+              key={axis.axis}
+              axis={axis}
+              zone={model.result.axes[axis.axis].zone}
+              letter="E"
+            />
+          ))}
         </div>
       </div>
     </GlanceCard>

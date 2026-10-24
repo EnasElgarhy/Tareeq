@@ -6,6 +6,7 @@ export function makeRow(overrides: Partial<DerivedRow> = {}): DerivedRow {
     id: "row-1",
     identityKey: "user-1",
     versionId: "version-1",
+    generation: "core-2.0",
     catalogId: "catalog-1",
     catalogLabel: "CORE Assessment",
     assessmentType: "core",

@@ -1,3 +1,4 @@
+import { attributionFromCookieHeader } from "@/lib/analytics/attribution";
 import type { EventName } from "@/lib/analytics/events";
 import { flushQueue, startFlushScheduler } from "@/lib/analytics/flush";
 import { createHttpProvider } from "@/lib/analytics/provider";
@@ -80,6 +81,15 @@ function detectLocale(): string | null {
   return null;
 }
 
+/**
+ * The visitor's source labels, read from the cookie the middleware sets.
+ * Server-side callers have no `document`; they pass `src`/`post` themselves.
+ */
+function browserAttribution(): Record<string, unknown> {
+  if (typeof document === "undefined") return {};
+  return { ...attributionFromCookieHeader(document.cookie) };
+}
+
 async function buildEvent(name: EventName, payload: TrackEventPayload): Promise<AnalyticsEvent> {
   const { assessmentId, assessmentVersion, questionId, userId, country, ...metadata } = payload;
   return {
@@ -94,7 +104,7 @@ async function buildEvent(name: EventName, payload: TrackEventPayload): Promise<
     locale: detectLocale(),
     device: detectDevice(),
     country: country ?? null,
-    metadata,
+    metadata: { ...browserAttribution(), ...metadata },
   };
 }
 

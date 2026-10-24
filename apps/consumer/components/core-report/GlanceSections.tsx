@@ -15,7 +15,7 @@ import { GlanceHeader } from "./glance/GlanceHeader";
 import { GlanceStack, type StackCard } from "./glance/GlanceStack";
 import { DeckCard } from "./glance/deck";
 import { LETTER_FILL } from "./glance/palette";
-import { Block } from "./parts";
+import { Block, Pending, useWording } from "./parts";
 import styles from "./ReportDesign.module.css";
 
 const KEY_LETTERS = ["C", "O", "R", "E"] as const;
@@ -37,6 +37,36 @@ function useIsDesktop(): boolean {
   );
 }
 const BULLETS = ["S1-B1", "S1-B2", "S1-B3", "S1-B4", "S1-B5", "S1-B6"];
+
+/**
+ * The question word in each CORE key line, set in bold (spec §6.1). File 04
+ * carries no bold markup for it, so the words are named here per language.
+ */
+const KEY_QUESTION_WORDS: Record<"en" | "ar", Record<(typeof KEY_LETTERS)[number], string>> = {
+  en: { C: "what", O: "how", R: "why", E: "where" },
+  ar: { C: "ما", O: "كيف", R: "لماذا", E: "أين" },
+};
+
+/** S1-KEY-x with its question word (the first one after the colon) in bold. */
+function KeyLine({ letter }: { letter: (typeof KEY_LETTERS)[number] }) {
+  const { locale } = useLocale();
+  const id = `S1-KEY-${letter}`;
+  const text = useWording()(id);
+  if (text === null) return <Pending id={id} />;
+  const word = KEY_QUESTION_WORDS[locale === "ar" ? "ar" : "en"][letter];
+  const at = text.indexOf(` ${word}`, text.indexOf(":"));
+  if (at < 0) return <>{text}</>;
+  const start = at + 1;
+  return (
+    <>
+      {text.slice(0, start)}
+      <strong className="font-black text-[color:var(--day-ink)]">
+        {text.slice(start, start + word.length)}
+      </strong>
+      {text.slice(start + word.length)}
+    </>
+  );
+}
 
 /** A personal opening with the original reading notes and CORE key available on demand. */
 export function BeforeYouRead({
@@ -101,7 +131,7 @@ export function BeforeYouRead({
                     {letter}
                   </span>
                   <span>
-                    <Block id={`S1-KEY-${letter}`} />
+                    <KeyLine letter={letter} />
                   </span>
                 </li>
               ))}

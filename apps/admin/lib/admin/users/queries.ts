@@ -1,5 +1,11 @@
 import { createHash } from "node:crypto";
-import { extractCoreResult } from "@/lib/admin/analytics/aggregate";
+import {
+  classifyAttempt,
+  CORE_DISPLAY_NAME,
+  type AssessmentGeneration,
+} from "@/lib/admin/assessment-generation";
+import { loadVersionGenerations } from "@/lib/admin/assessment-generation.server";
+import { attemptArchetype, attemptHeadline } from "@/lib/admin/attempt-result";
 import { computeEngagement } from "@/lib/admin/users/engagement";
 import { computeRisk } from "@/lib/admin/users/risk";
 import { daysSince } from "@/lib/admin/users/time";
@@ -72,16 +78,18 @@ interface Loaded {
   asmtsByUser: Map<string, RawAsmt[]>;
   eventsByHash: Map<string, RawEvent[]>;
   versionLabels: Map<string, string>;
+  generations: Map<string, AssessmentGeneration>;
 }
 
 async function loadAll(): Promise<Loaded> {
   const sb = createSupabaseAdminClient();
-  const [profilesRes, accountsRes, asmtsRes, eventsRes, versionsRes] = await Promise.all([
+  const [profilesRes, accountsRes, asmtsRes, eventsRes, versionsRes, generations] = await Promise.all([
     sb.from("profiles").select("*").limit(MAX_ROWS),
     sb.from("user_accounts").select("*").limit(MAX_ROWS),
     sb.from("assessments").select("*").limit(MAX_ROWS),
     sb.from("analytics_events").select("user_id_hash,event_name,event_type,occurred_at").limit(MAX_ROWS),
     sb.from("content_versions").select("id,label"),
+    loadVersionGenerations(),
   ]);
 
   const accountByAuthId = new Map<string, RawAccount>();
@@ -106,7 +114,7 @@ async function loadAll(): Promise<Loaded> {
   for (const v of (versionsRes.data ?? []) as Array<{ id: string; label: string }>) {
     versionLabels.set(v.id, v.label);
   }
-  return { profiles: (profilesRes.data ?? []) as RawProfile[], accountByAuthId, asmtsByUser, eventsByHash, versionLabels };
+  return { profiles: (profilesRes.data ?? []) as RawProfile[], accountByAuthId, asmtsByUser, eventsByHash, versionLabels, generations };
 }
 
 function countEvent(events: RawEvent[], name: string): number {
@@ -129,7 +137,9 @@ function buildAggregate(profile: RawProfile, loaded: Loaded): UserAggregate {
   const events = loaded.eventsByHash.get(analyticsHash(profile.id)) ?? [];
 
   const completed = asmts.filter((a) => a.completed_at);
-  const hasCompassResult = completed.some((a) => extractCoreResult(a.result)?.topCluster);
+  const hasCompassResult = completed.some((a) =>
+    attemptHeadline(classifyAttempt(a, loaded.generations), a.result),
+  );
   const lastEventAt = maxIso(events.map((e) => e.occurred_at));
   const lastAsmtAt = maxIso(asmts.flatMap((a) => [a.completed_at, a.started_at]));
 
@@ -149,11 +159,21 @@ function buildAggregate(profile: RawProfile, loaded: Loaded): UserAggregate {
   };
 }
 
-function primaryResultLabel(asmts: RawAsmt[]): string | null {
+function primaryResultLabel(asmts: RawAsmt[], loaded: Loaded): string | null {
   const latest = asmts
     .filter((a) => a.completed_at)
     .sort((x, y) => (y.completed_at ?? "").localeCompare(x.completed_at ?? ""))[0];
-  return latest ? extractCoreResult(latest.result)?.topCluster ?? null : null;
+  return latest
+    ? attemptHeadline(classifyAttempt(latest, loaded.generations), latest.result)
+    : null;
+}
+
+/** "CORE 2.0 assessment" or "Legacy v4 · <version label>", so the two never read as one. */
+function attemptLabel(a: RawAsmt, loaded: Loaded): string {
+  const generation = classifyAttempt(a, loaded.generations);
+  if (generation === "core-2.0") return CORE_DISPLAY_NAME;
+  const label = loaded.versionLabels.get(a.version_id) ?? "Assessment";
+  return generation === "legacy-v4" ? `Legacy v4 · ${label}` : label;
 }
 
 // ── Filtering / sorting (JS, over the small dataset) ─────────────────────────
@@ -237,7 +257,7 @@ export async function getUsersList(
       country: p.country ?? null,
       status: agg.isDeleted ? "deleted" : "active",
       assessmentsCompleted: agg.assessmentsCompleted,
-      primaryResult: primaryResultLabel(asmts),
+      primaryResult: primaryResultLabel(asmts, loaded),
       kaiSessions: agg.kaiSessions,
       plansSaved: agg.plansSaved,
       lastActiveAt: agg.lastActiveAt,
@@ -303,23 +323,23 @@ export async function getUserDetail(userId: string, nowIso: string): Promise<Use
   const assessments: AssessmentSummary[] = asmts
     .sort((x, y) => (y.started_at ?? "").localeCompare(x.started_at ?? ""))
     .map((a) => {
-      const core = extractCoreResult(a.result);
+      const generation = classifyAttempt(a, loaded.generations);
       return {
         id: a.id,
-        label: loaded.versionLabels.get(a.version_id) ?? "Assessment",
+        label: attemptLabel(a, loaded),
         startedAt: a.started_at,
         completedAt: a.completed_at,
         locale: a.locale,
-        primaryCluster: core?.topCluster ?? null,
-        archetype: core?.archetype ?? null,
-        confidence: confidenceOf(a.result),
+        primaryCluster: attemptHeadline(generation, a.result),
+        archetype: attemptArchetype(generation, a.result),
+        confidence: generation === "core-2.0" ? null : confidenceOf(a.result),
       };
     });
 
   const timeline = buildTimeline({
     registeredAt: profile.created_at,
     assessments: asmts.map((a) => ({
-      label: loaded.versionLabels.get(a.version_id) ?? "Assessment",
+      label: attemptLabel(a, loaded),
       startedAt: a.started_at,
       completedAt: a.completed_at,
     })),

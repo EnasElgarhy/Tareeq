@@ -2950,9 +2950,16 @@ export const STRINGS = {
     en: "Your leading curiosities",
     ar: "أبرز مجالات فضولك",
   },
+  "core.open.intro": {
+    en: "Before your results, a few things to keep in mind as you read.",
+    ar: "قبل نتائجك، بعض الأمور التي تستحق أن تتذكرها أثناء القراءة.",
+  },
+  "core.steps.questions": { en: "Questions to ask ({count})", ar: "أسئلة يمكنك طرحها ({count})" },
+  "core.glance.you": { en: "You", ar: "أنت" },
+  "core.glance.connects": { en: "connects to", ar: "يلتقي مع" },
   "core.cover.open": {
-    en: "Explore your CORE picture",
-    ar: "استكشف صورتك في كور",
+    en: "Explore your CORE",
+    ar: "استكشف كور الخاص بك",
   },
   "core.cover.guide": { en: "How to read your compass", ar: "كيف تقرأ بوصلتك" },
   "core.offer.title": {

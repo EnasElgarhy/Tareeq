@@ -9,6 +9,7 @@ import {
 } from "next/font/google";
 import localFont from "next/font/local";
 import { PostHogSessionReplay } from "@/components/analytics/PostHogSessionReplay";
+import { VisitTracker } from "@/components/analytics/VisitTracker";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -160,6 +161,7 @@ export default function RootLayout({
       <body className="flex min-h-full flex-col">
         {children}
         <PostHogSessionReplay />
+        <VisitTracker />
       </body>
     </html>
   );

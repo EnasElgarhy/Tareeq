@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { attributionFromCookieHeader } from "@/lib/analytics/attribution";
 import {
   findActiveEntitlement,
   isUuid,
@@ -28,6 +29,14 @@ export const runtime = "nodejs";
 
 interface CheckoutSessionBody {
   assessmentId: string;
+}
+
+/** Stripe metadata values must be strings; unset labels are left out. */
+function stripeAttribution(labels: { src?: string; post?: string | null }): Record<string, string> {
+  return {
+    ...(labels.src ? { src: labels.src } : {}),
+    ...(labels.post ? { post: labels.post } : {}),
+  };
 }
 
 function parseBody(json: unknown): CheckoutSessionBody | null {
@@ -114,7 +123,13 @@ export async function POST(request: Request) {
       client_reference_id: body.assessmentId,
       // The webhook's only link back to our records — it is signed by Stripe
       // and echoed verbatim on `checkout.session.completed`.
-      metadata: { user_id: user.id, assessment_id: body.assessmentId },
+      // `src`/`post` are the visitor's first-touch labels, so a payment can be
+      // read back by the post that brought the family (lib/analytics/attribution.ts).
+      metadata: {
+        user_id: user.id,
+        assessment_id: body.assessmentId,
+        ...stripeAttribution(attributionFromCookieHeader(request.headers.get("cookie"))),
+      },
       ...(user.email ? { customer_email: user.email } : {}),
     });
     clientSecret = session.client_secret;

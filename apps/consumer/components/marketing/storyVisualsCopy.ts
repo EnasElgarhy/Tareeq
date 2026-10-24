@@ -66,7 +66,7 @@ interface StoryWords {
 export const STORY_COPY: Record<Locale, StoryWords> = {
   en: {
     glance: {
-      title: "Your CORE picture at a glance",
+      title: "Your CORE at a glance",
       owner: "Sara’s report",
       curiosity: {
         tag: "Curiosities",
@@ -126,7 +126,7 @@ export const STORY_COPY: Record<Locale, StoryWords> = {
       roles: ["Clinical psychologist", "Dietitian", "Genetic counsellor"],
       career: "Pharmacist",
       closest: "Closest to your answers",
-      workLabel: "Matches how you like to work.",
+      workLabel: "Works the way you like to work.",
       work: "This work usually offers: clear steps and expectations",
       motiveLabel: "Often offers what motivates you:",
       motive: "making a difference for others and your community",
@@ -147,7 +147,7 @@ export const STORY_COPY: Record<Locale, StoryWords> = {
   },
   ar: {
     glance: {
-      title: "صورة CORE الخاصة بك في لمحة",
+      title: "لمحة عن كور الخاص بك",
       owner: "تقرير سارة",
       curiosity: {
         tag: "الفضول",
@@ -207,7 +207,7 @@ export const STORY_COPY: Record<Locale, StoryWords> = {
       roles: ["أخصائي نفسي إكلينيكي", "أخصائي تغذية", "مستشار وراثي"],
       career: "صيدلي",
       closest: "الأقرب لإجاباتك",
-      workLabel: "يناسب طريقتك في العمل.",
+      workLabel: "يُنجَز بطريقتك المفضّلة في العمل.",
       work: "يوفّر هذا العمل عادةً: خطوات وتوقعات واضحة",
       motiveLabel: "غالباً ما يوفّر ما يحفّزك:",
       motive: "إحداث فرق للآخرين ولمجتمعك",

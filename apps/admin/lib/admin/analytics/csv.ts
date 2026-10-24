@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import type { AnalyticsViewModel, DerivedRow } from "@/lib/admin/analytics/types";
+import { GENERATION_SCORING } from "@/lib/admin/assessment-generation";
 
 /**
  * CSV export for the admin Analytics surface. Anonymized exports use a
@@ -50,6 +51,12 @@ function anonymizedIdentity(row: DerivedRow): string {
 
 const ANONYMIZED_COLUMNS: CsvColumn<DerivedRow>[] = [
   { key: "user_id_hash", header: "user_id_hash", value: anonymizedIdentity },
+  { key: "generation", header: "generation", value: (r) => r.generation },
+  {
+    key: "scoring_version",
+    header: "scoring_version",
+    value: (r) => (r.generation ? GENERATION_SCORING[r.generation] : null),
+  },
   { key: "catalog_label", header: "assessment", value: (r) => r.catalogLabel },
   { key: "assessment_type", header: "assessment_type", value: (r) => r.assessmentType },
   { key: "completed_at", header: "completed_at", value: (r) => r.completedAt },

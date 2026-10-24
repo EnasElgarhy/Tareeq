@@ -51,6 +51,11 @@ import type {
   TimeRange,
   TrendSeries,
 } from "@/lib/admin/analytics/types";
+import {
+  buildVersionGenerations,
+  classifyAttempt,
+  type AssessmentGeneration,
+} from "@/lib/admin/assessment-generation";
 import { countQuestionsByVersion } from "@/lib/admin/content";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
@@ -77,7 +82,12 @@ interface VersionMeta {
   expectedCount: number | null;
 }
 
-async function buildVersionMeta(): Promise<Map<string, VersionMeta>> {
+interface VersionLookups {
+  meta: Map<string, VersionMeta>;
+  generations: Map<string, AssessmentGeneration>;
+}
+
+async function buildVersionMeta(): Promise<VersionLookups> {
   const sb = createSupabaseAdminClient();
   const [{ data: versions, error: vErr }, { data: catalogs, error: cErr }, counts] =
     await Promise.all([
@@ -110,7 +120,12 @@ async function buildVersionMeta(): Promise<Map<string, VersionMeta>> {
       expectedCount: counts[row.id] ?? null,
     });
   }
-  return meta;
+  return {
+    meta,
+    generations: buildVersionGenerations(
+      (versions ?? []) as Array<{ id: string; label: string; catalog_id: string | null }>,
+    ),
+  };
 }
 
 /** Catalog options for the assessment/catalog filter dropdown. */
@@ -208,11 +223,12 @@ async function fetchProfileCreatedDates(): Promise<string[]> {
 function deriveRow(
   raw: RawAssessmentRow,
   profile: RawProfileRow | undefined,
-  versionMeta: Map<string, VersionMeta>,
+  versions: VersionLookups,
   demoLabels: Map<string, DemoLabelMap>,
   referenceYear: number,
 ): DerivedRow {
-  const meta = versionMeta.get(raw.version_id);
+  const meta = versions.meta.get(raw.version_id);
+  const generation = classifyAttempt(raw, versions.generations);
   const duration = durationSeconds(raw.started_at, raw.completed_at);
   const answeredCount = countAnsweredQuestions(raw.answers);
   const expectedCount = meta?.expectedCount ?? null;
@@ -231,6 +247,7 @@ function deriveRow(
     id: raw.id,
     identityKey: raw.user_id ?? raw.respondent_email ?? null,
     versionId: raw.version_id,
+    generation,
     catalogId: meta?.catalogId ?? null,
     catalogLabel: meta?.catalogLabel ?? "Unknown assessment",
     assessmentType: meta?.assessmentType ?? "core",
@@ -254,7 +271,8 @@ function deriveRow(
     gender: demo.gender ?? profile?.gender ?? null,
     educationLevel: demo.educationLevel ?? profile?.education_level ?? null,
     consentResearch: raw.consent_research ?? null,
-    coreResult: extractCoreResult(raw.result),
+    // The v4 cluster/archetype summary means nothing for a CORE 2.0 result.
+    coreResult: generation === "core-2.0" ? null : extractCoreResult(raw.result),
   };
 }
 
@@ -560,7 +578,7 @@ export async function getAnalyticsViewModel(
   filters: AnalyticsFilters,
   range: TimeRange = "30d",
 ): Promise<AnalyticsViewModel> {
-  const [versionMeta, raw, userCounts, catalogOptions, userCreatedDates, demoLabels] =
+  const [versions, raw, userCounts, catalogOptions, userCreatedDates, demoLabels] =
     await Promise.all([
       buildVersionMeta(),
       fetchRawAssessments(),
@@ -578,7 +596,7 @@ export async function getAnalyticsViewModel(
   const referenceYear = now.getFullYear();
 
   const allDerived = raw.map((r) =>
-    deriveRow(r, profiles.get(r.user_id ?? ""), versionMeta, demoLabels, referenceYear),
+    deriveRow(r, profiles.get(r.user_id ?? ""), versions, demoLabels, referenceYear),
   );
   const matched = allDerived.filter((row) => matchesFilters(row, filters));
 

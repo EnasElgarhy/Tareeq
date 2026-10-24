@@ -43,8 +43,8 @@ export function CoreReportScreen({
     <>
       {/* The page name stays the h1 for screen readers but reads as a quiet
           label, so each chapter's own title is the one big heading. */}
-      <header className="pt-1 lg:pt-2">
-        <h1 className="text-[12px] font-bold uppercase tracking-[0.12em] text-[color:var(--day-ink-3)]">
+      <header className="sr-only">
+        <h1>
           {t("home.compass.title")}
         </h1>
       </header>

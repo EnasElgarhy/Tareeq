@@ -1,0 +1,1831 @@
+{
+ "name": "CORE question set",
+ "version": "5.2",
+ "scoring_version": "2.0",
+ "date": "2026-10-17",
+ "notes": [
+  "Score by option_id/code, never by the letter or position shown. Shuffle option order for every student.",
+  "Question order: shuffle within a pillar if the platform allows; otherwise use fixed_order_position.",
+  "Pillar order is P1, P2, P3, P4, then the background questions."
+ ],
+ "codes": {
+  "curiosities": {
+   "RD": "Research & Discovery",
+   "IE": "Imagination & Expression",
+   "PW": "People & Wellbeing",
+   "EI": "Enterprise & Influence",
+   "PE": "Planning & Execution",
+   "TS": "Technology & Systems",
+   "IR": "Invention & Repair",
+   "AE": "Action & Endurance"
+  },
+  "motivators": {
+   "REC": "Recognition",
+   "IMP": "Impact",
+   "MAS": "Mastery",
+   "AUT": "Autonomy",
+   "SEC": "Security",
+   "INC": "Income",
+   "FAM": "Family",
+   "LIF": "Lifestyle"
+  },
+  "axis_options": {
+   "S": "structure: toward side A (steps set out)",
+   "F": "structure: toward side B (own way)",
+   "D": "focus: toward side A (going deep)",
+   "B": "focus: toward side B (covering a range)",
+   "T": "team: toward side A (with others)",
+   "O": "team: toward side B (on your own)",
+   "ST": "setting: toward side A (familiar place)",
+   "CH": "setting: toward side B (something different)"
+  }
+ },
+ "screens": [
+  {
+   "screen_id": "S-WELCOME",
+   "purpose": "Welcome",
+   "text_en": "Hi, I'm Kai. This isn't a test: there are no right or wrong answers, and it has nothing to do with how well you do at school. You'll see short situations, each with a few options. None of them may fit you perfectly; just pick the one closest to you. Answer as you are now, not as you think you should be. It takes about 15 minutes.",
+   "purpose_ar": "الترحيب",
+   "text_ar": "مرحبًا، أنا كاي. هذا ليس اختبارًا: لا توجد إجابات صحيحة أو خاطئة، ولا علاقة له بمستواك الدراسي. ستظهر لك مواقف قصيرة، لكل منها عدة خيارات. قد لا يناسبك أيّ خيار تمامًا؛ يكفي اختيار الأقرب إليك. الإجابة كما أنت الآن، لا كما يُفترض أن تكون. يستغرق ذلك نحو 15 دقيقة."
+  },
+  {
+   "screen_id": "S-AGE",
+   "purpose": "Age check",
+   "text_en": "When were you born? (month / year)",
+   "purpose_ar": "التحقق من العمر",
+   "text_ar": "متى وُلدت؟ (الشهر / السنة)"
+  },
+  {
+   "screen_id": "S-UNDER13",
+   "purpose": "Under 13 (stop screen)",
+   "text_en": "Thanks for your interest! CORE is designed for ages 13 and over, so we can't continue. Nothing you entered has been saved.",
+   "purpose_ar": "أقل من 13 عامًا (شاشة التوقف)",
+   "text_ar": "شكرًا لاهتمامك! صُمّم تقييم كور لمن هم في سن 13 عامًا فأكثر، لذلك لا يمكن المتابعة. لم يُحفظ أي شيء أُدخل."
+  },
+  {
+   "screen_id": "S-P1",
+   "purpose": "Pillar 1 intro",
+   "text_en": "Part 1 of 4 · What sparks your curiosity. Each question shows one situation and four ways to be part of it. Pick the one you'd enjoy most.",
+   "purpose_ar": "مقدمة الجزء الأول",
+   "text_ar": "الجزء 1 من 4 · ما يثير فضولك. في كل سؤال موقف واحد وأربع طرق للمشاركة فيه. يكفي اختيار الأقرب إليك."
+  },
+  {
+   "screen_id": "S-P2",
+   "purpose": "Pillar 2 intro",
+   "text_en": "Part 2 of 4 · How you like to work. Two options each time. Both are good ways to work.",
+   "purpose_ar": "مقدمة الجزء الثاني",
+   "text_ar": "الجزء 2 من 4 · طريقتك في العمل. خياران في كل مرة، وكلاهما طريقة جيدة في العمل."
+  },
+  {
+   "screen_id": "S-P3",
+   "purpose": "Pillar 3 intro",
+   "text_en": "Part 3 of 4 · What motivates you. Each question describes a choice and gives four reasons for it. Every reason is a good one; pick the one that would matter most to you.",
+   "purpose_ar": "مقدمة الجزء الثالث",
+   "text_ar": "الجزء 3 من 4 · ما يحفّزك. يصف كل سؤال اختيارًا ويقدّم أربعة أسباب له. كل الأسباب جيدة؛ يكفي اختيار السبب الأهم بالنسبة إليك."
+  },
+  {
+   "screen_id": "S-P4",
+   "purpose": "Pillar 4 intro",
+   "text_en": "Part 4 of 4 · Your work setting. Two options each time. Neither is better than the other.",
+   "purpose_ar": "مقدمة الجزء الرابع",
+   "text_ar": "الجزء 4 من 4 · أجواء العمل. خياران في كل مرة، ولا أحدهما أفضل من الآخر."
+  },
+  {
+   "screen_id": "S-BG",
+   "purpose": "Background intro",
+   "text_en": "Almost done. A few questions about you. They help us improve CORE and never change your results.",
+   "purpose_ar": "مقدمة الأسئلة العامة",
+   "text_ar": "أوشكنا على الانتهاء. بعض الأسئلة عنك تساعدنا على تطوير تقييم كور، ولا تغيّر نتائجك أبدًا."
+  },
+  {
+   "screen_id": "S-END",
+   "purpose": "End",
+   "text_en": "All done! Your results are ready to unlock.",
+   "purpose_ar": "النهاية",
+   "text_ar": "انتهى التقييم! نتائجك جاهزة."
+  }
+ ],
+ "background_questions": [
+  {
+   "question_id": "QD2",
+   "heading_en": "Country of residence",
+   "text_en": "Which country do you live in now? (drop-down list, Middle Eastern countries first)",
+   "heading_ar": "بلد الإقامة",
+   "text_ar": "بلد الإقامة الحالي (قائمة منسدلة، تظهر دول الشرق الأوسط أولًا)",
+   "options": []
+  },
+  {
+   "question_id": "QD2b",
+   "heading_en": "Citizenship",
+   "text_en": "Are you a citizen of the country you live in?",
+   "heading_ar": "الجنسية",
+   "text_ar": "هل جنسيتك هي جنسية بلد إقامتك؟",
+   "options": [
+    {
+     "option_id": "QD2b-Y",
+     "text_en": "Yes",
+     "text_ar": "نعم"
+    },
+    {
+     "option_id": "QD2b-N",
+     "text_en": "No",
+     "text_ar": "لا"
+    },
+    {
+     "option_id": "QD2b-X",
+     "text_en": "Prefer not to say",
+     "text_ar": "أفضّل عدم الإجابة"
+    }
+   ]
+  },
+  {
+   "question_id": "QD3",
+   "heading_en": "Stage of study",
+   "text_en": "What is your current stage of study?",
+   "heading_ar": "المرحلة الدراسية",
+   "text_ar": "ما مرحلتك الدراسية الحالية؟",
+   "options": [
+    {
+     "option_id": "QD3-A",
+     "text_en": "Middle school",
+     "text_ar": "المرحلة المتوسطة (الإعدادية)"
+    },
+    {
+     "option_id": "QD3-B",
+     "text_en": "High school, before the final two years",
+     "text_ar": "المرحلة الثانوية، قبل السنتين الأخيرتين"
+    },
+    {
+     "option_id": "QD3-C",
+     "text_en": "Final two years of high school",
+     "text_ar": "السنتان الأخيرتان من المرحلة الثانوية"
+    },
+    {
+     "option_id": "QD3-D",
+     "text_en": "Gap year, or between school and university",
+     "text_ar": "سنة انتقالية بين المدرسة والجامعة"
+    },
+    {
+     "option_id": "QD3-E",
+     "text_en": "University, year 1 or 2",
+     "text_ar": "الجامعة: السنة الأولى أو الثانية"
+    },
+    {
+     "option_id": "QD3-F",
+     "text_en": "University, year 3 or above",
+     "text_ar": "الجامعة: السنة الثالثة فأكثر"
+    },
+    {
+     "option_id": "QD3-G",
+     "text_en": "Not currently studying",
+     "text_ar": "لا أدرس حاليًا"
+    }
+   ]
+  },
+  {
+   "question_id": "QD4",
+   "heading_en": "Gender",
+   "text_en": "Are you male or female? This helps us address you correctly in your report.",
+   "heading_ar": "الجنس",
+   "text_ar": "هل أنت ذكر أم أنثى؟ يساعدنا ذلك على مخاطبتك بالشكل الصحيح في تقريرك.",
+   "options": [
+    {
+     "option_id": "QD4-F",
+     "text_en": "Female",
+     "text_ar": "أنثى"
+    },
+    {
+     "option_id": "QD4-M",
+     "text_en": "Male",
+     "text_ar": "ذكر"
+    }
+   ]
+  }
+ ],
+ "items": {
+  "P1": [
+   {
+    "item_id": "P1-01",
+    "pillar": "P1",
+    "context_zone": "Academic",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "As part of a science project, your class is growing plants and vegetables in the school garden, to sell at the school market at the end of term. Which part of the project would you most like to take on?",
+    "stem_ar": "ضمن مشروع علمي، يزرع صفّك نباتات وخضروات في حديقة المدرسة لبيعها في سوق المدرسة نهاية الفصل. أيّ جزء من المشروع هو الأقرب إليك؟",
+    "fixed_order_position": 3,
+    "options": [
+     {
+      "option_id": "P1-01-RD",
+      "code": "RD",
+      "scores_to": "Research & Discovery",
+      "text_en": "Testing why some plants grow faster than others, and finding the reason",
+      "text_ar": "اختبار لماذا تنمو بعض النباتات أسرع من غيرها، ومعرفة السبب"
+     },
+     {
+      "option_id": "P1-01-PW",
+      "code": "PW",
+      "scores_to": "People & Wellbeing",
+      "text_en": "Showing other students how to care for the plants, and helping them when they get stuck",
+      "text_ar": "تعليم طلاب آخرين كيف يعتنون بالنباتات، ومساعدتهم عندما يواجهون صعوبة"
+     },
+     {
+      "option_id": "P1-01-EI",
+      "code": "EI",
+      "scores_to": "Enterprise & Influence",
+      "text_en": "Running the sales stall at the market and persuading people to buy",
+      "text_ar": "إدارة ركن المبيعات في السوق وإقناع الناس بالشراء"
+     },
+     {
+      "option_id": "P1-01-IR",
+      "code": "IR",
+      "scores_to": "Invention & Repair",
+      "text_en": "Building a simple watering system from pipes and a small pump, and fixing it until it runs",
+      "text_ar": "بناء نظام ري بسيط من أنابيب ومضخة صغيرة، وإصلاحه حتى يعمل"
+     }
+    ]
+   },
+   {
+    "item_id": "P1-02",
+    "pillar": "P1",
+    "context_zone": "Academic",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "Your school is holding a sports day. Which role would you most like to have?",
+    "stem_ar": "تنظّم مدرستك يومًا رياضيًا. أيّ دور هو الأقرب إليك؟",
+    "fixed_order_position": 1,
+    "options": [
+     {
+      "option_id": "P1-02-IE",
+      "code": "IE",
+      "scores_to": "Imagination & Expression",
+      "text_en": "Designing the posters, banners and a short video that capture the spirit of the day",
+      "text_ar": "تصميم الملصقات واللافتات وفيديو قصير يعبّر عن روح اليوم"
+     },
+     {
+      "option_id": "P1-02-PE",
+      "code": "PE",
+      "scores_to": "Planning & Execution",
+      "text_en": "Drawing up the schedule, deciding who does what and when, and keeping everything on time",
+      "text_ar": "وضع الجدول الزمني وتحديد مهام كل شخص ومواعيدهم، والتأكد من سير كل شيء في وقته"
+     },
+     {
+      "option_id": "P1-02-TS",
+      "code": "TS",
+      "scores_to": "Technology & Systems",
+      "text_en": "Setting up an online system for sign-ups and live results",
+      "text_ar": "إعداد نظام إلكتروني للتسجيل وعرض النتائج مباشرة"
+     },
+     {
+      "option_id": "P1-02-AE",
+      "code": "AE",
+      "scores_to": "Action & Endurance",
+      "text_en": "Training for and competing in one of the challenges: a race, a team performance or a martial arts display",
+      "text_ar": "التدرّب والمشاركة في أحد التحديات: سباق أو عرض رياضي جماعي أو عرض فنون قتالية"
+     }
+    ]
+   },
+   {
+    "item_id": "P1-03",
+    "pillar": "P1",
+    "context_zone": "Academic",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "Your school is holding a class competition. Each group presents a project on \"How our city has changed in the last 50 years\", and the class votes for the best one. Which part of the project would you most like to take on?",
+    "stem_ar": "تنظّم مدرستك مسابقة بين المجموعات: تقدّم كل مجموعة مشروعًا عن «كيف تغيّرت مدينتنا خلال الخمسين عامًا الماضية»، ويصوّت الصف لأفضل مشروع. أيّ جزء من المشروع هو الأقرب إليك؟",
+    "fixed_order_position": 15,
+    "options": [
+     {
+      "option_id": "P1-03-RD",
+      "code": "RD",
+      "scores_to": "Research & Discovery",
+      "text_en": "Digging into the evidence to work out why the city changed the way it did",
+      "text_ar": "البحث في الأدلة لفهم لماذا تغيّرت المدينة بهذه الطريقة"
+     },
+     {
+      "option_id": "P1-03-IE",
+      "code": "IE",
+      "scores_to": "Imagination & Expression",
+      "text_en": "Turning the story into drawings, writing or a short film that people remember",
+      "text_ar": "تحويل القصة إلى رسومات أو نص أو فيلم قصير يبقى في الذاكرة"
+     },
+     {
+      "option_id": "P1-03-EI",
+      "code": "EI",
+      "scores_to": "Enterprise & Influence",
+      "text_en": "Leading the group and pitching the project to win the class vote",
+      "text_ar": "قيادة المجموعة وتقديم المشروع بطريقة تكسب تصويت الصف"
+     },
+     {
+      "option_id": "P1-03-TS",
+      "code": "TS",
+      "scores_to": "Technology & Systems",
+      "text_en": "Building an interactive map that shows the changes using real data",
+      "text_ar": "بناء خريطة تفاعلية تعرض التغيّرات باستخدام بيانات حقيقية"
+     }
+    ]
+   },
+   {
+    "item_id": "P1-04",
+    "pillar": "P1",
+    "context_zone": "Academic",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "Your class is going on a two-day school trip to a nature reserve. Which responsibility would you most like to take?",
+    "stem_ar": "سيذهب صفّك في رحلة مدرسية لمدة يومين إلى محمية طبيعية. أيّ مسؤولية هي الأقرب إليك؟",
+    "fixed_order_position": 5,
+    "options": [
+     {
+      "option_id": "P1-04-PW",
+      "code": "PW",
+      "scores_to": "People & Wellbeing",
+      "text_en": "Looking out for others: making sure no one feels left out, and helping anyone who needs it",
+      "text_ar": "الاهتمام بالآخرين: التأكد من ألّا يشعر أحد بأنه مُستبعَد، ومساعدة من يحتاج إلى ذلك"
+     },
+     {
+      "option_id": "P1-04-PE",
+      "code": "PE",
+      "scores_to": "Planning & Execution",
+      "text_en": "Organising the packing lists, groups, timetable and budget so nothing is forgotten",
+      "text_ar": "تنظيم قوائم التجهيز والمجموعات والجدول والميزانية حتى لا يُنسى شيء"
+     },
+     {
+      "option_id": "P1-04-IR",
+      "code": "IR",
+      "scores_to": "Invention & Repair",
+      "text_en": "Setting up the gear and equipment, and fixing whatever breaks",
+      "text_ar": "تركيب المعدات والأدوات، وإصلاح أي شيء يتعطّل"
+     },
+     {
+      "option_id": "P1-04-AE",
+      "code": "AE",
+      "scores_to": "Action & Endurance",
+      "text_en": "Taking on the hike and the outdoor challenges, and testing your stamina",
+      "text_ar": "خوض رحلة المشي والتحديات في الطبيعة واختبار قدرتك على التحمّل"
+     }
+    ]
+   },
+   {
+    "item_id": "P1-05",
+    "pillar": "P1",
+    "context_zone": "Digital",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "In your free time online, which video are you most likely to click on?",
+    "stem_ar": "في وقت فراغك على الإنترنت، أيّ فيديو هو الأقرب إلى اهتمامك؟",
+    "fixed_order_position": 14,
+    "options": [
+     {
+      "option_id": "P1-05-RD",
+      "code": "RD",
+      "scores_to": "Research & Discovery",
+      "text_en": "A video explaining why something strange happens in nature or in the human body",
+      "text_ar": "فيديو يشرح لماذا تحدث ظاهرة غريبة في الطبيعة أو في جسم الإنسان"
+     },
+     {
+      "option_id": "P1-05-PE",
+      "code": "PE",
+      "scores_to": "Planning & Execution",
+      "text_en": "A video showing how a huge event, like a national day celebration or an international exhibition, is organised so everything runs on time",
+      "text_ar": "فيديو يعرض كيف يُنظَّم حدث ضخم، مثل احتفال باليوم الوطني أو معرض دولي، حتى يسير كل شيء في وقته"
+     },
+     {
+      "option_id": "P1-05-EI",
+      "code": "EI",
+      "scores_to": "Enterprise & Influence",
+      "text_en": "A video of someone your age telling how they started their own business and got people to support it or invest in it",
+      "text_ar": "فيديو لشخص في عمرك يروي كيف بدأ مشروعه الخاص وأقنع الناس بدعمه أو الاستثمار فيه"
+     },
+     {
+      "option_id": "P1-05-AE",
+      "code": "AE",
+      "scores_to": "Action & Endurance",
+      "text_en": "A video teaching a new physical skill you can practise yourself, in an activity you enjoy",
+      "text_ar": "فيديو يعلّم مهارة بدنية جديدة يمكنك التدرّب عليها بنفسك، في نشاط مفضّل لديك"
+     }
+    ]
+   },
+   {
+    "item_id": "P1-06",
+    "pillar": "P1",
+    "context_zone": "Digital",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "Your group of friends starts an online page or channel about something you all enjoy. Which role would you most like to have?",
+    "stem_ar": "بدأت مجموعتك من الأصدقاء صفحة أو قناة على الإنترنت عن اهتمام مشترك بينكم. أيّ دور هو الأقرب إليك؟",
+    "fixed_order_position": 16,
+    "options": [
+     {
+      "option_id": "P1-06-IE",
+      "code": "IE",
+      "scores_to": "Imagination & Expression",
+      "text_en": "Creating the content: the look, the stories and the videos",
+      "text_ar": "صناعة المحتوى: الشكل والقصص والفيديوهات"
+     },
+     {
+      "option_id": "P1-06-PW",
+      "code": "PW",
+      "scores_to": "People & Wellbeing",
+      "text_en": "Talking with followers, answering their questions and making the page a kind, supportive place",
+      "text_ar": "التواصل مع المتابعين والرد على أسئلتهم، وجعل الصفحة مكانًا لطيفًا وداعمًا"
+     },
+     {
+      "option_id": "P1-06-TS",
+      "code": "TS",
+      "scores_to": "Technology & Systems",
+      "text_en": "Building the website or app behind it and making it run smoothly",
+      "text_ar": "بناء الموقع أو التطبيق الخاص بها وجعله يعمل بسلاسة"
+     },
+     {
+      "option_id": "P1-06-IR",
+      "code": "IR",
+      "scores_to": "Invention & Repair",
+      "text_en": "Setting up the cameras, microphones and lighting, and fixing the equipment when it breaks",
+      "text_ar": "تجهيز الكاميرات والميكروفونات والإضاءة، وإصلاح المعدات عندما تتعطّل"
+     }
+    ]
+   },
+   {
+    "item_id": "P1-07",
+    "pillar": "P1",
+    "context_zone": "Digital",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "You're part of an online community about a game, a series or a hobby you love. Which role would you most like to have there?",
+    "stem_ar": "في مجتمع إلكتروني حول لعبة أو مسلسل أو هواية مفضّلة لديك، أيّ دور هو الأقرب إليك؟",
+    "fixed_order_position": 2,
+    "options": [
+     {
+      "option_id": "P1-07-RD",
+      "code": "RD",
+      "scores_to": "Research & Discovery",
+      "text_en": "Working out the hidden patterns and theories behind it, and why things happen the way they do",
+      "text_ar": "اكتشاف الأنماط والنظريات الخفية وراءه، ولماذا تحدث الأشياء بهذه الطريقة"
+     },
+     {
+      "option_id": "P1-07-IE",
+      "code": "IE",
+      "scores_to": "Imagination & Expression",
+      "text_en": "Creating fan art, stories or video edits for the community",
+      "text_ar": "ابتكار رسومات أو قصص أو مقاطع فيديو معدّلة للمجتمع"
+     },
+     {
+      "option_id": "P1-07-PW",
+      "code": "PW",
+      "scores_to": "People & Wellbeing",
+      "text_en": "Welcoming new members and helping anyone who is struggling or being treated unkindly",
+      "text_ar": "الترحيب بالأعضاء الجدد ومساعدة من يواجه صعوبة أو يتعرّض لمعاملة سيئة"
+     },
+     {
+      "option_id": "P1-07-PE",
+      "code": "PE",
+      "scores_to": "Planning & Execution",
+      "text_en": "Keeping the group organised: the rules, the events calendar and the records",
+      "text_ar": "تنظيم المجموعة: القواعد وجدول الفعاليات والسجلات"
+     }
+    ]
+   },
+   {
+    "item_id": "P1-08",
+    "pillar": "P1",
+    "context_zone": "Digital",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "Your group of friends launches a 30-day online fitness challenge for students. Which part of the project would you most like to take on?",
+    "stem_ar": "تُطلق مجموعتك من الأصدقاء تحديًا رياضيًا إلكترونيًا للطلاب لمدة 30 يومًا. أيّ جزء من المشروع هو الأقرب إليك؟",
+    "fixed_order_position": 8,
+    "options": [
+     {
+      "option_id": "P1-08-EI",
+      "code": "EI",
+      "scores_to": "Enterprise & Influence",
+      "text_en": "Getting people to join: promoting the challenge, finding a sponsor and growing the numbers",
+      "text_ar": "جذب المشاركين: الترويج للتحدي، وإيجاد راعٍ، وزيادة عدد المنضمّين"
+     },
+     {
+      "option_id": "P1-08-TS",
+      "code": "TS",
+      "scores_to": "Technology & Systems",
+      "text_en": "Building the app or website that tracks everyone's progress",
+      "text_ar": "بناء التطبيق أو الموقع الذي يتابع تقدّم الجميع"
+     },
+     {
+      "option_id": "P1-08-IR",
+      "code": "IR",
+      "scores_to": "Invention & Repair",
+      "text_en": "Making a simple device, like a step counter or a timer, that records the results, and getting it to work",
+      "text_ar": "صنع جهاز بسيط، مثل عدّاد خطوات أو مؤقّت، يسجّل النتائج، وتشغيله بنجاح"
+     },
+     {
+      "option_id": "P1-08-AE",
+      "code": "AE",
+      "scores_to": "Action & Endurance",
+      "text_en": "Doing the fitness challenge yourself, and pushing to finish it every day",
+      "text_ar": "خوض التحدي الرياضي بنفسك، والإصرار على إكماله كل يوم"
+     }
+    ]
+   },
+   {
+    "item_id": "P1-09",
+    "pillar": "P1",
+    "context_zone": "Social and family life",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "Your family is spending a weekend on a trip to the desert. Which role would you most like to have on the trip?",
+    "stem_ar": "تقضي عائلتك عطلة نهاية الأسبوع في رحلة إلى الصحراء. أيّ دور هو الأقرب إليك في الرحلة؟",
+    "fixed_order_position": 13,
+    "options": [
+     {
+      "option_id": "P1-09-RD",
+      "code": "RD",
+      "scores_to": "Research & Discovery",
+      "text_en": "Finding out why the desert gets so cold at night, and how animals and plants survive there",
+      "text_ar": "معرفة لماذا تبرد الصحراء ليلًا، وكيف تعيش فيها الحيوانات والنباتات"
+     },
+     {
+      "option_id": "P1-09-PW",
+      "code": "PW",
+      "scores_to": "People & Wellbeing",
+      "text_en": "Getting the whole family, young and old, playing a game like charades together, so everyone feels part of it",
+      "text_ar": "جمع العائلة كلها، الكبار والصغار، على لعبة مثل التمثيل الصامت، حتى يشعر الجميع بأنهم جزء من الجلسة"
+     },
+     {
+      "option_id": "P1-09-TS",
+      "code": "TS",
+      "scores_to": "Technology & Systems",
+      "text_en": "Connecting everyone's phones to the speaker, and setting up a shared playlist the whole family can add to",
+      "text_ar": "ربط هواتف الجميع بمكبّر الصوت، وإعداد قائمة أغانٍ مشتركة يضيف إليها الجميع"
+     },
+     {
+      "option_id": "P1-09-AE",
+      "code": "AE",
+      "scores_to": "Action & Endurance",
+      "text_en": "Trying the physical activities: climbing the dunes, sandboarding or a long walk at sunrise",
+      "text_ar": "تجربة الأنشطة البدنية: تسلّق الكثبان أو التزلّج على الرمال أو المشي الطويل عند الشروق"
+     }
+    ]
+   },
+   {
+    "item_id": "P1-10",
+    "pillar": "P1",
+    "context_zone": "Social and family life",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "Your family is holding a big celebration at home. If you had to take one role, which would you choose?",
+    "stem_ar": "تقيم عائلتك احتفالًا كبيرًا في البيت. إذا كان لا بدّ من دور لك، فأيّ دور يناسبك أكثر؟",
+    "fixed_order_position": 9,
+    "options": [
+     {
+      "option_id": "P1-10-IE",
+      "code": "IE",
+      "scores_to": "Imagination & Expression",
+      "text_en": "Designing the decorations, the invitation and the look of the place",
+      "text_ar": "تصميم الزينة وبطاقة الدعوة وشكل المكان"
+     },
+     {
+      "option_id": "P1-10-PE",
+      "code": "PE",
+      "scores_to": "Planning & Execution",
+      "text_en": "Keeping track of the guest list, the food orders and the budget so nothing is missed",
+      "text_ar": "متابعة قائمة الضيوف وطلبات الطعام والميزانية حتى لا يفوت شيء"
+     },
+     {
+      "option_id": "P1-10-EI",
+      "code": "EI",
+      "scores_to": "Enterprise & Influence",
+      "text_en": "Persuading the family to go with your idea for the celebration, and getting everyone on board",
+      "text_ar": "إقناع العائلة بفكرتك للاحتفال، وجعل الجميع يتحمّسون لها"
+     },
+     {
+      "option_id": "P1-10-IR",
+      "code": "IR",
+      "scores_to": "Invention & Repair",
+      "text_en": "Building a light-up sign, wiring it and getting it to work",
+      "text_ar": "صنع لافتة مضيئة، وتوصيل أسلاكها حتى تعمل"
+     }
+    ]
+   },
+   {
+    "item_id": "P1-11",
+    "pillar": "P1",
+    "context_zone": "Social and family life",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "You're spending a day at the beach with your friends. Which activity would you most like to do?",
+    "stem_ar": "في يوم على الشاطئ مع أصدقائك، أيّ نشاط هو الأقرب إليك؟",
+    "fixed_order_position": 11,
+    "options": [
+     {
+      "option_id": "P1-11-RD",
+      "code": "RD",
+      "scores_to": "Research & Discovery",
+      "text_en": "Looking closely at the crabs, shells and sea creatures on the shore, and finding out how they live",
+      "text_ar": "تأمّل السرطانات والأصداف والكائنات البحرية على الشاطئ، ومعرفة كيف تعيش"
+     },
+     {
+      "option_id": "P1-11-IE",
+      "code": "IE",
+      "scores_to": "Imagination & Expression",
+      "text_en": "Sketching or photographing the scenery in your own style",
+      "text_ar": "رسم المناظر أو تصويرها بأسلوبك الخاص"
+     },
+     {
+      "option_id": "P1-11-IR",
+      "code": "IR",
+      "scores_to": "Invention & Repair",
+      "text_en": "Setting up the shade tent and the barbecue, and getting them to work properly in the wind",
+      "text_ar": "نصب خيمة الظل والشواية، وجعلهما يعملان جيدًا رغم الريح"
+     },
+     {
+      "option_id": "P1-11-AE",
+      "code": "AE",
+      "scores_to": "Action & Endurance",
+      "text_en": "Kayaking, swimming or racing along the beach until you've used up all your energy",
+      "text_ar": "التجديف أو السباحة أو الجري على الشاطئ حتى آخر طاقتك"
+     }
+    ]
+   },
+   {
+    "item_id": "P1-12",
+    "pillar": "P1",
+    "context_zone": "Social and family life",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "Someone in your group of friends is moving to another country, and the group wants to give them a farewell. Which role would you most like to have?",
+    "stem_ar": "سينتقل شخص من مجموعة أصدقائك للعيش في بلد آخر، وتريد المجموعة أن تودّعه. أيّ دور هو الأقرب إليك؟",
+    "fixed_order_position": 6,
+    "options": [
+     {
+      "option_id": "P1-12-PW",
+      "code": "PW",
+      "scores_to": "People & Wellbeing",
+      "text_en": "Being there for your friend, and helping them through the sadness of leaving",
+      "text_ar": "الوقوف إلى جانب الصديق المسافر، ومساعدته على تجاوز حزن الفراق"
+     },
+     {
+      "option_id": "P1-12-PE",
+      "code": "PE",
+      "scores_to": "Planning & Execution",
+      "text_en": "Sorting out the details: the place, the time, the budget and who brings what",
+      "text_ar": "ترتيب التفاصيل: المكان والوقت والميزانية ومن يُحضر ماذا"
+     },
+     {
+      "option_id": "P1-12-EI",
+      "code": "EI",
+      "scores_to": "Enterprise & Influence",
+      "text_en": "Getting everyone together and persuading them to chip in for a farewell gift",
+      "text_ar": "جمع الأصدقاء وإقناعهم بالمساهمة في هدية وداع"
+     },
+     {
+      "option_id": "P1-12-TS",
+      "code": "TS",
+      "scores_to": "Technology & Systems",
+      "text_en": "Building a simple website where everyone can leave messages and photos for them",
+      "text_ar": "بناء موقع بسيط يترك فيه الجميع رسائل وصورًا للصديق المسافر"
+     }
+    ]
+   },
+   {
+    "item_id": "P1-13",
+    "pillar": "P1",
+    "context_zone": "Activities and events",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "You're at a holiday camp about science and making things. Which activity would you most like to choose?",
+    "stem_ar": "أنت في مخيم إجازة عن العلوم وصناعة الأشياء. أيّ نشاط هو الأقرب إليك؟",
+    "fixed_order_position": 4,
+    "options": [
+     {
+      "option_id": "P1-13-RD",
+      "code": "RD",
+      "scores_to": "Research & Discovery",
+      "text_en": "Running experiments to find out why some designs work better than others",
+      "text_ar": "إجراء تجارب لمعرفة لماذا تنجح بعض التصاميم أكثر من غيرها"
+     },
+     {
+      "option_id": "P1-13-PE",
+      "code": "PE",
+      "scores_to": "Planning & Execution",
+      "text_en": "Organising the camp's schedule and materials so every session runs on time",
+      "text_ar": "تنظيم جدول المخيم وأدواته حتى تسير كل جلسة في وقتها"
+     },
+     {
+      "option_id": "P1-13-TS",
+      "code": "TS",
+      "scores_to": "Technology & Systems",
+      "text_en": "Coding a simple app or game",
+      "text_ar": "برمجة تطبيق أو لعبة بسيطة"
+     },
+     {
+      "option_id": "P1-13-IR",
+      "code": "IR",
+      "scores_to": "Invention & Repair",
+      "text_en": "Building a working gadget, and fixing it when it breaks",
+      "text_ar": "بناء جهاز يعمل، وإصلاحه عندما يتعطّل"
+     }
+    ]
+   },
+   {
+    "item_id": "P1-14",
+    "pillar": "P1",
+    "context_zone": "Activities and events",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "You're volunteering at a big festival in your city. Which role would you most like to have?",
+    "stem_ar": "في عمل تطوّعي في مهرجان كبير في مدينتك، أيّ دور هو الأقرب إليك؟",
+    "fixed_order_position": 10,
+    "options": [
+     {
+      "option_id": "P1-14-IE",
+      "code": "IE",
+      "scores_to": "Imagination & Expression",
+      "text_en": "Helping the creative team design the displays and the festival's social media content",
+      "text_ar": "مساعدة الفريق الإبداعي في تصميم المعروضات ومحتوى وسائل التواصل الخاص بالمهرجان"
+     },
+     {
+      "option_id": "P1-14-PW",
+      "code": "PW",
+      "scores_to": "People & Wellbeing",
+      "text_en": "Helping visitors who need support, like people with disabilities or families with small children",
+      "text_ar": "مساعدة الزوار الذين يحتاجون إلى دعم، مثل أصحاب الهمم أو العائلات مع أطفال صغار"
+     },
+     {
+      "option_id": "P1-14-EI",
+      "code": "EI",
+      "scores_to": "Enterprise & Influence",
+      "text_en": "Promoting one of the stands and persuading visitors to sign up for what it offers",
+      "text_ar": "الترويج لأحد الأجنحة وإقناع الزوار بالتسجيل فيما يقدّمه"
+     },
+     {
+      "option_id": "P1-14-AE",
+      "code": "AE",
+      "scores_to": "Action & Endurance",
+      "text_en": "Working on the ground crew: outdoors all day, on your feet and moving between areas",
+      "text_ar": "العمل ضمن الفريق الميداني طوال اليوم في الهواء الطلق، والتنقّل بين المواقع بنشاط وحيوية"
+     }
+    ]
+   },
+   {
+    "item_id": "P1-15",
+    "pillar": "P1",
+    "context_zone": "Activities and events",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "Your class is running a food stall at the school's international day. Which part would you most like to take on?",
+    "stem_ar": "يدير صفّك ركن طعام في اليوم العالمي بالمدرسة. أيّ جزء هو الأقرب إليك؟",
+    "fixed_order_position": 12,
+    "options": [
+     {
+      "option_id": "P1-15-RD",
+      "code": "RD",
+      "scores_to": "Research & Discovery",
+      "text_en": "Running a taste test to find out which dish visitors prefer, and why",
+      "text_ar": "إجراء اختبار تذوّق لمعرفة الطبق الذي يفضّله الزوار، ولماذا"
+     },
+     {
+      "option_id": "P1-15-IE",
+      "code": "IE",
+      "scores_to": "Imagination & Expression",
+      "text_en": "Designing the stall and how the food is presented",
+      "text_ar": "تصميم الركن وطريقة عرض الطعام"
+     },
+     {
+      "option_id": "P1-15-PW",
+      "code": "PW",
+      "scores_to": "People & Wellbeing",
+      "text_en": "Welcoming visitors and making sure everyone is looked after",
+      "text_ar": "استقبال الزوار والتأكد من الاهتمام بكل واحد منهم"
+     },
+     {
+      "option_id": "P1-15-EI",
+      "code": "EI",
+      "scores_to": "Enterprise & Influence",
+      "text_en": "Persuading visitors to come over and try your food",
+      "text_ar": "إقناع الزوار بالقدوم وتجربة طعامكم"
+     }
+    ]
+   },
+   {
+    "item_id": "P1-16",
+    "pillar": "P1",
+    "context_zone": "Activities and events",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "Your school is putting on a big end-of-year show. Which part would you most like to take on?",
+    "stem_ar": "تقيم مدرستك حفلًا كبيرًا في نهاية العام. أيّ جزء هو الأقرب إليك؟",
+    "fixed_order_position": 7,
+    "options": [
+     {
+      "option_id": "P1-16-PE",
+      "code": "PE",
+      "scores_to": "Planning & Execution",
+      "text_en": "Running the programme backstage, so each part starts on time",
+      "text_ar": "إدارة البرنامج خلف الكواليس، حتى تبدأ كل فقرة في وقتها"
+     },
+     {
+      "option_id": "P1-16-TS",
+      "code": "TS",
+      "scores_to": "Technology & Systems",
+      "text_en": "Running the sound, lights and screens from the control laptop",
+      "text_ar": "تشغيل الصوت والإضاءة والشاشات من حاسوب التحكم"
+     },
+     {
+      "option_id": "P1-16-IR",
+      "code": "IR",
+      "scores_to": "Invention & Repair",
+      "text_en": "Building the stage set and fixing anything that breaks",
+      "text_ar": "بناء ديكور المسرح وإصلاح أي شيء يتعطّل"
+     },
+     {
+      "option_id": "P1-16-AE",
+      "code": "AE",
+      "scores_to": "Action & Endurance",
+      "text_en": "Performing a sports or fitness display on stage",
+      "text_ar": "تقديم عرض رياضي أو استعراض لياقة على المسرح"
+     }
+    ]
+   }
+  ],
+  "P2": [
+   {
+    "item_id": "P2-01",
+    "pillar": "P2",
+    "context_zone": "Academic",
+    "axis": "structure",
+    "review_status": "Reviewed by founder",
+    "stem_en": "Your teacher sets a research assignment. Which kind of brief would you rather get?",
+    "stem_ar": "يُكلفك معلمك بمهمة بحثية. أي نوع من التوجيهات تفضل أن تتلقاه؟",
+    "fixed_order_position": 1,
+    "options": [
+     {
+      "option_id": "P2-01-S",
+      "code": "S",
+      "scores_to": "structure: toward side A (steps set out)",
+      "text_en": "A clear brief: the steps to follow, what to include and how the final work will be reviewed",
+      "text_ar": "موجز واضح: الخطوات الواجب اتباعها، وما يجب تضمينه، وكيف ستتم مراجعة العمل النهائي"
+     },
+     {
+      "option_id": "P2-01-F",
+      "code": "F",
+      "scores_to": "structure: toward side B (own way)",
+      "text_en": "An open brief: choosing your own research question and finding your own way to answer it",
+      "text_ar": "موجز مفتوح: اختيار سؤال البحث الخاص بك وإيجاد طريقتك في الإجابة عنه"
+     }
+    ]
+   },
+   {
+    "item_id": "P2-02",
+    "pillar": "P2",
+    "context_zone": "Academic",
+    "axis": "focus",
+    "review_status": "Reviewed by founder",
+    "stem_en": "Your class has a project for the term, and you can choose what it covers. Which kind of project would you prefer?",
+    "stem_ar": "لدى صفّك مشروع للفصل الدراسي، ويمكنك اختيار ما يتناوله. أيّ نوع من المشاريع تفضّل؟",
+    "fixed_order_position": 6,
+    "options": [
+     {
+      "option_id": "P2-02-D",
+      "code": "D",
+      "scores_to": "focus: toward side A (going deep)",
+      "text_en": "Choosing one topic and exploring it in depth",
+      "text_ar": "أن تختار موضوعًا واحدًا وتستكشفه بعمق"
+     },
+     {
+      "option_id": "P2-02-B",
+      "code": "B",
+      "scores_to": "focus: toward side B (covering a range)",
+      "text_en": "Covering several different topics",
+      "text_ar": "أن تتناول عدة مواضيع مختلفة"
+     }
+    ]
+   },
+   {
+    "item_id": "P2-03",
+    "pillar": "P2",
+    "context_zone": "Digital",
+    "axis": "structure",
+    "review_status": "Reviewed by founder",
+    "stem_en": "You're asked to prepare slides for a class presentation. Which way would you prefer?",
+    "stem_ar": "طُلب منك إعداد شرائح لعرض تقديمي في الصف. أيّ طريقة تفضّل؟",
+    "fixed_order_position": 5,
+    "options": [
+     {
+      "option_id": "P2-03-S",
+      "code": "S",
+      "scores_to": "structure: toward side A (steps set out)",
+      "text_en": "A ready template showing which slides to include and what goes on each one",
+      "text_ar": "قالب جاهز يحدّد الشرائح المطلوبة وما يوضع في كل منها"
+     },
+     {
+      "option_id": "P2-03-F",
+      "code": "F",
+      "scores_to": "structure: toward side B (own way)",
+      "text_en": "Just the topic and the time limit, and you decide how to structure it",
+      "text_ar": "الموضوع والوقت المحدّد فقط، وأنت تقرّر طريقة تنظيمه"
+     }
+    ]
+   },
+   {
+    "item_id": "P2-04",
+    "pillar": "P2",
+    "context_zone": "Digital",
+    "axis": "focus",
+    "review_status": "Reviewed by founder",
+    "stem_en": "When you watch videos about something you enjoy, what do you usually do?",
+    "stem_ar": "عندما تشاهد مقاطع فيديو عن شيء تحبّه، ماذا تفعل عادةً؟",
+    "fixed_order_position": 2,
+    "options": [
+     {
+      "option_id": "P2-04-D",
+      "code": "D",
+      "scores_to": "focus: toward side A (going deep)",
+      "text_en": "Watch many videos on that one topic until you know it in detail",
+      "text_ar": "تشاهد مقاطع كثيرة عن الموضوع نفسه حتى تعرفه بالتفصيل"
+     },
+     {
+      "option_id": "P2-04-B",
+      "code": "B",
+      "scores_to": "focus: toward side B (covering a range)",
+      "text_en": "Watch videos on lots of different topics, so you know about many things",
+      "text_ar": "تشاهد مقاطع عن مواضيع كثيرة ومختلفة، لتعرف عن أشياء كثيرة"
+     }
+    ]
+   },
+   {
+    "item_id": "P2-05",
+    "pillar": "P2",
+    "context_zone": "Social and family life",
+    "axis": "structure",
+    "review_status": "Reviewed by founder",
+    "stem_en": "When you get something new that needs setting up, like a gadget or a game, what do you usually do?",
+    "stem_ar": "عندما تحصل على شيء جديد يحتاج إلى تجهيز، مثل جهاز أو لعبة، ماذا تفعل عادةً؟",
+    "fixed_order_position": 3,
+    "options": [
+     {
+      "option_id": "P2-05-S",
+      "code": "S",
+      "scores_to": "structure: toward side A (steps set out)",
+      "text_en": "Follow the instructions or a tutorial step by step",
+      "text_ar": "تتبع التعليمات أو شرحًا خطوة بخطوة"
+     },
+     {
+      "option_id": "P2-05-F",
+      "code": "F",
+      "scores_to": "structure: toward side B (own way)",
+      "text_en": "Work it out yourself as you go",
+      "text_ar": "تكتشف الطريقة بنفسك أثناء التجهيز"
+     }
+    ]
+   },
+   {
+    "item_id": "P2-06",
+    "pillar": "P2",
+    "context_zone": "Social and family life",
+    "axis": "focus",
+    "review_status": "Reviewed by founder",
+    "stem_en": "When it comes to hobbies, what do you usually do?",
+    "stem_ar": "عندما يتعلّق الأمر بالهوايات، ماذا تفعل عادةً؟",
+    "fixed_order_position": 8,
+    "options": [
+     {
+      "option_id": "P2-06-D",
+      "code": "D",
+      "scores_to": "focus: toward side A (going deep)",
+      "text_en": "Focus on one hobby and go deeper into it",
+      "text_ar": "تركّز على هواية واحدة وتتعمّق فيها"
+     },
+     {
+      "option_id": "P2-06-B",
+      "code": "B",
+      "scores_to": "focus: toward side B (covering a range)",
+      "text_en": "Try lots of different hobbies",
+      "text_ar": "تجرّب هوايات كثيرة ومختلفة"
+     }
+    ]
+   },
+   {
+    "item_id": "P2-07",
+    "pillar": "P2",
+    "context_zone": "Activities and events",
+    "axis": "structure",
+    "review_status": "Reviewed by founder",
+    "stem_en": "You've volunteered to help with a charity collection drive at your school. Which way would you prefer to take part?",
+    "stem_ar": "تطوّعت للمساعدة في حملة جمع تبرعات خيرية في مدرستك. أيّ طريقة تفضّل للمشاركة في الحملة؟",
+    "fixed_order_position": 7,
+    "options": [
+     {
+      "option_id": "P2-07-S",
+      "code": "S",
+      "scores_to": "structure: toward side A (steps set out)",
+      "text_en": "Being given a set role, with clear steps to follow",
+      "text_ar": "الحصول على دور محدّد وخطوات واضحة لاتباعها"
+     },
+     {
+      "option_id": "P2-07-F",
+      "code": "F",
+      "scores_to": "structure: toward side B (own way)",
+      "text_en": "Being told the goal, and deciding yourself how best to help",
+      "text_ar": "معرفة الهدف، وتقرير أفضل طريقة للمساعدة بنفسك"
+     }
+    ]
+   },
+   {
+    "item_id": "P2-08",
+    "pillar": "P2",
+    "context_zone": "Activities and events",
+    "axis": "focus",
+    "review_status": "Reviewed by founder",
+    "stem_en": "At an activity day or exhibition with lots of stands and workshops, what do you usually do?",
+    "stem_ar": "في يوم أنشطة أو معرض فيه أركان وورش كثيرة، ماذا تفعل عادةً؟",
+    "fixed_order_position": 4,
+    "options": [
+     {
+      "option_id": "P2-08-D",
+      "code": "D",
+      "scores_to": "focus: toward side A (going deep)",
+      "text_en": "Spend most of your time at the one or two that interest you most",
+      "text_ar": "تقضي معظم وقتك في ركن أو ركنين يهمّانك أكثر من غيرهما"
+     },
+     {
+      "option_id": "P2-08-B",
+      "code": "B",
+      "scores_to": "focus: toward side B (covering a range)",
+      "text_en": "Visit as many as you can",
+      "text_ar": "تزور أكبر عدد ممكن منها"
+     }
+    ]
+   }
+  ],
+  "P3": [
+   {
+    "item_id": "P3-01",
+    "pillar": "P3",
+    "context_zone": "No zone",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "If your school started new clubs this term, why would you pick one club over the others?",
+    "stem_ar": "إذا أطلقت مدرستك نوادي جديدة هذا الفصل، فلماذا تختار ناديًا دون غيره؟",
+    "fixed_order_position": 1,
+    "options": [
+     {
+      "option_id": "P3-01-REC",
+      "code": "REC",
+      "scores_to": "Recognition",
+      "text_en": "Its members are admired for what they do",
+      "text_ar": "لأن أعضاءه يحظون بتقدير الناس وإعجابهم بما يقومون به"
+     },
+     {
+      "option_id": "P3-01-MAS",
+      "code": "MAS",
+      "scores_to": "Mastery",
+      "text_en": "It would let you get really good at something difficult, step by step",
+      "text_ar": "لأنه يتيح لك أن تتقن شيئًا صعبًا خطوة بخطوة"
+     },
+     {
+      "option_id": "P3-01-SEC",
+      "code": "SEC",
+      "scores_to": "Security",
+      "text_en": "It's well established and runs all year, so you know it will last",
+      "text_ar": "لأنه نادٍ راسخ يستمر طوال العام، فتعرف أنه سيبقى"
+     },
+     {
+      "option_id": "P3-01-FAM",
+      "code": "FAM",
+      "scores_to": "Family",
+      "text_en": "Your family would be proud of you for joining it",
+      "text_ar": "لأن عائلتك ستفخر بانضمامك إليه"
+     }
+    ]
+   },
+   {
+    "item_id": "P3-02",
+    "pillar": "P3",
+    "context_zone": "No zone",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "If you wanted to join a programme this summer, why would you pick one over the others?",
+    "stem_ar": "إذا أردت الانضمام إلى برنامج صيفي، فلماذا تختار برنامجًا دون غيره؟",
+    "fixed_order_position": 2,
+    "options": [
+     {
+      "option_id": "P3-02-IMP",
+      "code": "IMP",
+      "scores_to": "Impact",
+      "text_en": "It helps people in your community",
+      "text_ar": "لأنه يساعد الناس في مجتمعك"
+     },
+     {
+      "option_id": "P3-02-AUT",
+      "code": "AUT",
+      "scores_to": "Autonomy",
+      "text_en": "You decide for yourself how to spend your time in it",
+      "text_ar": "لأنك تقرر بنفسك كيف تقضي وقتك فيه"
+     },
+     {
+      "option_id": "P3-02-INC",
+      "code": "INC",
+      "scores_to": "Income",
+      "text_en": "It could help you earn more in the job you get after you graduate",
+      "text_ar": "لأنه قد يساعدك على الحصول على أجر أعلى في عملك بعد التخرج"
+     },
+     {
+      "option_id": "P3-02-LIF",
+      "code": "LIF",
+      "scores_to": "Lifestyle",
+      "text_en": "It leaves your afternoons free",
+      "text_ar": "لأنه يترك لك فترات بعد الظهر حرّة"
+     }
+    ]
+   },
+   {
+    "item_id": "P3-03",
+    "pillar": "P3",
+    "context_zone": "No zone",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "If you could take on one responsibility at school this year, like class representative, library helper or mentor to younger students, why would you pick one over the others?",
+    "stem_ar": "إذا أتيحت لك فرصة تولّي مسؤولية واحدة في المدرسة هذا العام، مثل ممثل الصف أو مساعد المكتبة أو مرشد للطلاب الأصغر سنًا، فلماذا تختار مسؤولية دون غيرها؟",
+    "fixed_order_position": 5,
+    "options": [
+     {
+      "option_id": "P3-03-REC",
+      "code": "REC",
+      "scores_to": "Recognition",
+      "text_en": "It's a responsibility everyone at school respects",
+      "text_ar": "لأنها مسؤولية يحترمها الجميع في المدرسة"
+     },
+     {
+      "option_id": "P3-03-IMP",
+      "code": "IMP",
+      "scores_to": "Impact",
+      "text_en": "It lets you help students who are struggling",
+      "text_ar": "لأنها تتيح لك مساعدة الطلاب الذين يواجهون صعوبات"
+     },
+     {
+      "option_id": "P3-03-SEC",
+      "code": "SEC",
+      "scores_to": "Security",
+      "text_en": "You're sure you can keep it up well all year",
+      "text_ar": "لأنك واثق من أنك تستطيع الاستمرار فيها جيدًا طوال العام"
+     },
+     {
+      "option_id": "P3-03-INC",
+      "code": "INC",
+      "scores_to": "Income",
+      "text_en": "The experience could help you get a better-paid job later",
+      "text_ar": "لأن هذه الخبرة قد تساعدك لاحقًا على الحصول على عمل بأجر أعلى"
+     }
+    ]
+   },
+   {
+    "item_id": "P3-04",
+    "pillar": "P3",
+    "context_zone": "No zone",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "If you wanted to start a new activity after school, why would you pick one over the others?",
+    "stem_ar": "إذا أردت أن تبدأ نشاطًا جديدًا بعد المدرسة، فلماذا تختار نشاطًا دون غيره؟",
+    "fixed_order_position": 6,
+    "options": [
+     {
+      "option_id": "P3-04-MAS",
+      "code": "MAS",
+      "scores_to": "Mastery",
+      "text_en": "It's a challenge that motivates you to keep getting better",
+      "text_ar": "لأنه تحدٍّ يحفّزك على أن تتحسّن باستمرار"
+     },
+     {
+      "option_id": "P3-04-AUT",
+      "code": "AUT",
+      "scores_to": "Autonomy",
+      "text_en": "You can do it your own way",
+      "text_ar": "لأنك تستطيع ممارسته على طريقتك"
+     },
+     {
+      "option_id": "P3-04-FAM",
+      "code": "FAM",
+      "scores_to": "Family",
+      "text_en": "Your family would be happy to see you take part in it",
+      "text_ar": "لأن عائلتك ستفرح بمشاركتك فيه"
+     },
+     {
+      "option_id": "P3-04-LIF",
+      "code": "LIF",
+      "scores_to": "Lifestyle",
+      "text_en": "It's relaxed and fits around your free time",
+      "text_ar": "لأنه نشاط مريح يناسب أوقات فراغك"
+     }
+    ]
+   },
+   {
+    "item_id": "P3-05",
+    "pillar": "P3",
+    "context_zone": "No zone",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "If you were choosing your subjects for next year, why would you pick one set of subjects over the others?",
+    "stem_ar": "إذا كنت تختار موادك الدراسية للعام القادم، فلماذا تختار مجموعة من المواد دون غيرها؟",
+    "fixed_order_position": 9,
+    "options": [
+     {
+      "option_id": "P3-05-REC",
+      "code": "REC",
+      "scores_to": "Recognition",
+      "text_en": "Doing well in them is admired by others",
+      "text_ar": "لأن التفوّق فيها يحظى بإعجاب الآخرين"
+     },
+     {
+      "option_id": "P3-05-AUT",
+      "code": "AUT",
+      "scores_to": "Autonomy",
+      "text_en": "You'd be in charge of your own study plan",
+      "text_ar": "لأنك ستتحكّم في خطتك الدراسية بنفسك"
+     },
+     {
+      "option_id": "P3-05-SEC",
+      "code": "SEC",
+      "scores_to": "Security",
+      "text_en": "They keep your options open, so your future feels safe",
+      "text_ar": "لأنها تُبقي خياراتك مفتوحة، فتشعر بأن مستقبلك آمن"
+     },
+     {
+      "option_id": "P3-05-LIF",
+      "code": "LIF",
+      "scores_to": "Lifestyle",
+      "text_en": "They leave you time for your life outside school",
+      "text_ar": "لأنها تترك لك وقتًا لحياتك خارج المدرسة"
+     }
+    ]
+   },
+   {
+    "item_id": "P3-06",
+    "pillar": "P3",
+    "context_zone": "No zone",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "If your school entered several competitions this year, why would you pick one to take part in over the others?",
+    "stem_ar": "إذا شاركت مدرستك في عدة مسابقات هذا العام، فلماذا تختار مسابقة دون غيرها لتشارك فيها؟",
+    "fixed_order_position": 10,
+    "options": [
+     {
+      "option_id": "P3-06-IMP",
+      "code": "IMP",
+      "scores_to": "Impact",
+      "text_en": "It's about solving a real problem in your community",
+      "text_ar": "لأنها تدور حول حلّ مشكلة حقيقية في مجتمعك"
+     },
+     {
+      "option_id": "P3-06-MAS",
+      "code": "MAS",
+      "scores_to": "Mastery",
+      "text_en": "The preparation is challenging, and it pushes you to improve",
+      "text_ar": "لأن التحضير لها يمثّل تحديًا، ويدفعك إلى أن تتطوّر"
+     },
+     {
+      "option_id": "P3-06-INC",
+      "code": "INC",
+      "scores_to": "Income",
+      "text_en": "Doing well in it could open the way to better-paid work later",
+      "text_ar": "لأن التفوّق فيها قد يفتح لك الطريق إلى عمل بأجر أعلى في المستقبل"
+     },
+     {
+      "option_id": "P3-06-FAM",
+      "code": "FAM",
+      "scores_to": "Family",
+      "text_en": "Your family hopes you'll take part in it",
+      "text_ar": "لأن عائلتك تتمنى مشاركتك فيها"
+     }
+    ]
+   },
+   {
+    "item_id": "P3-07",
+    "pillar": "P3",
+    "context_zone": "No zone",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "If you were asked to choose a new skill to learn in your free time, why would you pick one over the others?",
+    "stem_ar": "إذا طُلب منك أن تختار مهارة جديدة لتتعلّمها في وقت فراغك، فلماذا تختار مهارة دون غيرها؟",
+    "fixed_order_position": 3,
+    "options": [
+     {
+      "option_id": "P3-07-REC",
+      "code": "REC",
+      "scores_to": "Recognition",
+      "text_en": "It's a skill people admire",
+      "text_ar": "لأنها مهارة يُعجب بها الناس"
+     },
+     {
+      "option_id": "P3-07-IMP",
+      "code": "IMP",
+      "scores_to": "Impact",
+      "text_en": "You could use it to help people around you",
+      "text_ar": "لأنك تستطيع أن تستخدمها لمساعدة من حولك"
+     },
+     {
+      "option_id": "P3-07-MAS",
+      "code": "MAS",
+      "scores_to": "Mastery",
+      "text_en": "It's hard, and you'd enjoy the challenge of getting good at it",
+      "text_ar": "لأنها صعبة، وستستمتع بتحدّي إتقانها"
+     },
+     {
+      "option_id": "P3-07-AUT",
+      "code": "AUT",
+      "scores_to": "Autonomy",
+      "text_en": "You can learn it at your own pace and in your own way",
+      "text_ar": "لأنك تتعلّمها بالسرعة التي تناسبك وعلى طريقتك"
+     }
+    ]
+   },
+   {
+    "item_id": "P3-08",
+    "pillar": "P3",
+    "context_zone": "No zone",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "If you were choosing a university to apply to after school, why would you pick one over the others?",
+    "stem_ar": "إذا كنت تختار جامعة لتتقدّم إليها بعد المدرسة، فلماذا تختار جامعة دون غيرها؟",
+    "fixed_order_position": 4,
+    "options": [
+     {
+      "option_id": "P3-08-SEC",
+      "code": "SEC",
+      "scores_to": "Security",
+      "text_en": "It leads to jobs that are always needed",
+      "text_ar": "لأن تخصصاتها تؤدي إلى وظائف مطلوبة دائمًا"
+     },
+     {
+      "option_id": "P3-08-INC",
+      "code": "INC",
+      "scores_to": "Income",
+      "text_en": "Its graduates often go on to well-paid jobs",
+      "text_ar": "لأن خريجيها غالبًا ما يحصلون على وظائف بأجر جيد"
+     },
+     {
+      "option_id": "P3-08-FAM",
+      "code": "FAM",
+      "scores_to": "Family",
+      "text_en": "It's close to home, so you can stay near your family",
+      "text_ar": "لأنها قريبة من البيت، فتبقى قريبًا من عائلتك"
+     },
+     {
+      "option_id": "P3-08-LIF",
+      "code": "LIF",
+      "scores_to": "Lifestyle",
+      "text_en": "The study load leaves time for friends and your interests",
+      "text_ar": "لأن الدراسة فيها تترك لك وقتًا لأصدقائك واهتماماتك"
+     }
+    ]
+   },
+   {
+    "item_id": "P3-09",
+    "pillar": "P3",
+    "context_zone": "No zone",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "If you started a small online shop selling things you make, why would you pick one thing to make first over the others?",
+    "stem_ar": "إذا بدأت متجرًا صغيرًا على الإنترنت لبيع أشياء تصنعها بنفسك، فلماذا تختار أن تبدأ بمنتج دون غيره؟",
+    "fixed_order_position": 7,
+    "options": [
+     {
+      "option_id": "P3-09-REC",
+      "code": "REC",
+      "scores_to": "Recognition",
+      "text_en": "People would talk about it and share it online",
+      "text_ar": "لأن الناس سيتحدثون عنه وينشرونه على وسائل التواصل"
+     },
+     {
+      "option_id": "P3-09-MAS",
+      "code": "MAS",
+      "scores_to": "Mastery",
+      "text_en": "It takes real skill that you'd enjoy improving",
+      "text_ar": "لأنه يتطلب مهارة حقيقية ستستمتع بتطويرها"
+     },
+     {
+      "option_id": "P3-09-INC",
+      "code": "INC",
+      "scores_to": "Income",
+      "text_en": "It teaches you business skills that could help you earn more later",
+      "text_ar": "لأنه يعلّمك مهارات تجارية قد تساعدك على زيادة دخلك في المستقبل"
+     },
+     {
+      "option_id": "P3-09-LIF",
+      "code": "LIF",
+      "scores_to": "Lifestyle",
+      "text_en": "It's quick to make, so it doesn't take over your free time",
+      "text_ar": "لأنه سريع الصنع، فلا يأخذ كل وقت فراغك"
+     }
+    ]
+   },
+   {
+    "item_id": "P3-10",
+    "pillar": "P3",
+    "context_zone": "No zone",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "If students at your school were voting on a place for a two-day trip, why would you pick one place over the others?",
+    "stem_ar": "إذا صوّت طلاب مدرستك لاختيار مكان لرحلة مدتها يومان، فلماذا تختار مكانًا دون غيره؟",
+    "fixed_order_position": 8,
+    "options": [
+     {
+      "option_id": "P3-10-IMP",
+      "code": "IMP",
+      "scores_to": "Impact",
+      "text_en": "The trip includes helping the local community there",
+      "text_ar": "لأن الرحلة تتضمن مساعدة المجتمع المحلي هناك"
+     },
+     {
+      "option_id": "P3-10-AUT",
+      "code": "AUT",
+      "scores_to": "Autonomy",
+      "text_en": "You'd have free time to explore on your own",
+      "text_ar": "لأنك ستحظى بوقت حر لتستكشف المكان بنفسك"
+     },
+     {
+      "option_id": "P3-10-SEC",
+      "code": "SEC",
+      "scores_to": "Security",
+      "text_en": "The trip has a well-designed programme arranged in advance, so you know what you'll be doing",
+      "text_ar": "لأن الرحلة إليه لها برنامج مُحكم مُعدّ مسبقًا، فتعرف ما ستقوم به"
+     },
+     {
+      "option_id": "P3-10-FAM",
+      "code": "FAM",
+      "scores_to": "Family",
+      "text_en": "Your family would be happy with your going there",
+      "text_ar": "لأن عائلتك ستكون راضية عن ذهابك إليه"
+     }
+    ]
+   },
+   {
+    "item_id": "P3-11",
+    "pillar": "P3",
+    "context_zone": "No zone",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "If you were asked to give a short talk at your school's morning assembly, why would you pick one topic over the others?",
+    "stem_ar": "إذا طُلب منك أن تقدّم كلمة قصيرة في الإذاعة المدرسية، فلماذا تختار موضوعًا دون غيره؟",
+    "fixed_order_position": 11,
+    "options": [
+     {
+      "option_id": "P3-11-REC",
+      "code": "REC",
+      "scores_to": "Recognition",
+      "text_en": "Everyone would remember your talk afterwards",
+      "text_ar": "لأن الجميع سيتذكّرون كلمتك بعدها"
+     },
+     {
+      "option_id": "P3-11-IMP",
+      "code": "IMP",
+      "scores_to": "Impact",
+      "text_en": "It could make a real difference to other students",
+      "text_ar": "لأنه قد يُحدث فرقًا حقيقيًا لدى الطلاب الآخرين"
+     },
+     {
+      "option_id": "P3-11-FAM",
+      "code": "FAM",
+      "scores_to": "Family",
+      "text_en": "Your family would be glad you chose it",
+      "text_ar": "لأن عائلتك ستسعد باختيارك له"
+     },
+     {
+      "option_id": "P3-11-LIF",
+      "code": "LIF",
+      "scores_to": "Lifestyle",
+      "text_en": "You already know it well, so you won't need extra evenings to prepare",
+      "text_ar": "لأنك تعرفه جيدًا، فلن تحتاج إلى أمسيات إضافية للتحضير"
+     }
+    ]
+   },
+   {
+    "item_id": "P3-12",
+    "pillar": "P3",
+    "context_zone": "No zone",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "If you were choosing a project for your school science fair, why would you pick one over the others?",
+    "stem_ar": "إذا كنت تختار مشروعًا لمعرض العلوم في مدرستك، فلماذا تختار مشروعًا دون غيره؟",
+    "fixed_order_position": 12,
+    "options": [
+     {
+      "option_id": "P3-12-MAS",
+      "code": "MAS",
+      "scores_to": "Mastery",
+      "text_en": "It's the one you'd learn the most from",
+      "text_ar": "لأنه المشروع الذي ستتعلّم منه أكثر من غيره"
+     },
+     {
+      "option_id": "P3-12-AUT",
+      "code": "AUT",
+      "scores_to": "Autonomy",
+      "text_en": "You can design it your own way, from start to finish",
+      "text_ar": "لأنك تصمّمه على طريقتك من البداية إلى النهاية"
+     },
+     {
+      "option_id": "P3-12-SEC",
+      "code": "SEC",
+      "scores_to": "Security",
+      "text_en": "You're confident you can do it well",
+      "text_ar": "لأنك واثق من أنك ستنجزه جيدًا"
+     },
+     {
+      "option_id": "P3-12-INC",
+      "code": "INC",
+      "scores_to": "Income",
+      "text_en": "It's linked to a field where jobs are well paid",
+      "text_ar": "لأنه مرتبط بمجال تكون فيه الوظائف ذات أجر مرتفع"
+     }
+    ]
+   },
+   {
+    "item_id": "P3-13",
+    "pillar": "P3",
+    "context_zone": "No zone",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "If you were choosing someone well known to follow online and learn from, why would you pick one person over the others?",
+    "stem_ar": "إذا كنت تختار شخصًا معروفًا لتتابعه عبر الإنترنت وتتعلّم منه، فلماذا تختار شخصًا دون غيره؟",
+    "fixed_order_position": 13,
+    "options": [
+     {
+      "option_id": "P3-13-REC",
+      "code": "REC",
+      "scores_to": "Recognition",
+      "text_en": "People everywhere admire what they do",
+      "text_ar": "لأن الناس في كل مكان يُعجبون بما يقوم به"
+     },
+     {
+      "option_id": "P3-13-AUT",
+      "code": "AUT",
+      "scores_to": "Autonomy",
+      "text_en": "They work for themselves and decide everything their own way",
+      "text_ar": "لأنه يعمل لحساب نفسه ويقرّر كل شيء على طريقته"
+     },
+     {
+      "option_id": "P3-13-INC",
+      "code": "INC",
+      "scores_to": "Income",
+      "text_en": "Their work has brought them a very good income",
+      "text_ar": "لأن عمله حقّق له دخلًا جيدًا جدًا"
+     },
+     {
+      "option_id": "P3-13-FAM",
+      "code": "FAM",
+      "scores_to": "Family",
+      "text_en": "Their family is proud of the path they chose",
+      "text_ar": "لأن عائلته تفخر بالطريق الذي اختاره"
+     }
+    ]
+   },
+   {
+    "item_id": "P3-14",
+    "pillar": "P3",
+    "context_zone": "No zone",
+    "axis": null,
+    "review_status": "Reviewed by founder",
+    "stem_en": "If you were planning your mid-year school break, why would you pick one plan over the others?",
+    "stem_ar": "إذا كنت تخطط لإجازة منتصف العام الدراسي، فلماذا تختار خطة دون غيرها؟",
+    "fixed_order_position": 14,
+    "options": [
+     {
+      "option_id": "P3-14-IMP",
+      "code": "IMP",
+      "scores_to": "Impact",
+      "text_en": "It gives you a chance to help people who need it",
+      "text_ar": "لأنها تمنحك فرصة لمساعدة من يحتاجون إليها"
+     },
+     {
+      "option_id": "P3-14-MAS",
+      "code": "MAS",
+      "scores_to": "Mastery",
+      "text_en": "You'd come back much better at something you care about",
+      "text_ar": "لأنك ستعود أفضل بكثير في شيء يهمّك"
+     },
+     {
+      "option_id": "P3-14-SEC",
+      "code": "SEC",
+      "scores_to": "Security",
+      "text_en": "It helps you prepare for next term, so you start it feeling ready",
+      "text_ar": "لأنها تساعدك على الاستعداد للفصل القادم، فتبدأه وأنت مطمئن"
+     },
+     {
+      "option_id": "P3-14-LIF",
+      "code": "LIF",
+      "scores_to": "Lifestyle",
+      "text_en": "It leaves plenty of time to rest and see your friends",
+      "text_ar": "لأنها تترك لك وقتًا كافيًا للراحة ولقاء أصدقائك"
+     }
+    ]
+   }
+  ],
+  "P4": [
+   {
+    "item_id": "P4-01",
+    "pillar": "P4",
+    "context_zone": "Academic",
+    "axis": "team",
+    "review_status": "Reviewed by founder",
+    "stem_en": "Your class has a big project. Which way of working would you choose?",
+    "stem_ar": "لدى صفّك مشروع كبير. أيّ طريقة عمل هي الأقرب إليك؟",
+    "fixed_order_position": 1,
+    "options": [
+     {
+      "option_id": "P4-01-T",
+      "code": "T",
+      "scores_to": "team: toward side A (with others)",
+      "text_en": "Working on it side by side with a team, building each part together",
+      "text_ar": "العمل عليه جنبًا إلى جنب مع فريق، وبناء كل جزء معًا"
+     },
+     {
+      "option_id": "P4-01-O",
+      "code": "O",
+      "scores_to": "team: toward side B (on your own)",
+      "text_en": "Taking one part of it and carrying it through yourself, from start to finish",
+      "text_ar": "تولّي جزء منه وإنجازه بنفسك من البداية إلى النهاية"
+     }
+    ]
+   },
+   {
+    "item_id": "P4-02",
+    "pillar": "P4",
+    "context_zone": "Academic",
+    "axis": "setting",
+    "review_status": "Reviewed by founder",
+    "stem_en": "When you study at home, which suits you better?",
+    "stem_ar": "عندما تذاكر في البيت، أيّهما يناسبك أكثر؟",
+    "fixed_order_position": 6,
+    "options": [
+     {
+      "option_id": "P4-02-ST",
+      "code": "ST",
+      "scores_to": "setting: toward side A (familiar place)",
+      "text_en": "Studying at the same desk, at the same time each day",
+      "text_ar": "المذاكرة على المكتب نفسه وفي الوقت نفسه كل يوم"
+     },
+     {
+      "option_id": "P4-02-CH",
+      "code": "CH",
+      "scores_to": "setting: toward side B (something different)",
+      "text_en": "Studying in different places, like your room, the living room or the library, depending on the day",
+      "text_ar": "المذاكرة في أماكن مختلفة، كغرفتك أو غرفة المعيشة أو المكتبة، حسب اليوم"
+     }
+    ]
+   },
+   {
+    "item_id": "P4-03",
+    "pillar": "P4",
+    "context_zone": "Digital",
+    "axis": "team",
+    "review_status": "Reviewed by founder",
+    "stem_en": "When you play an online game, which do you enjoy more?",
+    "stem_ar": "عندما تلعب لعبة على الإنترنت، أيّهما تستمتع به أكثر؟",
+    "fixed_order_position": 5,
+    "options": [
+     {
+      "option_id": "P4-03-T",
+      "code": "T",
+      "scores_to": "team: toward side A (with others)",
+      "text_en": "Playing in a team where everyone depends on each other to win",
+      "text_ar": "اللعب ضمن فريق يعتمد أفراده على بعضهم للفوز"
+     },
+     {
+      "option_id": "P4-03-O",
+      "code": "O",
+      "scores_to": "team: toward side B (on your own)",
+      "text_en": "Playing solo and making progress through your own effort",
+      "text_ar": "اللعب بمفردك والتقدّم بجهدك الخاص"
+     }
+    ]
+   },
+   {
+    "item_id": "P4-04",
+    "pillar": "P4",
+    "context_zone": "Digital",
+    "axis": "setting",
+    "review_status": "Reviewed by founder",
+    "stem_en": "When a friend or someone you follow talks about a new app, game or channel, what do you usually do?",
+    "stem_ar": "عندما يتحدث صديق أو شخص تتابعه عن تطبيق أو لعبة أو قناة جديدة، ماذا تفعل عادةً؟",
+    "fixed_order_position": 2,
+    "options": [
+     {
+      "option_id": "P4-04-ST",
+      "code": "ST",
+      "scores_to": "setting: toward side A (familiar place)",
+      "text_en": "Prefer to continue with the apps, games and channels you're used to and already like",
+      "text_ar": "تفضّل الاستمرار في التطبيقات والألعاب والقنوات التي اعتدت عليها وتحبها"
+     },
+     {
+      "option_id": "P4-04-CH",
+      "code": "CH",
+      "scores_to": "setting: toward side B (something different)",
+      "text_en": "Look up the new app, game or channel right away",
+      "text_ar": "تبحث عن التطبيق أو اللعبة أو القناة الجديدة فورًا"
+     }
+    ]
+   },
+   {
+    "item_id": "P4-05",
+    "pillar": "P4",
+    "context_zone": "Social and family life",
+    "axis": "team",
+    "review_status": "Reviewed by founder",
+    "stem_en": "When you exercise or play sport, which do you enjoy more?",
+    "stem_ar": "عندما تمارس الرياضة، أيّهما تستمتع به أكثر؟",
+    "fixed_order_position": 3,
+    "options": [
+     {
+      "option_id": "P4-05-T",
+      "code": "T",
+      "scores_to": "team: toward side A (with others)",
+      "text_en": "Training with friends, pushing each other on",
+      "text_ar": "التمرّن مع الأصدقاء، وتشجيع بعضكم بعضًا"
+     },
+     {
+      "option_id": "P4-05-O",
+      "code": "O",
+      "scores_to": "team: toward side B (on your own)",
+      "text_en": "Training on your own, at your own pace",
+      "text_ar": "التمرّن بمفردك، بالسرعة التي تناسبك"
+     }
+    ]
+   },
+   {
+    "item_id": "P4-06",
+    "pillar": "P4",
+    "context_zone": "Social and family life",
+    "axis": "setting",
+    "review_status": "Reviewed by founder",
+    "stem_en": "When you plan an outing with your friends, what do you usually do?",
+    "stem_ar": "عندما تخطط للخروج مع أصدقائك، ماذا تفعل عادةً؟",
+    "fixed_order_position": 8,
+    "options": [
+     {
+      "option_id": "P4-06-ST",
+      "code": "ST",
+      "scores_to": "setting: toward side A (familiar place)",
+      "text_en": "Choose a place you've been to before and like",
+      "text_ar": "تختار مكانًا زرتموه من قبل وتحبونه"
+     },
+     {
+      "option_id": "P4-06-CH",
+      "code": "CH",
+      "scores_to": "setting: toward side B (something different)",
+      "text_en": "Look for a new place you haven't been to yet",
+      "text_ar": "تبحث عن مكان جديد لم تزوروه بعد"
+     }
+    ]
+   },
+   {
+    "item_id": "P4-07",
+    "pillar": "P4",
+    "context_zone": "Activities and events",
+    "axis": "team",
+    "review_status": "Reviewed by founder",
+    "stem_en": "If you helped out in a relative's business for a few days, which would you prefer?",
+    "stem_ar": "إذا ساعدت في عمل أحد أقاربك لبضعة أيام، فأيّهما تفضّل؟",
+    "fixed_order_position": 7,
+    "options": [
+     {
+      "option_id": "P4-07-T",
+      "code": "T",
+      "scores_to": "team: toward side A (with others)",
+      "text_en": "To work alongside the others, with everyone depending on each other",
+      "text_ar": "أن تعمل جنبًا إلى جنب مع الآخرين، ويعتمد الجميع على بعضهم"
+     },
+     {
+      "option_id": "P4-07-O",
+      "code": "O",
+      "scores_to": "team: toward side B (on your own)",
+      "text_en": "To be given a task of your own that you're fully responsible for",
+      "text_ar": "أن تُكلَّف بمهمة خاصة بك وتكون مسؤولًا عنها بالكامل"
+     }
+    ]
+   },
+   {
+    "item_id": "P4-08",
+    "pillar": "P4",
+    "context_zone": "Activities and events",
+    "axis": "setting",
+    "review_status": "Reviewed by founder",
+    "stem_en": "If you joined a holiday camp, which would you prefer?",
+    "stem_ar": "إذا انضممت إلى مخيم في الإجازة، فأيّهما تفضّل؟",
+    "fixed_order_position": 4,
+    "options": [
+     {
+      "option_id": "P4-08-ST",
+      "code": "ST",
+      "scores_to": "setting: toward side A (familiar place)",
+      "text_en": "A camp based in one place, where you settle in and make it feel like yours",
+      "text_ar": "أن يكون المخيم في مكان واحد، تستقرّ فيه وتشعر بأنه مكانك"
+     },
+     {
+      "option_id": "P4-08-CH",
+      "code": "CH",
+      "scores_to": "setting: toward side B (something different)",
+      "text_en": "A camp that moves to a different place every day or two",
+      "text_ar": "أن ينتقل المخيم إلى مكان مختلف كل يوم أو يومين"
+     }
+    ]
+   }
+  ]
+ }
+}

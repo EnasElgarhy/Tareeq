@@ -3,7 +3,11 @@ import {
   parseRangeFromSearchParams,
 } from "@/lib/admin/analytics/filters";
 import { getAnalyticsViewModel } from "@/lib/admin/analytics/queries";
-import type { AnalyticsFilters, AnalyticsViewModel } from "@/lib/admin/analytics/types";
+import {
+  DEFAULT_FILTERS,
+  type AnalyticsFilters,
+  type AnalyticsViewModel,
+} from "@/lib/admin/analytics/types";
 
 export type AnalyticsSearchParams = Record<string, string | string[] | undefined>;
 
@@ -20,6 +24,7 @@ export async function loadAnalyticsPage(
 /** Query string for just the filters (no `range`) — the base for range-toggle links. */
 export function buildFilterQueryString(filters: AnalyticsFilters): string {
   const params = new URLSearchParams();
+  if (filters.generation !== DEFAULT_FILTERS.generation) params.set("generation", filters.generation);
   if (filters.from) params.set("from", filters.from);
   if (filters.to) params.set("to", filters.to);
   if (filters.country) params.set("country", filters.country);

@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { AssessmentTabs } from "@/components/admin/AssessmentTabs";
 import { CoreTranslationsPanel } from "@/components/admin/CoreTranslationsPanel";
 import PageHeader from "@/components/admin/PageHeader";
 import { TranslationsPanel } from "@/components/admin/TranslationsPanel";
 import { loadAssessmentWorkspace } from "@/lib/admin/assessment-workspace.server";
+import { getVersionGeneration } from "@/lib/admin/assessment-generation.server";
 import { getAssessmentForVersion } from "@/lib/admin/catalog";
 import { getContentVersion, getVersionContent } from "@/lib/admin/content";
 
@@ -18,6 +19,10 @@ export default async function TranslationsPage({
   const { versionId } = await params;
   const version = await getContentVersion(versionId);
   if (!version) notFound();
+  // v4 is archived (read-only) and CORE 2.0 has its own page.
+  if ((await getVersionGeneration(versionId)) !== "custom") {
+    redirect(`/admin/content/${versionId}`);
+  }
 
   const assessment = await getAssessmentForVersion(versionId);
 

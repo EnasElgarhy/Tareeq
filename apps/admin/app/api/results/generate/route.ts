@@ -1,3 +1,4 @@
+import { hasCoreAnswers } from "@/lib/admin/core/framework";
 import { assessmentQuestions } from "@/lib/assessment/questions";
 import { buildBaseReport } from "@/lib/results/framework";
 import {
@@ -82,6 +83,15 @@ export async function POST(request: Request) {
     return Response.json(
       { error: "answers must be a string record (max 100 entries)." },
       { status: 400 },
+    );
+  }
+
+  // This route scores with the archived v4 engine (scoring 1.x). CORE 2.0
+  // answers are scored by scoring 2.0 in the consumer and never here.
+  if (hasCoreAnswers(body.answers)) {
+    return Response.json(
+      { error: "CORE 2.0 answers can't be scored with the v4 engine." },
+      { status: 422 },
     );
   }
 

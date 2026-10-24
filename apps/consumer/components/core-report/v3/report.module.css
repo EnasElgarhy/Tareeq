@@ -1,0 +1,922 @@
+/*
+ * CORE report, client canvas layout (B1–B5) in the Tareeq look: night
+ * headers with Kai and a gold sun, warm paper below, one violet accent
+ * for everything the student chose, gold for highlights. No per-letter
+ * colours: C, O, R and E share one palette with the website and the app.
+ */
+.screen {
+  --r-night: #08051a;
+  --r-dusk: #221248;
+  /* The app's own brand purple (components/home/app-accent: APP_ACCENT). */
+  --r-violet: var(--app-accent, #6d5ba8);
+  --r-violet-deep: #4b3d82;
+  --r-violet-tint: #eeebf6;
+  --r-gold: #f4c660;
+  --r-gold-tint: #fdf3d6;
+  --r-gold-ink: #6b4a10;
+  --r-lilac: #d9cdf7;
+  --r-card: var(--day-card, #fffcf6);
+  --r-line: var(--day-line, rgba(43, 36, 28, 0.1));
+  --r-ink: var(--day-ink, #2a2118);
+  --r-ink-2: var(--day-ink-2, #5c5142);
+  --r-ink-3: var(--day-ink-3, #675d4e);
+  --r-shadow: 0 1px 2px rgba(43, 36, 28, 0.04), 0 8px 22px rgba(43, 36, 28, 0.05);
+  display: grid;
+  gap: 14px;
+  color: var(--r-ink);
+}
+
+/* ------------------------------------------------------------- hero band */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+  background: linear-gradient(180deg, var(--r-night) 0%, var(--r-dusk) 100%);
+  color: #fff;
+  isolation: isolate;
+}
+
+.heroArt {
+  display: block;
+  width: 100%;
+  aspect-ratio: 390 / 150;
+  object-fit: cover;
+  object-position: 70% 40%;
+}
+
+.heroArtFade {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 100%;
+  background: linear-gradient(180deg, transparent 55%, var(--r-dusk) 96%);
+  pointer-events: none;
+}
+
+.heroText {
+  position: relative;
+  display: grid;
+  gap: 6px;
+  padding: 4px 18px 34px;
+}
+
+.heroEyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--r-gold);
+}
+
+.heroTitle {
+  font-size: 23px;
+  line-height: 1.12;
+  max-width: 22ch;
+}
+
+.heroIntro {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: rgba(233, 227, 250, 0.82);
+  max-width: 52ch;
+}
+
+/* The wave that hands the night band over to paper, as on the canvas. */
+.heroWave {
+  position: absolute;
+  inset: auto 0 -1px 0;
+  width: 100%;
+  height: 22px;
+  color: var(--day-bg, #f4eee3);
+}
+
+/* ------------------------------------------------------------------ cards */
+
+.card {
+  position: relative;
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 20px;
+  border: 1px solid var(--r-line);
+  background: var(--r-card);
+  box-shadow: var(--r-shadow);
+}
+
+.cardTitle {
+  font-size: 18px;
+  line-height: 1.15;
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 4px 12px 4px 4px;
+  border-radius: 999px;
+  background: var(--r-violet-tint);
+  color: var(--r-violet-deep);
+  font-size: 13.5px;
+  font-weight: 800;
+}
+
+.letter {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: var(--r-violet);
+  color: #fff;
+  font-family: var(--font-bricolage), system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.letterTile {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: var(--r-violet);
+  color: #fff;
+  font-family: var(--font-bricolage), system-ui, sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.subLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--r-ink-3);
+}
+
+/* ------------------------------------------------------- S1 reading notes */
+
+.notes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.note {
+  padding: 14px;
+  border-radius: 18px;
+  background: var(--r-card);
+  border: 1px solid var(--r-line);
+  font-size: 13.5px;
+  line-height: 1.45;
+  font-weight: 500;
+  color: var(--r-ink-2);
+}
+
+/*
+ * S1: the reading notes as one quiet panel, like a short letter: the first
+ * note as a statement, four practical notes beside line icons, and a Kai
+ * sign-off. Two columns of notes on wider screens, one on phones.
+ */
+.notesPanel {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+  border-radius: 20px;
+  background: var(--r-card);
+  border: 1px solid var(--r-line);
+}
+
+.notesLead {
+  font-family: var(--font-bricolage), system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--r-ink);
+  text-wrap: pretty;
+  max-width: 44ch;
+}
+
+.notesLead:lang(ar) {
+  font-family: var(--font-arabic), sans-serif;
+}
+
+.notesList {
+  display: grid;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--r-line);
+}
+
+.notesItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--r-ink-2);
+}
+
+.notesSign {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 14px;
+  border-top: 1px solid var(--r-line);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--r-violet-deep);
+}
+
+.notesKai {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  object-fit: cover;
+  background: var(--r-violet-tint);
+}
+
+@media (min-width: 640px) {
+  .notesPanel {
+    padding: 24px 28px;
+  }
+
+  .notesLead {
+    font-size: 21px;
+  }
+
+  .notesList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 28px;
+  }
+}
+
+.keyRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px 10px 10px;
+  border-radius: 18px;
+  background: var(--r-card);
+  border: 1px solid var(--r-line);
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 20px;
+  border-radius: 999px;
+  background: var(--gold-gradient, linear-gradient(135deg, #f4c660 0%, #f5d57f 100%));
+  color: #14101f;
+  font-family: var(--font-bricolage), system-ui, sans-serif;
+  font-size: 15.5px;
+  font-weight: 800;
+  box-shadow: 0 12px 26px -12px rgba(122, 74, 33, 0.5);
+  transition: transform var(--duration-fast, 120ms) ease, background var(--duration-fast, 120ms) ease;
+}
+
+.cta:hover {
+  filter: brightness(1.04);
+}
+
+.cta:active {
+  transform: translateY(1px);
+}
+
+.cta:focus-visible {
+  outline: 3px solid var(--r-violet);
+  outline-offset: 3px;
+}
+
+/* --------------------------------------------------- S2 glance and zones */
+
+.pillBox {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: #fff;
+  border: 1px solid var(--r-line);
+}
+
+.connector {
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--r-ink-3);
+}
+
+.zones {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.zone {
+  display: flex;
+  min-height: 60px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 6px;
+  border: 1px solid var(--r-line);
+  background: #fff;
+  color: var(--r-ink-2);
+  text-align: center;
+  font-size: 11.5px;
+  line-height: 1.25;
+  font-weight: 500;
+  border-radius: 8px;
+}
+
+.zone:first-child {
+  border-start-start-radius: 22px;
+  border-end-start-radius: 22px;
+}
+
+.zone:last-child {
+  border-start-end-radius: 22px;
+  border-end-end-radius: 22px;
+}
+
+.zoneChosen {
+  background: var(--r-violet);
+  border-color: var(--r-violet);
+  color: #fff;
+  font-weight: 800;
+}
+
+/* The scale under the three options: arrowed track, ticks, and a gold "You" marker. */
+.scale {
+  position: relative;
+  height: 34px;
+  margin-top: 2px;
+}
+
+.scaleTrack {
+  position: absolute;
+  inset-inline: 2px;
+  top: 6px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--r-ink-3);
+  opacity: 0.45;
+}
+
+.scaleTrack::before,
+.scaleTrack::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  border-block: 5px solid transparent;
+}
+
+.scaleTrack::before {
+  inset-inline-start: -2px;
+  border-inline-end: 7px solid var(--r-ink-3);
+}
+
+.scaleTrack::after {
+  inset-inline-end: -2px;
+  border-inline-start: 7px solid var(--r-ink-3);
+}
+
+.scaleTick {
+  position: absolute;
+  top: 3px;
+  width: 8px;
+  height: 8px;
+  margin-inline-start: -4px;
+  border-radius: 999px;
+  background: var(--day-bg, #f4eee3);
+  border: 2px solid var(--r-ink-3);
+  opacity: 0.6;
+}
+
+.scaleTick[data-at="1"],
+.scaleMarker[data-at="1"] {
+  inset-inline-start: calc(100% / 6);
+}
+
+.scaleTick[data-at="2"],
+.scaleMarker[data-at="2"] {
+  inset-inline-start: 50%;
+}
+
+.scaleTick[data-at="3"],
+.scaleMarker[data-at="3"] {
+  inset-inline-start: calc(500% / 6);
+}
+
+.scaleMarker {
+  position: absolute;
+  top: 0;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  transform: translateX(-50%);
+}
+
+:global([dir="rtl"]) .scaleMarker {
+  transform: translateX(50%);
+}
+
+.scaleTriangle {
+  width: 0;
+  height: 0;
+  border-inline: 7px solid transparent;
+  border-bottom: 10px solid var(--r-gold);
+  filter: drop-shadow(0 1px 0 rgba(107, 74, 16, 0.35));
+}
+
+.scaleYou {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--r-gold);
+  color: var(--r-gold-ink);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.motivator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: var(--r-violet);
+  color: #fff;
+  font-family: var(--font-bricolage), system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.motivatorGlyph {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--r-line);
+  background: #fff;
+  color: var(--r-ink-2);
+  font-size: 12.5px;
+  line-height: 1.3;
+}
+
+/* ------------------------------------------------------- S3 curiosity story */
+
+.storyHead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: -16px -16px 0;
+  padding: 12px 16px;
+  border-start-start-radius: 20px;
+  border-start-end-radius: 20px;
+  background: linear-gradient(135deg, var(--r-dusk), #3a2378);
+  color: #fff;
+}
+
+.storyGlyph {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--r-ink);
+}
+
+.storyCover {
+  position: relative;
+  margin: -16px -16px 0;
+  border-start-start-radius: 20px;
+  border-start-end-radius: 20px;
+  overflow: hidden;
+  background: var(--r-night);
+}
+
+.storyCoverArt {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 16 / 8;
+  object-fit: cover;
+}
+
+.storyCoverText {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 28px 14px 12px;
+  background: linear-gradient(180deg, transparent 0%, rgba(8, 5, 26, 0.88) 60%);
+  color: #fff;
+}
+
+.storyArt {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 14px;
+}
+
+.noticeChip {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 14px;
+  background: var(--r-gold-tint);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.dottedLink {
+  justify-self: center;
+  width: 2px;
+  height: 34px;
+  background-image: linear-gradient(var(--r-ink-3) 40%, transparent 0);
+  background-size: 2px 8px;
+  opacity: 0.5;
+}
+
+/* ---------------------------------------------------------- S4 meaning */
+
+.meet {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border-radius: 20px;
+  background: linear-gradient(160deg, var(--r-night), var(--r-dusk));
+  color: #fff;
+  box-shadow: 0 16px 36px rgba(8, 5, 26, 0.28);
+}
+
+.meetPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px 6px 6px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.meetJob {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(217, 205, 247, 0.32);
+  font-size: 12.5px;
+}
+
+.directionHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 18px;
+  background: var(--r-violet-tint);
+}
+
+.timeline {
+  display: grid;
+  gap: 0;
+  padding-inline-start: 4px;
+}
+
+.stop {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 12px;
+}
+
+.stopRail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stopDot {
+  width: 16px;
+  height: 16px;
+  margin-top: 6px;
+  border-radius: 999px;
+  border: 2px solid var(--r-violet);
+  background: var(--r-card);
+}
+
+.stopDotClosest {
+  background: var(--r-gold);
+  border-color: var(--r-gold-ink);
+}
+
+.stopLine {
+  flex-grow: 1;
+  width: 0;
+  margin-top: 4px;
+  border-inline-start: 2px dotted rgba(109, 91, 168, 0.45);
+}
+
+.stop:last-child .stopLine {
+  display: none;
+}
+
+.stopBody {
+  display: grid;
+  gap: 8px;
+  padding-bottom: 18px;
+}
+
+.closestBadge {
+  width: fit-content;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--r-gold);
+  color: var(--r-gold-ink);
+  font-size: 11.5px;
+  font-weight: 800;
+}
+
+/* One list per family: hairlines between jobs, short tags instead of sentences. */
+.jobList {
+  display: grid;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid var(--r-line);
+  overflow: hidden;
+}
+
+.jobList > li + li {
+  border-top: 1px solid var(--r-line);
+}
+
+.jobRow {
+  display: grid;
+  gap: 7px;
+  padding: 11px 13px;
+}
+
+.jobPlain {
+  padding: 10px 13px;
+  color: var(--r-ink-2);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.tagWork,
+.tagDrive {
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.tagWork {
+  background: var(--r-violet-tint);
+  color: var(--r-violet-deep);
+}
+
+.tagDrive {
+  background: var(--r-gold-tint);
+  color: var(--r-gold-ink);
+}
+
+/* Study fields and Worth checking: one panel, same label-then-content rhythm. */
+.facts {
+  display: grid;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid var(--r-line);
+}
+
+.fact {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+}
+
+.fact + .fact {
+  border-top: 1px solid var(--r-line);
+}
+
+.factLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--r-ink-3);
+}
+
+.fieldChip {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--r-violet-tint);
+  color: var(--r-violet-deep);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.worth {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--r-gold-tint);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* --------------------------------------------------------- S5 the path */
+
+.path {
+  position: relative;
+  display: grid;
+  gap: 12px;
+}
+
+.pathLine {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  color: var(--r-lilac);
+}
+
+.step {
+  position: relative;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.stepFlip {
+  flex-direction: row-reverse;
+}
+
+.stepBadge {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: var(--r-violet);
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(109, 91, 168, 0.25), 0 0 0 4px var(--day-bg, #f4eee3);
+}
+
+.stepCard {
+  flex: 1 1 0;
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+  padding: 12px 13px;
+  border-radius: 18px;
+  background: var(--r-card);
+  border: 1px solid var(--r-line);
+  box-shadow: var(--r-shadow);
+}
+
+.ask {
+  padding: 8px 11px;
+  border-radius: 12px;
+  background: var(--r-violet-tint);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+/* ----------------------------------------------------- S6 and S7 closing */
+
+.isGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+@media (max-width: 360px) {
+  .notes,
+  .isGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  /* Desktop hero: a shorter band with the heading over the open sky. */
+  .heroArt {
+    aspect-ratio: 780 / 260;
+  }
+
+  .heroTitle {
+    font-size: 28px;
+  }
+
+  .heroArtFade {
+    background: linear-gradient(90deg, rgba(8, 5, 26, 0.9) 0%, rgba(8, 5, 26, 0.55) 40%, transparent 70%);
+  }
+
+  .heroText {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: min(60%, 520px);
+    justify-content: center;
+    align-content: center;
+    padding: 32px 36px 48px;
+    margin-top: 0;
+  }
+
+  .notes {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .glanceGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .glanceGrid > .card {
+    align-content: start;
+  }
+
+  /* Curiosity story: the scene on the start side, the words beside it. */
+  .storyCard {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    column-gap: 22px;
+    align-content: start;
+  }
+
+  .storyCard > :not(.storyCover) {
+    grid-column: 2;
+  }
+
+  .storyCover {
+    grid-column: 1;
+    grid-row: 1 / span 6;
+    margin: -16px 0 -16px -16px;
+    border-radius: 20px 0 0 20px;
+    min-height: 100%;
+  }
+
+  :global([dir="rtl"]) .storyCover {
+    margin: -16px -16px -16px 0;
+    border-radius: 0 20px 20px 0;
+  }
+
+  .storyCoverArt {
+    height: 100%;
+    aspect-ratio: auto;
+    min-height: 260px;
+  }
+
+  /* Next steps: the four stops as a two-by-two grid; the winding line is for phones. */
+  .path {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .pathLine {
+    display: none;
+  }
+
+  .stepFlip {
+    flex-direction: row;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta {
+    transition: none;
+  }
+}

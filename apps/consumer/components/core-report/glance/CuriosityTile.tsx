@@ -18,7 +18,6 @@ const H = 84;
 const BRAID_GAP = 8;
 /** Gap between strands that stay apart (a diverse set of curiosities). */
 const APART_GAP = 64;
-const CLOSE_BLOCK = "S2-C-CLOSE";
 
 function strandPath(index: number, count: number, isBraided: boolean): string {
   const start = (W * (2 * index + 1)) / (2 * count);
@@ -41,9 +40,9 @@ export function CuriosityTile({ model }: { model: ReportModel }) {
   const isBraided = result.circleReading !== "diverse";
   const isLevel =
     result.directionClarity === "close" && count > 1 && hasStrands;
-  const pillBlocks = isLevel
-    ? model.clarity.filter((id) => id !== CLOSE_BLOCK)
-    : model.clarity;
+  // The Direction Clarity line is always the block text (spec §6.2); the
+  // "Almost level" rule is only a visual tag on top of it.
+  const pillBlocks = model.clarity;
   const columns = {
     gridTemplateColumns: `repeat(${hasStrands ? count : 2}, minmax(0, 1fr))`,
   };

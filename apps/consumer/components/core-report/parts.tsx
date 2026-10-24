@@ -286,6 +286,7 @@ export function KaiPrompt({
         </p>
       </div>
 
+      <div className={styles.kaiAnswersWrap} data-visible={phase === "done"}>
       <div className={styles.kaiAnswers} data-visible={phase === "done"}>
         {answers.map((answer) => (
           <Link
@@ -304,6 +305,7 @@ export function KaiPrompt({
             className="rtl:-scale-x-100"
           />
         </Link>
+      </div>
       </div>
     </aside>
   );

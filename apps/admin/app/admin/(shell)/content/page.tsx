@@ -1,20 +1,22 @@
 import Link from "next/link";
-import { ClusterCard } from "@/components/admin/ClusterCard";
+import { GenerationBadge } from "@/components/admin/GenerationBadge";
 import { NewAssessmentButton } from "@/components/admin/NewAssessmentButton";
 import PageHeader from "@/components/admin/PageHeader";
 import { StatusBadge } from "@/components/admin/ui/Badge";
 import { EmptyState } from "@/components/admin/ui/EmptyState";
 import { Table, Td, Th, Tr } from "@/components/admin/ui/Table";
+import { versionIdsOf } from "@/lib/admin/assessment-generation";
+import { loadVersionGenerations } from "@/lib/admin/assessment-generation.server";
 import {
   getDraftVersionForCatalog,
   listCatalogAssessments,
 } from "@/lib/admin/catalog";
-import { CLUSTERS } from "@/lib/admin/clusters";
 import {
   countQuestionsByVersion,
-  getVersionContent,
   listContentVersions,
 } from "@/lib/admin/content";
+import { CORE_PACKAGE_VERSIONS, CORE_PARTS } from "@/lib/admin/core/framework";
+import { getVersionResponseStats } from "@/lib/admin/responses";
 
 export const dynamic = "force-dynamic";
 
@@ -27,10 +29,11 @@ function fmtDate(iso: string) {
 }
 
 export default async function ContentPage() {
-  const [versions, counts, catalogs] = await Promise.all([
+  const [versions, counts, catalogs, generations] = await Promise.all([
     listContentVersions(),
     countQuestionsByVersion(),
     listCatalogAssessments(),
+    loadVersionGenerations(),
   ]);
 
   // Catalog (custom / AI-import) assessments own a content_version. Show them in
@@ -46,27 +49,67 @@ export default async function ContentPage() {
       .map((c) => c.versionId)
       .filter((id): id is string => Boolean(id)),
   );
-  const legacyVersions = versions.filter((v) => !catalogVersionIds.has(v.id));
-
-  const active = versions.find((v) => v.is_active) ?? null;
-  const liveQuestions = active ? await getVersionContent(active.id) : [];
-  const countFor = (code: string) =>
-    liveQuestions.filter((q) => q.options.some((o) => o.cluster_code === code))
-      .length;
+  // The archived v4 assessment: every non-catalog version except CORE 2.0's row.
+  const legacyIds = new Set(versionIdsOf(generations, "legacy-v4"));
+  const legacyVersions = versions.filter(
+    (v) => legacyIds.has(v.id) && !catalogVersionIds.has(v.id),
+  );
+  const coreVersionId = versionIdsOf(generations, "core-2.0")[0] ?? null;
+  const coreStats = coreVersionId
+    ? await getVersionResponseStats(coreVersionId)
+    : null;
 
   return (
     <>
       <PageHeader
         kicker="Admin · Content"
         title="Assessment versions"
-        description="Draft, review, and publish the question sets behind the compass. One version is live at a time."
+        description="CORE 2.0 is the current assessment. Custom assessments are drafted and published here; the v4 assessment is archived and read-only."
         actions={<NewAssessmentButton />}
       />
 
+      <section aria-labelledby="current-assessment" className="mb-8">
+        <h2
+          id="current-assessment"
+          className="mb-3 text-base font-bold text-adm-ink"
+        >
+          Current assessment
+        </h2>
+        <Link
+          href="/admin/content/core"
+          className="group block rounded-adm-lg border border-adm-line bg-adm-card p-5 transition hover:border-adm-violet/40 hover:shadow-sm"
+        >
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-lg font-bold text-adm-ink group-hover:text-adm-violet">
+              CORE 2.0
+            </span>
+            <GenerationBadge generation="core-2.0" />
+            <StatusBadge status="published" />
+          </div>
+          <p className="mt-1 text-[13px] text-adm-ink-muted">
+            Question set {CORE_PACKAGE_VERSIONS.questionSet} · report wording{" "}
+            {CORE_PACKAGE_VERSIONS.reportWording} · career bank{" "}
+            {CORE_PACKAGE_VERSIONS.bank}
+          </p>
+          <ul className="mt-3 flex flex-wrap gap-2 text-[12px] text-adm-ink-soft">
+            {CORE_PARTS.map((p) => (
+              <li key={p.pillar} className="rounded-full bg-adm-sand px-2.5 py-1">
+                Part {p.part} · {p.name}
+              </li>
+            ))}
+            {coreStats ? (
+              <li className="rounded-full bg-adm-violet/10 px-2.5 py-1 font-semibold text-adm-deep">
+                {coreStats.completed} completed responses
+              </li>
+            ) : null}
+          </ul>
+        </Link>
+      </section>
+
       {legacyVersions.length === 0 && catalogList.length === 0 ? (
         <EmptyState
-          title="No assessments yet"
-          description="Every compass starts with a question. Create your first assessment to get going."
+          title="No custom assessments yet"
+          description="Create a custom assessment to run alongside CORE 2.0."
           action={<NewAssessmentButton />}
         />
       ) : (
@@ -141,10 +184,19 @@ export default async function ContentPage() {
           ) : null}
 
           {legacyVersions.length > 0 ? (
-            <section>
-              <h2 className="mb-3 text-base font-bold text-adm-ink">
-                Core versions
-              </h2>
+            <section aria-labelledby="archived-assessments">
+              <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+                <h2
+                  id="archived-assessments"
+                  className="flex items-center gap-2 text-base font-bold text-adm-ink"
+                >
+                  Archived <GenerationBadge generation="legacy-v4" />
+                </h2>
+                <p className="text-xs text-adm-ink-muted">
+                  Legacy v4 assessment · viewable with its responses, never
+                  edited or published
+                </p>
+              </div>
               <Table>
                 <thead>
                   <tr>
@@ -167,9 +219,14 @@ export default async function ContentPage() {
                         >
                           {v.label}
                         </Link>
+                        {v.is_active ? (
+                          <span className="ml-2 text-xs text-adm-ink-muted">
+                            last live v4 version
+                          </span>
+                        ) : null}
                       </Td>
                       <Td>
-                        <StatusBadge status={v.is_active ? "published" : "draft"} />
+                        <StatusBadge status="archived" />
                       </Td>
                       <Td>{counts[v.id] ?? 0}</Td>
                       <Td className="text-adm-ink-muted">{fmtDate(v.created_at)}</Td>
@@ -189,25 +246,6 @@ export default async function ContentPage() {
           ) : null}
         </>
       )}
-
-      {/* Cluster coverage */}
-      <section aria-label="Cluster coverage" className="mt-10">
-        <div className="mb-3 flex items-baseline justify-between">
-          <h2 className="text-base font-bold text-adm-ink">Cluster coverage</h2>
-          <p className="text-xs text-adm-ink-muted">
-            Questions touching each cluster · live version
-          </p>
-        </div>
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {CLUSTERS.map((c) => (
-            <ClusterCard
-              key={c.code}
-              cluster={c}
-              questionCount={countFor(c.code)}
-            />
-          ))}
-        </div>
-      </section>
     </>
   );
 }

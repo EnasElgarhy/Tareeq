@@ -1,5 +1,7 @@
 /** Shared types for the admin Analytics surface (lib/admin/analytics/*). */
 
+import type { AssessmentGeneration } from "@/lib/admin/assessment-generation";
+
 export type AgeBand = "under-16" | "16-17" | "18-19" | "20-21" | "22+" | "unknown";
 
 export type FlaggedFilterMode = "include" | "only" | "exclude";
@@ -7,6 +9,11 @@ export type FlaggedFilterMode = "include" | "only" | "exclude";
 export type AssessmentType = "core" | "custom";
 
 export interface AnalyticsFilters {
+  /**
+   * Which assessment model to analyse. CORE 2.0 and the archived v4 share
+   * the tables but must never be counted together.
+   */
+  generation: AssessmentGeneration;
   /** Inclusive ISO date (yyyy-mm-dd), or null for no lower bound. */
   from: string | null;
   /** Inclusive ISO date (yyyy-mm-dd), or null for no upper bound. */
@@ -17,7 +24,8 @@ export interface AnalyticsFilters {
   /** Exact gender value, or null for "all genders". */
   gender: string | null;
   /**
-   * `null` = all assessments, `"legacy-core"` = versions with no
+   * `null` = all assessments of the chosen generation, `"legacy-core"` (old
+   * links only) = those with no
    * `assessments_catalog` link, otherwise a catalog id.
    */
   catalogId: string | null;
@@ -29,6 +37,7 @@ export interface AnalyticsFilters {
 }
 
 export const DEFAULT_FILTERS: AnalyticsFilters = {
+  generation: "core-2.0",
   from: null,
   to: null,
   country: null,
@@ -93,6 +102,7 @@ export interface RawAssessmentRow {
   answers: unknown;
   result: unknown;
   consent_research?: boolean | null;
+  scoring_version?: string | null;
 }
 
 /** Raw `profiles` row, the parts analytics needs. */
@@ -125,6 +135,8 @@ export interface DerivedRow {
   /** Stable identity for retake grouping: user_id, else respondent_email. */
   identityKey: string | null;
   versionId: string;
+  /** Null when the attempt's version row is unknown: it matches no generation. */
+  generation: AssessmentGeneration | null;
   catalogId: string | null;
   catalogLabel: string;
   assessmentType: AssessmentType;

@@ -1,4 +1,15 @@
+import {
+  classifyAttempt,
+  CORE_DISPLAY_NAME,
+  type AssessmentGeneration,
+} from "@/lib/admin/assessment-generation";
+import { loadVersionGenerations } from "@/lib/admin/assessment-generation.server";
 import { getAssessmentForVersion } from "@/lib/admin/catalog";
+import {
+  CORE_QUESTION_SET,
+  decodeCoreAnswers,
+  type DecodedCoreAnswer,
+} from "@/lib/admin/core/framework";
 import {
   getContentVersion,
   getVersionContent,
@@ -13,6 +24,10 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
  * assessment a respondent has taken, grouped by assessment. Uses the
  * service-role client (the admin surface is already gated by requireAdmin), so
  * RLS does not block reads.
+ *
+ * Every list and count is split by assessment generation (CORE 2.0, archived
+ * v4, custom): an attempt only appears under a version of its own generation,
+ * so v4 and CORE 2.0 responses never mix.
  *
  * Selects are tolerant of the migration state: run rows are fetched with `*`,
  * so the respondent_name / respondent_email columns are read when present and
@@ -32,6 +47,7 @@ interface RawAssessment {
   completed_at: string | null;
   answers?: unknown;
   result: unknown;
+  scoring_version?: string | null;
 }
 
 export interface AssessmentRunRow {
@@ -50,6 +66,7 @@ export interface AssessmentRunRow {
 
 export interface VersionResponseSummary {
   versionId: string;
+  generation: AssessmentGeneration;
   label: string;
   isActive: boolean;
   total: number;
@@ -57,11 +74,19 @@ export interface VersionResponseSummary {
   lastActivityAt: string | null;
 }
 
-export interface RunDetail {
-  run: AssessmentRunRow;
-  versionLabel: string;
-  decoded: DecodedAnswer[];
-}
+export type RunDetail =
+  | {
+      generation: "legacy-v4" | "custom";
+      run: AssessmentRunRow;
+      versionLabel: string;
+      decoded: DecodedAnswer[];
+    }
+  | {
+      generation: "core-2.0";
+      run: AssessmentRunRow;
+      versionLabel: string;
+      decodedCore: DecodedCoreAnswer[];
+    };
 
 function toRunRow(
   row: RawAssessment,
@@ -123,16 +148,26 @@ export async function getVersionResponseStats(
   versionId: string,
 ): Promise<{ total: number; completed: number; firstAt: string | null }> {
   const sb = createSupabaseAdminClient();
-  const { data, error } = await sb
-    .from("assessments")
-    .select("started_at,completed_at")
-    .eq("version_id", versionId);
-  if (error) return { total: 0, completed: 0, firstAt: null };
+  const [{ data, error }, generations] = await Promise.all([
+    sb
+      .from("assessments")
+      .select("version_id,started_at,completed_at,result")
+      .eq("version_id", versionId),
+    loadVersionGenerations().catch(() => null),
+  ]);
+  if (error || !generations) return { total: 0, completed: 0, firstAt: null };
+  const generation = generations.get(versionId);
   let total = 0;
   let completed = 0;
   let firstAt: string | null = null;
   for (const row of data ?? []) {
-    const r = row as { started_at: string; completed_at: string | null };
+    const r = row as {
+      version_id: string;
+      started_at: string;
+      completed_at: string | null;
+      result: unknown;
+    };
+    if (classifyAttempt(r, generations) !== generation) continue;
     total += 1;
     if (r.completed_at) completed += 1;
     if (r.started_at && (!firstAt || r.started_at < firstAt)) firstAt = r.started_at;
@@ -146,9 +181,10 @@ export async function getVersionResponseStats(
  */
 export async function getResponseSummaries(): Promise<VersionResponseSummary[]> {
   const sb = createSupabaseAdminClient();
-  const [{ data, error }, versions] = await Promise.all([
-    sb.from("assessments").select("version_id,started_at,completed_at"),
+  const [{ data, error }, versions, generations] = await Promise.all([
+    sb.from("assessments").select("version_id,started_at,completed_at,result"),
     listContentVersions(),
+    loadVersionGenerations(),
   ]);
   if (error) throw new Error(error.message);
 
@@ -163,7 +199,12 @@ export async function getResponseSummaries(): Promise<VersionResponseSummary[]> 
       version_id: string;
       started_at: string;
       completed_at: string | null;
+      result: unknown;
     };
+    // An attempt scored by another generation than its version row (e.g. a
+    // 2.0 result under a v4 version) is never counted with that version.
+    const generation = classifyAttempt(r, generations);
+    if (!generation || generation !== generations.get(r.version_id)) continue;
     const cur = agg.get(r.version_id) ?? { total: 0, completed: 0, last: null };
     cur.total += 1;
     if (r.completed_at) cur.completed += 1;
@@ -175,12 +216,14 @@ export async function getResponseSummaries(): Promise<VersionResponseSummary[]> 
   const summaries = await Promise.all(
     [...agg.entries()].map(async ([versionId, a]) => {
       const version = byId.get(versionId);
-      const label = await resolveVersionLabel(
-        versionId,
-        version?.label ?? "Unknown assessment",
-      );
+      const generation = generations.get(versionId) as AssessmentGeneration;
+      const label =
+        generation === "core-2.0"
+          ? CORE_DISPLAY_NAME
+          : await resolveVersionLabel(versionId, version?.label ?? "Unknown assessment");
       return {
         versionId,
+        generation,
         label,
         isActive: version?.is_active ?? false,
         total: a.total,
@@ -202,16 +245,22 @@ export async function listRunsForVersion(
   limit = 200,
 ): Promise<AssessmentRunRow[]> {
   const sb = createSupabaseAdminClient();
-  const { data, error } = await sb
-    .from("assessments")
-    .select("*")
-    .eq("version_id", versionId)
-    .order("completed_at", { ascending: false, nullsFirst: false })
-    .order("started_at", { ascending: false })
-    .limit(limit);
+  const [{ data, error }, generations] = await Promise.all([
+    sb
+      .from("assessments")
+      .select("*")
+      .eq("version_id", versionId)
+      .order("completed_at", { ascending: false, nullsFirst: false })
+      .order("started_at", { ascending: false })
+      .limit(limit),
+    loadVersionGenerations(),
+  ]);
   if (error) throw new Error(error.message);
 
-  const rows = (data ?? []) as RawAssessment[];
+  const generation = generations.get(versionId);
+  const rows = ((data ?? []) as RawAssessment[]).filter(
+    (r) => classifyAttempt(r, generations) === generation,
+  );
   const profileNames = await fetchProfileNames(
     sb,
     rows.map((r) => r.user_id),
@@ -233,22 +282,40 @@ export async function getRunDetail(
   if (!data) return null;
 
   const raw = data as RawAssessment;
-  const [questions, profileNames, version] = await Promise.all([
-    getVersionContent(raw.version_id),
+  const [profileNames, version, generations] = await Promise.all([
     fetchProfileNames(sb, [raw.user_id]),
     getContentVersion(raw.version_id),
+    loadVersionGenerations(),
   ]);
 
   const run = toRunRow(raw, profileNames);
-  const versionLabel = await resolveVersionLabel(
-    raw.version_id,
-    version?.label ?? "Assessment",
-  );
+  const generation = classifyAttempt(raw, generations);
+  if (!generation) return null;
+  const versionLabel =
+    generation === "core-2.0"
+      ? CORE_DISPLAY_NAME
+      : await resolveVersionLabel(raw.version_id, version?.label ?? "Assessment");
+
+  // CORE attempts are read against the CORE question set, never v4 questions.
+  if (generation === "core-2.0") {
+    return {
+      generation,
+      run,
+      versionLabel,
+      decodedCore: decodeCoreAnswers(
+        CORE_QUESTION_SET,
+        raw.answers as Record<string, unknown> | null,
+        run.locale,
+      ),
+    };
+  }
+
+  const questions = await getVersionContent(raw.version_id);
   const decoded = decodeAnswers(
     questions,
     raw.answers as Record<string, unknown> | null,
     run.locale,
   );
 
-  return { run, versionLabel, decoded };
+  return { generation, run, versionLabel, decoded };
 }

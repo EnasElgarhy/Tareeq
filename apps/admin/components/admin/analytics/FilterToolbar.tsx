@@ -38,12 +38,22 @@ export function FilterToolbar({
           {(p) => <Input type="date" name="to" defaultValue={filters.to ?? ""} {...p} />}
         </Field>
       </div>
+      <div className="w-48">
+        <Field label="Model">
+          {(p) => (
+            <Select name="generation" defaultValue={filters.generation} {...p}>
+              <option value="core-2.0">CORE 2.0 (current)</option>
+              <option value="legacy-v4">Archived v4 (scoring 1.x)</option>
+              <option value="custom">Custom assessments</option>
+            </Select>
+          )}
+        </Field>
+      </div>
       <div className="w-44">
         <Field label="Assessment">
           {(p) => (
             <Select name="catalog" defaultValue={filters.catalogId ?? ""} {...p}>
               <option value="">All assessments</option>
-              <option value="legacy-core">Legacy CORE</option>
               {catalogOptions.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.label}

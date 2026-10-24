@@ -8,6 +8,8 @@ const TABS = [
   { href: "/admin/analytics/assessments", label: "Assessments", exact: false },
   { href: "/admin/analytics/audience", label: "Audience", exact: false },
   { href: "/admin/analytics/quality", label: "Quality", exact: false },
+  { href: "/admin/analytics/timing", label: "Timing", exact: false },
+  { href: "/admin/analytics/sources", label: "By source", exact: false },
   { href: "/admin/analytics/research", label: "Research", exact: false },
   { href: "/admin/analytics/exports", label: "Exports", exact: false },
 ] as const;

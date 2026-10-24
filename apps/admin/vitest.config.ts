@@ -9,6 +9,11 @@ export default defineConfig({
       "@": fileURLToPath(new URL(".", import.meta.url)),
     },
   },
+  // tsconfig keeps JSX for Next ("preserve"); compile it in tests so
+  // components can be rendered to markup.
+  oxc: {
+    jsx: { runtime: "automatic" },
+  },
   test: {
     environment: "happy-dom",
     globals: true,

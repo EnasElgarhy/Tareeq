@@ -16,6 +16,7 @@ export const runtime = "nodejs";
 const EXPORT_TYPES = ["summary", "rows", "flagged"] as const;
 type ExportType = (typeof EXPORT_TYPES)[number];
 const FILTER_KEYS = [
+  "generation",
   "from",
   "to",
   "country",

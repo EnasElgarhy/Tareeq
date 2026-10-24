@@ -1,3 +1,4 @@
+import type { AssessmentGeneration } from "@/lib/admin/assessment-generation";
 import type {
   AgeBand,
   AnalyticsFilters,
@@ -7,6 +8,8 @@ import type {
 } from "@/lib/admin/analytics/types";
 
 const FLAGGED_MODES: FlaggedFilterMode[] = ["include", "only", "exclude"];
+const GENERATIONS: AssessmentGeneration[] = ["core-2.0", "legacy-v4", "custom"];
+const DEFAULT_GENERATION: AssessmentGeneration = "core-2.0";
 const AGE_BANDS: AgeBand[] = ["under-16", "16-17", "18-19", "20-21", "22+", "unknown"];
 const TIME_RANGES: TimeRange[] = ["7d", "30d", "90d", "12m"];
 const DEFAULT_RANGE: TimeRange = "30d";
@@ -34,7 +37,13 @@ export function parseFiltersFromSearchParams(
     ? (ageBandRaw as AgeBand)
     : null;
 
+  const generationRaw = paramOrNull(searchParams.generation);
+  const generation = GENERATIONS.includes(generationRaw as AssessmentGeneration)
+    ? (generationRaw as AssessmentGeneration)
+    : DEFAULT_GENERATION;
+
   return {
+    generation,
     from: paramOrNull(searchParams.from),
     to: paramOrNull(searchParams.to),
     country: paramOrNull(searchParams.country),
@@ -68,6 +77,7 @@ export function matchesNonDateFilters(
   row: DerivedRow,
   filters: AnalyticsFilters,
 ): boolean {
+  if (row.generation !== filters.generation) return false;
   if (filters.country && row.country !== filters.country) return false;
   if (filters.ageBand && row.ageBand !== filters.ageBand) return false;
   if (filters.gender && row.gender !== filters.gender) return false;

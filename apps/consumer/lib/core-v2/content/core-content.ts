@@ -10,7 +10,7 @@ import {
 } from "../types";
 import bankFile from "./data/bank-1.1.json";
 import questionFile from "./data/questions-5.2.json";
-import wordingFile from "./data/wording-2026-10-17.json";
+import wordingFile from "./data/wording-2026-10-19.json";
 
 /**
  * The client's CORE content files (developer package of 17 Oct 2026):
@@ -23,7 +23,7 @@ import wordingFile from "./data/wording-2026-10-17.json";
 export const CORE_CONTENT_VERSIONS = {
   questionSet: "5.2",
   scoring: "2.0",
-  reportWording: "2026-10-17",
+  reportWording: "2026-10-19",
   bank: "1.1",
 } as const;
 
@@ -132,8 +132,17 @@ const WORDING: Record<Locale, ReadonlyMap<string, string>> = (() => {
   };
 })();
 
+/**
+ * Founder-approved changes not yet in file 04. Each wins over the file until
+ * the client ships a wording file that carries it; remove the entry then.
+ * - S2-TITLE: drop "picture" (Enas, voice note of 21 Oct 2026).
+ */
+const WORDING_OVERRIDES: Readonly<Record<string, Record<Locale, string>>> = {
+  "S2-TITLE": { en: "Your CORE at a glance", ar: "لمحة عن كور الخاص بك" },
+};
+
 export function coreWording(locale: Locale, blockId: string): string | null {
-  return WORDING[locale].get(blockId) || null;
+  return WORDING_OVERRIDES[blockId]?.[locale] ?? (WORDING[locale].get(blockId) || null);
 }
 
 // ---------------------------------------------------------------- 05 career bank

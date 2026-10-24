@@ -1,3 +1,4 @@
+// @vitest-environment node -- happy-dom drops the Cookie request header these tests rely on.
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
@@ -56,10 +57,10 @@ function createAdminClient() {
   };
 }
 
-function checkoutRequest(body: unknown): Request {
+function checkoutRequest(body: unknown, cookie?: string): Request {
   return new Request("http://localhost/api/payments/checkout-session", {
     method: "POST",
-    headers: { "content-type": "application/json" },
+    headers: { "content-type": "application/json", ...(cookie ? { cookie } : {}) },
     body: JSON.stringify(body),
   });
 }
@@ -197,5 +198,32 @@ describe("POST /api/payments/checkout-session", () => {
 
     const sessionParams = mocks.createSession.mock.calls[0]?.[0];
     expect(sessionParams).not.toHaveProperty("discounts");
+  });
+
+  it("labels the payment with the post that first brought the visitor", async () => {
+    const attribution = encodeURIComponent(
+      JSON.stringify({
+        first: { source: "instagram", post: "parent-toolkit-1", landing: "/", at: "" },
+        last: { source: "whatsapp", post: null, landing: "/", at: "" },
+      }),
+    );
+
+    await POST(checkoutRequest({ assessmentId: ASSESSMENT_ID }, `sb=1; mmc_attr=${attribution}`));
+
+    expect(mocks.createSession.mock.calls[0]?.[0].metadata).toEqual({
+      user_id: USER_ID,
+      assessment_id: ASSESSMENT_ID,
+      src: "instagram",
+      post: "parent-toolkit-1",
+    });
+  });
+
+  it("adds no labels for a visitor without the attribution cookie", async () => {
+    await POST(checkoutRequest({ assessmentId: ASSESSMENT_ID }));
+
+    expect(mocks.createSession.mock.calls[0]?.[0].metadata).toEqual({
+      user_id: USER_ID,
+      assessment_id: ASSESSMENT_ID,
+    });
   });
 });

@@ -39,6 +39,7 @@ describe("parseFiltersFromSearchParams", () => {
       researchOnly: "true",
     });
     expect(filters).toEqual({
+      generation: "core-2.0",
       from: "2026-01-01",
       to: "2026-01-31",
       country: "UAE",
@@ -169,5 +170,29 @@ describe("matchesFilters", () => {
     expect(matchesFilters(declined, filters)).toBe(false);
     expect(matchesFilters(unset, filters)).toBe(false);
     expect(matchesFilters(consented, filters)).toBe(true);
+  });
+});
+
+describe("generation filter", () => {
+  it("defaults to CORE 2.0 and reads the other generations from the query", () => {
+    expect(parseFiltersFromSearchParams({}).generation).toBe("core-2.0");
+    expect(parseFiltersFromSearchParams({ generation: "legacy-v4" }).generation).toBe("legacy-v4");
+    expect(parseFiltersFromSearchParams({ generation: "v3" }).generation).toBe("core-2.0");
+  });
+
+  it("never mixes CORE 2.0 and v4 rows", () => {
+    const core = makeRow({ generation: "core-2.0" });
+    const v4 = makeRow({ generation: "legacy-v4" });
+    expect(matchesFilters(core, DEFAULT_FILTERS)).toBe(true);
+    expect(matchesFilters(v4, DEFAULT_FILTERS)).toBe(false);
+    expect(matchesFilters(v4, { ...DEFAULT_FILTERS, generation: "legacy-v4" })).toBe(true);
+    expect(matchesFilters(core, { ...DEFAULT_FILTERS, generation: "legacy-v4" })).toBe(false);
+  });
+
+  it("drops rows whose version is unknown from every generation", () => {
+    const unknown = makeRow({ generation: null });
+    for (const generation of ["core-2.0", "legacy-v4", "custom"] as const) {
+      expect(matchesFilters(unknown, { ...DEFAULT_FILTERS, generation })).toBe(false);
+    }
   });
 });

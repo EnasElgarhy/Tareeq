@@ -7,6 +7,7 @@ import {
   type AudioRegenSummary,
   regenerateStaleAudioForVersion,
 } from "@/lib/admin/audio-generation";
+import { assertVersionWritable } from "@/lib/admin/assessment-generation.server";
 import { typeHasOptions } from "@/lib/admin/content";
 import { normalizeKind, parseCsvRecords } from "@/lib/admin/csv";
 import { requireAdmin } from "@/lib/auth/require-admin";
@@ -33,8 +34,12 @@ export type SaveQuestionInput = z.infer<typeof saveQuestionSchema>;
 
 type AdminClient = ReturnType<typeof createSupabaseAdminClient>;
 
-/** Throws unless the version exists and is a draft (active versions are read-only). */
+/**
+ * Throws unless the version exists, is not archived v4 or CORE 2.0, and is a
+ * draft (active versions are read-only).
+ */
 async function assertDraft(sb: AdminClient, versionId: string): Promise<void> {
+  await assertVersionWritable(versionId);
   const { data, error } = await sb
     .from("content_versions")
     .select("is_active")
@@ -90,6 +95,7 @@ export async function createDraftFromVersion(
   sourceVersionId: string,
 ): Promise<string> {
   const admin = await requireAdmin();
+  await assertVersionWritable(sourceVersionId);
   const sb = createSupabaseAdminClient();
 
   const { data: src, error: e1 } = await sb
@@ -169,6 +175,7 @@ export async function publishVersion(
   versionId: string,
 ): Promise<AudioRegenSummary> {
   await requireAdmin();
+  await assertVersionWritable(versionId);
   const sb = createSupabaseAdminClient();
 
   const { error: publishError } = await sb.rpc("publish_content_version", {
@@ -195,6 +202,7 @@ export async function publishVersion(
 /** Delete a draft (cascades to its questions + options). Refuses the active one. */
 export async function deleteDraftVersion(versionId: string): Promise<void> {
   await requireAdmin();
+  await assertVersionWritable(versionId);
   const sb = createSupabaseAdminClient();
 
   const { data: v, error: e1 } = await sb
@@ -278,34 +286,13 @@ export async function saveQuestion(
   revalidatePath(`/admin/content/${versionId}`);
 }
 
-/** Create a new, empty draft assessment version. Returns the new id. */
-export async function createBlankVersion(rawLabel: unknown): Promise<string> {
-  const admin = await requireAdmin();
-  const label = z.string().trim().min(1).max(80).parse(rawLabel);
-  const sb = createSupabaseAdminClient();
-
-  const { data, error } = await sb
-    .from("content_versions")
-    .insert({
-      label,
-      is_active: false,
-      notes: "Created in CMS",
-      created_by: admin.id,
-    })
-    .select("id")
-    .single();
-  if (error || !data) throw new Error(error?.message ?? "Could not create");
-
-  revalidatePath("/admin/content");
-  return data.id;
-}
-
 /** Rename a version's label (cosmetic metadata — allowed on any version). */
 export async function renameVersion(
   versionId: string,
   rawLabel: unknown,
 ): Promise<void> {
   await requireAdmin();
+  await assertVersionWritable(versionId);
   const label = z.string().trim().min(1).max(80).parse(rawLabel);
   const sb = createSupabaseAdminClient();
   const { error } = await sb
@@ -509,29 +496,6 @@ export async function setQuestionArchived(
   if (error) throw new Error(error.message);
 
   revalidatePath(`/admin/content/${versionId}`);
-}
-
-const clusterSchema = z.object({
-  name: z.string().trim().min(1).max(120),
-  description: z.string().trim().max(600),
-});
-
-/** Update a cluster's name + description (global reference data). */
-export async function updateCluster(
-  code: string,
-  rawInput: unknown,
-): Promise<void> {
-  await requireAdmin();
-  const input = clusterSchema.parse(rawInput);
-  const sb = createSupabaseAdminClient();
-
-  const { error } = await sb
-    .from("clusters")
-    .update({ name: input.name, description: input.description })
-    .eq("code", code);
-  if (error) throw new Error(error.message);
-
-  revalidatePath("/admin/content");
 }
 
 /** Move a question up/down within its pillar (draft only), swapping positions. */

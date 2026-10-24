@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { regenerateClipForQuestion } from "@/lib/admin/audio-generation";
+import { assertVersionWritable } from "@/lib/admin/assessment-generation.server";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
@@ -35,6 +36,7 @@ export async function updateQuestionArabicTitle(
   rawInput: unknown,
 ): Promise<{ audio: TranslationAudioStatus }> {
   await requireAdmin();
+  await assertVersionWritable(versionId);
   const sb = createSupabaseAdminClient();
   const parsed = updateQuestionArSchema.safeParse(rawInput);
   if (!parsed.success) {
@@ -87,6 +89,7 @@ export async function updateOptionArabicText(
   rawInput: unknown,
 ): Promise<void> {
   await requireAdmin();
+  await assertVersionWritable(versionId);
   const sb = createSupabaseAdminClient();
   const parsed = updateOptionArSchema.safeParse(rawInput);
   if (!parsed.success) {

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { attributionFromCookieHeader } from "@/lib/analytics/attribution";
 import { trackEvent } from "@/lib/analytics/track";
 import { loadAssessmentContentForReference } from "@/lib/assessment/content.server";
 import { CORE_CONTENT_VERSIONS } from "@/lib/core-v2/content/core-content";
@@ -74,7 +75,7 @@ export async function POST(request: Request) {
 
   const admin = createSupabaseAdminClient();
   if (body.versionLabel === CORE_QUESTION_SET_LABEL) {
-    return persistCoreAttempt(admin, user, body);
+    return persistCoreAttempt(admin, user, body, request.headers.get("cookie"));
   }
   const content = await loadAssessmentContentForReference({
     versionId: body.versionId,
@@ -127,6 +128,7 @@ export async function POST(request: Request) {
     userId: user.id,
     locale: body.locale,
     questionCount: Object.keys(body.answers).length,
+    ...attributionFromCookieHeader(request.headers.get("cookie")),
   });
 
   return NextResponse.json({ ok: true, assessmentId: inserted.id });
@@ -144,6 +146,7 @@ async function persistCoreAttempt(
   admin: AdminClient,
   user: { id: string; email?: string | null },
   body: PersistBody,
+  cookieHeader: string | null,
 ) {
   let result;
   try {
@@ -212,6 +215,7 @@ async function persistCoreAttempt(
     userId: user.id,
     locale: body.locale,
     questionCount: Object.keys(body.answers).length,
+    ...attributionFromCookieHeader(cookieHeader),
   });
 
   return NextResponse.json({ ok: true, assessmentId: inserted.id });

@@ -1,10 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CoreResultInline } from "@/components/admin/core/CoreResultPanel";
+import { GenerationBadge } from "@/components/admin/GenerationBadge";
 import { ResultSummaryInline } from "@/components/admin/responses/ResultSummary";
 import PageHeader from "@/components/admin/PageHeader";
 import { StatusBadge } from "@/components/admin/ui/Badge";
 import { EmptyState } from "@/components/admin/ui/EmptyState";
 import { Table, Td, Th, Tr } from "@/components/admin/ui/Table";
+import { CORE_DISPLAY_NAME } from "@/lib/admin/assessment-generation";
+import { getVersionGeneration } from "@/lib/admin/assessment-generation.server";
 import { getAssessmentForVersion } from "@/lib/admin/catalog";
 import { getContentVersion } from "@/lib/admin/content";
 import { respondentLabel } from "@/lib/admin/response-format";
@@ -29,14 +33,18 @@ export default async function VersionResponsesPage({
   params: Promise<{ versionId: string }>;
 }) {
   const { versionId } = await params;
-  const [version, catalog, runs] = await Promise.all([
+  const [version, catalog, runs, generation] = await Promise.all([
     getContentVersion(versionId),
     getAssessmentForVersion(versionId),
     listRunsForVersion(versionId),
+    getVersionGeneration(versionId),
   ]);
 
-  if (!version) notFound();
-  const title = catalog?.name.en ?? version.label;
+  if (!version || !generation) notFound();
+  const isCore = generation === "core-2.0";
+  const title = isCore
+    ? CORE_DISPLAY_NAME
+    : (catalog?.name.en ?? version.label);
 
   return (
     <>
@@ -52,7 +60,14 @@ export default async function VersionResponsesPage({
         kicker="Admin · Responses"
         title={title}
         description={`${runs.length} ${runs.length === 1 ? "respondent" : "respondents"} · ${runs.filter((r) => r.completedAt).length} completed`}
-        actions={<StatusBadge status={version.is_active ? "published" : "draft"} />}
+        actions={
+          <>
+            <GenerationBadge generation={generation} />
+            {generation === "legacy-v4" ? (
+              <StatusBadge status="archived" />
+            ) : null}
+          </>
+        }
       />
 
       {runs.length === 0 ? (
@@ -95,7 +110,11 @@ export default async function VersionResponsesPage({
                   />
                 </Td>
                 <Td>
-                  <ResultSummaryInline result={run.result} />
+                  {isCore ? (
+                    <CoreResultInline result={run.result} />
+                  ) : (
+                    <ResultSummaryInline result={run.result} />
+                  )}
                 </Td>
                 <Td className="text-adm-ink-muted">
                   {fmtDateTime(run.completedAt)}

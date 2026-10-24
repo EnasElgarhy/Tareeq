@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { getVersionGeneration } from "@/lib/admin/assessment-generation.server";
 import { getAssessmentForVersion } from "@/lib/admin/catalog";
+import { GenerationBadge } from "@/components/admin/GenerationBadge";
+import { StatusBadge } from "@/components/admin/ui/Badge";
 import { CsvImport } from "@/components/admin/CsvImport";
 import PageHeader from "@/components/admin/PageHeader";
 import { QuestionBuilder } from "@/components/admin/QuestionBuilder";
@@ -88,7 +91,11 @@ export default async function VersionDetailPage({
     redirect(`/admin/content/${versionId}/custom`);
   }
 
-  const editable = !version.is_active;
+  // CORE 2.0 is managed on its own page; v4 is archived and read-only.
+  const generation = await getVersionGeneration(versionId);
+  if (generation === "core-2.0") redirect("/admin/content/core");
+  const isArchived = generation === "legacy-v4";
+  const editable = !isArchived && !version.is_active;
 
   // Only needed for the read-only governance panel on published versions.
   const responseStats = editable
@@ -132,19 +139,52 @@ export default async function VersionDetailPage({
           />
         }
         actions={
-          <>
-            <Link
-              href={`/admin/content/${version.id}/translations`}
-              className="rounded-adm-md border border-adm-line px-3 py-1.5 text-[13px] font-semibold text-adm-ink-soft transition hover:bg-adm-sand hover:text-adm-ink"
-            >
-              Translations
-            </Link>
-            <VersionActions versionId={version.id} isActive={version.is_active} />
-          </>
+          isArchived ? (
+            <>
+              <GenerationBadge generation="legacy-v4" />
+              <StatusBadge status="archived" />
+              <Link
+                href={`/admin/responses/${version.id}`}
+                className="rounded-adm-md border border-adm-line px-3 py-1.5 text-[13px] font-semibold text-adm-ink-soft transition hover:bg-adm-sand hover:text-adm-ink"
+              >
+                Responses
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                href={`/admin/content/${version.id}/translations`}
+                className="rounded-adm-md border border-adm-line px-3 py-1.5 text-[13px] font-semibold text-adm-ink-soft transition hover:bg-adm-sand hover:text-adm-ink"
+              >
+                Translations
+              </Link>
+              <VersionActions
+                versionId={version.id}
+                isActive={version.is_active}
+              />
+            </>
+          )
         }
       />
 
-      {!editable && responseStats && (
+      {isArchived && (
+        <p
+          role="note"
+          className="mb-6 rounded-adm-lg border border-adm-line-strong bg-adm-sand px-4 py-3 text-[13px] text-adm-ink-soft"
+        >
+          <strong className="text-adm-ink">
+            Archived · legacy v4, scoring 1.x.
+          </strong>{" "}
+          This assessment is kept so its responses stay available for analysis.
+          It can&apos;t be edited, cloned or published, and its responses are
+          never counted or compared with CORE 2.0.
+          {responseStats
+            ? ` ${responseStats.completed} completed of ${responseStats.total} responses.`
+            : null}
+        </p>
+      )}
+
+      {!editable && !isArchived && responseStats && (
         <VersionGovernancePanel
           label={version.label}
           createdAt={version.created_at}
