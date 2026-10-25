@@ -34,6 +34,8 @@ export const RESULTS_EVENT_NAMES = [
   "payment_succeeded",
   "payment_failed",
   "report_unlocked",
+  "parent_link_created",
+  "parent_link_shared",
   "pdf_downloaded",
   "results_generated",
   "results_viewed",

@@ -68,7 +68,9 @@ export function CoreReportScreen({
         <ReportAccessExperience
           generatedAt={generatedAt}
           email={email}
-          renderLocked={(locked) => <LockedCoreStory model={model} {...locked} />}
+          renderLocked={(locked) => (
+            <LockedCoreStory model={model} generatedAt={generatedAt} {...locked} />
+          )}
         >
           {report}
         </ReportAccessExperience>

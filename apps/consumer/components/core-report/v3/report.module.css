@@ -920,3 +920,65 @@
     transition: none;
   }
 }
+
+/* ---- Locked preview: the O card under frosted glass ---- */
+.frosted {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+}
+.frostedContent {
+  max-height: 25rem;
+  overflow: hidden;
+  /* The header stays readable; the answers below blur out. */
+  mask-image: linear-gradient(180deg, #000 0%, #000 45%, rgba(0, 0, 0, 0.35) 100%);
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 45%, rgba(0, 0, 0, 0.35) 100%);
+}
+.frostedContent ol,
+.frostedContent .scale,
+.frostedContent .zones ~ p {
+  filter: blur(4px);
+  opacity: 0.85;
+}
+.frostedVeil {
+  position: absolute;
+  inset: 7.5rem 0 0 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 1.25rem 1.25rem 1.5rem;
+  background:
+    radial-gradient(60% 55% at 50% 72%, rgba(217, 205, 247, 0.55), transparent 70%),
+    radial-gradient(40% 35% at 70% 60%, rgba(244, 198, 96, 0.22), transparent 70%),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--r-card) 0%, transparent) 0%,
+      color-mix(in srgb, var(--r-card) 94%, transparent) 38%,
+      var(--r-card) 100%
+    );
+}
+
+/* The locked preview reads as one column: one card per row at every size. */
+.glanceGrid.lockedGrid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* Night palette for the locked preview (UnlockPanel.module.css sets the day tokens). */
+:global([data-tone="dark"]) .screen {
+  --r-violet-tint: rgba(157, 139, 224, 0.18);
+  --r-violet-deep: #c9bcf2;
+}
+:global([data-tone="dark"]) :is(.pillBox, .zone) {
+  background: rgba(255, 255, 255, 0.04);
+}
+:global([data-tone="dark"]) .frostedVeil {
+  background:
+    radial-gradient(60% 55% at 50% 72%, rgba(157, 139, 224, 0.28), transparent 70%),
+    radial-gradient(40% 35% at 70% 60%, rgba(244, 198, 96, 0.14), transparent 70%),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--r-card) 0%, transparent) 0%,
+      color-mix(in srgb, var(--r-card) 94%, transparent) 38%,
+      var(--r-card) 100%
+    );
+}

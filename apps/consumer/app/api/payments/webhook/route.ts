@@ -5,6 +5,7 @@ import {
   ENTITLEMENTS_TABLE,
   isUuid,
 } from "@/app/api/payments/_lib/entitlements";
+import { PARENT_LINKS_TABLE } from "@/app/api/payments/_lib/parent-links";
 import {
   getStripeClient,
   getStripeWebhookSecret,
@@ -234,6 +235,37 @@ async function grantEntitlement(
 }
 
 /**
+ * Marks an ask-a-parent link paid once its session is paid. The entitlement
+ * itself was already granted to the student by `grantEntitlement` (the
+ * session metadata names them); this only closes the link so the student's
+ * waiting screen and the parent page can say so.
+ *
+ * Idempotency: the `status = 'pending'` filter makes a redelivery a no-op.
+ *
+ * @throws on a database fault, so the caller can answer 500.
+ */
+async function markParentLinkPaid(
+  admin: SupabaseClient,
+  session: Stripe.Checkout.Session,
+): Promise<void> {
+  const linkId = session.metadata?.parent_link_id;
+  if (session.payment_status !== "paid" || !isUuid(linkId)) return;
+
+  const { error } = await admin
+    .from(PARENT_LINKS_TABLE)
+    .update({
+      status: "paid",
+      paid_at: new Date().toISOString(),
+      stripe_session_id: session.id,
+    })
+    .eq("id", linkId)
+    .eq("status", "pending");
+  if (error) {
+    throw new Error(`Parent link update failed: ${error.message}`);
+  }
+}
+
+/**
  * Revokes every active entitlement bought with a given payment intent.
  *
  * Idempotency: the `status = 'active'` filter means a redelivered refund or a
@@ -310,6 +342,7 @@ export async function POST(request: Request) {
     switch (event.type) {
       case "checkout.session.completed":
         outcome = await grantEntitlement(admin, event.data.object);
+        await markParentLinkPaid(admin, event.data.object);
         break;
       case "charge.refunded":
         // Fires for partial refunds too. Per the frozen contract any refund

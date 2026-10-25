@@ -6,6 +6,7 @@ import {
   CheckoutSheet,
   type CheckoutStage,
 } from "@/components/results/report-access/CheckoutSheet";
+import { ParentUnlockedCard } from "@/components/core-report/AskParent";
 import { trackEvent } from "@/lib/analytics/track";
 import type { StringKey } from "@/lib/i18n/strings";
 import {
@@ -30,6 +31,10 @@ export interface LockedStoryProps {
   /** Questions answered in the local attempt; 0 when unknown. */
   answeredCount: number;
   onOpen(): void;
+  /** The server-side assessment id; `null` until resolved. Needed to ask a parent. */
+  assessmentId: string | null;
+  /** A parent paid through an ask-a-parent link: confirm and unlock. */
+  onParentPaid(): void;
 }
 
 interface ReportAccessExperienceProps {
@@ -88,6 +93,7 @@ export function ReportAccessExperience({
   /** Which step the retry button should repeat after a failure. */
   const retryStepRef = useRef<"checkout" | "confirm">("checkout");
   const previewTrackedRef = useRef(false);
+  const [unlockedByParent, setUnlockedByParent] = useState(false);
 
   // Resolve the server-side assessment id (the entitlement key), then
   // reconcile the local access cache against the server. These are one
@@ -269,9 +275,18 @@ export function ReportAccessExperience({
     return <ReportAccessSkeleton />;
   }
 
+  function handleParentPaid() {
+    if (!assessmentId || stage === "confirming") return;
+    setUnlockedByParent(true);
+    void confirmAndUnlock(assessmentId, "stripe");
+  }
+
   if (access.isPaid || access.status === "unlocked") {
     return (
       <div className="daybreak-reveal flex w-full flex-col gap-5">
+        {unlockedByParent ? (
+          <ParentUnlockedCard onDismiss={() => setUnlockedByParent(false)} />
+        ) : null}
         {children}
       </div>
     );
@@ -279,7 +294,13 @@ export function ReportAccessExperience({
 
   return (
     <div className="relative w-full">
-      {renderLocked({ offer, answeredCount, onOpen: openCheckout })}
+      {renderLocked({
+        offer,
+        answeredCount,
+        onOpen: openCheckout,
+        assessmentId,
+        onParentPaid: handleParentPaid,
+      })}
 
       {stage ? (
         <CheckoutSheet

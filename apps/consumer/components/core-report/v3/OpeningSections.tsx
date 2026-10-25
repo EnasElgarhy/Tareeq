@@ -173,7 +173,8 @@ const E_AXES: AxisRow[] = [
 ];
 
 /** O and E (spec §6.2): three zones side by side, the student's one filled. */
-export function Zones({ row, zone }: { row: AxisRow; zone: AxisZone }) {
+/** `zone: null` draws the options with no answer marked (the locked preview). */
+export function Zones({ row, zone }: { row: AxisRow; zone: AxisZone | null }) {
   const { t } = useLocale();
   const { sideA, sideB } = AXES[row.axis];
   const options: { value: AxisZone; id: string; side: AxisSide | null }[] = [
@@ -209,10 +210,12 @@ export function Zones({ row, zone }: { row: AxisRow; zone: AxisZone }) {
         {[1, 2, 3].map((value) => (
           <span key={value} className={styles.scaleTick} data-at={value} />
         ))}
-        <span className={styles.scaleMarker} data-at={zone}>
-          <span className={styles.scaleTriangle} />
-          <span className={styles.scaleYou}>{t("core.glance.you")}</span>
-        </span>
+        {zone === null ? null : (
+          <span className={styles.scaleMarker} data-at={zone}>
+            <span className={styles.scaleTriangle} />
+            <span className={styles.scaleYou}>{t("core.glance.you")}</span>
+          </span>
+        )}
       </div>
     </div>
   );
@@ -298,6 +301,49 @@ function MotivatorsCard({ model }: { model: ReportModel }) {
         ))}
       </ul>
     </GlanceCard>
+  );
+}
+
+/**
+ * The locked Compass tab: the real At a glance opening, the C card open, and
+ * the O card under frosted glass with `veil` over it. Built from the same
+ * parts as GlanceSection so the preview reads as the report it unlocks.
+ */
+export function LockedGlancePreview({
+  model,
+  generatedAt,
+  veil,
+}: {
+  model: ReportModel;
+  generatedAt?: string;
+  veil: ReactNode;
+}) {
+  const { t, locale } = useLocale();
+  const date = formatReportDate(generatedAt, locale);
+  return (
+    <div className={styles.screen}>
+      <SectionHero
+        art="glance"
+        eyebrow={date ? t("core.glance.report_date").replace("{date}", date) : undefined}
+        titleId="S2-TITLE"
+      />
+      <div className={`grid gap-4 ${styles.glanceGrid} ${styles.lockedGrid}`}>
+        <CuriositiesCard model={model} />
+        <div className={styles.frosted}>
+          {/* Inert and hidden from assistive tech: the answers under the
+              glass are not part of the free preview. */}
+          <div className={styles.frostedContent} aria-hidden="true" inert>
+            <GlanceCard letter="O" titleId="S2-O-TITLE">
+              {/* No answer is passed in: the glass hides a blank scale, not the student's result. */}
+              {O_AXES.map((row) => (
+                <Zones key={row.axis} row={row} zone={null} />
+              ))}
+            </GlanceCard>
+          </div>
+          <div className={styles.frostedVeil}>{veil}</div>
+        </div>
+      </div>
+    </div>
   );
 }
 

@@ -1,0 +1,256 @@
+/* Ask a parent, student side. Lives inside .report, so it reads the report tokens. */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgb(20 14 40 / 0.5);
+  backdrop-filter: blur(4px);
+  animation: fadeIn 200ms ease-out;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes rise {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+}
+.sheet {
+  width: 100%;
+  max-width: 480px;
+  max-height: 92dvh;
+  overflow-y: auto;
+  padding: 20px 20px calc(20px + env(safe-area-inset-bottom));
+  border-radius: 28px 28px 0 0;
+  background: var(--day-card, #fffcf6);
+  color: var(--day-ink);
+  box-shadow: 0 -20px 50px -20px rgb(20 14 40 / 0.5);
+  animation: rise 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (min-width: 640px) {
+  .overlay {
+    align-items: center;
+  }
+  .sheet {
+    border-radius: 28px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .sheet {
+    animation: none;
+  }
+}
+.sheetHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.sheetHead h2 {
+  font-size: 1.5rem;
+}
+.close {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  border: 1px solid var(--day-line);
+  color: var(--day-ink-2);
+}
+.sheetBody {
+  margin-top: 6px;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--day-ink-2);
+}
+.messageHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 18px;
+  font-size: 0.8125rem;
+  font-weight: 650;
+  color: var(--day-ink-2);
+}
+.langToggle {
+  display: flex;
+  padding: 3px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--day-ink) 6%, transparent);
+}
+.langToggle button {
+  min-width: 44px;
+  padding: 5px 10px;
+  border-radius: 9px;
+  font-size: 0.8125rem;
+  font-weight: 650;
+  color: var(--day-ink-2);
+}
+.langToggle button[aria-pressed="true"] {
+  background: var(--day-card, #fff);
+  color: var(--day-ink);
+  box-shadow: 0 1px 3px rgb(20 14 40 / 0.15);
+}
+.bubble {
+  margin-top: 10px;
+  padding: 14px 16px;
+  border-radius: 18px 18px 18px 6px;
+  background: #e3f6dc;
+  color: #13261a;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+.bubble[dir="rtl"] {
+  border-radius: 18px 18px 6px 18px;
+}
+.bubbleLink {
+  margin-top: 6px;
+  color: #1a6fb0;
+  font-size: 0.875rem;
+  word-break: break-all;
+  direction: ltr;
+  text-align: start;
+}
+.actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+.whatsapp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 54px;
+  border-radius: 27px;
+  background: #25d366;
+  color: #062b14;
+  font-weight: 750;
+  font-size: 1rem;
+  transition: transform 150ms, filter 150ms;
+}
+.whatsapp:hover {
+  filter: brightness(1.05);
+}
+.whatsapp:active {
+  transform: scale(0.98);
+}
+.whatsapp[aria-disabled="true"] {
+  pointer-events: none;
+  opacity: 0.6;
+}
+.secondary {
+  display: flex;
+  gap: 10px;
+}
+.secondary button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  border-radius: 24px;
+  border: 1px solid var(--day-line);
+  font-weight: 650;
+  font-size: 0.9375rem;
+  color: var(--day-ink);
+}
+.secondary button:disabled {
+  opacity: 0.5;
+}
+.privacy {
+  margin-top: 14px;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--day-ink-3);
+  text-align: center;
+}
+.error {
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 14px;
+  background: color-mix(in srgb, #c0392b 8%, transparent);
+  font-size: 0.875rem;
+}
+.error button {
+  margin-top: 8px;
+  font-weight: 700;
+  color: var(--daybreak-violet-deep);
+}
+@keyframes spin {
+  to {
+    rotate: 360deg;
+  }
+}
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+/* ---- Parent unlocked it ---- */
+.unlocked {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 8px 12px 14px;
+  border-radius: 18px;
+  background: linear-gradient(100deg, #fdf0d0, #fdf8ec);
+  border: 1px solid rgb(240 185 74 / 0.45);
+  animation: rise 360ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.unlockedIcon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #f8d47e, #f0b94a);
+  color: #2a1c05;
+}
+.unlockedText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 1px;
+}
+.unlockedText strong {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #2a1c05;
+}
+.unlockedText span {
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: #5a4520;
+}
+.unlockedClose {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  color: #76541f;
+}
+.unlockedClose:hover {
+  background: rgb(118 84 31 / 0.1);
+}
+.unlockedClose:focus-visible {
+  outline: 2px solid #f0b94a;
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .unlocked {
+    animation: none;
+  }
+}

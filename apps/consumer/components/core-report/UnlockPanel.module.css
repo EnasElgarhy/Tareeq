@@ -1,0 +1,352 @@
+/* Locked Compass tab: the report under glass and the sticky "who's unlocking it" panel. */
+.page {
+  --unlock-paper: var(--day-bg, #f4eee3);
+  --unlock-card: var(--day-card, #fffcf6);
+  --unlock-line: var(--day-line, rgba(43, 36, 28, 0.1));
+  --unlock-violet: var(--app-accent, #6d5ba8);
+  --unlock-violet-deep: #4b3d82;
+  --unlock-violet-tint: #ece7f7;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Night palette: the same page in the report hero's colours ---- */
+.page[data-tone="dark"] {
+  --day-bg: #0e0a24;
+  --day-card: #1a1340;
+  --day-line: rgba(255, 255, 255, 0.1);
+  --day-ink: #f5eee6;
+  --day-ink-2: #cfc6e6;
+  --day-ink-3: #9d93bc;
+  --unlock-paper: #0e0a24;
+  --unlock-card: #1a1340;
+  --unlock-violet: #9d8be0;
+  --unlock-violet-deep: #c9bcf2;
+  --unlock-violet-tint: rgba(157, 139, 224, 0.18);
+  color: var(--day-ink);
+}
+.page[data-tone="dark"] :is(.title, .price strong, .veilTitle) {
+  color: #fffcf6;
+}
+.page[data-tone="dark"] .option[aria-checked="true"] {
+  background: rgba(157, 139, 224, 0.14);
+}
+.page[data-tone="dark"] .radio {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: transparent;
+  box-shadow: inset 0 0 0 3px #1a1340;
+}
+.page[data-tone="dark"] .option[aria-checked="true"] .radio {
+  border-color: #f4c660;
+  background: #f4c660;
+}
+.page[data-tone="dark"] .cta {
+  background: linear-gradient(180deg, #f8d47e, #f0b94a);
+  color: #14101f;
+  box-shadow: 0 14px 30px -12px rgba(240, 185, 74, 0.6);
+}
+.page[data-tone="dark"] .cta:disabled {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 252, 246, 0.4);
+  box-shadow: none;
+}
+.page[data-tone="dark"] .expiry {
+  background: rgba(157, 139, 224, 0.16);
+}
+
+/* ---- The message over the frosted O card ---- */
+.veil {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  max-width: 300px;
+  text-align: center;
+}
+.veilLetters {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+.veilLetters > span {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  color: #fff;
+  font-family: var(--font-bricolage), sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  box-shadow: 0 6px 14px -6px rgba(0, 0, 0, 0.35);
+}
+.veilLetters > [data-letter="O"] {
+  background: #3e8e6e;
+}
+.veilLetters > [data-letter="R"] {
+  background: #a8544a;
+}
+.veilLetters > [data-letter="E"] {
+  background: #c08a2e;
+}
+.veilTitle {
+  font-size: 18px;
+  line-height: 1.2;
+  color: #1c1534;
+}
+.veilBody {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--day-ink-2, #5c5142);
+}
+
+/* ---- Sticky panel ---- */
+.dock {
+  position: sticky;
+  /* The app's scroll well has 12px of bottom padding (AppShell pb-3); reach
+     past it so no report peeks out under the panel. */
+  bottom: -12px;
+  z-index: 20;
+  /* Room for the fade, so the last card reads fully once scrolled to the end. */
+  margin-top: 72px;
+}
+/* The report melts into the panel instead of meeting an edge. */
+.fade {
+  position: absolute;
+  inset-inline: -16px;
+  bottom: 100%;
+  height: 96px;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--unlock-paper) 0%, transparent) 0%,
+    color-mix(in srgb, var(--unlock-paper) 75%, transparent) 45%,
+    var(--unlock-paper) 90%
+  );
+}
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-inline: -16px;
+  padding: 4px 16px 24px;
+  background: var(--unlock-paper);
+}
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.title {
+  font-size: 20px;
+  line-height: 1.1;
+  color: #1c1534;
+}
+.price {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.price s {
+  font-size: 12px;
+  color: var(--day-ink-3, #8a7f6e);
+}
+.price strong {
+  font-size: 18px;
+  color: #1c1534;
+}
+.options {
+  display: grid;
+  gap: 8px;
+}
+.option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 14px 10px 10px;
+  border-radius: 16px;
+  border: 1.5px solid var(--unlock-line);
+  background: var(--unlock-card);
+  box-shadow: 0 1px 2px rgba(43, 36, 28, 0.06);
+  text-align: start;
+  color: var(--day-ink, #2a2118);
+  transition:
+    border-color 200ms,
+    background 200ms,
+    transform 150ms;
+}
+.option:hover {
+  border-color: color-mix(in srgb, var(--unlock-violet) 45%, var(--unlock-line));
+}
+.option:active {
+  transform: scale(0.99);
+}
+.option[aria-checked="true"] {
+  border-color: var(--unlock-violet);
+  background: #fff;
+}
+.option:focus-visible,
+.cta:focus-visible,
+.textButton:focus-visible {
+  outline: 2px solid var(--unlock-violet);
+  outline-offset: 3px;
+}
+.optionIcon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--unlock-violet-tint);
+  color: var(--unlock-violet-deep);
+}
+.optionText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 1px;
+}
+.optionText strong {
+  font-size: 15px;
+  font-weight: 800;
+}
+.optionText span {
+  font-size: 12.5px;
+  color: var(--day-ink-2, #6f6555);
+}
+.radio {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 11px;
+  border: 2px solid rgba(43, 36, 28, 0.28);
+  background: #fff;
+  box-shadow: inset 0 0 0 3px #fff;
+  transition:
+    border-color 200ms,
+    background 200ms;
+}
+.option[aria-checked="true"] .radio {
+  border-color: var(--unlock-violet);
+  background: var(--unlock-violet);
+}
+.cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  border-radius: 25px;
+  background: var(--unlock-violet-deep);
+  color: #fffcf6;
+  font-size: 15px;
+  font-weight: 800;
+  box-shadow: 0 14px 30px -12px rgba(75, 61, 130, 0.65);
+  transition:
+    background 300ms,
+    box-shadow 300ms,
+    transform 150ms;
+}
+.cta:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.cta:disabled {
+  background: rgba(43, 36, 28, 0.08);
+  color: rgba(43, 36, 28, 0.4);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* ---- Waiting for the parent ---- */
+.steps {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--day-ink-3, #8a7f6e);
+}
+.steps li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.steps li:not(:last-child)::after {
+  content: "";
+  width: 18px;
+  height: 2px;
+  margin-inline-start: 2px;
+  border-radius: 1px;
+  background: var(--unlock-line);
+}
+.steps li[data-done="true"] {
+  color: var(--day-ink, #2a2118);
+}
+.stepDot {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  border: 2px solid rgba(43, 36, 28, 0.25);
+  color: #fff;
+}
+.steps li[data-done="true"] .stepDot {
+  border-color: var(--daybreak-green-deep, #3e7a5e);
+  background: var(--daybreak-green-deep, #3e7a5e);
+}
+.expiry {
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--unlock-violet-tint);
+  font-size: 12.5px;
+  color: var(--day-ink-2, #5c5142);
+}
+.expiry[data-expired="true"] {
+  background: #f5eacb;
+  color: #76541f;
+}
+.waitActions {
+  display: grid;
+  gap: 4px;
+}
+.textButton {
+  justify-self: center;
+  min-height: 40px;
+  padding-inline: 12px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--unlock-violet-deep);
+}
+
+/* Desktop: the locked page is one centred column, one card per row, and the
+   panel keeps the phone's calm stacked layout as a floating card. */
+@media (min-width: 1024px) {
+  .page {
+    width: min(100%, 760px);
+    margin-inline: auto;
+  }
+  .fade {
+    inset-inline: 0;
+    height: 72px;
+  }
+  .dock {
+    bottom: 16px;
+  }
+  .panel {
+    margin-inline: 0;
+    gap: 12px;
+    padding: 18px 20px 20px;
+    border-radius: 24px;
+    border: 1px solid var(--unlock-line);
+    background: var(--unlock-card);
+    box-shadow: 0 24px 50px -28px rgba(43, 36, 28, 0.5);
+  }
+  .panel[data-mode="choice"] .options {
+    grid-template-columns: 1fr 1fr;
+  }
+}
