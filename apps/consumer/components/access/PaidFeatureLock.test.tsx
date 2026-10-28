@@ -62,8 +62,8 @@ describe("PaidFeatureLock", () => {
 
     expect(text).toContain("AED 360");
     expect(text).toContain("AED 450");
-    expect(text).toContain("20% off");
-    expect(text).toContain("Unlock My Full Compass");
+    expect(text).toContain("Limited time offer");
+    expect(text).toContain("Unlock my full report");
   });
 
   it("sends the visitor to the one checkout in the app", async () => {
@@ -86,7 +86,7 @@ describe("PaidFeatureLock", () => {
 
     expect(text).toContain("كاي جزء من تقريرك الكامل");
     expect(text).toContain("في تقريرك الكامل");
-    expect(text).toContain("افتح بوصلتي الكاملة");
+    expect(text).toContain("افتح تقريري الكامل");
   });
 
   it("labels the checking state for assistive tech", async () => {

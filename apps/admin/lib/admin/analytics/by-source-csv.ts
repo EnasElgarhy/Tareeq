@@ -1,4 +1,5 @@
 import {
+  groupByOption,
   SOURCE_METRICS,
   weekBounds,
   type SourceReport,
@@ -12,8 +13,10 @@ export function buildSourceReportCsv(report: SourceReport, params: SourceReportP
   const columns: CsvColumn<SourceRow>[] = [
     { key: "week", header: "Week (Mon–Sun, Dubai)", value: () => `${weekStart} to ${weekEnd}` },
     { key: "touch", header: "Attribution", value: () => `${params.touch} touch` },
-    { key: "source", header: "Source", value: (r) => r.source },
-    { key: "post", header: "Post", value: (r) => r.post },
+    { key: "source", header: groupByOption(params.groupBy).column, value: (r) => r.source },
+    ...(params.groupBy === "post"
+      ? [{ key: "post", header: "Content", value: (r: SourceRow) => r.post }]
+      : []),
     ...SOURCE_METRICS.map(
       (m): CsvColumn<SourceRow> => ({
         key: m.key,

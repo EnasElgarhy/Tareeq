@@ -1,0 +1,29 @@
+name: Weekly by-source report email
+
+# Every Friday at 08:00 Dubai (04:00 UTC), ask the admin app to email last
+# week's "By source" report (apps/admin/app/api/cron/weekly-source-report).
+# Needs, in the repository settings:
+#   secrets.CRON_SECRET        - the same value as the admin app's CRON_SECRET
+#   vars.ADMIN_REPORT_BASE_URL - e.g. https://admin.mapmycore.com
+# Scheduled runs only fire from the default branch.
+
+on:
+  schedule:
+    - cron: "0 4 * * 5"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    if: ${{ vars.ADMIN_REPORT_BASE_URL != '' }}
+    steps:
+      - name: Trigger the report email
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          BASE_URL: ${{ vars.ADMIN_REPORT_BASE_URL }}
+        run: |
+          curl --fail-with-body --silent --show-error \
+            -X POST "$BASE_URL/api/cron/weekly-source-report" \
+            -H "Authorization: Bearer $CRON_SECRET"

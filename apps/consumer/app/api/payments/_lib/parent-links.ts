@@ -19,7 +19,7 @@ export const PARENT_LINK_DAILY_LIMIT = 20;
  * Which guardian wording the parent agreed to. Bump it whenever the consent
  * line on the parent page changes, so every stored consent names its text.
  */
-export const PARENT_CONSENT_WORDING_VERSION = "2026-10-25-draft";
+export const PARENT_CONSENT_WORDING_VERSION = "2026-10-28";
 
 /** 32 raw bytes as base64url (43 chars), the same shape as admin invites. */
 export function createParentLinkToken(): string {

@@ -76,7 +76,6 @@ export function LockedCoreStory({
       {sheet?.kind === "parent" && assessmentId ? (
         <AskParentSheet
           assessmentId={assessmentId}
-          price={price}
           reuse={sheet.reuse}
           onClose={() => setSheet(null)}
           onSent={parentLink.setStatus}

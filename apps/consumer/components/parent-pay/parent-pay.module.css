@@ -49,6 +49,17 @@
 .langButton:hover {
   background: rgb(255 255 255 / 0.08);
 }
+.title {
+  padding: 18px 20px 0;
+  font-family: var(--font-bricolage), var(--font-arabic), sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+.title + .intro {
+  padding-top: 6px;
+}
 .intro {
   padding: 14px 20px 0;
   font-size: 14px;

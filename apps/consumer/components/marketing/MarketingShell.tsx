@@ -14,6 +14,7 @@ import {
   SECONDARY_NAV_LINKS,
 } from "@/components/marketing/navLinks";
 import { SiteFooter } from "@/components/marketing/SiteFooter";
+import { BRAND } from "@/lib/brand";
 
 export function MarketingShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -55,7 +56,7 @@ export function MarketingShell({ children }: { children: ReactNode }) {
         >
           <Link
             href="/"
-            aria-label="Tareeq home"
+            aria-label={`${BRAND.name} home`}
             data-testid="nav-logo"
             className="flex items-center gap-1.5 rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F4C660]"
           >

@@ -1,4 +1,7 @@
+"use client";
+
 import type { ReactNode } from "react";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 import { FadeIn } from "../Shared";
 import type { Pillar } from "./modelContent";
 
@@ -11,6 +14,7 @@ interface ChapterProps {
 
 /** One CORE pillar: a short text column beside its visual. */
 export function Chapter({ pillar, isFlipped = false, children }: ChapterProps) {
+  const { locale } = useLocale();
   const PillarIcon = pillar.icon;
   const headingId = `${pillar.id}-heading`;
 
@@ -36,7 +40,7 @@ export function Chapter({ pillar, isFlipped = false, children }: ChapterProps) {
               className="text-xs font-semibold uppercase tracking-[0.24em]"
               style={{ color: pillar.dayAccent }}
             >
-              {pillar.letter} · {pillar.name}
+              {locale === "ar" ? `${pillar.name} · ${pillar.tag}` : `${pillar.letter} · ${pillar.name} · ${pillar.tag}`}
             </p>
           </div>
           <h2
@@ -50,7 +54,7 @@ export function Chapter({ pillar, isFlipped = false, children }: ChapterProps) {
           </p>
           <ul className="mt-8 space-y-4">
             {pillar.points.map(({ icon: PointIcon, text }) => (
-              <li key={text} className="flex items-center gap-3.5">
+              <li key={text} className="flex items-start gap-3.5">
                 <span
                   className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[var(--day-card)] shadow-[var(--day-shadow-card)]"
                   style={{ color: pillar.dayAccent }}

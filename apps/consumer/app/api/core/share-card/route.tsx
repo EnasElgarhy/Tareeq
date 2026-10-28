@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { ReactNode } from "react";
 import { ImageResponse } from "next/og";
+import { BRAND } from "@/lib/brand";
 import { coreBank, coreWording } from "@/lib/core-v2/content/core-content";
 import {
   SHARE_LABELS,
@@ -29,6 +30,10 @@ export const runtime = "nodejs";
  */
 
 const FONT_DIR = join(process.cwd(), "app/fonts/share-card");
+/** The First Light mark (public/logo), inlined so Satori needs no fetch. */
+const BRAND_MARK = `data:image/svg+xml;base64,${readFileSync(
+  join(process.cwd(), "public/logo/mmc-mark-aurora.svg"),
+).toString("base64")}`;
 const FONTS = [
   { name: "Jakarta", file: "plus-jakarta-sans-600.ttf", weight: 600 as const },
   { name: "Jakarta", file: "plus-jakarta-sans-700.ttf", weight: 700 as const },
@@ -210,8 +215,19 @@ function Footer({ copy, scale }: { copy: Copy; scale: number }) {
         borderTop: "2px solid rgba(217, 205, 247, 0.2)",
       }}
     >
-      <div style={{ display: "flex", fontSize: Math.round(38 * scale), fontWeight: 700, letterSpacing: -0.5 }}>
-        Tareeq
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: Math.round(14 * scale),
+          fontSize: Math.round(38 * scale),
+          fontWeight: 700,
+          letterSpacing: -0.5,
+        }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text */}
+        <img src={BRAND_MARK} width={Math.round(58 * scale)} height={Math.round(37 * scale)} />
+        {BRAND.name}
       </div>
       <div
         style={{

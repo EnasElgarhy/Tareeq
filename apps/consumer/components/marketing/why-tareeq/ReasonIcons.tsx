@@ -86,7 +86,7 @@ export const REASON_ICONS: Record<
   Audience,
   readonly ComponentType<WayIconProps>[]
 > = {
-  learners: [IconEverydayChoice, IconSignpost, IconNextSteps, IconKaiChat],
+  learners: [IconEverydayChoice, IconSignpost, IconKaiChat, IconNextSteps],
   parents: [IconDrive, IconReasoning, IconPathMap, IconConversation],
 };
 

@@ -19,19 +19,19 @@ interface LogoProps {
 }
 
 const SRC = {
-  "lockup-ink": "/logo/tareeq-logo.svg",
-  "lockup-cream": "/logo/tareeq-logo-cream.svg",
-  "mark-ink": "/logo/tareeq-mark.svg",
-  "mark-cream": "/logo/tareeq-mark-cream.svg",
+  "lockup-ink": "/logo/mmc-lockup.svg",
+  "lockup-cream": "/logo/mmc-lockup-on-dark.svg",
+  "mark-ink": "/logo/mmc-mark.svg",
+  "mark-cream": "/logo/mmc-mark-aurora.svg",
 } as const;
 
 // Aspect ratios match the source SVG viewBoxes:
-//   lockup → viewBox="0 0 320 214"  → 214/320
-//   mark   → viewBox="28 58 80 80"  → 1
-const ASPECT = { lockup: 214 / 320, mark: 1 };
+//   lockup → viewBox="0 0 982 192"   → 192/982
+//   mark   → viewBox="8 76 242 154"  → 154/242
+const ASPECT = { lockup: 192 / 982, mark: 154 / 242 };
 
 /**
- * Tareeq logo — always reference the SVG file. Never recreate the mark
+ * Map My CORE logo ("First Light") — always reference the SVG file. Never recreate the mark
  * in code, CSS, or a drawing library; the geometry is intentional.
  *
  * Decision rule:

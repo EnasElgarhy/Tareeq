@@ -45,9 +45,11 @@ import {
 import { buildMemoryCandidates } from "@/lib/kai/memory/memory-builder";
 import { detectDegenerateOutput } from "@/lib/kai/repetition";
 import { recordCoreKaiEvents } from "@/lib/kai/core/core-events";
+import { sendSafeguardingAlert } from "@/lib/kai/core/safeguarding-alert";
 import { runCoreKaiTurn } from "@/lib/kai/core/core-turn";
 import {
   hasPaidReportAccess,
+  kaiAccessError,
   paidAccessError,
 } from "@/app/api/payments/_lib/entitlements";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -310,7 +312,7 @@ export async function POST(request: Request) {
   // Kai is part of the paid report. Gating here (not only in the browser) is
   // what makes it a real lock: every call spends AI credits.
   const access = await hasPaidReportAccess(createSupabaseAdminClient(), user.id);
-  const denied = paidAccessError(access);
+  const denied = paidAccessError(access) ?? kaiAccessError(access);
   if (denied) return denied;
 
   let repositoryAvailable = false;
@@ -446,6 +448,14 @@ export async function POST(request: Request) {
             threadId: validated.value.threadId,
             requestId: validated.value.requestId,
           });
+          if (turn.events.some((event) => event.tool === "safeguarding_alert")) {
+            await sendSafeguardingAlert({
+              userId: user.id,
+              threadId: validated.value.threadId,
+              requestId: validated.value.requestId,
+              at: new Date(),
+            });
+          }
           const result: KaiChatResult = {
             message: turn.message,
             summary: turn.summary,

@@ -4,7 +4,8 @@
  *
  * Attribution comes from analytics_events.metadata, written by the consumer
  * from the mmc_attr cookie (apps/consumer/lib/analytics/attribution.ts):
- * `src`/`post` are the first touch, `src_last`/`post_last` the latest one.
+ * one key per utm tag: `src` (utm_source), `medium`, `campaign` and `post`
+ * (utm_content) for the first touch, with a `_last` twin for the latest.
  * Events recorded before attribution shipped (22 Oct 2026) have neither.
  * Pure and safe for client components (the week picker): by-source-queries.ts
  * does the reads, by-source-csv.ts the export.
@@ -35,8 +36,7 @@ export const SOURCE_METRICS: readonly MetricDefinition[] = [
   { key: "visits", label: "Visits", eventName: "session_started" },
   { key: "starts", label: "Assessment starts", eventName: "assessment_started" },
   { key: "completions", label: "Completions", eventName: "assessment_completed" },
-  // No "ask a parent" event exists yet; the column stays visible and empty.
-  { key: "parentAsks", label: "Ask-a-parent links sent", eventName: null },
+  { key: "parentAsks", label: "Ask-a-parent links sent", eventName: "parent_link_created" },
   { key: "payments", label: "Payments", eventName: "payment_succeeded" },
   { key: "reportOpens", label: "Report opens", eventName: "results_viewed" },
   { key: "kaiOpens", label: "Kai opens", eventName: "kai_opened" },
@@ -54,7 +54,34 @@ const METRIC_BY_EVENT = new Map(
 export const NO_SOURCE = "(not tagged)";
 
 export type Touch = "first" | "last";
-export type GroupBy = "post" | "source";
+/** "post" pairs each source with its content tag; the others take one utm tag alone. */
+export type GroupBy = "post" | "source" | "medium" | "campaign";
+
+export interface GroupByOption {
+  value: GroupBy;
+  label: string;
+  /** Header of the first column. */
+  column: string;
+}
+
+export const GROUP_BY_OPTIONS: readonly GroupByOption[] = [
+  { value: "post", label: "Source and content", column: "Source" },
+  { value: "source", label: "Source (utm_source)", column: "Source" },
+  { value: "medium", label: "Medium (utm_medium)", column: "Medium" },
+  { value: "campaign", label: "Campaign (utm_campaign)", column: "Campaign" },
+];
+
+export function groupByOption(groupBy: GroupBy): GroupByOption {
+  return GROUP_BY_OPTIONS.find((o) => o.value === groupBy) ?? GROUP_BY_OPTIONS[0];
+}
+
+/** The metadata key the first column reads, per touch. */
+const GROUP_KEY: Record<GroupBy, string> = {
+  post: "src",
+  source: "src",
+  medium: "medium",
+  campaign: "campaign",
+};
 
 export interface SourceEvent {
   eventName: string;
@@ -64,8 +91,9 @@ export interface SourceEvent {
 export type MetricCounts = Record<MetricKey, number | null>;
 
 export interface SourceRow {
+  /** The grouped tag's value: the source, medium or campaign. */
   source: string;
-  /** Null for untagged posts, and always null when grouping by source only. */
+  /** The content tag; only set when grouping by source and content. */
   post: string | null;
   counts: MetricCounts;
 }
@@ -148,7 +176,7 @@ export function parseSourceReportParams(
   return {
     weekStart: week && isMonday(week) && week <= current ? week : current,
     touch: first(searchParams.touch) === "last" ? "last" : "first",
-    groupBy: first(searchParams.groupBy) === "source" ? "source" : "post",
+    groupBy: GROUP_BY_OPTIONS.find((o) => o.value === first(searchParams.groupBy))?.value ?? "post",
   };
 }
 
@@ -175,8 +203,9 @@ export function aggregateBySource(
   touch: Touch,
   groupBy: GroupBy,
 ): SourceReport {
-  const sourceKey = touch === "first" ? "src" : "src_last";
-  const postKey = touch === "first" ? "post" : "post_last";
+  const suffix = touch === "first" ? "" : "_last";
+  const sourceKey = `${GROUP_KEY[groupBy]}${suffix}`;
+  const postKey = `post${suffix}`;
   const byKey = new Map<string, SourceRow>();
   let totals = emptyCounts();
 

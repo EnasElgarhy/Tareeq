@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { BRAND } from "@/lib/brand";
 import { NAV_ITEMS, isNavItemActive } from "@/components/home/nav-items";
+import { BrandMark } from "@/components/primitives/BrandMark";
 
 /**
  * The desktop navigation: a normal top bar, as on the website. Logo on the
@@ -24,23 +26,10 @@ export function AppTopNav() {
         aria-label={t("home.tab.nav_label")}
         className="mx-auto flex h-16 max-w-[1240px] items-center gap-10 px-8"
       >
-        <Link href="/" aria-label="Tareeq home" className="inline-flex items-center gap-1.5">
-          <span
-            aria-hidden="true"
-            className="inline-block size-6 bg-aurora"
-            style={{
-              WebkitMaskImage: "url('/logo/tareeq-mark.svg')",
-              maskImage: "url('/logo/tareeq-mark.svg')",
-              WebkitMaskRepeat: "no-repeat",
-              maskRepeat: "no-repeat",
-              WebkitMaskPosition: "center",
-              maskPosition: "center",
-              WebkitMaskSize: "contain",
-              maskSize: "contain",
-            }}
-          />
-          <span className="text-[18px] font-bold lowercase leading-none tracking-[-0.025em] text-[color:var(--day-ink)]">
-            tareeq
+        <Link href="/" aria-label={`${BRAND.name} home`} className="inline-flex items-center gap-1.5">
+          <BrandMark tone="flat" height={20} />
+          <span dir="ltr" lang="en" className="font-heading whitespace-nowrap text-[18px] font-bold leading-none tracking-[-0.025em] text-[color:var(--day-ink)]">
+            {BRAND.name}
           </span>
         </Link>
 

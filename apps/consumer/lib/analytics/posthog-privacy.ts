@@ -36,7 +36,7 @@ export function sanitizeReplayUrl(value: string): string {
     const url = new URL(
       value,
       typeof window === "undefined"
-        ? "https://staging.tareek.me"
+        ? "https://mapmycore.com"
         : window.origin,
     );
     return `${url.origin}${url.pathname}`;

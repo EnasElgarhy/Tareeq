@@ -30,7 +30,7 @@ function Shell({ children }: { children: React.ReactNode }) {
 function Wordmark({ caption }: { caption: string }) {
   return (
     <div className="mb-6 text-center">
-      <p className="adm-display text-3xl text-adm-paper">Tareeq</p>
+      <p className="adm-display text-3xl text-adm-paper">Map My CORE</p>
       <p className="mt-1 text-[11px] font-bold uppercase tracking-[0.28em] text-adm-violet-soft">
         {caption}
       </p>

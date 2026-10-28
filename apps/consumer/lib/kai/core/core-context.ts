@@ -17,6 +17,15 @@ import {
 import type { Locale } from "@/lib/i18n/locale";
 
 /**
+ * Emergency numbers Kai may share when the safeguarding rule applies
+ * (28 Oct update, Part A.5). The launch is in the UAE; add a country here
+ * before opening another market.
+ */
+export const SAFETY_CONTACTS: readonly string[] = [
+  "United Arab Emirates: 999 (police and all emergencies)",
+];
+
+/**
  * The payload Kai receives with every CORE conversation (spec §7.1), built
  * like kai_context() in the reference scorer (file 08) with one deliberate
  * difference: every code is replaced by its student-facing report name, in
@@ -269,6 +278,6 @@ export function buildCoreKaiContext(input: CoreKaiContextInput): CoreKaiContext 
       reason: entry.reason,
     })),
     VERIFIED_LINKS: [],
-    SAFETY_CONTACTS: [],
+    SAFETY_CONTACTS: [...SAFETY_CONTACTS],
   };
 }

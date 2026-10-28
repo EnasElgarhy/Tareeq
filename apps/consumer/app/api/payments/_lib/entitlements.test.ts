@@ -2,6 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { describe, expect, it } from "vitest";
 import {
   hasPaidReportAccess,
+  kaiAccessError,
   paidAccessError,
 } from "@/app/api/payments/_lib/entitlements";
 
@@ -48,7 +49,7 @@ function fakeAdmin(results: {
 describe("hasPaidReportAccess", () => {
   it("reports paid when the user's latest assessment has an active entitlement", async () => {
     const admin = fakeAdmin({
-      assessments: { data: { id: ASSESSMENT_ID }, error: null },
+      assessments: { data: { id: ASSESSMENT_ID, completed_at: "2026-08-31T10:00:00Z" }, error: null },
       report_entitlements: {
         data: { id: "ent-1", created_at: "2026-09-01T00:00:00Z" },
         error: null,
@@ -58,6 +59,7 @@ describe("hasPaidReportAccess", () => {
     await expect(hasPaidReportAccess(admin.client, USER_ID)).resolves.toEqual({
       paid: true,
       assessmentId: ASSESSMENT_ID,
+      completedAt: "2026-08-31T10:00:00Z",
     });
     // The entitlement lookup must be scoped to the session's own user.
     expect(admin.calls[1].filters).toContainEqual(["user_id", USER_ID]);
@@ -115,7 +117,9 @@ describe("hasPaidReportAccess", () => {
 
 describe("paidAccessError", () => {
   it("lets a paid caller through", () => {
-    expect(paidAccessError({ paid: true, assessmentId: ASSESSMENT_ID })).toBeNull();
+    expect(
+      paidAccessError({ paid: true, assessmentId: ASSESSMENT_ID, completedAt: "2026-10-28T09:00:00.000Z" }),
+    ).toBeNull();
   });
 
   it("answers 402 upgrade_required for an unpaid caller", async () => {
@@ -135,5 +139,26 @@ describe("paidAccessError", () => {
     await expect(response?.json()).resolves.toEqual({
       error: "access_check_unavailable",
     });
+  });
+});
+
+describe("kaiAccessError", () => {
+  const paid = { paid: true as const, assessmentId: ASSESSMENT_ID, completedAt: "2026-10-28T09:00:00.000Z" };
+
+  it("lets Kai answer within 3 months of taking CORE", () => {
+    expect(kaiAccessError(paid, new Date("2027-01-27T09:00:00.000Z"))).toBeNull();
+  });
+
+  it("answers 403 kai_access_ended with the end date afterwards", async () => {
+    const response = kaiAccessError(paid, new Date("2027-01-28T09:00:00.000Z"));
+    expect(response?.status).toBe(403);
+    await expect(response?.json()).resolves.toEqual({
+      error: "kai_access_ended",
+      endsAt: "2027-01-28T09:00:00.000Z",
+    });
+  });
+
+  it("leaves unpaid callers to paidAccessError", () => {
+    expect(kaiAccessError({ paid: false, reason: "not_entitled" })).toBeNull();
   });
 });

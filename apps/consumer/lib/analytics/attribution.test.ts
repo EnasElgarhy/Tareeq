@@ -118,8 +118,12 @@ describe("attributionMetadata", () => {
     expect(attributionMetadata(state)).toEqual({
       src: "instagram",
       post: "a",
+      medium: null,
+      campaign: null,
       src_last: "whatsapp",
       post_last: null,
+      medium_last: null,
+      campaign_last: null,
     });
   });
 
@@ -139,5 +143,23 @@ describe("attributionFromCookieHeader", () => {
   it("returns no labels when the cookie is absent", () => {
     expect(attributionFromCookieHeader("sb-token=abc")).toEqual({});
     expect(attributionFromCookieHeader(null)).toEqual({});
+  });
+});
+
+describe("attributionMetadata with all four utm tags", () => {
+  it("carries medium and campaign alongside source and content", () => {
+    const state = attributionFromRequest(
+      null,
+      request(
+        "https://mapmycore.com/?utm_source=instagram&utm_medium=paid&utm_campaign=launch-m1&utm_content=p2-carousel-03-ar",
+      ),
+    );
+
+    expect(attributionMetadata(state)).toMatchObject({
+      src: "instagram",
+      medium: "paid",
+      campaign: "launch-m1",
+      post: "p2-carousel-03-ar",
+    });
   });
 });

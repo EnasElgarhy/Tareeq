@@ -192,7 +192,7 @@ describe("buildCoreKaiContext", () => {
     expect(build(score(byCase("01_clear_single").answers)).PREVIOUS_SHIFTS).toEqual([]);
   });
 
-  it("passes the flag, prior disagreements and the empty pending lists", () => {
+  it("passes the flag, prior disagreements, the UAE emergency number and the empty pending lists", () => {
     const context = build(score(byCase("09_flagged").answers), {
       isAttemptFlagged: true,
       priorDisagreements: [
@@ -204,7 +204,7 @@ describe("buildCoreKaiContext", () => {
       { result: "Planning & Execution", student_version: "I like the idea, not the lists", reason: null },
     ]);
     expect(context.VERIFIED_LINKS).toEqual([]);
-    expect(context.SAFETY_CONTACTS).toEqual([]);
+    expect(context.SAFETY_CONTACTS).toEqual(["United Arab Emirates: 999 (police and all emergencies)"]);
   });
 
   it("fails loudly instead of falling back to a code when wording is missing", () => {

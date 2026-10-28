@@ -1,5 +1,5 @@
 import { loadAssessmentContentForReference } from "@/lib/assessment/content.server";
-import { trackEvent } from "@/lib/analytics/track";
+import { trackServerEvent } from "@/lib/analytics/track-server";
 import { computeScore } from "@/lib/scoring";
 import {
   buildFallbackReport,
@@ -98,7 +98,7 @@ export async function POST(request: Request) {
   const model = process.env.GEMINI_MODEL || DEFAULT_MODEL;
 
   if (!apiKey) {
-    trackEvent("results_generated", {
+    await trackServerEvent("results_generated", {
       source: "fallback",
       reason: "missing_api_key",
     });
@@ -166,7 +166,7 @@ export async function POST(request: Request) {
     },
   };
 
-  trackEvent("ai_generation_started", {
+  await trackServerEvent("ai_generation_started", {
     kind: "results_narrative",
     model,
     assessmentVersion: content.versionLabel,
@@ -211,12 +211,12 @@ export async function POST(request: Request) {
   );
 
   if (!response.ok) {
-    trackEvent("ai_generation_failed", {
+    await trackServerEvent("ai_generation_failed", {
       kind: "results_narrative",
       model,
       status: response.status,
     });
-    trackEvent("results_generated", {
+    await trackServerEvent("results_generated", {
       source: "fallback",
       reason: "gemini_error",
     });
@@ -279,16 +279,16 @@ export async function POST(request: Request) {
       ),
     };
 
-    trackEvent("ai_generation_completed", { kind: "results_narrative", model });
-    trackEvent("results_generated", { source: "gemini" });
+    await trackServerEvent("ai_generation_completed", { kind: "results_narrative", model });
+    await trackServerEvent("results_generated", { source: "gemini" });
     return Response.json({ report });
   } catch {
-    trackEvent("ai_generation_failed", {
+    await trackServerEvent("ai_generation_failed", {
       kind: "results_narrative",
       model,
       reason: "unparseable_response",
     });
-    trackEvent("results_generated", {
+    await trackServerEvent("results_generated", {
       source: "fallback",
       reason: "parse_error",
     });

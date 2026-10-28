@@ -84,13 +84,13 @@ describe("aggregateBySource", () => {
       visits: 2,
       starts: 1,
       completions: 1,
-      parentAsks: null,
+      parentAsks: 0,
       payments: 1,
       reportOpens: 1,
       kaiOpens: 1,
     });
     expect(totals.visits).toBe(4);
-    expect(totals.parentAsks).toBeNull();
+    expect(totals.parentAsks).toBe(0);
   });
 
   it("credits the latest touch when asked", () => {
@@ -115,7 +115,7 @@ describe("aggregateBySource", () => {
     expect(totals.visits).toBe(0);
   });
 
-  it("exports the week, a labelled empty ask-a-parent column and a total row", () => {
+  it("exports the week, the ask-a-parent column and a total row", () => {
     const report = aggregateBySource(events, "first", "post");
     const lines = buildSourceReportCsv(report, {
       weekStart: "2026-10-19",
@@ -124,8 +124,41 @@ describe("aggregateBySource", () => {
     })
       .trim()
       .split("\r\n");
-    expect(lines[0]).toContain("Ask-a-parent links sent (not tracked yet)");
-    expect(lines[1]).toBe("2026-10-19 to 2026-10-25,first touch,instagram,parent-toolkit-1,2,1,1,,1,1,1");
-    expect(lines.at(-1)).toBe("2026-10-19 to 2026-10-25,first touch,Total,,4,1,1,,1,1,1");
+    expect(lines[0]).toContain("Ask-a-parent links sent");
+    expect(lines[0]).not.toContain("not tracked yet");
+    expect(lines[1]).toBe("2026-10-19 to 2026-10-25,first touch,instagram,parent-toolkit-1,2,1,1,0,1,1,1");
+    expect(lines.at(-1)).toBe("2026-10-19 to 2026-10-25,first touch,Total,,4,1,1,0,1,1,1");
+  });
+
+  it("counts ask-a-parent links from parent_link_created", () => {
+    const { totals } = aggregateBySource([ev("parent_link_created", insta)], "first", "post");
+    expect(totals.parentAsks).toBe(1);
+  });
+
+  it("groups by medium or campaign, first or latest touch", () => {
+    const tagged = {
+      src: "instagram",
+      medium: "paid",
+      campaign: "launch-m1",
+      src_last: "whatsapp",
+      medium_last: "share",
+      campaign_last: null,
+    };
+    const byMedium = aggregateBySource([ev("session_started", tagged)], "first", "medium");
+    expect(byMedium.rows[0]).toMatchObject({ source: "paid", post: null });
+
+    const byCampaign = aggregateBySource([ev("session_started", tagged)], "first", "campaign");
+    expect(byCampaign.rows[0].source).toBe("launch-m1");
+
+    const latest = aggregateBySource([ev("session_started", tagged)], "last", "campaign");
+    expect(latest.rows[0].source).toBe(NO_SOURCE);
+  });
+
+  it("reads medium and campaign grouping from the URL and exports the right column", () => {
+    const params = parseSourceReportParams({ groupBy: "campaign" }, new Date("2026-10-24T12:00:00Z"));
+    expect(params.groupBy).toBe("campaign");
+    const header = buildSourceReportCsv(aggregateBySource([], "first", "campaign"), params).split("\r\n")[0];
+    expect(header).toContain("Campaign");
+    expect(header).not.toContain("Content");
   });
 });

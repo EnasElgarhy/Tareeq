@@ -55,7 +55,7 @@ describe("buildResultDocument", () => {
     });
 
     expect(html).toContain("<!doctype html>");
-    expect(html).toContain("Sarah &amp; Co.’s Career Compass");
+    expect(html).toContain("Sarah &amp; Co.’s CORE report");
     expect(html).toContain("Your profile may thrive in career families like…");
     expect(html).toContain("Corporate Compliance");
     expect(html).toContain("&lt;script&gt;");

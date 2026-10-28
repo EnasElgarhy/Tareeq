@@ -6,6 +6,7 @@ import { createPortal } from "react-dom";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { CompassCard, type CompassCardResult } from "@/components/results/CompassCard";
 import { trackEvent } from "@/lib/analytics/track";
+import { BRAND } from "@/lib/brand";
 
 interface ShareCardModalProps {
   result: CompassCardResult;
@@ -74,7 +75,7 @@ export function ShareCardModal({
       const file = new File([blob], "tareeq-compass.png", { type: "image/png" });
 
       const shareData: ShareData = {
-        title: "Tareeq Career Compass",
+        title: `${BRAND.name}: my CORE`,
         text: shareText,
         url: shareUrl ?? undefined,
         files: [file],

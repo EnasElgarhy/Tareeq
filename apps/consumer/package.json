@@ -27,6 +27,7 @@
     "audio:bake:xtts:dry": "python3 prototype/bake_audio.py --provider xtts --locale ar --html prototype/index.html --out-dir public/audio_ar --dry-run"
   },
   "dependencies": {
+    "@aws-sdk/client-sesv2": "^3.1158.0",
     "@phosphor-icons/react": "^2.1.10",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.4.3",

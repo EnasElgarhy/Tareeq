@@ -113,7 +113,7 @@ export default function AcceptInvitePage() {
     <main className="grid min-h-screen place-items-center bg-adm-paper p-6">
       <div className="w-full max-w-sm rounded-adm-xl border border-adm-line bg-adm-card p-7 shadow-adm-lg">
         <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-adm-violet">
-          Tareeq Admin
+          Map My CORE Admin
         </p>
         <h1 className="mt-1 text-lg font-bold text-adm-ink">
           Accept your invitation

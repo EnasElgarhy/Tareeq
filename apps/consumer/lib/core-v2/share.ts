@@ -1,4 +1,5 @@
 import type { Locale } from "@/lib/i18n/locale";
+import { BRAND } from "@/lib/brand";
 import type { CareerBank } from "./bank";
 import type { ReportModel } from "./report-model";
 import {
@@ -231,4 +232,4 @@ export const SHARE_LABELS: Record<
   },
 };
 
-export const SHARE_SITE = "tareeq.me";
+export const SHARE_SITE = BRAND.domain;

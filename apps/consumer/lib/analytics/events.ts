@@ -36,6 +36,7 @@ export const RESULTS_EVENT_NAMES = [
   "report_unlocked",
   "parent_link_created",
   "parent_link_shared",
+  "child_invite_shared",
   "pdf_downloaded",
   "results_generated",
   "results_viewed",

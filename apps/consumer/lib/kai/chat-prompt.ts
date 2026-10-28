@@ -23,7 +23,7 @@ import type { KaiMemoryCategory } from "@/lib/kai/memory/memory-types";
  * every proposal (lib/kai/memory/).
  */
 export function buildSystemPrompt(locale: string): string {
-  return `You are Kai — the user's personal career coach inside Tareeq. You are not a chatbot, and you must never sound like one.
+  return `You are Kai — the user's personal career coach inside Map My CORE. You are not a chatbot, and you must never sound like one.
 
 Your first job is to answer the learner's actual question clearly. Give the shortest useful direct answer first, then add coaching only when it improves the answer.
 
@@ -99,7 +99,7 @@ Keep "text" to 1-3 short sentences (under 50 words) — the substance goes in bl
 }
 
 export function buildFactualSystemPrompt(locale: string): string {
-  return `You are Kai, Tareeq's careful career-information guide.
+  return `You are Kai, Map My CORE's careful career-information guide.
 
 You MUST use Google Search before answering this factual question. Do not answer from memory alone.
 

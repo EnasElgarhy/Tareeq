@@ -13,6 +13,7 @@ import {
 } from "@/lib/results/report-labels";
 import type { EcosystemFitName } from "@/lib/results/types";
 import type { ArchetypeName, ClusterCode, DriverCode } from "@/lib/scoring/types";
+import { BRAND } from "@/lib/brand";
 
 export interface CompassCardResult {
   name: string;
@@ -159,7 +160,7 @@ export function CompassCard({ result }: { result: CompassCardResult }) {
             letterSpacing: track("0.02em"),
           }}
         >
-          tareeq
+          {BRAND.name}
         </div>
         <div
           style={{

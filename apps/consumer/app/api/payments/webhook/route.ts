@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { attributionLabels } from "@/lib/analytics/attribution";
+import { trackServerEvent } from "@/lib/analytics/track-server";
 import type Stripe from "stripe";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import {
@@ -242,16 +244,17 @@ async function grantEntitlement(
  *
  * Idempotency: the `status = 'pending'` filter makes a redelivery a no-op.
  *
+ * @returns true only for the delivery that closed the link.
  * @throws on a database fault, so the caller can answer 500.
  */
 async function markParentLinkPaid(
   admin: SupabaseClient,
   session: Stripe.Checkout.Session,
-): Promise<void> {
+): Promise<boolean> {
   const linkId = session.metadata?.parent_link_id;
-  if (session.payment_status !== "paid" || !isUuid(linkId)) return;
+  if (session.payment_status !== "paid" || !isUuid(linkId)) return false;
 
-  const { error } = await admin
+  const { data, error } = await admin
     .from(PARENT_LINKS_TABLE)
     .update({
       status: "paid",
@@ -259,10 +262,27 @@ async function markParentLinkPaid(
       stripe_session_id: session.id,
     })
     .eq("id", linkId)
-    .eq("status", "pending");
+    .eq("status", "pending")
+    .select("id");
   if (error) {
     throw new Error(`Parent link update failed: ${error.message}`);
   }
+  return (data?.length ?? 0) > 0;
+}
+
+/**
+ * A parent's payment happens in the parent's browser, which has none of the
+ * student's tracking, so it is recorded here, once, with the student's
+ * source labels from the session metadata. A student's own payment is
+ * tracked by their browser (ReportAccessExperience).
+ */
+async function trackParentPayment(session: Stripe.Checkout.Session): Promise<void> {
+  const meta = session.metadata ?? {};
+  await trackServerEvent("payment_succeeded", {
+    assessmentId: meta.assessment_id ?? session.client_reference_id,
+    payer: "parent",
+    ...attributionLabels({ src: meta.src, post: meta.post, medium: meta.medium, campaign: meta.campaign }),
+  });
 }
 
 /**
@@ -342,7 +362,9 @@ export async function POST(request: Request) {
     switch (event.type) {
       case "checkout.session.completed":
         outcome = await grantEntitlement(admin, event.data.object);
-        await markParentLinkPaid(admin, event.data.object);
+        if (await markParentLinkPaid(admin, event.data.object)) {
+          await trackParentPayment(event.data.object);
+        }
         break;
       case "charge.refunded":
         // Fires for partial refunds too. Per the frozen contract any refund

@@ -9,6 +9,8 @@ import { LocaleProvider, useLocale } from "@/components/i18n/LocaleProvider";
 import { prefersReducedMotion } from "@/lib/audio/ui-sounds";
 import type { Locale } from "@/lib/i18n/locale";
 import type { PersonalizedCompassReport } from "@/lib/results/types";
+import { BRAND } from "@/lib/brand";
+import { BrandMark } from "@/components/primitives/BrandMark";
 
 interface SharedResultScreenProps {
   name: string | null;
@@ -210,22 +212,9 @@ function NameEmphasis({ children }: { children: ReactNode }) {
 function BrandHeader() {
   return (
     <header className="flex items-center justify-center gap-1.5">
-      <span
-        aria-hidden="true"
-        className="inline-block size-6 bg-aurora"
-        style={{
-          WebkitMaskImage: "url('/logo/tareeq-mark.svg')",
-          maskImage: "url('/logo/tareeq-mark.svg')",
-          WebkitMaskRepeat: "no-repeat",
-          maskRepeat: "no-repeat",
-          WebkitMaskPosition: "center",
-          maskPosition: "center",
-          WebkitMaskSize: "contain",
-          maskSize: "contain",
-        }}
-      />
-      <span className="text-[16px] font-bold leading-none tracking-[-0.025em] lowercase text-sand">
-        tareeq
+      <BrandMark tone="aurora" height={20} />
+      <span dir="ltr" lang="en" className="font-heading text-[16px] font-bold leading-none tracking-[-0.025em] text-sand">
+        {BRAND.name}
       </span>
     </header>
   );

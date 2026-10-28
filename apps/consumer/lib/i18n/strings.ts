@@ -72,7 +72,7 @@ export const STRINGS = {
   },
   "interstitial.dismiss_aria": { en: "Dismiss", ar: "إغلاق" },
   "rush.body": {
-    en: "You picked before you could read the question and every answer. Rushed answers make your Compass less accurate.",
+    en: "You picked before you could read the question and every answer. Rushed answers make your CORE report less accurate.",
     ar: "اخترت قبل أن تقرأ السؤال وكل الإجابات. الإجابات المتسرعة تجعل بوصلتك أقل دقة.",
   },
   "rush.track_yours": { en: "You took {s}s", ar: "استغرقت {s} ث" },
@@ -98,13 +98,13 @@ export const STRINGS = {
     ar: "تعذّر إنشاء رابط للمشاركة. حاول مرة أخرى.",
   },
   "share.owner_heading": {
-    en: "{name}’s Career Compass",
+    en: "{name}’s CORE report",
     ar: "بوصلة {name} المهنية",
   },
-  "share.owner_heading_fallback": { en: "A Career Compass", ar: "بوصلة مهنية" },
+  "share.owner_heading_fallback": { en: "A CORE report", ar: "بوصلة مهنية" },
   "share.intro_tagline": {
-    en: "Tareeq turns a student’s answers into a personal direction to explore — not a fixed destination.",
-    ar: "يُحوّل طريق إجابات الطالب إلى اتجاه شخصي للاستكشاف — لا وجهة نهائية محددة.",
+    en: "Map My CORE turns a student’s answers into a personal direction to explore — not a fixed destination.",
+    ar: "يُحوّل ماب ماي كور إجابات الطالب إلى اتجاه شخصي للاستكشاف — لا وجهة نهائية محددة.",
   },
   "share.careers_label": {
     en: "Career directions worth exploring",
@@ -115,33 +115,33 @@ export const STRINGS = {
     ar: "هل تتساءل ماذا ستقول بوصلتك؟",
   },
   "share.cta_button": {
-    en: "Take your own Career Compass",
+    en: "Take your own CORE report",
     ar: "خذ بوصلتك المهنية الخاصة",
   },
   "share.cta_meta": {
     en: "Free · ~12 minutes · No account needed to start",
     ar: "مجاناً · ~12 دقيقة · لا حاجة لحساب للبدء",
   },
-  "share.footer_brand": { en: "Powered by Tareeq", ar: "بواسطة طريق" },
+  "share.footer_brand": { en: "Powered by Map My CORE", ar: "بواسطة ماب ماي كور" },
   "share.not_found_title": {
     en: "This link isn’t available",
     ar: "هذا الرابط غير متاح",
   },
   "share.not_found_body": {
-    en: "It may have expired, or the result was removed. You can still take your own Career Compass.",
+    en: "It may have expired, or the result was removed. You can still take your own CORE report.",
     ar: "قد يكون منتهي الصلاحية، أو تمت إزالة النتيجة. لا يزال بإمكانك أخذ بوصلتك المهنية الخاصة.",
   },
   "share.intro_reveal_heading": {
-    en: "{name} shared their Career Compass with you.",
+    en: "{name} shared their CORE report with you.",
     ar: "بوصلة {name} المهنية بين يديك.",
   },
   "share.intro_reveal_heading_fallback": {
-    en: "A Career Compass was shared with you.",
+    en: "A CORE report was shared with you.",
     ar: "تمت مشاركة بوصلة مهنية معك.",
   },
   "share.intro_reveal_subtitle": {
-    en: "Take a look at what Tareeq found.",
-    ar: "ألقِ نظرة على ما اكتشفه طريق.",
+    en: "Take a look at what Map My CORE found.",
+    ar: "ألقِ نظرة على ما اكتشفه ماب ماي كور.",
   },
   "share.intro_skip": { en: "Tap to view now", ar: "اضغط للعرض الآن" },
   "question.reflect_placeholder": {
@@ -181,7 +181,7 @@ export const STRINGS = {
     ar: "اقتربنا. هذه الإجابات الأخيرة تساعدني على رؤية البيئة التي يمكنك أن تنمو فيها حقاً.",
   },
   "kai.results": {
-    en: "Nice work. Here's your Career Compass. Remember — this is a compass, not a GPS. You still get to choose the destination.",
+    en: "Nice work. Here's your CORE report. Remember — this is a compass, not a GPS. You still get to choose the destination.",
     ar: "عمل رائع. هذه بوصلتك المهنية. تذكّر — إنها بوصلة، لا خريطة تقودك خطوة بخطوة. ما زلت أنت من يختار الوجهة.",
   },
 
@@ -192,7 +192,7 @@ export const STRINGS = {
 
   // ---- Profile tabs (lightweight internal tabs, not a global nav bar) ----
   "profile.tab.overview": { en: "Overview", ar: "نظرة عامة" },
-  "profile.tab.compass": { en: "Career Compass", ar: "بوصلة المسار" },
+  "profile.tab.compass": { en: "My CORE", ar: "تقرير كور" },
   "profile.tab.journey": { en: "Journey", ar: "رحلتك" },
   "profile.tab.kai": { en: "Kai", ar: "كاي" },
   "profile.tab.settings": { en: "Settings", ar: "الإعدادات" },
@@ -208,7 +208,7 @@ export const STRINGS = {
     ar: "ما زلت في انتظار التعرّف عليك حقاً.",
   },
   "kai.panel.empty_body": {
-    en: "Finish your Career Compass first, then I can guide you with more personal advice.",
+    en: "Finish your CORE report first, then I can guide you with more personal advice.",
     ar: "أكمل بوصلتك المهنية أولاً، وبعدها يمكنني إرشادك بنصائح أكثر خصوصية.",
   },
   "kai.panel.empty_cta": { en: "Start Assessment", ar: "ابدأ التقييم" },
@@ -283,14 +283,14 @@ export const STRINGS = {
     en: "Get a deeper explanation in conversation",
     ar: "احصل على شرح أعمق في محادثة",
   },
-  "profile.achievement.joined": { en: "Joined Tareeq", ar: "انضممت إلى طريق" },
+  "profile.achievement.joined": { en: "Joined Map My CORE", ar: "انضممت إلى ماب ماي كور" },
   "profile.achievement.joined_sub": {
     en: "Created your profile and set your language",
     ar: "أنشأت ملفك الشخصي واخترت لغتك",
   },
-  "profile.achievement.core_complete": { en: "First Compass", ar: "أول بوصلة" },
+  "profile.achievement.core_complete": { en: "First CORE report", ar: "أول تقرير كور" },
   "profile.achievement.core_complete_sub": {
-    en: "Answered all 40 CORE Compass questions",
+    en: "Answered all 40 CORE questions",
     ar: "أجبت عن جميع أسئلة بوصلة CORE الأربعين",
   },
   "profile.achievement.deep_dive": {
@@ -315,7 +315,7 @@ export const STRINGS = {
     ar: "حقق تتابعاً لمدة 7 أيام",
   },
   "profile.activity.core_complete": {
-    en: "Completed CORE Compass",
+    en: "Completed CORE",
     ar: "أكملت بوصلة CORE",
   },
   "profile.activity.profile_created": {
@@ -339,19 +339,19 @@ export const STRINGS = {
   "profile.streak.day.sun": { en: "S", ar: "ح" },
 
   "profile.resultHero.eyebrow": {
-    en: "CORE Compass · Curiosity signal",
+    en: "CORE · Curiosity signal",
     ar: "بوصلة CORE · إشارة الفضول",
   },
   "profile.resultHero.style_label": { en: "Style", ar: "الأسلوب" },
   "profile.resultHero.view_report": {
-    en: "View full Compass report",
-    ar: "عرض تقرير البوصلة الكامل",
+    en: "View full CORE report",
+    ar: "عرض تقرير كور الكامل",
   },
 
   "profile.journey.minutes_left": { en: "~{n} min left", ar: "~{n} د متبقية" },
   "profile.journey.locked_hint": {
-    en: "Coming soon as Tareeq grows",
-    ar: "قريباً مع نمو طريق",
+    en: "Coming soon as Map My CORE grows",
+    ar: "قريباً مع نمو ماب ماي كور",
   },
   "profile.journey.caption.core-compass": {
     en: "The foundation — everything else builds on this.",
@@ -394,7 +394,7 @@ export const STRINGS = {
     ar: "خطوتك التالية هي {module}. تستغرق حوالي {duration}.",
   },
   "profile.proactive.compass_highlight": {
-    en: "One thing stood out from your Compass: {cluster} + {archetype}.",
+    en: "One thing stood out from your CORE report: {cluster} + {archetype}.",
     ar: "شيء واحد لفت الانتباه في بوصلتك: {cluster} + {archetype}.",
   },
   "profile.proactive.start_cta": { en: "Get started", ar: "ابدأ الآن" },
@@ -406,8 +406,8 @@ export const STRINGS = {
   "profile.settings.account_label": { en: "Account", ar: "الحساب" },
   "profile.settings.sign_out": { en: "Sign out", ar: "تسجيل الخروج" },
   "profile.settings.footer": {
-    en: "More assessments unlock as Tareeq grows. Your profile grows with you.",
-    ar: "المزيد من التقييمات يُفتح مع نمو طريق. ملفك الشخصي ينمو معك.",
+    en: "More assessments unlock as Map My CORE grows. Your profile grows with you.",
+    ar: "المزيد من التقييمات يُفتح مع نمو ماب ماي كور. ملفك الشخصي ينمو معك.",
   },
   "profile.settings.language_label": { en: "Language", ar: "اللغة" },
   "profile.settings.language_en": { en: "English", ar: "الإنجليزية" },
@@ -437,7 +437,7 @@ export const STRINGS = {
   // Contextual, time-based loading ladder (components/kai/chat/LoadingMessage.tsx).
   "kai.loading.thinking": { en: "Kai is thinking…", ar: "كاي تفكر…" },
   "kai.loading.connecting": {
-    en: "Kai is connecting this to your Compass…",
+    en: "Kai is connecting this to your CORE report…",
     ar: "كاي تربط هذا ببوصلتك…",
   },
   "kai.loading.preparing": {
@@ -502,7 +502,7 @@ export const STRINGS = {
   },
   "kai.chat.signed_out_cta": { en: "Sign in", ar: "تسجيل الدخول" },
   "kai.chat.no_assessment": {
-    en: "I'll know much more after your Career Compass.",
+    en: "I'll know much more after your CORE report.",
     ar: "سأعرف أكثر بكثير بعد بوصلتك المهنية.",
   },
 
@@ -571,7 +571,7 @@ export const STRINGS = {
   "kai.resource.search_web": { en: "Search online", ar: "ابحث عبر الإنترنت" },
 
   "kai.celebration.core_title": {
-    en: "CORE Compass complete!",
+    en: "CORE complete!",
     ar: "اكتملت بوصلة CORE!",
   },
   "kai.celebration.core_subtitle": {
@@ -647,7 +647,7 @@ export const STRINGS = {
     ar: "مقابلة معمّقة",
   },
   "kai.panel.locked.deep_dive.body": {
-    en: "A voiced, 1-on-1 conversation with Kai that goes deeper than your Compass alone.",
+    en: "A voiced, 1-on-1 conversation with Kai that goes deeper than your CORE report alone.",
     ar: "محادثة صوتية فردية مع كاي تتعمّق أكثر من بوصلتك وحدها.",
   },
 
@@ -657,8 +657,8 @@ export const STRINGS = {
     ar: "بوصلتك تعيش هنا",
   },
   "home.overview.empty_description": {
-    en: "Take the CORE Compass to unlock your personalized home — career directions, next steps, and a guide who knows how you're wired.",
-    ar: "خض تقييم البوصلة الأساسي لفتح صفحتك الرئيسية الشخصية — اتجاهات مهنية، خطوات قادمة، ودليل يعرف كيف أنت مُكوَّن.",
+    en: "Take CORE to unlock your personalized home — career directions, next steps, and a guide who knows how you're wired.",
+    ar: "خض تقييم كور لفتح صفحتك الرئيسية الشخصية — اتجاهات مهنية، خطوات قادمة، ودليل يعرف كيف أنت مُكوَّن.",
   },
   "home.overview.greeting": { en: "Hello, {name}", ar: "أهلاً، {name}" },
   "home.overview.avatar_label": { en: "Your profile", ar: "ملفك الشخصي" },
@@ -680,17 +680,17 @@ export const STRINGS = {
   },
 
   // ---- Compass tab (components/home/CompassScreen.tsx + CompassReportView.tsx) ----
-  "home.compass.title": { en: "Your Career Compass", ar: "بوصلة مسارك المهني" },
+  "home.compass.title": { en: "Your CORE report", ar: "تقرير كور الخاص بك" },
   "home.compass.subtitle": {
     en: "Everything your answers revealed.",
     ar: "كل ما كشفت عنه إجاباتك.",
   },
   "home.compass.empty_title": {
-    en: "Your profile starts with your Compass",
+    en: "Your profile starts with your CORE report",
     ar: "ملفك يبدأ من بوصلتك",
   },
   "home.compass.empty_description": {
-    en: "Take the CORE Compass to create your profile, or sign in to restore one you've already completed.",
+    en: "Take CORE to create your profile, or sign in to restore one you've already completed.",
     ar: "أكمل التقييم لإنشاء ملفك، أو سجّل الدخول لاستعادة تقييم أكملته من قبل.",
   },
 
@@ -700,8 +700,8 @@ export const STRINGS = {
     ar: "خريطتك تعيش هنا",
   },
   "home.explore.empty_description": {
-    en: "Take the CORE Compass to unlock career families, majors, and the paths your profile points toward.",
-    ar: "خض تقييم البوصلة الأساسي لفتح المجالات المهنية والتخصصات والمسارات التي يشير إليها ملفك الشخصي.",
+    en: "Take CORE to unlock career families, majors, and the paths your profile points toward.",
+    ar: "خض تقييم كور لفتح المجالات المهنية والتخصصات والمسارات التي يشير إليها ملفك الشخصي.",
   },
   "home.explore.title": { en: "Explore", ar: "استكشف" },
   "home.explore.subtitle": {
@@ -725,8 +725,8 @@ export const STRINGS = {
     ar: "رحلتك تعيش هنا",
   },
   "home.you.empty_description": {
-    en: "Take the CORE Compass to start unlocking modules and save your progress.",
-    ar: "خض تقييم البوصلة الأساسي لتبدأ بفتح الوحدات وحفظ تقدمك.",
+    en: "Take CORE to start unlocking modules and save your progress.",
+    ar: "خض تقييم كور لتبدأ بفتح الوحدات وحفظ تقدمك.",
   },
   "home.you.signin_title": {
     en: "Sign in to save your progress",
@@ -738,8 +738,8 @@ export const STRINGS = {
   },
   "home.you.new_here_prefix": { en: "New here? ", ar: "جديد هنا؟ " },
   "home.you.new_here_link": {
-    en: "Take the CORE Compass",
-    ar: "خض تقييم البوصلة الأساسي",
+    en: "Take CORE",
+    ar: "خض تقييم كور",
   },
   "home.you.new_here_suffix": {
     en: " to create your profile.",
@@ -764,8 +764,8 @@ export const STRINGS = {
     ar: "ابدأ التقييم",
   },
   "dashboard.access.returning_label": {
-    en: "Returning to Tareeq",
-    ar: "العودة إلى طريق",
+    en: "Returning to Map My CORE",
+    ar: "العودة إلى ماب ماي كور",
   },
   "dashboard.access.returning_title": {
     en: "Already completed it?",
@@ -780,7 +780,7 @@ export const STRINGS = {
     ar: "لا يوجد تقييم مكتمل بعد",
   },
   "dashboard.access.no_result_body": {
-    en: "This account does not have a completed Career Compass. Take the assessment to create your profile.",
+    en: "This account does not have a completed CORE report. Take the assessment to create your profile.",
     ar: "لا يحتوي هذا الحساب على بوصلة مهنية مكتملة. ابدأ التقييم لإنشاء ملفك.",
   },
   "dashboard.access.different_account": {
@@ -807,8 +807,8 @@ export const STRINGS = {
     ar: "شاهد يوماً في الحياة",
   },
   "home.feed.unlock_footer": {
-    en: "Unlocks as Tareeq rolls out — the more you complete, the more your compass reveals.",
-    ar: "يُفتح مع نمو طريق — كلما أكملت أكثر، كشفت بوصلتك أكثر.",
+    en: "Unlocks as Map My CORE rolls out — the more you complete, the more your compass reveals.",
+    ar: "يُفتح مع نمو ماب ماي كور — كلما أكملت أكثر، كشفت بوصلتك أكثر.",
   },
   "home.feed.ask_kai_eyebrow": { en: "Ask Kai", ar: "اسأل كاي" },
   "home.feed.ask_kai_title": {
@@ -816,11 +816,11 @@ export const STRINGS = {
     ar: "دليلك يعرف بوصلتك",
   },
   "home.feed.ask_kai_subtitle": {
-    en: "Based on your Compass",
+    en: "Based on your CORE report",
     ar: "بناءً على بوصلتك",
   },
   "home.feed.ask_kai_focus": {
-    en: "Your Compass points toward {paths}.",
+    en: "Your CORE report points toward {paths}.",
     ar: "بوصلتك تشير نحو {paths}.",
   },
   "home.feed.ask_kai_action_continue": {
@@ -836,11 +836,11 @@ export const STRINGS = {
     ar: "قارن مسارات مشابهة",
   },
   "home.feed.ask_kai_prompt_continue": {
-    en: "Let's keep exploring my Compass results.",
+    en: "Let's keep exploring my CORE results.",
     ar: "لنواصل استكشاف نتائج بوصلتي.",
   },
   "home.feed.ask_kai_prompt_parents": {
-    en: "Help me explain my Compass results to my parents.",
+    en: "Help me explain my CORE results to my parents.",
     ar: "ساعدني في شرح نتائج بوصلتي لوالديّ.",
   },
   "home.feed.ask_kai_prompt_compare": {
@@ -1011,7 +1011,7 @@ export const STRINGS = {
   "home.progress.next": { en: "Next: {module}", ar: "التالي: {module}" },
 
   "home.tab.overview": { en: "Overview", ar: "نظرة عامة" },
-  "home.tab.compass": { en: "Compass", ar: "البوصلة" },
+  "home.tab.compass": { en: "My CORE", ar: "تقرير كور" },
   "home.tab.kai": { en: "Kai", ar: "كاي" },
   "home.tab.nav_label": { en: "Primary", ar: "التنقل الرئيسي" },
 
@@ -1078,7 +1078,7 @@ export const STRINGS = {
   },
 
   // ---- Journey module names (lib/profile/journey.ts) — small, fixed set ----
-  "journey.module.core_compass": { en: "CORE Compass", ar: "بوصلة CORE" },
+  "journey.module.core_compass": { en: "CORE", ar: "بوصلة CORE" },
   "journey.module.deep_dive": {
     en: "Deep Dive Interview",
     ar: "مقابلة معمّقة",
@@ -1285,7 +1285,7 @@ export const STRINGS = {
   },
 
   // ---- Results screen (components/assessment/ResultsScreen.tsx) ----
-  "results.hero.chip": { en: "Curiosity Compass", ar: "بوصلة الفضول" },
+  "results.hero.chip": { en: "Your curiosities", ar: "بوصلة الفضول" },
   "results.hero.badge": { en: "CORE v4", ar: "كور v4" },
   "results.hero.eyebrow": { en: "Curiosity signal", ar: "إشارة الفضول" },
   "results.hero.subtitle": {
@@ -1415,11 +1415,11 @@ export const STRINGS = {
     ar: "تعذّر تجهيز الملف. حاول مرة أخرى.",
   },
   "results.export.title": {
-    en: "{name}’s Career Compass",
+    en: "{name}’s CORE report",
     ar: "بوصلة {name} المهنية",
   },
   "results.export.subtitle": {
-    en: "A portable copy of your Tareeq result, including the signals, paths, and next steps that stood out.",
+    en: "A portable copy of your Map My CORE result, including the signals, paths, and next steps that stood out.",
     ar: "نسخة قابلة للحفظ من نتيجة طريق، وتشمل أبرز الإشارات والمسارات والخطوات القادمة.",
   },
   "results.export.summary_title": {
@@ -1431,15 +1431,15 @@ export const STRINGS = {
     ar: "هذه النتيجة دليل للاستكشاف وليست حكماً نهائياً. استخدمها لتجربة الاحتمالات وملاحظة ما يناسبك.",
   },
   "results.export.footer": {
-    en: "Tareeq Career Compass",
-    ar: "بوصلة طريق المهنية",
+    en: "CORE report",
+    ar: "تقرير كور",
   },
   "results.parent.eyebrow": {
     en: "For parents and guardians",
     ar: "لأولياء الأمور",
   },
   "results.parent.title": {
-    en: "{name}’s Career Compass",
+    en: "{name}’s CORE report",
     ar: "بوصلة {name} المهنية",
   },
   "results.parent.intro": {
@@ -1517,16 +1517,16 @@ export const STRINGS = {
     ar: "تم إلغاء المشاركة.",
   },
   "results.share.text": {
-    en: "My Tareeq answers point to high curiosity for {cluster}. Work style: {archetype}. Motivation: {driver}.",
-    ar: "تشير إجاباتي في طريق إلى فضول مرتفع تجاه {cluster}. أسلوب العمل: {archetype}. الدافع: {driver}.",
+    en: "My CORE answers point to high curiosity for {cluster}. Work style: {archetype}. Motivation: {driver}.",
+    ar: "تشير إجاباتي في ماب ماي كور إلى فضول مرتفع تجاه {cluster}. أسلوب العمل: {archetype}. الدافع: {driver}.",
   },
   "results.footer.generated_with": {
-    en: "Generated with {model} using Tareeq’s scoring framework.",
-    ar: "تم إنشاؤه باستخدام {model} ضمن إطار تقييم طريق.",
+    en: "Generated with {model} using Map My CORE’s scoring framework.",
+    ar: "تم إنشاؤه باستخدام {model} ضمن إطار تقييم ماب ماي كور.",
   },
   "results.footer.fallback": {
-    en: "Built from Tareeq’s scoring framework. {reason}",
-    ar: "تم إنشاؤه من إطار تقييم طريق. {reason}",
+    en: "Built from Map My CORE’s scoring framework. {reason}",
+    ar: "تم إنشاؤه من إطار تقييم ماب ماي كور. {reason}",
   },
   "results.video.day_in_life_label": {
     en: "Day in the life: {career}",
@@ -1605,7 +1605,7 @@ export const STRINGS = {
   "start.headline_after": { en: ".", ar: "." },
   "start.step1.title": { en: "Take the assessment", ar: "أكمل التقييم" },
   "start.step1.meta": { en: "12 min · 54 questions", ar: "12 د · 54 سؤالاً" },
-  "start.step2.title": { en: "Meet your Compass", ar: "تعرّف على بوصلتك" },
+  "start.step2.title": { en: "Meet your CORE report", ar: "تعرّف على تقريرك" },
   "start.step2.meta": {
     en: "Persona + four pillars",
     ar: "الشخصية + الركائز الأربع",
@@ -1625,18 +1625,18 @@ export const STRINGS = {
   "start.resume_at_cta": { en: "Resume at {n}", ar: "استئناف عند {n}" },
   "start.start_over_cta": { en: "Start over", ar: "ابدأ من جديد" },
   "start.terms_agree": {
-    en: "I agree to Tareeq’s {terms} and {privacy}.",
+    en: "I agree to Map My CORE’s {terms} and {privacy}.",
     ar: "أوافق على {terms} و{privacy}.",
   },
-  "start.terms_link": { en: "platform terms", ar: "شروط منصة طريق" },
+  "start.terms_link": { en: "platform terms", ar: "شروط منصة ماب ماي كور" },
   "start.privacy_link": { en: "privacy notice", ar: "إشعار الخصوصية" },
   "start.terms_research_note": {
     en: "Research use of your anonymized answers is a separate choice you’ll make after the assessment.",
     ar: "استخدام إجاباتك المجهّلة في البحث خيار منفصل ستحدده بعد التقييم.",
   },
   "start.terms_error": {
-    en: "Please accept Tareeq’s platform terms before starting.",
-    ar: "يرجى الموافقة على شروط منصة طريق قبل البدء.",
+    en: "Please accept Map My CORE’s platform terms before starting.",
+    ar: "يرجى الموافقة على شروط منصة ماب ماي كور قبل البدء.",
   },
   "start.footer_note": {
     en: "~12 min · Free · Stays on your device",
@@ -1645,7 +1645,7 @@ export const STRINGS = {
 
   // ---- Registration screen (components/assessment/RegistrationScreen.tsx) ----
   "register.name_error": {
-    en: "Enter the name you want on your Compass.",
+    en: "Enter the name you want on your CORE report.",
     ar: "أدخل الاسم الذي تريده على بوصلتك.",
   },
   "register.email_error": {
@@ -1669,9 +1669,9 @@ export const STRINGS = {
     ar: "هذا الرمز غير صالح أو انتهت صلاحيته.",
   },
   "register.eyebrow": { en: "One more step", ar: "خطوة أخيرة" },
-  "register.headline": { en: "Save your Compass.", ar: "احفظ بوصلتك." },
+  "register.headline": { en: "Save your CORE report.", ar: "احفظ تقريرك." },
   "register.subtitle": {
-    en: "Verify your email to save your Compass and build your final report. Your address is never included in the AI prompt.",
+    en: "Verify your email to save your CORE report and build your final report. Your address is never included in the AI prompt.",
     ar: "تحقّق من بريدك الإلكتروني لحفظ بوصلتك وإنشاء تقريرك النهائي. لا يتم تضمين عنوان بريدك في طلب الذكاء الاصطناعي.",
   },
   "register.name_label": { en: "Name", ar: "الاسم" },
@@ -1686,7 +1686,7 @@ export const STRINGS = {
     ar: "هذه خيارات اختيارية وغير مُفعّلة افتراضياً. رفضها لن يغيّر نتيجتك.",
   },
   "register.consent_minor_notice": {
-    en: "Research opt-in is off because this response is marked under 18. You can still receive your Compass.",
+    en: "Research opt-in is off because this response is marked under 18. You can still receive your CORE report.",
     ar: "خيار المشاركة البحثية معطّل لأن هذه الإجابة مُصنّفة لأقل من 18 عاماً. ما زال بإمكانك الحصول على بوصلتك.",
   },
   "register.consent_general": {
@@ -1737,7 +1737,7 @@ export const STRINGS = {
   "register.resend_cta": { en: "Resend code", ar: "إعادة إرسال الرمز" },
 
   // ---- Assessment chrome header (components/assessment/AssessmentChrome.tsx) ----
-  "chrome.compass_label": { en: "Compass", ar: "البوصلة" },
+  "chrome.compass_label": { en: "My CORE", ar: "تقرير كور" },
   "chrome.about_you": { en: "About you", ar: "عنك" },
 
   // ---- Analyzing screen (components/assessment/AnalyzingScreen.tsx) ----
@@ -1783,8 +1783,8 @@ export const STRINGS = {
     ar: "نعمل على تقريرك",
   },
   "analyzing.headline_working": {
-    en: "Your Tareeq profile is being prepared",
-    ar: "يجري إعداد ملفك الشخصي في طريق",
+    en: "Your Map My CORE profile is being prepared",
+    ar: "يجري إعداد ملفك الشخصي في ماب ماي كور",
   },
   "analyzing.headline_ready": {
     en: "Your report is ready.",
@@ -1807,8 +1807,8 @@ export const STRINGS = {
     ar: "تقريرك جاهز للعرض.",
   },
   "analyzing.error_message": {
-    en: "Claude was not available, so Tareeq will use the built-in guidance framework for this result.",
-    ar: "لم يكن Claude متاحاً، لذا ستستخدم طريق إطار الإرشاد المدمج لهذه النتيجة.",
+    en: "Claude was not available, so Map My CORE will use the built-in guidance framework for this result.",
+    ar: "لم يكن Claude متاحاً، لذا ستستخدم ماب ماي كور إطار الإرشاد المدمج لهذه النتيجة.",
   },
 
   // Compass Constellation share card (components/results/CompassCard.tsx)
@@ -1846,7 +1846,7 @@ export const STRINGS = {
   },
 
   // ---- Report preview and payment wall ----
-  "paywall.preview.label": { en: "Your Tareeq report", ar: "تقريرك من طريق" },
+  "paywall.preview.label": { en: "Your CORE report", ar: "تقريرك من ماب ماي كور" },
   "paywall.preview.ready": {
     en: "Your profile is ready",
     ar: "ملفك الشخصي جاهز",
@@ -1913,7 +1913,7 @@ export const STRINGS = {
     en: "Downloadable PDF report",
     ar: "تقرير PDF قابل للتنزيل",
   },
-  "paywall.product": { en: "Tareeq Complete Report", ar: "تقرير طريق الكامل" },
+  "paywall.product": { en: "Complete CORE report", ar: "تقرير ماب ماي كور الكامل" },
   "paywall.title": {
     en: "Turn your result into choices you can act on.",
     ar: "حوّل نتيجتك إلى قرارات يمكنك تنفيذها.",
@@ -1983,8 +1983,8 @@ export const STRINGS = {
   // ---- Payments & Invoices ----
   "payments.title": { en: "Payments & invoices", ar: "المدفوعات والفواتير" },
   "payments.subtitle": {
-    en: "View your Tareeq purchases and access your Stripe invoices and receipts.",
-    ar: "استعرض مشترياتك في Tareeq واطّلع على فواتير وإيصالات Stripe.",
+    en: "View your Map My CORE purchases and access your Stripe invoices and receipts.",
+    ar: "استعرض مشترياتك في ماب ماي كور واطّلع على فواتير وإيصالات Stripe.",
   },
   "payments.section_label": { en: "Purchase history", ar: "سجل المشتريات" },
   "payments.product.report": {
@@ -2001,8 +2001,8 @@ export const STRINGS = {
   },
   "payments.empty_title": { en: "No payments yet", ar: "لا توجد مدفوعات بعد" },
   "payments.empty_body": {
-    en: "Your Tareeq purchases and invoices will appear here once you make a payment.",
-    ar: "ستظهر هنا مشترياتك وفواتيرك في Tareeq بمجرد إتمام عملية دفع.",
+    en: "Your Map My CORE purchases and invoices will appear here once you make a payment.",
+    ar: "ستظهر هنا مشترياتك وفواتيرك في ماب ماي كور بمجرد إتمام عملية دفع.",
   },
   "payments.error_title": {
     en: "We couldn't load your payment history",
@@ -2018,8 +2018,8 @@ export const STRINGS = {
     ar: "سجّل الدخول لعرض مدفوعاتك",
   },
   "payments.signin_body": {
-    en: "Your payment history is tied to your Tareeq account.",
-    ar: "يرتبط سجل مدفوعاتك بحسابك في Tareeq.",
+    en: "Your payment history is tied to your Map My CORE account.",
+    ar: "يرتبط سجل مدفوعاتك بحسابك في ماب ماي كور.",
   },
   "payments.signin_link": {
     en: "Sign in below to see it.",
@@ -2032,8 +2032,8 @@ export const STRINGS = {
     ar: "تم فتح تقريرك",
   },
   "invite.subtitle": {
-    en: "Your Tareeq team gave you free access to your Career Discovery Report — no payment needed.",
-    ar: "منحك فريق Tareeq وصولاً مجانياً إلى تقرير اكتشاف مسارك المهني — دون الحاجة إلى الدفع.",
+    en: "Your Map My CORE team gave you free access to your Career Discovery Report — no payment needed.",
+    ar: "منحك فريق ماب ماي كور وصولاً مجانياً إلى تقرير اكتشاف مسارك المهني — دون الحاجة إلى الدفع.",
   },
   "invite.cta": { en: "View my report", ar: "عرض تقريري" },
   "invite.signin_title": {
@@ -2041,8 +2041,8 @@ export const STRINGS = {
     ar: "سجّل الدخول للحصول على وصولك المجاني",
   },
   "invite.signin_body": {
-    en: "This link is tied to your Tareeq account. Sign in, then open the link again.",
-    ar: "هذا الرابط مرتبط بحسابك في Tareeq. سجّل الدخول ثم افتح الرابط مرة أخرى.",
+    en: "This link is tied to your Map My CORE account. Sign in, then open the link again.",
+    ar: "هذا الرابط مرتبط بحسابك في ماب ماي كور. سجّل الدخول ثم افتح الرابط مرة أخرى.",
   },
   "invite.signin_cta": { en: "Sign in", ar: "تسجيل الدخول" },
   "invite.invalid_title": {
@@ -2058,8 +2058,8 @@ export const STRINGS = {
     ar: "انتهت صلاحية هذا الرابط",
   },
   "invite.expired_body": {
-    en: "Ask your Tareeq team for a new link.",
-    ar: "اطلب رابطاً جديداً من فريق Tareeq.",
+    en: "Ask your Map My CORE team for a new link.",
+    ar: "اطلب رابطاً جديداً من فريق ماب ماي كور.",
   },
   "invite.redeemed_title": {
     en: "Your report is already unlocked",
@@ -2083,12 +2083,12 @@ export const STRINGS = {
     ar: "افتح تقريرك المميز",
   },
   "invite.pay_body_report": {
-    en: "Your report is ready — continue to unlock it with payment, like any Tareeq student.",
-    ar: "تقريرك جاهز — تابع لفتحه بالدفع كأي طالب في Tareeq.",
+    en: "Your report is ready — continue to unlock it with payment, like any Map My CORE student.",
+    ar: "تقريرك جاهز — تابع لفتحه بالدفع كأي طالب في ماب ماي كور.",
   },
   "invite.pay_body_start": {
-    en: "Take the assessment first — you will unlock your premium report with payment when you finish, like any Tareeq student.",
-    ar: "أكمل التقييم أولاً — ستفتح تقريرك المميز بالدفع عند الانتهاء كأي طالب في Tareeq.",
+    en: "Take the assessment first — you will unlock your premium report with payment when you finish, like any Map My CORE student.",
+    ar: "أكمل التقييم أولاً — ستفتح تقريرك المميز بالدفع عند الانتهاء كأي طالب في ماب ماي كور.",
   },
   "invite.pay_cta_report": {
     en: "Continue to my report",
@@ -2153,7 +2153,7 @@ export const STRINGS = {
   // English copy is the Figma frame text (file 7xRXQDTxrVi52vz4Ag7bar, node
   // 3:661); the stop titles reuse the wording already used for the same
   // sections elsewhere in the report. ----
-  "paywall.v2.eyebrow": { en: "Your Career Compass", ar: "بوصلة مسارك المهني" },
+  "paywall.v2.eyebrow": { en: "Your CORE report", ar: "بوصلة مسارك المهني" },
   "paywall.v2.headline": {
     en: "Your direction is becoming clear.",
     ar: "اتجاهك بدأ يتّضح.",
@@ -2261,12 +2261,12 @@ export const STRINGS = {
     en: "Parent summary included",
     ar: "يشمل ملخصاً لولي الأمر",
   },
-  "paywall.v2.cta": { en: "Unlock My Full Compass", ar: "افتح بوصلتي الكاملة" },
+  "paywall.v2.cta": { en: "Unlock my full report", ar: "افتح تقريري الكامل" },
   "paywall.v2.secure": {
     en: "One-time purchase · Secure checkout",
     ar: "دفعة واحدة · دفع آمن",
   },
-  "paywall.offer.percent_off": { en: "{percent}% off", ar: "خصم {percent}%" },
+  "paywall.offer.percent_off": { en: "Limited time offer", ar: "عرض لفترة محدودة" },
   "paywall.offer.full_price": {
     en: "Full price {price}",
     ar: "السعر الكامل {price}",
@@ -2327,59 +2327,70 @@ export const STRINGS = {
   },
   // ---- Marketing: nav & shell ----
   "marketing.nav.model": { en: "The model", ar: "النموذج" },
-  "marketing.nav.about": { en: "About", ar: "عنّا" },
+  "marketing.nav.about": { en: "About", ar: "من نحن" },
   "marketing.nav.signin": { en: "Sign in", ar: "تسجيل الدخول" },
   "marketing.nav.start": { en: "Start assessment", ar: "ابدأ التقييم" },
   "marketing.footer.tagline": {
-    en: "Democratizing science-based career guidance for every young person in the MENA region.",
-    ar: "نحو توجيه مهني قائم على العلم لكل شاب وشابة في منطقة الشرق الأوسط وشمال أفريقيا.",
+    en: "Good career guidance shouldn't be hard to find, for any young person in the Middle East and North Africa.",
+    ar: "التوجيه المهني الجيد لا ينبغي أن يكون صعب المنال، لكل شاب وشابة في الشرق الأوسط وشمال أفريقيا.",
   },
-  "marketing.footer.research": { en: "Research", ar: "الأبحاث" },
-  "marketing.footer.students": { en: "For Students", ar: "للطلاب" },
-  "marketing.footer.parents": { en: "For Parents", ar: "للأهالي" },
+  "marketing.footer.research": { en: "The science", ar: "الأساس العلمي" },
+  "marketing.footer.parents": { en: "For parents", ar: "لأولياء الأمور" },
   "marketing.footer.faq": { en: "FAQ", ar: "الأسئلة الشائعة" },
-  "marketing.footer.privacy": { en: "Privacy Policy", ar: "سياسة الخصوصية" },
-  "marketing.footer.terms": { en: "Terms of Service", ar: "شروط الخدمة" },
+  "marketing.footer.privacy": { en: "Privacy policy", ar: "سياسة الخصوصية" },
+  "marketing.footer.terms": { en: "Terms of service", ar: "شروط الاستخدام" },
   "marketing.footer.col_explore": { en: "Explore", ar: "استكشف" },
-  "marketing.footer.col_audience": { en: "Who it's for", ar: "لمن طريق" },
+  "marketing.footer.col_audience": { en: "Map My CORE", ar: "ماب ماي كور" },
   "marketing.footer.col_legal": { en: "Legal", ar: "قانوني" },
   "marketing.footer.contact": {
     en: "Questions? Write to us",
     ar: "لديك سؤال؟ راسلنا",
   },
+  "marketing.footer.cookies": {
+    en: "Cookie settings",
+    ar: "إعدادات ملفات تعريف الارتباط",
+  },
   "marketing.footer.top": { en: "Back to top", ar: "إلى الأعلى" },
-  "marketing.footer.wordmark": { en: "tareeq", ar: "طريق" },
-  "marketing.footer.copyright": { en: "© 2026 Tareeq", ar: "© 2026 طريق" },
+  "marketing.footer.wordmark": { en: "Map My CORE", ar: "Map My CORE" },
+  "marketing.footer.copyright": { en: "© 2026 The ME Project (FZE). All rights reserved.", ar: "\u200F© 2026 The ME Project (FZE). جميع الحقوق محفوظة." },
 
   // ---- Marketing: hero ----
   "marketing.hero.headline1": {
-    en: "At the crossroads?",
-    ar: "على مفترق طرق؟",
+    en: "Your curiosities have direction.",
+    ar: "لفضولك اتجاه.",
   },
   "marketing.hero.headline2": {
-    en: "Meet Kai, your AI career navigator.",
-    ar: "تعرّف على كاي، مرشدتك المهنية بالذكاء الاصطناعي.",
+    en: "Map where they could lead.",
+    ar: "لنرسم خريطة إلى أين قد يقودك.",
   },
   "marketing.hero.subtitle": {
-    en: "Powered by the CORE Assessment, a science-backed engine built for the next decade of work.",
-    ar: "مدعوم بتقييم CORE، محرك قائم على العلم ومصمم للعقد القادم من العمل.",
+    en: "In 15 minutes, see the study fields and careers your everyday choices point to, with Kai, your AI coach, to talk it through.",
+    ar: "خلال 15 دقيقة، تتّضح أمامك مجالات الدراسة والمهن التي تشير إليها اختياراتك اليومية، ومعك كاي، مدرّبك المهني الذكي، لمناقشتها.",
   },
   "marketing.hero.cta": {
-    en: "Discover Your CORE",
-    ar: "اكتشف CORE الخاص بك",
+    en: "Discover your CORE",
+    ar: "ابدأ التقييم",
+  },
+  "marketing.hero.under_cta": {
+    en: "Free to start · Arabic or English",
+    ar: "البدء مجاني · بالعربية أو الإنجليزية",
+  },
+  "marketing.hero.trust": {
+    en: "Powered by the CORE assessment: built on decades of career research, with the future of work in mind.",
+    ar: "قائم على تقييم كور، المبني على عقود من الأبحاث في الاختيار المهني، مع مراعاة مستقبل العمل.",
   },
   "marketing.hero.time": {
-    en: "12 minutes · No account needed",
-    ar: "١٢ دقيقة · بدون حساب",
+    en: "About 15 minutes · Free to start",
+    ar: "نحو 15 دقيقة · البدء مجاني",
   },
 
   "marketing.hero.sci_banner": {
-    en: "Built on 4 validated psychology frameworks",
-    ar: "مبني على 4 أطر نفسية موثّقة",
+    en: "Explore your study and career paths",
+    ar: "استكشاف المسارات الدراسية والمهنية",
   },
   "marketing.hero.sci_link": {
-    en: "See the research",
-    ar: "اطّلع على البحث",
+    en: "The science",
+    ar: "الأساس العلمي",
   },
   // ---- Marketing: stats band ----
   "marketing.stats.questions": { en: "questions", ar: "سؤالاً" },
@@ -2412,7 +2423,7 @@ export const STRINGS = {
     en: "Measure interests, and nothing else",
     ar: "يقيس الاهتمامات فقط، ولا شيء غير ذلك",
   },
-  "marketing.before.right_title": { en: "With Tareeq", ar: "مع طريق" },
+  "marketing.before.right_title": { en: "With Map My CORE", ar: "مع ماب ماي كور" },
   "marketing.before.right_1_title": {
     en: "Real situations, not abstractions",
     ar: "مواقف حقيقية، ليست تجريدات",
@@ -2438,14 +2449,17 @@ export const STRINGS = {
     ar: "التوجيه المهني كان امتيازاً. تقييم واحد، متاح للجميع.",
   },
   "marketing.before.bottom": {
-    en: "Tareeq starts from your reality.",
-    ar: "طريق يبدأ من واقعك.",
+    en: "Map My CORE starts from your reality.",
+    ar: "ماب ماي كور يبدأ من واقعك.",
   },
 
   // ---- Why Tareeq (learners / parents tabs) ----
-  "marketing.why.heading": { en: "Why Tareeq", ar: "لماذا طريق" },
+  "marketing.why.heading": { en: "Why Map My CORE", ar: "لماذا ماب ماي كور" },
   "marketing.why.tabs_label": { en: "Who it's for", ar: "لمن صُمم" },
-  "marketing.why.tab_learners": { en: "For learners", ar: "للمتعلمين" },
+  "marketing.why.tab_learners": {
+    en: "For learners",
+    ar: "للطلاب",
+  },
   "marketing.why.tab_parents": { en: "For parents", ar: "لأولياء الأمور" },
   "marketing.why.learners.headline": {
     en: "Built for your future life based on your everyday situations.",
@@ -2538,89 +2552,89 @@ export const STRINGS = {
 
   // ---- Why Tareeq panel ----
   "marketing.whyPanel.learners.headline": {
-    en: "Built around your real life.",
-    ar: "مبني حول حياتك الحقيقية.",
+    en: "Built around your everyday life.",
+    ar: "مبني على حياتك اليومية.",
   },
   "marketing.whyPanel.learners.desc": {
-    en: "Tareeq starts with situations you already understand, then turns your answers into directions you can actually explore.",
-    ar: "يبدأ طريق من مواقف تفهمها بالفعل، ثم يحوّل إجاباتك إلى اتجاهات يمكنك استكشافها فعلًا.",
+    en: "CORE starts with situations you already know, then turns your answers into directions you can actually explore, explained in plain words.",
+    ar: "يبدأ تقييم كور بمواقف مألوفة لك، ثم يحوّل إجاباتك إلى توجّهات قابلة للاستكشاف فعلًا، مشروحة بكلمات واضحة.",
   },
   "marketing.whyPanel.learners.1_title": {
-    en: "Real situations, not abstract questions",
-    ar: "مواقف حقيقية، لا أسئلة مجردة",
+    en: "Questions from your real life",
+    ar: "أسئلة من واقعك",
   },
   "marketing.whyPanel.learners.1_body": {
-    en: "Questions based on everyday choices, not work experience you don't have yet.",
-    ar: "أسئلة مبنية على اختيارات يومية، لا على خبرة عمل لم تكتسبها بعد.",
+    en: "School, friends, family and hobbies. No grown-up jargon, no work experience needed.",
+    ar: "المدرسة والأصدقاء والعائلة والهوايات. بلا مصطلحات الكبار المعقّدة، ودون الحاجة إلى خبرة عملية.",
   },
   "marketing.whyPanel.learners.2_title": {
     en: "Directions, not labels",
-    ar: "اتجاهات، لا تصنيفات",
+    ar: "توجّهات لا تصنيفات",
   },
   "marketing.whyPanel.learners.2_body": {
-    en: "See patterns in what fits you without being forced into one job title.",
-    ar: "اكتشف الأنماط التي تناسبك دون أن تُحصر في مسمى وظيفي واحد.",
+    en: "See several paths worth exploring, not one job title or a box to sit in.",
+    ar: "عدة مسارات تستحق الاستكشاف، لا مسمّى وظيفي واحد ولا قالب جاهز.",
   },
   "marketing.whyPanel.learners.3_title": {
-    en: "Useful next steps",
-    ar: "خطوات تالية مفيدة",
+    en: "Kai, your AI coach",
+    ar: "كاي، مدرّبك المهني الذكي",
   },
   "marketing.whyPanel.learners.3_body": {
-    en: "Explore careers, subjects and university paths connected to your results.",
-    ar: "استكشف المهن والمواد والمسارات الجامعية المرتبطة بنتائجك.",
+    en: "Kai has read your report and is there whenever you want to talk it through. Ask anything, without judgement, and make the choice yourself.",
+    ar: "قرأ كاي تقريرك، وهو حاضر متى أردت مناقشته. كل الأسئلة مرحّب بها دون أحكام، والقرار يبقى لك.",
   },
   "marketing.whyPanel.learners.4_title": {
-    en: "Kai helps you keep exploring",
-    ar: "كاي تساعدك على مواصلة الاستكشاف",
+    en: "Room to grow",
+    ar: "مساحة للنمو",
   },
   "marketing.whyPanel.learners.4_body": {
-    en: "Ask questions about your results whenever something still feels unclear.",
-    ar: "اسأل عن نتائجك متى شعرت أن شيئًا ما لا يزال غير واضح.",
+    en: "Your answers today, not a verdict for life. Come back as your interests change.",
+    ar: "إجاباتك اليوم، لا حكم مدى الحياة. والعودة ممكنة مع تغيّر اهتماماتك.",
   },
   "marketing.whyPanel.parents.headline": {
-    en: "See the person behind the grades.",
-    ar: "تعرّفوا على الشخص وراء الدرجات.",
+    en: "Real clarity, without the guesswork.",
+    ar: "وضوح حقيقي، دون تخمين.",
   },
   "marketing.whyPanel.parents.desc": {
-    en: "Tareeq gives you a clearer view of what motivates them, where they may thrive, and which paths are worth exploring together.",
-    ar: "يمنحكم طريق صورة أوضح عمّا يحفّزهم، وأين قد يتألقون، وأي المسارات تستحق أن تستكشفوها معًا.",
+    en: "Good career guidance shouldn’t be hard to find. CORE gives your child a clearer picture, and the space to choose for themselves.",
+    ar: "التوجيه المهني الجيد لا ينبغي أن يكون صعب المنال. يمنح تقييم كور أبناءكم صورة أوضح، ومساحة ليختاروا بأنفسهم.",
   },
   "marketing.whyPanel.parents.1_title": {
-    en: "Understand what drives them",
-    ar: "افهموا ما يحرّكهم",
+    en: "More than grades",
+    ar: "أبعد من الدرجات",
   },
   "marketing.whyPanel.parents.1_body": {
-    en: "See patterns that grades alone cannot show.",
-    ar: "اكتشفوا أنماطًا لا تكشفها الدرجات وحدها.",
+    en: "See what drives their interests, something grades alone can’t show.",
+    ar: "ما يحرّك اهتماماتهم، وهو ما لا تكشفه الدرجات وحدها.",
   },
   "marketing.whyPanel.parents.2_title": {
-    en: "See the reasoning",
-    ar: "اطّلعوا على الأسباب",
+    en: "No early labels",
+    ar: "بلا تصنيفات مبكرة",
   },
   "marketing.whyPanel.parents.2_body": {
-    en: "Recommendations come with clear explanations, not mystery scores.",
-    ar: "توصيات مصحوبة بشرح واضح، لا بأرقام غامضة.",
+    en: "Directions to explore, not a label that sticks while they’re still growing.",
+    ar: "توجّهات للاستكشاف، لا تصنيف يلازمهم وهم ما زالوا ينمون.",
   },
   "marketing.whyPanel.parents.3_title": {
-    en: "Explore realistic paths",
-    ar: "استكشفوا مسارات واقعية",
+    en: "Built for families here",
+    ar: "مصمَّم لعائلات المنطقة",
   },
   "marketing.whyPanel.parents.3_body": {
-    en: "Connect their profile to careers, subjects and university options.",
-    ar: "اربطوا ملفهم بالمهن والمواد والخيارات الجامعية.",
+    en: "In Arabic and English, with room for what matters to your family, including a path the family is proud of.",
+    ar: "بالعربية والإنجليزية، مع مساحة لما يهمّ عائلتكم، ومنه طريق تفخر به العائلة.",
   },
   "marketing.whyPanel.parents.4_title": {
-    en: "Have better conversations",
-    ar: "حوارات أفضل",
+    en: "Better conversations at home",
+    ar: "حوار أفضل في البيت",
   },
   "marketing.whyPanel.parents.4_body": {
-    en: "Use Kai and the report to explore choices together instead of forcing one decision.",
-    ar: "استعينوا بكاي والتقرير لاستكشاف الخيارات معًا بدل فرض قرار واحد.",
+    en: "A section written for parents, and Kai for your child, so you can explore choices together.",
+    ar: "قسم مكتوب لأولياء الأمور، وكاي لأبنائكم، لاستكشاف الخيارات معًا.",
   },
 
   "marketing.whyStory.lead": {
     en: "Career guidance that starts with who you are now, not who a test expects you to be.",
-    ar: "توجيه مهني يبدأ من حقيقتك الآن، لا مما يتوقعه منك اختبار.",
+    ar: "توجيه مهني يبدأ من حقيقتك اليوم، لا مما يتوقّعه منك اختبار ما.",
   },
 
   // ---- Marketing: core dimensions ----
@@ -2671,32 +2685,47 @@ export const STRINGS = {
   // ---- Marketing: results story ----
   "marketing.results.eyebrow": { en: "Your results", ar: "نتائجك" },
   "marketing.results.heading1": {
-    en: "More than a score.",
-    ar: "أكثر من مجرد درجة.",
+    en: "Clarity on your CORE.",
+    ar: "وضوح في جوهرك،",
   },
-  "marketing.results.heading2": { en: "Yours to use.", ar: "لك لتستخدمها." },
+  "marketing.results.heading2": {
+    en: "Confidence in your next step.",
+    ar: "وثقة في خطوتك التالية.",
+  },
   "marketing.results.subtitle": {
-    en: "A clear compass, practical guidance, and answers you can keep exploring.",
-    ar: "بوصلة واضحة، توجيه عملي، وأجوبة يمكنك متابعة استكشافها.",
+    en: "A clear picture, practical next steps, and a coach to keep exploring with.",
+    ar: "صورة واضحة، وخطوات عملية، ومدرّب يرافقك في الاستكشاف.",
+  },
+  "marketing.results.example": {
+    en: "Example report",
+    ar: "نموذج تقرير",
+  },
+  "marketing.card2.note": {
+    en: "Just what your answers suggest, in plain words.",
+    ar: "ما تشير إليه إجاباتك، بكلمات واضحة.",
+  },
+  "marketing.card4.note": {
+    en: "Kai has read your report, so every chat starts from your results.",
+    ar: "قرأ كاي تقريرك، لذلك تبدأ كل محادثة من نتائجك.",
   },
   "marketing.results.close_heading": {
-    en: "You don’t need the whole map.",
-    ar: "لا تحتاج إلى خريطة الطريق كاملة.",
+    en: "Your CORE has direction.",
+    ar: "لجوهرك اتجاه.",
   },
   "marketing.results.close_body": {
-    en: "Just your next step.",
-    ar: "فقط خطوتك القادمة.",
+    en: "Map where it could lead.",
+    ar: "لنرسم خريطة إلى أين قد يقودك.",
   },
 
   // ---- Marketing: story cards ----
   "marketing.card1.eyebrow": { en: "Your direction", ar: "اتجاهك" },
   "marketing.card1.headline": {
     en: "Your CORE, mapped from your answers.",
-    ar: "CORE الخاص بك، مرسوم من إجاباتك.",
+    ar: "صورتك في تقييم كور، مرسومة من إجاباتك.",
   },
   "marketing.card1.body": {
     en: "Your curiosities, how you like to work, what motivates you and your work setting, brought together in one picture.",
-    ar: "فضولك، وطريقتك في العمل، وما يحفّزك، وبيئة عملك، مجتمعة في صورة واحدة.",
+    ar: "فضولك، وطريقتك المفضّلة في العمل، وما يحفّزك، وأجواء العمل التي تفضّلها، في صورة واحدة.",
   },
   "marketing.card1.detail1": {
     en: "Your strongest career families",
@@ -2716,8 +2745,8 @@ export const STRINGS = {
     ar: "ماذا يعني ذلك لك.",
   },
   "marketing.card2.body": {
-    en: "Every result explained in plain words. No scores, no labels.",
-    ar: "كل نتيجة مشروحة بكلمات بسيطة. لا درجات، ولا تصنيفات.",
+    en: "Every result explained in plain words, with examples of how it shows up in your everyday life.",
+    ar: "كل نتيجة مشروحة بكلمات واضحة، مع أمثلة على كيف تظهر في حياتك اليومية.",
   },
   "marketing.card2.detail1": {
     en: "What motivates you",
@@ -2733,12 +2762,12 @@ export const STRINGS = {
   },
   "marketing.card3.eyebrow": { en: "Your options", ar: "خياراتك" },
   "marketing.card3.headline": {
-    en: "From insights to career options.",
-    ar: "من الفهم إلى خيارات مهنية.",
+    en: "From your results to study fields and careers.",
+    ar: "من نتائجك إلى مجالات الدراسة والمهن.",
   },
   "marketing.card3.body": {
     en: "See the careers and study fields your results point to, and simple ways to explore them before you decide.",
-    ar: "اكتشف المهن ومجالات الدراسة التي تشير إليها نتائجك، وطرقاً بسيطة لاستكشافها قبل أن تقرر.",
+    ar: "المهن ومجالات الدراسة التي تشير إليها نتائجك، وطرق بسيطة لاستكشافها قبل اتخاذ القرار.",
   },
   "marketing.card3.detail1": {
     en: "Career matches",
@@ -2754,12 +2783,12 @@ export const STRINGS = {
   },
   "marketing.card4.eyebrow": { en: "Your guide", ar: "مرشدتك" },
   "marketing.card4.headline": {
-    en: "Go deeper with your AI career coach.",
-    ar: "تعمّق أكثر مع مرشدتك المهنية بالذكاء الاصطناعي.",
+    en: "Go deeper with Kai, your AI coach.",
+    ar: "تعمّق أكبر مع كاي، مدرّبك المهني الذكي.",
   },
   "marketing.card4.body": {
     en: "Kai has read your report. Ask anything, think it through, and make the choice yourself.",
-    ar: "قرأت كاي تقريرك. اسأل أي شيء، وفكّر بهدوء، واتخذ قرارك بنفسك.",
+    ar: "قرأ كاي تقريرك. كل الأسئلة مرحّب بها، للتفكير بهدوء، والقرار يبقى لك.",
   },
   "marketing.card4.detail1": {
     en: "Ask anything about your results",
@@ -2930,7 +2959,7 @@ export const STRINGS = {
     ar: "مهن هذه العائلة تأتي مع بنك المهن الكامل.",
   },
   "core.cover.preview_label": {
-    en: "Your Career Compass · First look",
+    en: "Your CORE report · First look",
     ar: "بوصلة مسارك المهني · نظرة أولى",
   },
   "core.cover.label": { en: "Your starting point", ar: "نقطة انطلاقك" },
@@ -3010,16 +3039,16 @@ export const STRINGS = {
   "unlock.choice.parent.explain_title": { en: "How asking works", ar: "كيف يعمل الطلب" },
   "unlock.choice.parent.explain": {
     en: "They open a short page about CORE on their phone and pay there. Your report unlocks here the moment they do.",
-    ar: "يفتح صفحة قصيرة عن CORE على هاتفه ويدفع هناك. يُفتح تقريرك هنا فور الدفع.",
+    ar: "يفتح صفحة قصيرة عن كور على هاتفه ويدفع هناك. يُفتح تقريرك هنا فور الدفع.",
   },
   "unlock.choice.pick": { en: "Choose who's unlocking it", ar: "اختر من سيفتح التقرير" },
-  "unlock.choice.pay": { en: "Pay {price}", ar: "ادفع {price}" },
+  "unlock.choice.pay": { en: "Unlock my report", ar: "فتح تقريري" },
   "unlock.choice.create_link": { en: "Create my parent link", ar: "أنشئ رابط ولي الأمر" },
   "unlock.choice.saved": {
-    en: "Your answers are saved. You can unlock any time from Compass.",
-    ar: "إجاباتك محفوظة. يمكنك فتح التقرير في أي وقت من البوصلة.",
+    en: "Your answers are saved. You can unlock any time from My CORE.",
+    ar: "إجاباتك محفوظة. يمكنك فتح التقرير في أي وقت من تقرير كور.",
   },
-  "unlock.ask.cta": { en: "Ask a parent to unlock it", ar: "اطلب من ولي أمرك فتحه" },
+  "unlock.ask.cta": { en: "Ask a parent to unlock it", ar: "طلب فتح التقرير من أحد الوالدين" },
   "unlock.ask.cta_note": {
     en: "Send them a private link on WhatsApp",
     ar: "أرسل له رابطاً خاصاً عبر واتساب",
@@ -3027,16 +3056,16 @@ export const STRINGS = {
   "unlock.ask.title": { en: "Ask a parent", ar: "اطلب من ولي أمرك" },
   "unlock.ask.body": {
     en: "They get a private link to a short page about CORE, where they can pay. Your report unlocks here as soon as they do.",
-    ar: "يصله رابط خاص لصفحة قصيرة عن CORE يمكنه الدفع منها. يُفتح تقريرك هنا فور الدفع.",
+    ar: "يصله رابط خاص لصفحة قصيرة عن كور يمكنه الدفع منها. يُفتح تقريرك هنا فور الدفع.",
   },
   "unlock.ask.message_label": { en: "Your message", ar: "رسالتك" },
   "unlock.ask.message.en": {
-    en: "Hi, I finished the CORE questions on Map My CORE and my report is ready. Could you unlock it for me? It's {price}.",
-    ar: "Hi, I finished the CORE questions on Map My CORE and my report is ready. Could you unlock it for me? It's {price}.",
+    en: "I just finished CORE, a 15-minute exploration of what pulls my interest and the study fields linked to it. Can you unlock my report?",
+    ar: "I just finished CORE, a 15-minute exploration of what pulls my interest and the study fields linked to it. Can you unlock my report?",
   },
   "unlock.ask.message.ar": {
-    en: "مرحباً، أنهيت أسئلة CORE على Map My CORE وتقريري جاهز. هل يمكنك فتحه لي؟ السعر {price}.",
-    ar: "مرحباً، أنهيت أسئلة CORE على Map My CORE وتقريري جاهز. هل يمكنك فتحه لي؟ السعر {price}.",
+    en: "أنهيت للتو تقييم كور، وهو استكشاف لمدة 15 دقيقة لما يثير فضولي ولمجالات الدراسة المرتبطة به. هل يمكنك فتح تقريري؟",
+    ar: "أنهيت للتو تقييم كور، وهو استكشاف لمدة 15 دقيقة لما يثير فضولي ولمجالات الدراسة المرتبطة به. هل يمكنك فتح تقريري؟",
   },
   "unlock.ask.creating": { en: "Making your private link…", ar: "جارٍ إنشاء رابطك الخاص…" },
   "unlock.ask.whatsapp": { en: "Send on WhatsApp", ar: "أرسل عبر واتساب" },
@@ -3131,10 +3160,28 @@ export const STRINGS = {
   "pay.slide.lead.chip.you": { en: "Closest to your answers", ar: "الأقرب لإجاباتك" },
   "pay.ticket.label.you": { en: "Your complete CORE report", ar: "تقرير CORE الكامل الخاص بك" },
 
+  // ---- Kai: 3 months from taking CORE ----
+  "kai.access.until": { en: "Kai is with you until {date}", ar: "كاي معك حتى {date}" },
+  "kai.access.ended_title": { en: "Your 3 months with Kai have ended", ar: "انتهت أشهرك الثلاثة مع كاي" },
+  "kai.access.ended_body": {
+    en: "Kai was included for 3 months from taking CORE, until {date}. Your report stays yours to read.",
+    ar: "كان كاي متاحًا لمدة 3 أشهر من تاريخ إجراء التقييم، حتى {date}. ويبقى تقريرك متاحًا لك.",
+  },
+  "kai.access.ended_body_nodate": {
+    en: "Kai was included for 3 months from taking CORE. Your report stays yours to read.",
+    ar: "كان كاي متاحًا لمدة 3 أشهر من تاريخ إجراء التقييم. ويبقى تقريرك متاحًا لك.",
+  },
+  // ---- For parents: send CORE to your child ----
+  "parents.send_child.cta": { en: "Send CORE to your child", ar: "أرسلوا تقييم كور لأبنائكم" },
+  "parents.send_child.message": {
+    en: "I found a short exploration called CORE that shows what pulls your interest, and the study fields and careers linked to it. It takes about 15 minutes and it's free to start:",
+    ar: "وجدت تقييمًا قصيرًا اسمه كور، يساعد على اكتشاف ما يثير فضولك ومجالات الدراسة والمهن المرتبطة به. يستغرق نحو 15 دقيقة، والبدء مجاني:",
+  },
   // ---- Ask a parent: parent page (/pay/<token>) ----
+  "pay.title": { en: "Your child has finished CORE", ar: "أنهى ابنكم أو ابنتكم تقييم كور" },
   "pay.intro": {
     en: "Your child has asked you to unlock their CORE report. Here's what's inside.",
-    ar: "طلب منك ابنك أو ابنتك فتح تقرير CORE. إليك ما يحتويه.",
+    ar: "طلب منك ابنك أو ابنتك فتح تقرير كور. إليك ما يحتويه.",
   },
   "pay.lang": { en: "عربي", ar: "English" },
   "pay.slide.curiosity.title": { en: "What sparks their curiosity", ar: "ما الذي يثير فضوله" },
@@ -3186,24 +3233,24 @@ export const STRINGS = {
   "pay.summary.one_time": { en: "One payment · yours to keep", ar: "دفعة واحدة · لك للأبد" },
   "pay.summary.inc_chapters": { en: "All 7 chapters, made from the answers", ar: "الفصول السبعة كاملة، من الإجابات" },
   "pay.summary.inc_careers": { en: "Job families and study fields that fit", ar: "عائلات المهن ومجالات الدراسة المناسبة" },
-  "pay.summary.inc_kai": { en: "Kai to talk it through, any time", ar: "كاي لمناقشته في أي وقت" },
+  "pay.summary.inc_kai": { en: "Kai, their AI coach, for 3 months", ar: "كاي، مدرّبهم المهني الذكي، لمدة 3 أشهر" },
   "pay.summary.inc_parents": { en: "A page written for parents", ar: "صفحة مكتوبة لأولياء الأمور" },
   "pay.summary.full": { en: "Full price", ar: "السعر الكامل" },
-  "pay.summary.offer": { en: "Launch offer ({percent}% off)", ar: "عرض الإطلاق (خصم {percent}%)" },
+  "pay.summary.offer": { en: "Limited time offer", ar: "عرض لفترة محدودة" },
   "pay.summary.total": { en: "Total today", ar: "الإجمالي اليوم" },
   "pay.slide.prev": { en: "Previous", ar: "السابق" },
   "pay.slide.next": { en: "Next", ar: "التالي" },
   "pay.slide.show": { en: "Show {title}", ar: "اعرض {title}" },
-  "pay.ticket.label": { en: "Their complete CORE report", ar: "تقرير CORE الكامل" },
-  "pay.ticket.ribbon": { en: "LAUNCH · {percent}% OFF", ar: "عرض الإطلاق · خصم {percent}%" },
+  "pay.ticket.label": { en: "Their complete CORE report", ar: "تقرير كور الكامل" },
+  "pay.ticket.ribbon": { en: "Limited time offer", ar: "عرض لفترة محدودة" },
   "pay.ticket.report": { en: "7-part report", ar: "تقرير من 7 أجزاء" },
   "pay.ticket.kai": { en: "Kai to talk it through", ar: "كاي لمناقشته" },
   "pay.ticket.parents": { en: "A page for parents", ar: "صفحة لأولياء الأمور" },
   "pay.consent.lead": {
     en: "I am this student's parent or guardian, and I agree to the",
-    ar: "أنا ولي أمر هذا الطالب أو الوصي عليه، وأوافق على",
+    ar: "أقرّ بأنني ولي أمر هذا الطالب أو الوصي عليه، وأوافق على",
   },
-  "pay.consent.terms": { en: "terms", ar: "الشروط" },
+  "pay.consent.terms": { en: "terms", ar: "شروط الاستخدام" },
   "pay.consent.and": { en: "and", ar: "و" },
   "pay.consent.privacy": { en: "privacy policy", ar: "سياسة الخصوصية" },
   "pay.consent.note": {

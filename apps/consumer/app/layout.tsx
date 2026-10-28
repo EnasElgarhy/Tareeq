@@ -8,7 +8,9 @@ import {
   Rubik,
 } from "next/font/google";
 import localFont from "next/font/local";
-import { PostHogSessionReplay } from "@/components/analytics/PostHogSessionReplay";
+import { AnalyticsConsent } from "@/components/analytics/AnalyticsConsent";
+import { BRAND } from "@/lib/brand";
+import { HOME_TITLE, PAGES } from "@/lib/page-metadata";
 import { VisitTracker } from "@/components/analytics/VisitTracker";
 import "./globals.css";
 
@@ -92,23 +94,18 @@ const displayItalic = Fraunces({
   display: "swap",
 });
 
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://staging.tareek.me";
-const siteTitle = "Tareeq: Discover what you're built for";
-const siteDescription =
-  "Discover your strengths, direction, and next step with a career compass built for students and young adults across MENA.";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || BRAND.siteUrl;
+const siteTitle = HOME_TITLE;
+const siteDescription = PAGES.home.description;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
     default: siteTitle,
-    template: "%s | Tareeq",
+    template: `${BRAND.name}: %s`,
   },
   description: siteDescription,
-  applicationName: "Tareeq",
-  alternates: {
-    canonical: "/",
-  },
+  applicationName: BRAND.name,
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "64x64" },
@@ -119,7 +116,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "/",
-    siteName: "Tareeq",
+    siteName: BRAND.name,
     title: siteTitle,
     description: siteDescription,
     locale: "en_US",
@@ -128,7 +125,7 @@ export const metadata: Metadata = {
         url: "/opengraph-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Kai holds a glowing compass on the path toward your future.",
+        alt: `${BRAND.name}: explore your study and career paths`,
       },
     ],
   },
@@ -160,7 +157,7 @@ export default function RootLayout({
     >
       <body className="flex min-h-full flex-col">
         {children}
-        <PostHogSessionReplay />
+        <AnalyticsConsent />
         <VisitTracker />
       </body>
     </html>

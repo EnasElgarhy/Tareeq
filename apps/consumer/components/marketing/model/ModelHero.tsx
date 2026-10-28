@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { Container } from "../Shared";
 import { CoreDial } from "./CoreDial";
-import { HERO } from "./modelContent";
+import { modelCopy } from "./modelContent";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -19,7 +19,8 @@ const ACCENT_TEXT = {
 
 export function ModelHero() {
   const reduce = useReducedMotion();
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
+  const HERO = modelCopy(locale).hero;
   const rise = (delay: number) =>
     reduce
       ? {}

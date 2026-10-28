@@ -13,6 +13,7 @@ import { MemoryTransparencyCard } from "@/components/kai/memory/MemoryTransparen
 import { ProactiveMomentCard } from "@/components/kai/ProactiveMomentCard";
 import { GoalPicker } from "@/components/kai/chat/GoalPicker";
 import { KaiChatInput } from "@/components/kai/chat/KaiChatInput";
+import { formatKaiEndDate, useKaiAccess } from "@/lib/kai/use-kai-access";
 import { KaiMessageBlocks } from "@/components/kai/chat/KaiMessageBlocks";
 import { KaiTextMessage } from "@/components/kai/chat/KaiTextMessage";
 import { LoadingMessage } from "@/components/kai/chat/LoadingMessage";
@@ -59,7 +60,8 @@ function parseEntryPrompt(requested: string | null): CoreEntryPromptId | null {
 }
 
 function KaiChatExperience() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
+  const kaiAccess = useKaiAccess();
   const router = useRouter();
   const searchParams = useSearchParams();
   const {
@@ -479,12 +481,38 @@ function KaiChatExperience() {
 
       {conversation ? (
         <div className="sticky bottom-0 z-20 -mx-4 border-t border-[color:var(--day-line)] bg-[color:var(--day-bg,#f4eee3)] px-4 pb-3 pt-3 md:-mx-5 md:px-5">
-          <KaiChatInput
-            onSend={(text) => handleSend(text, false)}
-            disabled={isTyping}
-          />
+          {kaiAccess && !kaiAccess.open ? (
+            <KaiAccessEnded endsAt={kaiAccess.endsAt} />
+          ) : (
+            <>
+              <KaiChatInput
+                onSend={(text) => handleSend(text, false)}
+                disabled={isTyping}
+              />
+              {kaiAccess?.endsAt ? (
+                <p className="mt-2 text-center text-[11.5px] text-[color:var(--day-ink-3,#675d4e)]">
+                  {t("kai.access.until").replace("{date}", formatKaiEndDate(kaiAccess.endsAt, locale))}
+                </p>
+              ) : null}
+            </>
+          )}
         </div>
       ) : null}
+    </div>
+  );
+}
+
+/** After the 3 months: the report stays, Kai stops answering (lib/kai/kai-access.ts). */
+function KaiAccessEnded({ endsAt }: { endsAt: string | null }) {
+  const { t, locale } = useLocale();
+  return (
+    <div role="status" className="grid gap-1 rounded-2xl bg-white px-4 py-3 text-center">
+      <p className="text-[14px] font-bold text-[color:var(--day-ink)]">{t("kai.access.ended_title")}</p>
+      <p className="text-[12.5px] leading-snug text-[color:var(--day-ink-3,#675d4e)]">
+        {endsAt
+          ? t("kai.access.ended_body").replace("{date}", formatKaiEndDate(endsAt, locale))
+          : t("kai.access.ended_body_nodate")}
+      </p>
     </div>
   );
 }

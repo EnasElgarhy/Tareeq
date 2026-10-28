@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { isKaiAccessOpen, kaiAccessEndsAt } from "@/lib/kai/kai-access";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 /**
@@ -82,7 +83,7 @@ export async function findActiveEntitlement(
 
 /** Why a paid surface was refused, so callers never conflate the two. */
 export type PaidReportAccess =
-  | { paid: true; assessmentId: string }
+  | { paid: true; assessmentId: string; completedAt: string }
   | {
       paid: false;
       reason: "no_assessment" | "not_entitled" | "lookup_failed";
@@ -103,7 +104,7 @@ export async function hasPaidReportAccess(
 ): Promise<PaidReportAccess> {
   const { data, error } = await admin
     .from("assessments")
-    .select("id")
+    .select("id, completed_at")
     .eq("user_id", userId)
     // A row only counts once it is complete; `completed_at` is null while the
     // visitor is still answering, and nulls sort first on a descending order.
@@ -122,7 +123,7 @@ export async function hasPaidReportAccess(
   }
 
   return lookup.entitlement
-    ? { paid: true, assessmentId }
+    ? { paid: true, assessmentId, completedAt: String(data.completed_at) }
     : { paid: false, reason: "not_entitled" };
 }
 
@@ -141,4 +142,17 @@ export function paidAccessError(access: PaidReportAccess): NextResponse | null {
     return paymentError("access_check_unavailable", 503);
   }
   return paymentError("upgrade_required", 402);
+}
+
+/**
+ * Kai answers for 3 months from taking CORE (lib/kai/kai-access.ts). Checked
+ * after `paidAccessError`, on the routes that spend AI credits. A 403, not a
+ * 402: buying again would not reopen it.
+ */
+export function kaiAccessError(access: PaidReportAccess, now: Date = new Date()): NextResponse | null {
+  if (!access.paid || isKaiAccessOpen(access.completedAt, now)) return null;
+  return NextResponse.json(
+    { error: "kai_access_ended", endsAt: kaiAccessEndsAt(access.completedAt) },
+    { status: 403 },
+  );
 }

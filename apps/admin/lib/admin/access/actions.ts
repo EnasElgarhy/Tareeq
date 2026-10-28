@@ -21,7 +21,7 @@ function consumerOrigin(): string {
     process.env.NEXT_PUBLIC_SITE_URL;
   if (fromEnv && fromEnv.length > 0) return fromEnv.replace(/\/$/, "");
   // Staging fallback so a missing env never produces a broken admin link.
-  return "https://staging.tareek.me";
+  return "https://staging.mapmycore.com";
 }
 
 type Sb = ReturnType<typeof createSupabaseAdminClient>;

@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { OtpSignIn } from "@/components/auth/OtpSignIn";
 import { KaiOrb } from "@/components/marketing/KaiOrb";
 import { WayArrow, WayCompass } from "@/components/marketing/WayIcons";
+import { BRAND } from "@/lib/brand";
 
 export function SignInScreen() {
   const router = useRouter();
@@ -32,7 +33,7 @@ export function SignInScreen() {
         >
           <KaiOrb size={30} speed={18} />
           <span className="font-heading text-xl font-bold text-[#F5EEE6]">
-            Tareeq
+            {BRAND.name}
           </span>
         </Link>
         <div className="absolute bottom-10 left-8 right-8">
@@ -58,7 +59,7 @@ export function SignInScreen() {
           className="absolute left-6 top-6 flex items-center gap-2.5 lg:hidden"
         >
           <KaiOrb size={26} speed={18} />
-          <span className="font-heading text-lg font-bold">Tareeq</span>
+          <span className="font-heading text-lg font-bold">{BRAND.name}</span>
         </Link>
 
         <motion.div
@@ -90,7 +91,7 @@ export function SignInScreen() {
             </span>
             <div>
               <p className="text-sm leading-relaxed text-[color:var(--day-ink-2)]">
-                New to Tareeq? Start with the assessment. Your account is linked
+                New to {BRAND.name}? Start with the assessment. Your account is linked
                 to your results after verification.
               </p>
               <Link

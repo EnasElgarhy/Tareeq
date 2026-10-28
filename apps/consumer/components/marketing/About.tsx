@@ -1,170 +1,114 @@
 "use client";
 
-import Image from "next/image";
-import { FadeIn } from "./Shared";
-import { PageHero, Section, Card, DotList, DayPage } from "./PageShell";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { BRAND } from "@/lib/brand";
+import type { Locale } from "@/lib/i18n/locale";
 import { ArchHorizon } from "./Illustrations";
-import { KAI_SRC_SM } from "./KaiGuide";
+import { DayPage, PageHero, Section } from "./PageShell";
+import { FadeIn } from "./Shared";
 
-const CREDENTIALS = [
-  "BPS Certification as a Psychological Assessor (British Psychological Society) — the gold standard in assessment credibility",
-  "CIPD Diploma in Human Resources Management and Subject Matter Expert status",
-  "Advanced training in psychometric tools including Korn Ferry, Hogan, Saville, MBTI, PAPI-3, and more",
-  "20+ years designing behavioral assessments for major international organizations, governments, and institutions across the Middle East",
-];
+interface AboutCopy {
+  eyebrow: string;
+  headline: string;
+  line: string;
+  blocks: readonly { title: string; body: string }[];
+  contactTitle: string;
+  contactLine: string;
+}
 
-const PHASES = [
-  {
-    phase: "Phase 1",
-    when: "Now",
-    body: "Launch the CORE assessment and gather data.",
-    active: true,
+/**
+ * About (28 Oct update, Part B; Arabic section 4). The founder is not named
+ * on the site for now, so the old founder and credentials blocks are gone.
+ */
+const ABOUT_COPY: Record<Locale, AboutCopy> = {
+  en: {
+    eyebrow: "About Map My CORE",
+    headline: "Good career guidance shouldn’t be hard to find.",
+    line: "Map My CORE helps young people in the Middle East and North Africa explore the study fields and careers worth looking into, starting from what already pulls their interest.",
+    blocks: [
+      {
+        title: "Why we built it",
+        body: "Choosing what to study is one of the first big decisions young people make, often at 14 or 15, with endless options and a lot of expectation around them. Most young people are good at several things, yet few have a clear way to see where those interests could lead. So we built CORE for this region from the start: questions drawn from everyday teenage life, written in Arabic and English, with room for what matters to families here.",
+      },
+      {
+        title: "What we believe",
+        body: "A direction, not a verdict. Choosing a path is something you work out over time, not a single decision made in one year of school. CORE keeps several doors open, and the choice always stays with the student.",
+      },
+      {
+        title: "Building evidence for our region",
+        body: "Most career research comes from the US and Europe. With consent, we follow up with students about a year later to learn what they chose and how it’s going. Over time, this builds a clearer picture of how young people in the Middle East and North Africa choose their paths, and keeps CORE improving.",
+      },
+      {
+        title: "Who we are",
+        body: "Map My CORE is built by The ME Project (FZE), based at Sharjah Research Technology and Innovation Park in the UAE.",
+      },
+    ],
+    contactTitle: "Get in touch",
+    contactLine: "We read every message:",
   },
-  {
-    phase: "Phase 2",
-    when: "Next",
-    body: "Validate CORE against established frameworks, publish research, expand to university partnerships.",
+  ar: {
+    eyebrow: "عن ماب ماي كور",
+    headline: "التوجيه المهني الجيد لا ينبغي أن يكون صعب المنال.",
+    line: "يساعد ماب ماي كور الشباب في الشرق الأوسط وشمال أفريقيا على استكشاف مجالات الدراسة والمهن التي تستحق الاهتمام، انطلاقًا مما يثير فضولهم أصلًا.",
+    blocks: [
+      {
+        title: "لماذا أنشأناه",
+        body: "اختيار ما يُدرس من أوائل القرارات الكبيرة في حياة الشباب، وغالبًا ما يأتي في سن 14 أو 15، وسط خيارات لا تنتهي وتوقّعات كثيرة من حولهم. ومعظم الشباب يُجيدون أشياء كثيرة، لكن قلّة منهم يملكون طريقة واضحة لرؤية إلى أين قد تقودهم هذه الاهتمامات. لذلك بنينا تقييم كور لهذه المنطقة منذ البداية: أسئلة مستمدة من الحياة اليومية للمراهقين، مكتوبة بالعربية والإنجليزية، مع مساحة لما يهمّ العائلات هنا.",
+      },
+      {
+        title: "ما نؤمن به",
+        body: "توجّه، لا حكم نهائي. اختيار المسار أمر يتّضح مع الوقت، لا قرار واحد يُتّخذ في عام دراسي واحد. ويُبقي تقييم كور عدة أبواب مفتوحة، ويبقى الاختيار دائمًا للطالب.",
+      },
+      {
+        title: "نبني المعرفة لمنطقتنا",
+        body: "معظم الأبحاث المهنية تأتي من الولايات المتحدة وأوروبا. وبموافقة الطلاب، نتابع معهم بعد نحو عام لنعرف ما اختاروه وكيف تسير أمورهم. ومع الوقت، يرسم ذلك صورة أوضح عن كيفية اختيار الشباب في الشرق الأوسط وشمال أفريقيا لمساراتهم، ويُبقي تقييم كور في تطوّر مستمر.",
+      },
+      {
+        title: "من نحن",
+        body: "ماب ماي كور من تطوير شركة The ME Project (FZE)، ومقرّها مجمّع الشارقة للبحوث والتكنولوجيا والابتكار في الإمارات العربية المتحدة.",
+      },
+    ],
+    contactTitle: "تواصلوا معنا",
+    contactLine: "نقرأ كل رسالة:",
   },
-  {
-    phase: "Phase 3",
-    when: "Then",
-    body: "Advanced features — career matching, skill gap analysis, AI advisor — more countries, and completed PhD research.",
-  },
-];
+};
 
-export const About = () => (
-  <DayPage>
-    <main>
-      <PageHero
-        eyebrow="About Us"
-        title="Career guidance shouldn’t be"
-        accent="a privilege."
-        lede="Tareeq exists to democratize access to science-based career guidance for every young person in the MENA region."
-        art={ArchHorizon}
-        artClass="w-48 h-auto"
-      />
+export const About = () => {
+  const { locale } = useLocale();
+  const copy = ABOUT_COPY[locale];
 
-      <Section
-        eyebrow="Why we built Tareeq"
-        title="A gap worth"
-        accent="closing."
-      >
-        <FadeIn className="max-w-3xl">
-          <div className="space-y-5 text-[var(--day-ink-2)] leading-relaxed">
-            <p>
-              After 20+ years in human capital development, Enas observed a gap:
-              young people in the MENA region were using career assessment tools
-              designed for Western contexts. These tools asked abstract
-              questions that didn’t fit their experience. They focused only on
-              interests, ignoring other crucial factors. And they didn’t account
-              for regional job markets, educational systems, or cultural
-              context.
-            </p>
-            <p>
-              The result? Young people in MENA were making major life decisions
-              — choosing university programs, committing to career paths —
-              without guidance truly relevant to their situation.
-            </p>
-            <p className="font-heading text-lg font-semibold text-[#B07A18]">
-              Tareeq changes that. Built specifically for youth in the MENA
-              region, by someone who understands both career psychology and
-              regional context.
-            </p>
+  return (
+    <DayPage>
+      <main>
+        <PageHero
+          eyebrow={copy.eyebrow}
+          title={copy.headline}
+          lede={copy.line}
+          art={ArchHorizon}
+          artClass="w-48 h-auto"
+        />
+        <Section className="!pt-4">
+          <div className="grid max-w-5xl gap-12 md:grid-cols-2 md:gap-x-14">
+            {copy.blocks.map((block, i) => (
+              <FadeIn key={block.title} delay={(i % 2) * 0.08}>
+                <h2 className="font-heading text-2xl font-semibold">{block.title}</h2>
+                <p className="mt-3 leading-relaxed text-[var(--day-ink-2)]">{block.body}</p>
+              </FadeIn>
+            ))}
           </div>
-        </FadeIn>
-      </Section>
-
-      <Section
-        eyebrow="Founder"
-        title="Enas Elgarhy,"
-        accent="Founder & Lead Assessor."
-        className="border-t border-[var(--day-line)]"
-      >
-        <FadeIn>
-          <div className="rounded-story-alt p-px bg-gradient-to-br from-[#F4C660]/70 via-[#C8B6F0]/40 to-transparent max-w-4xl">
-            <div className="rounded-story-alt bg-[var(--day-elevated)] p-8 sm:p-12">
-              <DotList items={CREDENTIALS} />
-              <p className="mt-6 text-[15px] text-[var(--day-ink-2)] leading-relaxed">
-                She designed CORE because she saw a need and believed she could
-                fill it. And she’s building Tareeq as her PhD research platform
-                — meaning the data generated by the platform will advance
-                academic knowledge about career development in the MENA region.
-              </p>
-            </div>
-          </div>
-        </FadeIn>
-      </Section>
-
-      <Section
-        eyebrow="Our vision"
-        title="Where this"
-        accent="is going."
-        className="border-t border-[var(--day-line)]"
-      >
-        <FadeIn className="max-w-3xl mb-12">
-          <p className="text-[var(--day-ink-2)] leading-relaxed">
-            In 3–5 years, Tareeq will be the platform every young person in MENA
-            uses for career guidance. In 5–10 years, we’ll have comprehensive
-            research on career development patterns specific to the region —
-            knowledge that shapes how educators, policymakers, and students
-            think about career choice.
-          </p>
-        </FadeIn>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {PHASES.map((p, i) => (
-            <FadeIn key={p.phase} delay={i * 0.1}>
-              <Card className={`h-full ${p.active ? "!border-[#F4C660]" : ""}`}>
-                <div className="flex items-center justify-between">
-                  <span
-                    className={`font-heading font-semibold ${p.active ? "text-[#B07A18]" : "text-[#6D5BA8]"}`}
-                  >
-                    {p.phase}
-                  </span>
-                  <span className="text-xs uppercase tracking-widest text-[var(--day-ink-3)]">
-                    {p.when}
-                  </span>
-                </div>
-                <p className="mt-3 text-sm text-[var(--day-ink-2)] leading-relaxed">
-                  {p.body}
-                </p>
-              </Card>
-            </FadeIn>
-          ))}
-        </div>
-      </Section>
-
-      <Section
-        eyebrow="Questions? Feedback?"
-        title="We read"
-        accent="every message."
-        className="border-t border-[var(--day-line)]"
-      >
-        <FadeIn>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 max-w-3xl">
-            <span className="relative shrink-0 w-16 h-16 rounded-full overflow-hidden ring-2 ring-[#F4C660]/70 bg-gradient-to-b from-[#C8B6F0]/40 to-[#F4C660]/30">
-              <Image
-                src={KAI_SRC_SM}
-                alt="Kai, Tareeq’s AI guide"
-                width={96}
-                height={96}
-                className="absolute w-[170%] max-w-none left-1/2 -translate-x-1/2 top-[-6%]"
-              />
-            </span>
-            <div>
-              <p className="text-[var(--day-ink-2)] leading-relaxed">
-                Tell us what works, what doesn’t, what you’d like to see. Your
-                input shapes how we develop.
-              </p>
-              <a
-                href="mailto:support@tareek.me"
-                className="mt-2 inline-block text-lg font-medium text-[#6D5BA8] hover:text-[#B07A18] transition-colors"
-              >
-                support@tareek.me
-              </a>
-            </div>
-          </div>
-        </FadeIn>
-      </Section>
-    </main>
-  </DayPage>
-);
+        </Section>
+        <Section className="border-t border-[var(--day-line)]">
+          <h2 className="font-heading text-2xl font-semibold">{copy.contactTitle}</h2>
+          <p className="mt-3 text-[var(--day-ink-2)]">{copy.contactLine}</p>
+          <a
+            href={`mailto:${BRAND.supportEmail}`}
+            dir="ltr"
+            className="mt-2 inline-block font-heading text-xl font-semibold text-[#6D5BA8] underline-offset-4 hover:underline"
+          >
+            {BRAND.supportEmail}
+          </a>
+        </Section>
+      </main>
+    </DayPage>
+  );
+};

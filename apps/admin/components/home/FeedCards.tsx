@@ -265,7 +265,7 @@ function UnlockCardView({
         </span>
       </div>
       <p className="mt-2 text-center text-[11px] font-semibold text-[color:var(--day-ink-3)]">
-        Unlocks as Tareeq rolls out — the more you complete, the more your
+        Unlocks as Map My CORE rolls out — the more you complete, the more your
         compass reveals.
       </p>
     </article>

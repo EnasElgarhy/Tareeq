@@ -2,7 +2,8 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { PILLARS } from "./modelContent";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { modelCopy } from "./modelContent";
 
 const SIZE = 400;
 const C = SIZE / 2;
@@ -41,6 +42,8 @@ function sectorPath(startDeg: number, endDeg: number) {
  * first hover or focus. Each quadrant links to its chapter below.
  */
 export function CoreDial() {
+  const { locale } = useLocale();
+  const PILLARS = modelCopy(locale).pillars;
   const reduce = useReducedMotion();
   const [active, setActive] = useState(0);
   const [isUserDriven, setIsUserDriven] = useState(false);
@@ -52,7 +55,7 @@ export function CoreDial() {
       CYCLE_MS,
     );
     return () => window.clearInterval(timer);
-  }, [reduce, isUserDriven]);
+  }, [reduce, isUserDriven, PILLARS.length]);
 
   const select = (index: number) => {
     setIsUserDriven(true);
@@ -72,7 +75,7 @@ export function CoreDial() {
         viewBox={`0 0 ${SIZE} ${SIZE}`}
         className="relative w-full overflow-visible"
         role="group"
-        aria-label="The four CORE pillars"
+        aria-label={locale === "ar" ? "الجوانب الأربعة لتقييم كور" : "The four parts of CORE"}
       >
         {Array.from({ length: TICKS }, (_, i) => {
           const deg = (360 / TICKS) * i;
@@ -124,7 +127,8 @@ export function CoreDial() {
                 className="font-heading select-none text-[44px] font-bold transition-[fill] duration-500"
                 fill={isActive ? "#14101F" : pillar.nightAccent}
               >
-                {pillar.letter}
+                {/* The Arabic site drops the C-O-R-E letters (28 Oct Arabic text). */}
+                {locale === "ar" ? "" : pillar.letter}
               </text>
             </a>
           );
@@ -167,7 +171,7 @@ export function CoreDial() {
           className="text-xs font-semibold uppercase tracking-[0.22em] transition-colors duration-500"
           style={{ color: current.nightAccent }}
         >
-          {current.index} · {current.name}
+          {current.name} · {current.tag}
         </span>
         <span className="font-heading mt-2 block text-xl font-semibold text-[#F5EEE6]">
           {current.question}

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { analyticsBatchSchema, partitionValidEvents } from "@/lib/analytics/events";
-import type { AnalyticsEvent } from "@/lib/analytics/types";
+import { toDbRow } from "@/lib/analytics/ingest-row";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 export const runtime = "nodejs";
@@ -13,30 +13,6 @@ export const runtime = "nodejs";
  * ANALYTICS_INSTRUMENTATION.md for why there are two endpoints today and
  * how they'd collapse into one once these repos share a build pipeline.
  */
-const LEGACY_EVENT_TYPE: Partial<Record<string, string>> = {
-  results_viewed: "results_viewed",
-  results_downloaded: "result_downloaded",
-  results_shared: "result_shared",
-};
-
-function toDbRow(event: AnalyticsEvent) {
-  return {
-    event_id: event.event_id,
-    event_name: event.event_name,
-    event_type: LEGACY_EVENT_TYPE[event.event_name] ?? null,
-    assessment_id: event.assessment_id,
-    assessment_version: event.assessment_version,
-    question_id: event.question_id ?? null,
-    session_id: event.session_id,
-    user_id_hash: event.user_id_hash,
-    locale: event.locale,
-    device: event.device,
-    country: event.country,
-    occurred_at: event.timestamp,
-    metadata: event.metadata,
-  };
-}
-
 export async function POST(request: Request) {
   let body: unknown;
   try {

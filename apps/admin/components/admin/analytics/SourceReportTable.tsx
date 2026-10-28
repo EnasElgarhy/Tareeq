@@ -1,7 +1,9 @@
 import { Table, Td, Th, Tr } from "@/components/admin/ui/Table";
 import {
+  groupByOption,
   NO_SOURCE,
   SOURCE_METRICS,
+  type GroupBy,
   type MetricCounts,
   type SourceReport,
 } from "@/lib/admin/analytics/by-source";
@@ -28,17 +30,18 @@ function Counts({ counts, strong = false }: { counts: MetricCounts; strong?: boo
 
 export function SourceReportTable({
   report,
-  showPost,
+  groupBy,
 }: {
   report: SourceReport;
-  showPost: boolean;
+  groupBy: GroupBy;
 }) {
+  const showPost = groupBy === "post";
   return (
     <Table>
       <thead>
         <tr>
-          <Th>Source</Th>
-          {showPost && <Th>Post</Th>}
+          <Th>{groupByOption(groupBy).column}</Th>
+          {showPost && <Th>Content</Th>}
           {SOURCE_METRICS.map((m) => (
             <Th key={m.key} className="text-right">
               {m.label}

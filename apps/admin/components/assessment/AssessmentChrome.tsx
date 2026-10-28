@@ -16,6 +16,7 @@ import {
   type CompassSnapshot,
 } from "@/lib/assessment/pillar-progress";
 import { useAnimatedSnapshot } from "@/lib/assessment/use-animated-snapshot";
+import { BrandMark } from "@/components/primitives/BrandMark";
 
 interface AssessmentChromeProps {
   children: ReactNode;
@@ -133,31 +134,18 @@ export function AssessmentChrome({
             {/* Tareeq mark — centered + warm-gradient on ceremony screens, right on others */}
             <Link
               href="/"
-              aria-label="Tareeq home"
+              aria-label="Map My CORE home"
               className="inline-flex items-center gap-1.5"
             >
+              <BrandMark tone="aurora" height={isCeremony ? 26 : 20} />
               <span
-                aria-hidden="true"
-                className={`inline-block ${
-                  isCeremony ? "size-8 bg-grad-warm" : "size-6 bg-aurora"
-                }`}
-                style={{
-                  WebkitMaskImage: "url('/logo/tareeq-mark.svg')",
-                  maskImage: "url('/logo/tareeq-mark.svg')",
-                  WebkitMaskRepeat: "no-repeat",
-                  maskRepeat: "no-repeat",
-                  WebkitMaskPosition: "center",
-                  maskPosition: "center",
-                  WebkitMaskSize: "contain",
-                  maskSize: "contain",
-                }}
-              />
-              <span
-                className={`font-bold leading-none tracking-[-0.025em] text-sand lowercase ${
+                dir="ltr"
+                lang="en"
+                className={`font-bold leading-none tracking-[-0.025em] text-sand ${
                   isCeremony ? "text-[20px]" : "text-[16px]"
                 }`}
               >
-                tareeq
+                Map My CORE
               </span>
             </Link>
           </div>

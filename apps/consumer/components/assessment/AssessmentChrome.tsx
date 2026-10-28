@@ -18,6 +18,8 @@ import { useAnimatedSnapshot } from "@/lib/assessment/use-animated-snapshot";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import type { Question } from "@/lib/scoring";
 import "./assessment-theme.css";
+import { BRAND } from "@/lib/brand";
+import { BrandMark } from "@/components/primitives/BrandMark";
 
 interface AssessmentChromeProps {
   children: ReactNode;
@@ -185,31 +187,18 @@ export function AssessmentChrome({
               {/* Tareeq mark — centered + larger on ceremony screens, right on others */}
               <Link
                 href="/"
-                aria-label="Tareeq home"
+                aria-label={`${BRAND.name} home`}
                 className="inline-flex items-center gap-1.5"
               >
+                <BrandMark tone={isLightSurface ? "flat" : "aurora"} height={isCeremony ? 26 : 20} />
                 <span
-                  aria-hidden="true"
-                  className={`inline-block bg-aurora ${
-                    isCeremony ? "size-8" : "size-6"
-                  }`}
-                  style={{
-                    WebkitMaskImage: "url('/logo/tareeq-mark.svg')",
-                    maskImage: "url('/logo/tareeq-mark.svg')",
-                    WebkitMaskRepeat: "no-repeat",
-                    maskRepeat: "no-repeat",
-                    WebkitMaskPosition: "center",
-                    maskPosition: "center",
-                    WebkitMaskSize: "contain",
-                    maskSize: "contain",
-                  }}
-                />
-                <span
-                  className={`font-bold leading-none tracking-[-0.025em] lowercase ${
+                  dir="ltr"
+                  lang="en"
+                  className={`font-heading font-bold leading-none tracking-[-0.025em] ${
                     isLightSurface ? "text-carbon" : "text-sand"
                   } ${isCeremony ? "text-[20px]" : "text-[16px]"}`}
                 >
-                  tareeq
+                  {BRAND.name}
                 </span>
               </Link>
 

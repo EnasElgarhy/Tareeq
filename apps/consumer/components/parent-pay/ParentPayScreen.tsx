@@ -63,6 +63,7 @@ export function ParentPayScreen({ token, outcome }: ParentPayScreenProps) {
         <PaidState confirmed={stage.confirmed} />
       ) : (
         <>
+          <h1 className={styles.title}>{t("pay.title")}</h1>
           <p className={styles.intro}>{t("pay.intro")}</p>
           <PayFeatureSlider />
           <PayTicket audience={{ kind: "parent", token }} stage={stage} onStage={setStage} />

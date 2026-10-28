@@ -1,5 +1,5 @@
 import { DaybreakPanel } from "../DaybreakPanel";
-import { CoreComparison } from "./CoreComparison";
+import { WhyFourParts } from "./WhyFourParts";
 import { ModelClosing } from "./ModelClosing";
 import { ModelHero } from "./ModelHero";
 import { PillarChapters } from "./PillarChapters";
@@ -14,7 +14,7 @@ export function ModelPage() {
       <ModelHero />
       <DaybreakPanel>
         <PillarChapters />
-        <CoreComparison />
+        <WhyFourParts />
         <div className="h-48 bg-dusk-band sm:h-64" aria-hidden="true" />
       </DaybreakPanel>
       <ModelClosing />

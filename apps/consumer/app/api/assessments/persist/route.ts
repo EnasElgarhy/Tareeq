@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { attributionFromCookieHeader } from "@/lib/analytics/attribution";
-import { trackEvent } from "@/lib/analytics/track";
+import { trackServerEvent } from "@/lib/analytics/track-server";
 import { loadAssessmentContentForReference } from "@/lib/assessment/content.server";
 import { CORE_CONTENT_VERSIONS } from "@/lib/core-v2/content/core-content";
 import {
@@ -122,7 +122,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  trackEvent("assessment_completed", {
+  await trackServerEvent("assessment_completed", {
     assessmentId: inserted?.id as string | undefined,
     assessmentVersion: content.versionLabel,
     userId: user.id,
@@ -209,7 +209,7 @@ async function persistCoreAttempt(
     return NextResponse.json({ error: "Could not save." }, { status: 500 });
   }
 
-  trackEvent("assessment_completed", {
+  await trackServerEvent("assessment_completed", {
     assessmentId: inserted.id as string,
     assessmentVersion: CORE_QUESTION_SET_LABEL,
     userId: user.id,

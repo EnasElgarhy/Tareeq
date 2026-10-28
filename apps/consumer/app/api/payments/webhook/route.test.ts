@@ -1,10 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
+  trackServerEvent: vi.fn(),
   constructEvent: vi.fn(),
   createAdminClient: vi.fn(),
   getStripeClient: vi.fn(),
   getStripeWebhookSecret: vi.fn(),
+}));
+
+vi.mock("@/lib/analytics/track-server", () => ({
+  trackServerEvent: mocks.trackServerEvent,
 }));
 
 vi.mock("@/lib/supabase/admin", () => ({
@@ -43,7 +48,10 @@ interface EntitlementRow {
 
 class EntitlementDatabase {
   readonly rows: EntitlementRow[] = [];
+  /** parent_pay_links: only what the webhook touches. */
+  readonly parentLinks: { id: string; status: string }[] = [];
   readonly from = vi.fn((table: string) => {
+    if (table === "parent_pay_links") return this.parentLinkTable();
     if (table !== "report_entitlements") {
       throw new Error(`Unexpected table: ${table}`);
     }
@@ -57,6 +65,28 @@ class EntitlementDatabase {
     };
   });
   writeCount = 0;
+
+  private parentLinkTable() {
+    return {
+      update: (values: Record<string, unknown>) => {
+        const filters = new Map<string, unknown>();
+        const query = {
+          eq: (column: string, value: unknown) => {
+            filters.set(column, value);
+            return query;
+          },
+          select: async () => {
+            const hits = this.parentLinks.filter(
+              (link) => link.id === filters.get("id") && link.status === filters.get("status"),
+            );
+            hits.forEach((link) => Object.assign(link, values));
+            return { data: hits.map((link) => ({ id: link.id })), error: null };
+          },
+        };
+        return query;
+      },
+    };
+  }
 
   readonly client = { from: this.from };
 
@@ -458,5 +488,37 @@ describe("POST /api/payments/webhook", () => {
     expect(database.from).not.toHaveBeenCalled();
     expect(database.rows).toEqual(before);
     expect(database.writeCount).toBe(0);
+  });
+
+  it("records a parent's payment once, with the student's source labels", async () => {
+    const LINK_ID = "44444444-4444-4444-8444-444444444444";
+    database.parentLinks.push({ id: LINK_ID, status: "pending" });
+    const event = checkoutCompletedEvent("cs_parent");
+    Object.assign(event.data.object.metadata, {
+      parent_link_id: LINK_ID,
+      payer: "parent",
+      src: "instagram",
+      post: "p2-carousel-03-ar",
+      medium: "paid",
+    });
+
+    await deliver(event);
+    await deliver(event);
+
+    expect(database.parentLinks[0].status).toBe("paid");
+    expect(mocks.trackServerEvent).toHaveBeenCalledTimes(1);
+    expect(mocks.trackServerEvent).toHaveBeenCalledWith("payment_succeeded", {
+      assessmentId: ASSESSMENT_ID,
+      payer: "parent",
+      src: "instagram",
+      post: "p2-carousel-03-ar",
+      medium: "paid",
+    });
+  });
+
+  it("leaves a student's own payment to the browser's tracking", async () => {
+    await deliver(checkoutCompletedEvent("cs_student"));
+
+    expect(mocks.trackServerEvent).not.toHaveBeenCalled();
   });
 });

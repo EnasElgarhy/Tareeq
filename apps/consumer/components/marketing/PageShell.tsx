@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
 import { useState, type ComponentType, type ReactNode } from "react";
 import { IconPlus } from "./Icons";
 import { Container, FadeIn } from "./Shared";
@@ -35,6 +36,8 @@ interface CardProps {
 interface FaqItem {
   q: string;
   a: string;
+  /** An optional "read more" link under the answer. */
+  link?: { href: string; label: string };
 }
 
 interface AccordionProps {
@@ -174,6 +177,7 @@ export function IconChip({
 function AccordionItem({
   q,
   a,
+  link,
   index,
   isOpen,
   onToggle,
@@ -186,7 +190,7 @@ function AccordionItem({
         onClick={onToggle}
         data-testid={`${testPrefix}-${index + 1}`}
         aria-expanded={isOpen}
-        className="group flex w-full items-center justify-between gap-4 py-6 text-left"
+        className="group flex w-full items-center justify-between gap-4 py-6 text-start"
       >
         <span className="font-heading text-lg font-semibold transition-colors group-hover:text-[#7A4A21]">
           {q}
@@ -211,6 +215,14 @@ function AccordionItem({
             <p className="max-w-2xl pb-6 leading-relaxed text-[color:var(--day-ink-2)]">
               {a}
             </p>
+            {link ? (
+              <Link
+                href={link.href}
+                className="-mt-3 mb-6 inline-flex font-semibold text-[#6D5BA8] underline-offset-4 hover:underline"
+              >
+                {link.label}
+              </Link>
+            ) : null}
           </motion.div>
         ) : null}
       </AnimatePresence>

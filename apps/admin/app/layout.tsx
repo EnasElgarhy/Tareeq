@@ -44,7 +44,7 @@ const displayItalic = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "Tareeq — Discover what you're built for",
+  title: "Map My CORE Admin",
   description:
     "12 minutes. 60 questions. One clear path. A career discovery compass for youth in MENA, built on the CORE model.",
 };

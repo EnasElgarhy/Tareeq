@@ -48,6 +48,13 @@ const nextConfig: NextConfig = {
         destination: "/you",
         permanent: false,
       },
+      {
+        // The For students page was removed on 28 Oct 2026; the home page
+        // now speaks to students.
+        source: "/students",
+        destination: "/",
+        permanent: true,
+      },
     ];
   },
 };

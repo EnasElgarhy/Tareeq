@@ -72,7 +72,7 @@ describe("Timing views", () => {
 });
 
 describe("By source view", () => {
-  it("renders rows, an empty ask-a-parent column and totals", () => {
+  it("renders rows, the ask-a-parent column and totals", () => {
     const report = aggregateBySource(
       [
         { eventName: "session_started", metadata: { src: "instagram", post: "p1" } },
@@ -81,9 +81,10 @@ describe("By source view", () => {
       "first",
       "post",
     );
-    const html = renderToStaticMarkup(createElement(SourceReportTable, { report, showPost: true }));
+    const html = renderToStaticMarkup(createElement(SourceReportTable, { report, groupBy: "post" }));
     expect(html).toContain("instagram");
-    expect(html).toContain("not tracked yet");
+    expect(html).toContain("Ask-a-parent links sent");
+    expect(html).not.toContain("not tracked yet");
     expect(html).toContain("Total");
   });
 });

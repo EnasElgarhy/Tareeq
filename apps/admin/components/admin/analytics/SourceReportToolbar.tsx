@@ -2,7 +2,11 @@
 
 import { Button } from "@/components/admin/ui/Button";
 import { Field, Select } from "@/components/admin/ui/Field";
-import { weekBounds, type SourceReportParams } from "@/lib/admin/analytics/by-source";
+import {
+  GROUP_BY_OPTIONS,
+  weekBounds,
+  type SourceReportParams,
+} from "@/lib/admin/analytics/by-source";
 
 function weekLabel(weekStart: string): string {
   const { weekEnd } = weekBounds(weekStart);
@@ -56,12 +60,15 @@ export function SourceReportToolbar({
           )}
         </Field>
       </div>
-      <div className="w-44">
+      <div className="w-56">
         <Field label="Rows">
           {(p) => (
             <Select name="groupBy" defaultValue={params.groupBy} {...p}>
-              <option value="post">Source and post</option>
-              <option value="source">Source only</option>
+              {GROUP_BY_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
             </Select>
           )}
         </Field>

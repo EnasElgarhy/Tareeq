@@ -148,11 +148,19 @@ export function parseAttributionCookie(value: string | undefined | null): Attrib
   }
 }
 
+/**
+ * One key per utm tag, first touch and latest: `src` = utm_source (or
+ * `source`), `post` = utm_content (or `post`), `medium`, `campaign`.
+ */
 export interface AttributionMetadata {
   src?: string;
   post?: string | null;
+  medium?: string | null;
+  campaign?: string | null;
   src_last?: string;
   post_last?: string | null;
+  medium_last?: string | null;
+  campaign_last?: string | null;
 }
 
 /** The short keys every analytics event carries, so reports can group by source. */
@@ -161,8 +169,12 @@ export function attributionMetadata(state: AttributionState | null): Attribution
   return {
     src: state.first.source,
     post: state.first.post,
+    medium: state.first.medium,
+    campaign: state.first.campaign,
     src_last: state.last.source,
     post_last: state.last.post,
+    medium_last: state.last.medium,
+    campaign_last: state.last.campaign,
   };
 }
 
@@ -175,4 +187,17 @@ export function attributionFromCookieHeader(header: string | null | undefined): 
     ?.split(/;\s*/)
     .find((part) => part.startsWith(`${ATTRIBUTION_COOKIE}=`));
   return attributionMetadata(parseAttributionCookie(entry?.slice(ATTRIBUTION_COOKIE.length + 1)));
+}
+
+/**
+ * The first-touch labels that are set, as plain strings: what goes on a
+ * Stripe session's metadata and a parent link's `attribution` column.
+ */
+export function attributionLabels(meta: AttributionMetadata): Record<string, string> {
+  const labels: Record<string, string> = {};
+  for (const key of ["src", "post", "medium", "campaign"] as const) {
+    const value = meta[key];
+    if (typeof value === "string" && value) labels[key] = value;
+  }
+  return labels;
 }

@@ -5,11 +5,12 @@ import { motion, useInView, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import { useRef } from "react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { OPEN_CONSENT_EVENT } from "@/lib/analytics/consent";
+import { BRAND } from "@/lib/brand";
 import { MarketingLogo } from "./MarketingLogo";
 import { FOOTER_LINK_GROUPS } from "./navLinks";
 import { Container } from "./Shared";
 
-const SUPPORT_EMAIL = "support@tareek.me";
 
 // The closing scene's lit path, continued into the footer. Lanterns sit on
 // segment endpoints (viewBox units) so they land exactly on the line.
@@ -111,7 +112,7 @@ export function SiteFooter() {
           <div className="col-span-2 md:col-span-3 lg:col-span-5">
             <Link
               href="/"
-              aria-label="Tareeq home"
+              aria-label={`${BRAND.name} home`}
               className={`inline-flex items-center gap-1.5 rounded-full ${FOCUS_RING}`}
             >
               <MarketingLogo />
@@ -123,10 +124,10 @@ export function SiteFooter() {
               {t("marketing.footer.contact")}
             </p>
             <a
-              href={`mailto:${SUPPORT_EMAIL}`}
+              href={`mailto:${BRAND.supportEmail}`}
               className={`group mt-3 inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/[0.04] py-2.5 pe-2.5 ps-5 text-[0.9375rem] font-medium text-[#F5EEE6] transition-colors hover:border-[#F4C660]/50 hover:bg-[#F4C660]/10 active:translate-y-px ${FOCUS_RING}`}
             >
-              {SUPPORT_EMAIL}
+              <span dir="ltr">{BRAND.supportEmail}</span>
               <span className="flex size-8 items-center justify-center rounded-full bg-[#F4C660] text-[#14101F] transition-transform duration-300 ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5 rtl:-scale-x-100 rtl:group-hover:-translate-x-0.5">
                 <ArrowUpRight size={16} weight="bold" />
               </span>
@@ -163,7 +164,16 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-20 flex items-center justify-between gap-6 border-t border-white/10 py-6 text-sm text-[#F5EEE6]/45">
-          <p>{t("marketing.footer.copyright")}</p>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+            <p>{t("marketing.footer.copyright")}</p>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new Event(OPEN_CONSENT_EVENT))}
+              className={`rounded-sm underline-offset-4 transition-colors hover:text-[#F4C660] hover:underline ${FOCUS_RING}`}
+            >
+              {t("marketing.footer.cookies")}
+            </button>
+          </div>
           <button
             type="button"
             onClick={scrollToTop}
@@ -183,7 +193,7 @@ export function SiteFooter() {
       <p
         ref={wordmarkRef}
         aria-hidden="true"
-        className="font-heading pointer-events-none -mb-[0.28em] select-none text-center text-[clamp(6.5rem,25vw,23rem)] font-bold leading-[0.9] tracking-[-0.06em] rtl:tracking-normal"
+        className="font-heading pointer-events-none -mb-[0.28em] select-none text-center text-[clamp(3.5rem,13vw,12rem)] whitespace-nowrap font-bold leading-[0.9] tracking-[-0.06em] rtl:tracking-normal"
       >
         <motion.span
           className="inline-block text-transparent [background-clip:text] [background-image:linear-gradient(180deg,rgba(244,198,96,0.2)_5%,rgba(200,182,240,0.08)_50%,transparent_78%)]"

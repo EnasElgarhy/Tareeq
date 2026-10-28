@@ -107,7 +107,7 @@ export function getReportOffer(): ReportOffer {
   );
   return {
     productId: "tareeq-deep-dive-v1",
-    name: "Tareeq Complete Report",
+    name: "Map My CORE report",
     amountMinor: Math.round((listAmountMinor * (100 - discountPercent)) / 100),
     listAmountMinor,
     discountPercent,

@@ -19,8 +19,9 @@ import type { Locale } from "@/lib/i18n/locale";
 /**
  * Copy for the hero's product-journey cards, per locale. Icons are shared so
  * both languages tell the same story; only the words change. Arabic follows
- * the product's own terms (Kai is feminine, "بوصلة مسارك المهني", archetype
- * and cluster names from the report strings).
+ * the product's own terms (curiosity names and Kai's role from the report and
+ * the 28 Oct Arabic website text). Jobs come from career bank 1.1, and the
+ * result card carries the "Example report" label the client asked for.
  */
 
 const ICONS = {
@@ -66,85 +67,84 @@ interface Words {
 const WORDS: Record<Locale, Words> = {
   en: {
     kaiName: "Kai",
-    aria: "How Tareeq works: meet Kai, your guide, then answer questions, get your career direction, see matching careers and subjects, then ask Kai what to do next.",
+    aria: "How Map My CORE works: meet Kai, your AI coach, answer questions about everyday situations, see your CORE, the jobs and study fields it points to, then talk it through with Kai.",
     intro: {
-      role: "Your AI career navigator",
+      role: "Your AI coach",
       greeting:
-        "Hi, my name is Kai. I will be your guide in this journey of self-discovery.",
+        "Hi, I’m Kai. I’ll walk you through each part of your CORE, then help you make sense of your results, whenever you need.",
       exploreLabel: "What we’ll explore",
-      dimensions: ["Curiosities", "Operations", "Rewards", "Ecosystems"],
+      dimensions: ["Curiosities", "Operating style", "Rewards", "Ecosystem"],
     },
     assessment: {
-      progress: "Question 4 of 12",
-      question: "What kind of problems do you enjoy solving?",
-      options: ["Understanding people", "Creating things", "Working with data"],
-      kaiHint: "I’m learning what motivates you.",
+      progress: "Question 4 of 46",
+      question: "A free afternoon. What pulls you in first?",
+      options: ["Helping a friend with a problem", "Making something new", "Finding out how something works"],
+      kaiHint: "No right or wrong answers.",
     },
     result: {
-      header: "Your Career Compass",
-      cluster: "People & Psychology",
-      summary: "Strong curiosity around people, behaviour and wellbeing.",
-      chips: ["High curiosity", "Catalyst"],
-      confidence: "38% · Moderate",
+      header: "Your CORE",
+      cluster: "Research & Discovery",
+      summary: "Finding out why things happen. It connects with People & Wellbeing.",
+      chips: ["Leading curiosity", "Connects into one direction"],
+      confidence: "Example report",
     },
     labels: {
-      careers: "Career matches",
-      subjects: "Subjects to explore",
-      nextPaths: "Next paths",
+      careers: "Jobs to explore",
+      subjects: "Study fields",
+      nextPaths: "Next steps",
     },
-    careers: ["Clinical Psychologist", "Counsellor", "UX Researcher"],
-    subjects: ["Psychology", "Biology", "Sociology"],
-    nextPaths: ["University majors", "Career families"],
+    careers: ["Dentist", "Dietitian", "Genetic counsellor"],
+    subjects: ["Psychology", "Nutrition and dietetics", "Genetics"],
+    nextPaths: ["Questions for an open day", "Someone to talk to"],
     kai: {
-      question: "Which path keeps the most options open?",
+      question: "Which of these curiosities feels most like you?",
       answer:
-        "Psychology can lead into counselling, research, HR and UX research.",
-      chips: ["Compare careers", "What should I study?"],
+        "Research & Discovery and People & Wellbeing connect into one direction: clinical and health sciences.",
+      chips: ["Help me prepare questions", "What would a day look like?"],
     },
     summary: {
-      steps: ["Assessment", "Your direction", "Careers & subjects", "Ask Kai"],
-      line: "From questions to a direction you can act on.",
+      steps: ["Your answers", "Your CORE", "Study fields and careers", "Talk it through with Kai"],
+      line: "From everyday choices to directions worth exploring.",
     },
   },
   ar: {
     kaiName: "كاي",
-    aria: "كيف يعمل طريق: تعرّف على كاي مرشدتك، ثم أجب عن الأسئلة، واحصل على اتجاهك المهني، واطّلع على المهن والمواد المناسبة، ثم اسأل كاي عن خطوتك التالية.",
+    aria: "كيف يعمل ماب ماي كور: تعرّف على كاي، مدرّبك المهني الذكي، وأجب عن أسئلة من مواقفك اليومية، ثم اطّلع على نتائجك والمهن ومجالات الدراسة التي تشير إليها، وناقشها مع كاي.",
     intro: {
-      role: "مرشدتك المهنية بالذكاء الاصطناعي",
-      greeting: "مرحباً، أنا كاي. سأكون مرشدتك في رحلة اكتشاف ذاتك.",
-      exploreLabel: "ما سنستكشفه معاً",
-      dimensions: ["الفضول", "طريقة العمل", "المكافآت", "بيئات العمل"],
+      role: "مدرّبك المهني الذكي",
+      greeting: "مرحبًا، أنا كاي. سأرافقك في كل جزء من تقييم كور، ثم أساعدك على فهم نتائجك متى احتجت إلى ذلك.",
+      exploreLabel: "ما سنستكشفه",
+      dimensions: ["الفضول", "أسلوب العمل", "المحفّزات", "البيئة"],
     },
     assessment: {
-      progress: "السؤال 4 من 12",
-      question: "ما نوع المشكلات التي تستمتع بحلّها؟",
-      options: ["فهم الناس", "صنع الأشياء", "العمل مع البيانات"],
-      kaiHint: "أتعرّف على ما يحفّزك.",
+      progress: "السؤال 4 من 46",
+      question: "بعد ظهر يوم فارغ. ما الذي يجذبك أولًا؟",
+      options: ["مساعدة صديق في مشكلة", "صنع شيء جديد", "معرفة كيف يعمل شيء ما"],
+      kaiHint: "لا توجد إجابات صحيحة أو خاطئة.",
     },
     result: {
-      header: "بوصلة مسارك المهني",
-      cluster: "الناس وعلم النفس",
-      summary: "فضول قوي تجاه الناس والسلوك والصحة النفسية.",
-      chips: ["فضول مرتفع", "المحفّز"],
-      confidence: "38% · متوسطة",
+      header: "تقرير كور",
+      cluster: "البحث والاكتشاف",
+      summary: "معرفة سبب حدوث الأشياء، ويرتبط بالناس والرفاه.",
+      chips: ["الفضول الأبرز", "يلتقيان في اتجاه واحد"],
+      confidence: "نموذج تقرير",
     },
     labels: {
-      careers: "مهن تناسبك",
-      subjects: "مواد تستحق الاستكشاف",
-      nextPaths: "مسارات تالية",
+      careers: "مهن تستحق الاستكشاف",
+      subjects: "مجالات الدراسة",
+      nextPaths: "الخطوات التالية",
     },
-    careers: ["أخصائي نفسي إكلينيكي", "مرشد نفسي", "باحث تجربة المستخدم"],
-    subjects: ["علم النفس", "الأحياء", "علم الاجتماع"],
-    nextPaths: ["التخصصات الجامعية", "المجالات المهنية"],
+    careers: ["طبيب أسنان", "أخصائي تغذية", "مستشار وراثي"],
+    subjects: ["علم النفس", "التغذية العلاجية", "علم الوراثة"],
+    nextPaths: ["أسئلة ليوم مفتوح", "شخص تتحدث إليه"],
     kai: {
-      question: "أي مسار يُبقي خياراتي مفتوحة أكثر؟",
-      answer:
-        "يمكن أن يقودك علم النفس إلى الإرشاد والبحث والموارد البشرية وأبحاث تجربة المستخدم.",
-      chips: ["قارن بين المهن", "ماذا أدرس؟"],
+      question: "أيّ هذه الاهتمامات يشبهك أكثر؟",
+      answer: "البحث والاكتشاف والناس والرفاه يلتقيان في اتجاه واحد: العلوم السريرية والصحية.",
+      chips: ["ساعدني في تحضير أسئلتي", "كيف سيبدو اليوم؟"],
     },
     summary: {
-      steps: ["التقييم", "اتجاهك", "المهن والمواد", "اسأل كاي"],
-      line: "من الأسئلة إلى اتجاه واضح تبدأ به.",
+      steps: ["إجاباتك", "نتائجك", "مجالات الدراسة والمهن", "ناقشها مع كاي"],
+      line: "من اختياراتك اليومية إلى اتجاهات تستحق الاستكشاف.",
     },
   },
 };

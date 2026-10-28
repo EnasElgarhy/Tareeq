@@ -2,6 +2,7 @@
 
 import { motion, type HTMLMotionProps } from "framer-motion";
 import type { ReactNode } from "react";
+import { BrandMark } from "@/components/primitives/BrandMark";
 
 interface FadeInProps extends HTMLMotionProps<"div"> {
   children: ReactNode;
@@ -40,27 +41,10 @@ export function Container({ children, className = "" }: { children: ReactNode; c
   return <div className={`max-w-7xl mx-auto px-6 lg:px-8 ${className}`}>{children}</div>;
 }
 
-/** The real Tareeq brand mark — same mask-image technique used in
- *  AssessmentChrome/SharedResultScreen, so the landing page's logo matches
- *  the actual product instead of the generic placeholder dot it shipped
- *  with. */
+/** The landing page's brand mark: the same BrandMark the product uses.
+ *  `size` is the old square box; the wider mark takes 80% of it in height. */
 export function TareeqMark({ size = 32 }: { size?: number }) {
   return (
-    <span
-      aria-hidden="true"
-      className="inline-block shrink-0 bg-aurora"
-      style={{
-        width: size,
-        height: size,
-        WebkitMaskImage: "url('/logo/tareeq-mark.svg')",
-        maskImage: "url('/logo/tareeq-mark.svg')",
-        WebkitMaskRepeat: "no-repeat",
-        maskRepeat: "no-repeat",
-        WebkitMaskPosition: "center",
-        maskPosition: "center",
-        WebkitMaskSize: "contain",
-        maskSize: "contain",
-      }}
-    />
+    <BrandMark tone="aurora" height={Math.round(size * 0.8)} />
   );
 }

@@ -11,6 +11,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useLocale } from "@/components/i18n/LocaleProvider";
 
 /** Clears the hero, which carries the same action, before appearing. */
 const SHOW_AFTER = 560;
@@ -20,6 +21,7 @@ const SHOW_AFTER = 560;
  * keeps "start the assessment" reachable further down.
  */
 export function FloatingCta() {
+  const { t } = useLocale();
   const reduce = useReducedMotion();
   const pathname = usePathname();
   const { scrollY } = useScroll();
@@ -95,8 +97,8 @@ export function FloatingCta() {
             data-testid="floating-cta-start"
             className="pointer-events-auto inline-flex items-center gap-2.5 rounded-full bg-gold-gradient px-7 py-3.5 text-[0.9375rem] font-semibold text-[#14101F] shadow-[0_16px_40px_-12px_rgba(8,5,26,0.7)] transition-transform hover:scale-[1.03] active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F4C660]"
           >
-            Start assessment
-            <ArrowRight size={16} weight="bold" aria-hidden="true" />
+            {t("marketing.hero.cta")}
+            <ArrowRight size={16} weight="bold" aria-hidden="true" className="rtl:-scale-x-100" />
           </Link>
         </motion.div>
       ) : null}

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { attributionFromCookieHeader } from "@/lib/analytics/attribution";
+import { attributionFromCookieHeader, attributionLabels } from "@/lib/analytics/attribution";
 import {
   findActiveEntitlement,
   isUuid,
@@ -29,14 +29,6 @@ export const runtime = "nodejs";
 
 interface CheckoutSessionBody {
   assessmentId: string;
-}
-
-/** Stripe metadata values must be strings; unset labels are left out. */
-function stripeAttribution(labels: { src?: string; post?: string | null }): Record<string, string> {
-  return {
-    ...(labels.src ? { src: labels.src } : {}),
-    ...(labels.post ? { post: labels.post } : {}),
-  };
 }
 
 function parseBody(json: unknown): CheckoutSessionBody | null {
@@ -128,7 +120,7 @@ export async function POST(request: Request) {
       metadata: {
         user_id: user.id,
         assessment_id: body.assessmentId,
-        ...stripeAttribution(attributionFromCookieHeader(request.headers.get("cookie"))),
+        ...attributionLabels(attributionFromCookieHeader(request.headers.get("cookie"))),
       },
       ...(user.email ? { customer_email: user.email } : {}),
     });

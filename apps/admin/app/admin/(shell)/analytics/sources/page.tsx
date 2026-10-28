@@ -60,10 +60,10 @@ export default async function AnalyticsSourcesPage({
 
       <Card tone="tinted" className="p-4 text-[13px] leading-relaxed text-adm-ink-soft">
         Counts are events in the week, credited to the {params.touch === "first" ? "first" : "latest"}{" "}
-        source and post on the visitor&apos;s attribution cookie. Visits are session starts; report
-        and Kai opens count every opening. &ldquo;{NO_SOURCE}&rdquo; covers events with no source,
-        including everything before tracking began on 22 Oct 2026. Ask-a-parent links are not
-        tracked yet, so that column stays empty.
+        utm tags on the visitor&apos;s attribution cookie. Visits are session starts; report and
+        Kai opens count every opening. A parent&apos;s payment is credited to the student&apos;s
+        source. &ldquo;{NO_SOURCE}&rdquo; covers events without that tag, including everything
+        before tracking began on 22 Oct 2026 (medium and campaign from 28 Oct).
         {isCurrentWeek && " This week is still in progress."}
         {truncated && " Only the first 50,000 events were read."}
       </Card>
@@ -71,7 +71,7 @@ export default async function AnalyticsSourcesPage({
       {report.rows.length === 0 ? (
         <EmptyState title="Nothing recorded this week" description="Pick an earlier week." />
       ) : (
-        <SourceReportTable report={report} showPost={params.groupBy === "post"} />
+        <SourceReportTable report={report} groupBy={params.groupBy} />
       )}
     </>
   );

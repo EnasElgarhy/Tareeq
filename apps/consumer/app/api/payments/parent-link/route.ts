@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { attributionFromCookieHeader } from "@/lib/analytics/attribution";
+import { attributionFromCookieHeader, attributionLabels } from "@/lib/analytics/attribution";
 import {
   findActiveEntitlement,
   isUuid,
@@ -130,10 +130,7 @@ export async function POST(request: Request) {
       user_id: userId,
       assessment_id: id,
       expires_at: new Date(Date.now() + PARENT_LINK_TTL_DAYS * DAY_MS).toISOString(),
-      attribution: {
-        ...(attribution.src ? { src: attribution.src } : {}),
-        ...(attribution.post ? { post: attribution.post } : {}),
-      },
+      attribution: attributionLabels(attribution),
     })
     .select(PARENT_LINK_COLUMNS)
     .single();

@@ -184,7 +184,7 @@ export default async function UsersPage({
       <PageHeader
         kicker="Admin · Users"
         title="Students & accounts"
-        description="Search, review and support the students using Tareeq."
+        description="Search, review and support the students using Map My CORE."
       />
 
       <div className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">

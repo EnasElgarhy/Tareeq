@@ -7,8 +7,8 @@
  * approved: disagreements and shift explanations come back to the browser,
  * which keeps them on this device so later conversations get
  * PRIOR_DISAGREEMENTS. The server logs only that an event happened, never
- * the student's words. A safeguarding alert is logged as a warning; who
- * receives it and how fast is still undecided by the client (spec §15).
+ * the student's words. A safeguarding alert is logged as a warning and
+ * emailed by the chat route (safeguarding-alert.ts, 28 Oct update).
  */
 
 export type CoreKaiEvent =
@@ -89,7 +89,7 @@ export function recordCoreKaiEvents(
   for (const event of events) {
     const entry = { tool: event.tool, threadId: scope.threadId, requestId: scope.requestId };
     if (event.tool === "safeguarding_alert") {
-      // Escalation process pending from the client (spec §15).
+      // The chat route also emails it (safeguarding-alert.ts).
       log.warn("[kai/core] safeguarding_alert", entry);
     } else {
       log.info("[kai/core] tool call", entry);

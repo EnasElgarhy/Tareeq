@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { attributionLabels } from "@/lib/analytics/attribution";
 import {
   findActiveEntitlement,
   paymentError,
@@ -86,8 +87,7 @@ export async function POST(request: Request, { params }: RouteContext) {
         assessment_id: link.assessment_id,
         parent_link_id: link.id,
         payer: "parent",
-        ...(attribution.src ? { src: attribution.src } : {}),
-        ...(attribution.post ? { post: attribution.post } : {}),
+        ...attributionLabels(attribution),
       },
     });
   } catch (error) {

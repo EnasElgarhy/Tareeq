@@ -2,7 +2,8 @@
 
 import { useId, useState } from "react";
 import styles from "./EcosystemSpectrums.module.css";
-import { SPECTRUMS, type SpectrumPole } from "./modelContent";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { modelCopy, type Spectrum as SpectrumCopy, type SpectrumPole } from "./modelContent";
 
 const ACCENT = "#2F7A64";
 const MIDDLE = 50;
@@ -30,16 +31,21 @@ function Pole({ pole, isActive }: { pole: SpectrumPole; isActive: boolean }) {
   );
 }
 
-function Spectrum({ name, poles }: (typeof SPECTRUMS)[number]) {
+function Spectrum({
+  name,
+  poles,
+  balanced,
+  leaning,
+}: SpectrumCopy & { balanced: string; leaning: (pole: string) => string }) {
   const id = useId();
   const [value, setValue] = useState(MIDDLE);
   const [left, right] = poles;
   const valueText =
     value < MIDDLE - LEAN
-      ? `Leaning ${left.label.toLowerCase()}`
+      ? leaning(left.label)
       : value > MIDDLE + LEAN
-        ? `Leaning ${right.label.toLowerCase()}`
-        : "Balanced";
+        ? leaning(right.label)
+        : balanced;
 
   return (
     <div className="rounded-2xl bg-[var(--day-bg)] p-5 sm:p-6">
@@ -71,17 +77,19 @@ function Spectrum({ name, poles }: (typeof SPECTRUMS)[number]) {
 }
 
 export function EcosystemSpectrums() {
+  const { locale } = useLocale();
+  const copy = modelCopy(locale).ecosystem;
   return (
     <div className="rounded-[28px] border border-[var(--day-line)] bg-[var(--day-card)] p-5 shadow-[var(--day-shadow-hero)] sm:p-8">
       <p className="font-heading text-lg font-semibold text-[var(--day-ink)]">
-        Where would you sit?
+        {copy.title}
       </p>
       <p className="mt-1 text-sm text-[var(--day-ink-3)]">
-        Drag the dot — neither end is better.
+        {copy.line}
       </p>
       <div className="mt-6 space-y-3">
-        {SPECTRUMS.map((s) => (
-          <Spectrum key={s.name} {...s} />
+        {copy.spectrums.map((s) => (
+          <Spectrum key={s.name} {...s} balanced={copy.balanced} leaning={copy.leaning} />
         ))}
       </div>
     </div>

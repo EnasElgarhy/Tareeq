@@ -90,7 +90,7 @@ function browserAttribution(): Record<string, unknown> {
   return { ...attributionFromCookieHeader(document.cookie) };
 }
 
-async function buildEvent(name: EventName, payload: TrackEventPayload): Promise<AnalyticsEvent> {
+export async function buildEvent(name: EventName, payload: TrackEventPayload): Promise<AnalyticsEvent> {
   const { assessmentId, assessmentVersion, questionId, userId, country, ...metadata } = payload;
   return {
     event_id: crypto.randomUUID(),

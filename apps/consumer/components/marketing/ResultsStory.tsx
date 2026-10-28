@@ -18,6 +18,8 @@ interface Step {
   label: StringKey;
   title: StringKey;
   body: StringKey;
+  /** A short line under the body (steps 2 and 4). */
+  note?: StringKey;
   visual: ReactNode;
   /** Soft glow behind the card, one temperature per step. */
   glow: string;
@@ -35,6 +37,7 @@ const STEPS: readonly Step[] = [
     label: "marketing.card2.eyebrow",
     title: "marketing.card2.headline",
     body: "marketing.card2.body",
+    note: "marketing.card2.note",
     visual: <MeaningVisual />,
     glow: "rgba(157,127,240,0.16)",
   },
@@ -49,6 +52,7 @@ const STEPS: readonly Step[] = [
     label: "marketing.card4.eyebrow",
     title: "marketing.card4.headline",
     body: "marketing.card4.body",
+    note: "marketing.card4.note",
     visual: <KaiCoachVisual />,
     glow: "rgba(244,198,96,0.12)",
   },
@@ -164,6 +168,9 @@ const StepIndex = ({ active }: { active: number }) => {
                     <span className="block max-w-[38ch] pt-3 text-[15px] leading-relaxed text-[#F5EEE6]/70">
                       {t(step.body)}
                     </span>
+                    {step.note ? (
+                      <span className="block max-w-[38ch] pt-2 text-[13px] text-[#C8B6F0]/80">{t(step.note)}</span>
+                    ) : null}
                   </span>
                 </span>
               </button>
@@ -204,6 +211,7 @@ const StepCard = ({ step, index, onActive }: StepCardProps) => {
         <p className="mt-2 text-[15px] leading-relaxed text-[#F5EEE6]/70">
           {t(step.body)}
         </p>
+        {step.note ? <p className="mt-2 text-[13px] text-[#C8B6F0]/80">{t(step.note)}</p> : null}
       </div>
 
       <div className="relative flex min-h-[420px] items-center justify-center lg:min-h-[520px]">
@@ -212,7 +220,13 @@ const StepCard = ({ step, index, onActive }: StepCardProps) => {
           className="pointer-events-none absolute inset-x-[10%] inset-y-[15%] rounded-full blur-3xl"
           style={{ background: step.glow }}
         />
-        <div className="relative flex w-full justify-center">{step.visual}</div>
+        <div className="relative flex w-full flex-col items-center gap-3">
+          {/* Every preview is marked as an example (28 Oct update, Part B). */}
+          <span className="rounded-full border border-white/15 bg-white/[0.06] px-3 py-1 text-[11.5px] font-semibold text-[#F5EEE6]/80">
+            {t("marketing.results.example")}
+          </span>
+          {step.visual}
+        </div>
       </div>
     </div>
   );

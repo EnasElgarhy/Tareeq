@@ -4,7 +4,6 @@ import { Check, Copy, LockKeyholeOpen, Loader2, MessageCircle, Share2, X } from 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useLocale } from "@/components/i18n/LocaleProvider";
-import { fill } from "@/components/results/report-access/story/story-data";
 import { trackEvent } from "@/lib/analytics/track";
 import type { StringKey } from "@/lib/i18n/strings";
 import styles from "./AskParent.module.css";
@@ -92,7 +91,6 @@ export function useParentLink(assessmentId: string | null, onPaid: () => void) {
 
 interface AskParentSheetProps {
   assessmentId: string;
-  price: string;
   /** Reuse the last link instead of minting a new one (Send it again). */
   reuse: boolean;
   onClose(): void;
@@ -104,7 +102,7 @@ type SheetState =
   | { name: "ready"; url: string }
   | { name: "error"; message: StringKey };
 
-export function AskParentSheet({ assessmentId, price, reuse, onClose, onSent }: AskParentSheetProps) {
+export function AskParentSheet({ assessmentId, reuse, onClose, onSent }: AskParentSheetProps) {
   const { t, locale, dir } = useLocale();
   const [sheet, setSheet] = useState<SheetState>({ name: "creating" });
   const [lang, setLang] = useState<"en" | "ar">(locale === "ar" ? "ar" : "en");
@@ -159,7 +157,7 @@ export function AskParentSheet({ assessmentId, price, reuse, onClose, onSent }: 
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  const message = fill(t(lang === "ar" ? "unlock.ask.message.ar" : "unlock.ask.message.en"), { price });
+  const message = t(lang === "ar" ? "unlock.ask.message.ar" : "unlock.ask.message.en");
   const url = sheet.name === "ready" ? sheet.url : "";
   const fullText = `${message}\n${url}`;
 
