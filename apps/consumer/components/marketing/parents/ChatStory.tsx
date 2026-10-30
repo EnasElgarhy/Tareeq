@@ -18,6 +18,9 @@ import type { ParentsCopy } from "./parentsCopy";
 
 const CHILD = { en: "Sara", ar: "سارة" } as const;
 const TIMES = ["7:02", "7:31", "7:40", "8:15"] as const;
+/** WhatsApp's own label on a forwarded message. */
+const FORWARDED = { en: "Forwarded", ar: "تمت إعادة توجيهها" } as const;
+const KAI = { en: "Kai", ar: "كاي" } as const;
 
 function Ticks() {
   return (
@@ -111,13 +114,30 @@ function useThread(): ReactNode[][] {
       </Bubble>,
     ],
     [
+      // Sara forwards Kai's question from the app, with her own answer: how
+      // a report conversation actually reaches a parent on WhatsApp.
       <Bubble key="kai" from="child" time={TIMES[3]}>
-        <span className="mb-1.5 flex items-start gap-2 rounded-[10px] bg-[#EEEBF6] p-2">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/kai/avatar/kai-avatar-talk.webp" alt="" width={26} height={26} className="rounded-full" />
-          <span className="text-[11.5px] font-semibold text-[#2E2650]">{w("S3-KAI-Q")}</span>
+        <span className="mb-1 flex items-center gap-1 text-[10.5px] italic text-[#667781]">
+          <svg aria-hidden="true" viewBox="0 0 16 16" className="size-3 rtl:-scale-x-100">
+            <path d="M9 3l5 5-5 5M14 8H6a4 4 0 0 0-4 4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          {FORWARDED[locale]}
         </span>
-        {w("S6-TITLE")}
+        <span className="mb-1.5 block rounded-[12px] bg-[#221248] p-2.5 text-[#F5EEE6]">
+          <span className="flex items-center gap-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/kai/avatar/kai-avatar-talk.webp" alt="" width={24} height={24} className="rounded-full ring-2 ring-[#F4C660]" />
+            <span className="text-[11px] font-semibold">
+              {KAI[locale]} <span className="font-normal text-[#C8B6F0]">{t("core.kai.asks")}</span>
+            </span>
+          </span>
+          <span className="mt-2 block text-[12.5px] font-semibold leading-snug">{w("S3-KAI-Q")}</span>
+          <span className="mt-2 flex flex-wrap gap-1">
+            <span className="rounded-full bg-[#F4C660] px-2 py-0.5 text-[10px] font-semibold text-[#14101F]">{w("CUR-RD-NAME")}</span>
+            <span className="rounded-full border border-white/25 px-2 py-0.5 text-[10px]">{w("CUR-PW-NAME")}</span>
+          </span>
+        </span>
+        {EXAMPLE.reply[locale]}
       </Bubble>,
     ],
   ];
