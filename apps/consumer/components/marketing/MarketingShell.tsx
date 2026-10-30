@@ -16,6 +16,9 @@ import {
 import { SiteFooter } from "@/components/marketing/SiteFooter";
 import { BRAND } from "@/lib/brand";
 
+/** Marketing pages drawn on cream (DayPage) rather than night. */
+const DAY_ROUTES = ["/about", "/faq", "/privacy-policy", "/terms-of-service"];
+
 export function MarketingShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const reduce = useReducedMotion();
@@ -35,6 +38,11 @@ export function MarketingShell({ children }: { children: ReactNode }) {
   }, [pathname]);
 
   // Three zones so the bar reads balanced: brand, navigation, actions.
+  // Cream pages (DayPage) need dark header text; the rest sit on night.
+  const isDay = DAY_ROUTES.includes(pathname);
+  const pill = isDay
+    ? "border border-[#14101F]/15 bg-white/60 text-sm font-semibold text-[#14101F] backdrop-blur-md transition-colors hover:border-[#6D5BA8]/50 hover:bg-white hover:text-[#4B3D82] active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6D5BA8]"
+    : "border border-white/20 bg-white/[0.06] text-sm font-semibold text-[#F5EEE6] backdrop-blur-md transition-colors hover:border-[#F4C660]/60 hover:bg-[#F4C660]/10 hover:text-[#F4C660] active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F4C660]";
   const navClassName =
     "mx-auto grid min-h-[3.75rem] max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-4 px-3 py-2.5 sm:px-4";
 
@@ -60,7 +68,7 @@ export function MarketingShell({ children }: { children: ReactNode }) {
             data-testid="nav-logo"
             className="flex items-center gap-1.5 rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F4C660]"
           >
-            <MarketingLogo />
+            <MarketingLogo tone={isDay ? "day" : "night"} />
           </Link>
 
           <div className="hidden items-center justify-center gap-9 md:flex">
@@ -68,9 +76,13 @@ export function MarketingShell({ children }: { children: ReactNode }) {
               const isActive = pathname === link.href;
               const linkClassName =
                 "relative rounded-md py-1 text-[0.9375rem] font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F4C660] " +
-                (isActive
-                  ? "text-[#F5EEE6]"
-                  : "text-[#F5EEE6]/60 hover:text-[#F5EEE6]");
+                (isDay
+                  ? isActive
+                    ? "text-[#14101F]"
+                    : "text-[#14101F]/60 hover:text-[#14101F]"
+                  : isActive
+                    ? "text-[#F5EEE6]"
+                    : "text-[#F5EEE6]/60 hover:text-[#F5EEE6]");
 
               return (
                 <Link
@@ -97,7 +109,7 @@ export function MarketingShell({ children }: { children: ReactNode }) {
               <button
                 type="button"
                 onClick={() => setLocale(locale === "en" ? "ar" : "en")}
-                className="whitespace-nowrap rounded-full border border-white/20 bg-white/[0.06] px-4 py-2.5 text-sm font-semibold text-[#F5EEE6] backdrop-blur-md transition-colors hover:border-[#F4C660]/60 hover:bg-[#F4C660]/10 hover:text-[#F4C660] active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F4C660]"
+                className={`whitespace-nowrap rounded-full px-4 py-2.5 ${pill}`}
                 aria-label={
                   locale === "en" ? "Switch to Arabic" : "Switch to English"
                 }
@@ -108,7 +120,7 @@ export function MarketingShell({ children }: { children: ReactNode }) {
             <Link
               href="/signin"
               data-testid="nav-signin"
-              className="hidden whitespace-nowrap rounded-full border border-white/20 bg-white/[0.06] px-5 py-2.5 text-sm font-semibold text-[#F5EEE6] backdrop-blur-md transition-colors hover:border-[#F4C660]/60 hover:bg-[#F4C660]/10 hover:text-[#F4C660] active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F4C660] md:inline-flex"
+              className={`hidden whitespace-nowrap rounded-full px-5 py-2.5 md:inline-flex ${pill}`}
             >
               {t("marketing.nav.signin")}
             </Link>
@@ -118,7 +130,7 @@ export function MarketingShell({ children }: { children: ReactNode }) {
               aria-expanded={isMenuOpen}
               aria-controls="marketing-mobile-menu"
               onClick={() => setIsMenuOpen((value) => !value)}
-              className="flex size-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-[#F5EEE6] active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F4C660] md:hidden"
+              className={`flex size-10 items-center justify-center rounded-full md:hidden ${pill}`}
             >
               {isMenuOpen ? <X size={20} /> : <List size={20} />}
             </button>

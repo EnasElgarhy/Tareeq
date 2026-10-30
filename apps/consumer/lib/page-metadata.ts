@@ -63,3 +63,37 @@ export function pageMetadata(page: PageCopy): Metadata {
     twitter: { title, description: page.description },
   };
 }
+
+/**
+ * Arabic tab titles and descriptions (staging corrections v4, section E).
+ * The language switch is client-side, so LocalizedPageTitle swaps these in;
+ * a description left out keeps the English one, as agreed for /model and
+ * /research.
+ */
+export const ARABIC_PAGE_TEXT: Readonly<Record<string, { title: string; description?: string }>> = {
+  "/": {
+    title: "ماب ماي كور: استكشاف المسارات الدراسية والمهنية",
+    description: "خلال 15 دقيقة، تتّضح مجالات الدراسة والمهن التي تشير إليها اختياراتك اليومية.",
+  },
+  "/parents": {
+    title: "ماب ماي كور: لأولياء الأمور",
+    description: "امنحوا أبناءكم الأدوات لاتخاذ قرارات دراسية ومهنية مدروسة.",
+  },
+  "/faq": {
+    title: "ماب ماي كور: أسئلة وأجوبة",
+    description: "إجابات عن الأسئلة الشائعة حول تقييم كور والتقرير وكاي والخصوصية واختيار المسار الدراسي والمهني.",
+  },
+  "/about": {
+    title: "ماب ماي كور: من نحن",
+    description: "يساعد ماب ماي كور الشباب في الشرق الأوسط وشمال أفريقيا على استكشاف مجالات الدراسة والمهن التي تستحق الاهتمام.",
+  },
+  "/model": { title: "ماب ماي كور: نموذج كور" },
+  "/research": { title: "ماب ماي كور: الأساس العلمي لتقييم كور" },
+};
+
+/** The English title and description for a path, from PAGES. */
+export function englishPageText(path: string): { title: string; description: string } | null {
+  const page = Object.values(PAGES).find((p) => p.path === path);
+  if (!page) return null;
+  return { title: page.title ? `${BRAND.name}: ${page.title}` : HOME_TITLE, description: page.description };
+}

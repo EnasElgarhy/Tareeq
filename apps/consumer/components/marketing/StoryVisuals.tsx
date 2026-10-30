@@ -73,6 +73,7 @@ export function KaiFace({ size = 32 }: { size?: number }) {
 
 /** A glowing CORE letter, the recurring mark across the four screens. */
 function Orb({ letter, size = 34 }: { letter: CoreLetter; size?: number }) {
+  const { locale } = useLocale();
   const color = CORE[letter];
   return (
     <span
@@ -87,7 +88,8 @@ function Orb({ letter, size = 34 }: { letter: CoreLetter; size?: number }) {
         boxShadow: `0 0 ${size * 0.6}px ${color}66`,
       }}
     >
-      {letter}
+      {/* No Latin letters inside Arabic lines: the orb keeps its colour only. */}
+      {locale === "ar" ? null : letter}
     </span>
   );
 }
@@ -273,7 +275,7 @@ export function CoreGlanceVisual() {
           {rewards.heading}
         </p>
         <p className="mt-0.5 text-[10px] leading-snug text-[#F5EEE6]/80">
-          {rewards.items[1]}
+          {rewards.items.join(" · ")}
         </p>
       </div>
     </Phone>
@@ -330,17 +332,7 @@ export function MeaningVisual() {
   const { meaning } = useStoryCopy();
 
   return (
-    <Phone
-      floatingClass="start-0 top-[150px]"
-      floating={
-        <p
-          className={`max-w-[180px] rounded-[16px] bg-[#FFFDF8] px-3.5 py-2.5 text-[10.5px] font-medium leading-snug ${FLOAT_SHADOW}`}
-          style={{ color: INK, transform: "rotate(-2deg)" }}
-        >
-          {meaning.footer}
-        </p>
-      }
-    >
+    <Phone>
       <WhyScene />
       <p className="mt-2 text-[10px] text-[#C8B6F0]/80">{meaning.context}</p>
       <span className="mt-1.5 inline-flex rounded-full bg-[#F4C660]/15 px-2 py-0.5 text-[9px] font-semibold text-[#F4C660]">
@@ -381,6 +373,7 @@ export function MeaningVisual() {
 
 export function CareerOptionsVisual() {
   const { options } = useStoryCopy();
+  const { locale } = useLocale();
   const matches = [
     ["O", "#3D8A73", options.workLabel, options.work],
     ["R", "#C96F63", options.motiveLabel, options.motive],
@@ -410,25 +403,20 @@ export function CareerOptionsVisual() {
               className="mt-2 flex gap-2 text-[9.5px] leading-snug"
               style={{ color: INK_2 }}
             >
-              <span
-                aria-hidden="true"
-                className="font-heading text-[13px] font-semibold leading-none"
-                style={{ color }}
-              >
-                {letter}
-              </span>
+              {locale === "ar" ? null : (
+                <span
+                  aria-hidden="true"
+                  className="font-heading text-[13px] font-semibold leading-none"
+                  style={{ color }}
+                >
+                  {letter}
+                </span>
+              )}
               <span>
                 <strong style={{ color: INK }}>{label}</strong> {text}
               </span>
             </p>
           ))}
-          <p
-            className="mt-2 border-t border-[#2A2118]/10 pt-2 text-[9.5px] leading-snug"
-            style={{ color: INK_2 }}
-          >
-            <strong style={{ color: INK }}>{options.studyLabel}</strong>{" "}
-            {options.study}
-          </p>
         </div>
       }
     >
@@ -480,6 +468,9 @@ export function CareerOptionsVisual() {
           </span>
         ))}
       </div>
+      <p className="mt-2 text-[9px] leading-snug text-[#F5EEE6]/70">
+        <strong className="text-[#F5EEE6]">{options.studyLabel}</strong> {options.familyStudy}
+      </p>
 
       {/* Next steps drawn as a short road */}
       <p className="mt-4 text-[9.5px] font-semibold text-[#F5EEE6]">

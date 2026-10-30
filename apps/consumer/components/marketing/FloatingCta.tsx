@@ -62,7 +62,9 @@ export function FloatingCta() {
     return () => observer.disconnect();
   }, [pathname]);
 
-  const isVisible = isPastHero && !isClosingInView;
+  // The For parents page asks parents to send CORE, not to start it; its own
+  // buttons carry that, so the student's floating action stays off there.
+  const isVisible = isPastHero && !isClosingInView && pathname !== "/parents";
 
   return (
     <AnimatePresence>

@@ -190,11 +190,9 @@ const ItemIcon = ({
 const CompassDial = ({
   size = 96,
   tone = "#FF6F91",
-  code = "PPL",
 }: {
   size?: number;
   tone?: string;
-  code?: string;
 }) => (
   // Geometry mirrors components/results/CompassCard.tsx at its native 300
   // viewBox so the rose, rings and ticks match the shipped compass exactly.
@@ -275,17 +273,6 @@ const CompassDial = ({
       stroke="rgba(255,255,255,.3)"
       strokeWidth="2"
     />
-    <text
-      x="150"
-      y="150"
-      textAnchor="middle"
-      dominantBaseline="central"
-      fontSize="30"
-      letterSpacing="4"
-      fill="rgba(245,238,230,.66)"
-    >
-      {code}
-    </text>
   </svg>
 );
 

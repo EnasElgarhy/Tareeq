@@ -2375,10 +2375,6 @@ export const STRINGS = {
     en: "Free to start · Arabic or English",
     ar: "البدء مجاني · بالعربية أو الإنجليزية",
   },
-  "marketing.hero.trust": {
-    en: "Powered by the CORE assessment: built on decades of career research, with the future of work in mind.",
-    ar: "قائم على تقييم كور، المبني على عقود من الأبحاث في الاختيار المهني، مع مراعاة مستقبل العمل.",
-  },
   "marketing.hero.time": {
     en: "About 15 minutes · Free to start",
     ar: "نحو 15 دقيقة · البدء مجاني",
@@ -2596,8 +2592,8 @@ export const STRINGS = {
     ar: "وضوح حقيقي، دون تخمين.",
   },
   "marketing.whyPanel.parents.desc": {
-    en: "Good career guidance shouldn’t be hard to find. CORE gives your child a clearer picture, and the space to choose for themselves.",
-    ar: "التوجيه المهني الجيد لا ينبغي أن يكون صعب المنال. يمنح تقييم كور أبناءكم صورة أوضح، ومساحة ليختاروا بأنفسهم.",
+    en: "Good career guidance shouldn’t be hard to find. CORE gives your child a clearer picture of their options, and the right tool to decide for themselves.",
+    ar: "التوجيه المهني الجيد لا ينبغي أن يكون صعب المنال. يمنح تقييم كور أبناءكم صورة أوضح عن خياراتهم، والأداة المناسبة ليقرّروا بأنفسهم.",
   },
   "marketing.whyPanel.parents.1_title": {
     en: "More than grades",
@@ -2784,7 +2780,7 @@ export const STRINGS = {
   "marketing.card4.eyebrow": { en: "Your guide", ar: "مرشدتك" },
   "marketing.card4.headline": {
     en: "Go deeper with Kai, your AI coach.",
-    ar: "تعمّق أكبر مع كاي، مدرّبك المهني الذكي.",
+    ar: "تعمّق أكثر مع كاي، مدرّبك المهني الذكي.",
   },
   "marketing.card4.body": {
     en: "Kai has read your report. Ask anything, think it through, and make the choice yourself.",
@@ -2897,10 +2893,10 @@ export const STRINGS = {
     ar: "تقرير كور الخاص بك، {date}",
   },
   "core.glance.key_label": { en: "Jump to a letter", ar: "انتقل إلى حرف" },
-  "core.glance.key.C": { en: "Curiosity", ar: "الفضول" },
-  "core.glance.key.O": { en: "Work style", ar: "أسلوب العمل" },
-  "core.glance.key.R": { en: "Motivation", ar: "الدافع" },
-  "core.glance.key.E": { en: "Setting", ar: "البيئة" },
+  "core.glance.key.C": { en: "Curiosity", ar: "ما يثير فضولك" },
+  "core.glance.key.O": { en: "Work style", ar: "طريقتك في العمل" },
+  "core.glance.key.R": { en: "Motivation", ar: "ما يحفّزك" },
+  "core.glance.key.E": { en: "Setting", ar: "أجواء العمل" },
   "core.glance.almost_level": { en: "Almost level", ar: "متقاربة جداً" },
   "core.kai.asks": { en: "asks", ar: "تسأل" },
   "core.kai.typing": { en: "is typing", ar: "تكتب" },
@@ -3195,7 +3191,7 @@ export const STRINGS = {
     en: "You want to know why. The answer itself is the reward.",
     ar: "تريد أن تعرف السبب. والإجابة نفسها هي المكافأة.",
   },
-  "pay.slide.curiosity.chip": { en: "People & Wellbeing", ar: "الناس والرفاه" },
+  "pay.slide.curiosity.chip": { en: "People & Wellbeing", ar: "خدمة الناس ودعمهم" },
   "pay.slide.work.title": { en: "How they like to work, and where", ar: "كيف يحب أن يعمل، وأين" },
   "pay.slide.work.body": { en: "Their style and setting, side by side.", ar: "أسلوبه وبيئته، جنباً إلى جنب." },
   "pay.slide.work.card": { en: "How they like to work", ar: "كيف يحب أن يعمل" },

@@ -113,11 +113,15 @@ export function LetterQuestion({ letter }: { letter: CoreLetter }) {
 
 /** The pill that heads each At a glance card: one violet for every letter. */
 export function LetterLabel({ letter }: { letter: CoreLetter }) {
+  const { locale } = useLocale();
   return (
     <span className={styles.label}>
-      <span aria-hidden="true" className={styles.letter}>
-        {letter}
-      </span>
+      {/* Arabic lines carry no Latin letters (staging corrections v4, row 15). */}
+      {locale === "ar" ? null : (
+        <span aria-hidden="true" className={styles.letter}>
+          {letter}
+        </span>
+      )}
       <LetterName letter={letter} />
     </span>
   );

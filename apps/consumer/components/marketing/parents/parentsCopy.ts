@@ -37,6 +37,17 @@ export interface ParentsCopy {
     note: string;
   };
   closing: { headline: string; underCta: string };
+  /** The page's index: the questions a parent arrives with (new, for Enas to review). */
+  questions: {
+    title: string;
+    report: string;
+    how: string;
+    help: string;
+    privacy: string;
+    price: string;
+  };
+  /** Label on the WhatsApp preview in the opening (new, for Enas to review). */
+  messageLabel: string;
 }
 
 export const PARENTS_COPY: Record<Locale, ParentsCopy> = {
@@ -149,9 +160,18 @@ export const PARENTS_COPY: Record<Locale, ParentsCopy> = {
       note: "Answering the questions is free. You only pay to unlock the report.",
     },
     closing: {
-      headline: "A clearer picture for them, and the space to choose for themselves.",
+      headline: "A clearer picture of their options, and the right tool to decide for themselves.",
       underCta: "About 15 minutes · Free for your child to start",
     },
+    questions: {
+      title: "Questions parents ask",
+      report: "What will my child see?",
+      how: "How does it work?",
+      help: "How can I help?",
+      privacy: "Is it safe?",
+      price: "What does it cost?",
+    },
+    messageLabel: "What your child receives",
   },
   ar: {
     eyebrow: "استكشاف المسارات الدراسية والمهنية · معلومات لأولياء الأمور",
@@ -262,8 +282,17 @@ export const PARENTS_COPY: Record<Locale, ParentsCopy> = {
       note: "الإجابة عن الأسئلة مجانية، والدفع فقط لفتح التقرير.",
     },
     closing: {
-      headline: "صورة أوضح لهم، ومساحة ليختاروا بأنفسهم.",
+      headline: "صورة أوضح عن خياراتهم، والأداة المناسبة ليقرّروا بأنفسهم.",
       underCta: "نحو 15 دقيقة · البدء مجاني لأبنائكم",
     },
+    questions: {
+      title: "أسئلة أولياء الأمور",
+      report: "ماذا سيرى أبناؤكم؟",
+      how: "كيف يعمل؟",
+      help: "كيف يمكنكم المساعدة؟",
+      privacy: "هل هو آمن؟",
+      price: "كم التكلفة؟",
+    },
+    messageLabel: "ما يصل إلى أبنائكم",
   },
 };

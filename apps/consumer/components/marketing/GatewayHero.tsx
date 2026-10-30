@@ -84,9 +84,6 @@ export const GatewayHero = () => {
               </Link>
               <p className="mt-3 text-sm text-[#F5EEE6]/60">{t("marketing.hero.under_cta")}</p>
             </div>
-            <p className="mt-8 max-w-[44ch] text-[13px] leading-relaxed text-[#F5EEE6]/55">
-              {t("marketing.hero.trust")}
-            </p>
           </div>
 
           <div

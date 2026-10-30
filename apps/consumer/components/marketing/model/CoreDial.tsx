@@ -57,6 +57,13 @@ export function CoreDial() {
     return () => window.clearInterval(timer);
   }, [reduce, isUserDriven, PILLARS.length]);
 
+  // The needle turns the short way: E → C is a quarter turn forward, not
+  // three quarters back.
+  const [angle, setAngle] = useState(0);
+  useEffect(() => {
+    setAngle((a) => a + ((((active * 90 - a) % 360) + 540) % 360) - 180);
+  }, [active]);
+
   const select = (index: number) => {
     setIsUserDriven(true);
     setActive(index);
@@ -142,9 +149,11 @@ export function CoreDial() {
           stroke="#F5EEE6"
           strokeOpacity={0.12}
         />
+        {/* Framer measures the origin from this group's own box, so a clear
+            circle centred on the pivot makes that box's centre the dial's. */}
         <motion.g
-          style={{ originX: `${C}px`, originY: `${C}px` }}
-          animate={{ rotate: active * 90 }}
+          style={{ originX: 0.5, originY: 0.5 }}
+          animate={{ rotate: angle }}
           transition={
             reduce
               ? { duration: 0 }
@@ -152,6 +161,7 @@ export function CoreDial() {
           }
           aria-hidden="true"
         >
+          <circle cx={C} cy={C} r={90} fill="none" stroke="none" />
           <path
             d={`M${C} ${C - 84} L${C + 11} ${C} L${C} ${C + 14} L${C - 11} ${C} Z`}
             fill={current.nightAccent}

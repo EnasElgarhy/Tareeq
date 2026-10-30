@@ -139,6 +139,11 @@ const WORDING: Record<Locale, ReadonlyMap<string, string>> = (() => {
  */
 const WORDING_OVERRIDES: Readonly<Record<string, Record<Locale, string>>> = {
   "S2-TITLE": { en: "Your CORE at a glance", ar: "لمحة عن كور الخاص بك" },
+  // Final Arabic part names, decided 29 Oct (staging corrections v4, rows 20 to 23).
+  "S1-KEY-C": { en: "C · Curiosities: what sparks your curiosity", ar: "ما يثير فضولك: ما يشدّ اهتمامك" },
+  "S1-KEY-O": { en: "O · Operating style: how you like to work", ar: "طريقتك في العمل: كيف تحبّ أن تعمل" },
+  "S1-KEY-R": { en: "R · Rewards: why one path appeals more than another", ar: "ما يحفّزك: لماذا يجذبك مسار أكثر من غيره" },
+  "S1-KEY-E": { en: "E · Ecosystem: where, meaning your work setting", ar: "أجواء العمل: أين تحبّ أن تعمل" },
 };
 
 export function coreWording(locale: Locale, blockId: string): string | null {

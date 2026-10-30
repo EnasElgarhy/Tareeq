@@ -33,14 +33,15 @@ interface StoryWords {
     body: string;
     noticeLabel: string;
     notices: Three;
-    footer: string;
   };
   options: {
     title: string;
     meetLabel: string;
     tags: readonly [string, string];
     field: string;
-    roles: Three;
+    roles: readonly string[];
+    /** The family's study fields: in the real report they belong to the family, not one job. */
+    familyStudy: string;
     career: string;
     closest: string;
     workLabel: string;
@@ -48,7 +49,6 @@ interface StoryWords {
     motiveLabel: string;
     motive: string;
     studyLabel: string;
-    study: string;
     nextLabel: string;
     next: readonly [string, string, string, string];
   };
@@ -116,22 +116,21 @@ export const STORY_COPY: Record<Locale, StoryWords> = {
         "you look things up just to understand them",
         "a puzzle or mystery stays on your mind",
       ],
-      footer: "No scores. No labels. Just what your answers suggest, in plain words.",
     },
     options: {
       title: "What this means for you",
       meetLabel: "Where your curiosities meet",
       tags: ["Research & Discovery", "People & Wellbeing"],
       field: "Clinical and health sciences",
-      roles: ["Dentist", "Dietitian", "Genetic counsellor"],
-      career: "Pharmacist",
+      roles: ["Dentist", "Dietitian", "Genetic counsellor", "Occupational health specialist"],
+      familyStudy: "Psychology, nutrition and dietetics, genetics, public health",
+      career: "Genetic counsellor",
       closest: "Closest to your answers",
       workLabel: "Works the way you like to work.",
-      work: "This work usually offers: clear steps and expectations",
+      work: "This work usually offers: close teamwork",
       motiveLabel: "Often offers what motivates you:",
-      motive: "making a difference for others and your community",
+      motive: "making a difference for others and your community; getting really good at something difficult",
       studyLabel: "Study fields:",
-      study: "Medicine, pharmacy, biomedical science",
       nextLabel: "Next steps:",
       next: ["Watch", "Try", "Talk", "Ask"],
     },
@@ -150,7 +149,7 @@ export const STORY_COPY: Record<Locale, StoryWords> = {
       title: "لمحة عن كور الخاص بك",
       owner: "تقرير سارة",
       curiosity: {
-        tag: "الفضول",
+        tag: "ما يثير فضولك",
         heading: "ما الذي يثير فضولك",
         clusters: [
           {
@@ -158,30 +157,30 @@ export const STORY_COPY: Record<Locale, StoryWords> = {
             desc: "معرفة لماذا تحدث الأشياء",
           },
           {
-            name: "الناس والرفاه",
+            name: "خدمة الناس ودعمهم",
             desc: "فهم الناس ومساعدتهم",
           },
         ],
         connect: "يلتقيان في اتجاه واحد.",
       },
       operations: {
-        tag: "طريقة العمل",
+        tag: "طريقتك في العمل",
         heading: "كيف تحب أن تعمل",
         sub: "إلى أي حد تحب أن يكون العمل منظّماً",
         options: ["خطوات واضحة لك", "مزيج من الاثنين", "مساحة لتجد طريقتك"],
       },
       ecosystem: {
-        tag: "بيئة العمل",
+        tag: "أجواء العمل",
         heading: "بيئة عملك",
         sub: "العمل ضمن فريق أو بشكل فردي",
         options: ["جنباً إلى جنب مع الآخرين", "مزيج من الاثنين", "بمفردك"],
       },
       rewards: {
-        tag: "المكافآت",
-        heading: "ما يحفّزك أكثر",
+        tag: "ما يحفّزك",
+        heading: "أكثر ما يحفّزك",
         items: [
           "إحداث فرق للآخرين ولمجتمعك",
-          "أن تتقن شيئاً صعباً",
+          "إتقان شيء صعب",
         ],
       },
     },
@@ -197,33 +196,32 @@ export const STORY_COPY: Record<Locale, StoryWords> = {
         "تبحث عن الأشياء فقط لتفهمها",
         "يبقى لغز أو أحجية في ذهنك",
       ],
-      footer: "لا درجات. لا تصنيفات. فقط ما تشير إليه إجاباتك، بكلمات بسيطة.",
     },
     options: {
       title: "ماذا يعني هذا لك",
-      meetLabel: "حيث يلتقي فضولك",
-      tags: ["البحث والاكتشاف", "الناس والرفاه"],
+      meetLabel: "حيث تلتقي اهتماماتك",
+      tags: ["البحث والاكتشاف", "خدمة الناس ودعمهم"],
       field: "العلوم السريرية والصحية",
-      roles: ["طبيب أسنان", "أخصائي تغذية", "مستشار وراثي"],
-      career: "صيدلي",
-      closest: "الأقرب لإجاباتك",
+      roles: ["طبيب أسنان", "أخصائي تغذية", "مستشار وراثي", "أخصائي الصحة المهنية"],
+      familyStudy: "علم النفس، التغذية العلاجية، علم الوراثة، الصحة العامة",
+      career: "مستشار وراثي",
+      closest: "الأقرب إلى إجاباتك",
       workLabel: "يُنجَز بطريقتك المفضّلة في العمل.",
-      work: "يوفّر هذا العمل عادةً: خطوات وتوقعات واضحة",
-      motiveLabel: "غالباً ما يوفّر ما يحفّزك:",
-      motive: "إحداث فرق للآخرين ولمجتمعك",
+      work: "يوفّر هذا العمل عادةً: عمل جماعي وثيق",
+      motiveLabel: "يوفّر غالبًا ما يحفّزك:",
+      motive: "إحداث فرق للآخرين ولمجتمعك، وإتقان شيء صعب",
       studyLabel: "مجالات الدراسة:",
-      study: "الطب، الصيدلة، العلوم الطبية الحيوية",
       nextLabel: "الخطوات التالية:",
       next: ["شاهد", "جرّب", "تحدّث", "اسأل"],
     },
     kai: {
       reportLabel: "في تقريرك",
       section: "ما الذي يثير فضولك",
-      discuss: "ناقش هذا مع كاي",
+      discuss: "مناقشة هذا مع كاي",
       name: "كاي",
       question: "أيّ هذه الاهتمامات يشبهك أكثر، وأيّها يشبهك أقل؟",
       reply: "البحث بالتأكيد. أريد دائماً أن أعرف لماذا تحدث الأشياء.",
-      footer: "قرأت كاي تقريرك، لذا تبدأ كل محادثة من نتائجك.",
+      footer: "قرأ كاي تقريرك، لذلك تبدأ كل محادثة من نتائجك.",
     },
   },
 };
