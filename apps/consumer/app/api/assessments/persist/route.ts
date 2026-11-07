@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { attributionFromCookieHeader } from "@/lib/analytics/attribution";
 import { trackServerEvent } from "@/lib/analytics/track-server";
 import { loadAssessmentContentForReference } from "@/lib/assessment/content.server";
+import { QD3_VERSION } from "@/lib/core-v2/background";
 import { CORE_CONTENT_VERSIONS } from "@/lib/core-v2/content/core-content";
 import {
   CORE_QUESTION_SET_LABEL,
@@ -31,6 +32,18 @@ interface PersistBody {
   startedAt?: string;
   versionId: string | null;
   versionLabel?: string;
+  /** Option IDs per question, in the order they were shown. */
+  optionOrder?: Record<string, string[]>;
+}
+
+/** Keeps only `{ questionId: string[] }`; anything else is dropped. */
+function parseOptionOrder(value: unknown): Record<string, string[]> | undefined {
+  if (!value || typeof value !== "object") return undefined;
+  const entries = Object.entries(value as Record<string, unknown>).filter(
+    (entry): entry is [string, string[]] =>
+      Array.isArray(entry[1]) && entry[1].every((id) => typeof id === "string"),
+  );
+  return entries.length > 0 ? Object.fromEntries(entries) : undefined;
 }
 
 function parseBody(json: unknown): PersistBody | null {
@@ -50,6 +63,7 @@ function parseBody(json: unknown): PersistBody | null {
     versionId: typeof b.versionId === "string" ? b.versionId : null,
     versionLabel:
       typeof b.versionLabel === "string" ? b.versionLabel : undefined,
+    optionOrder: parseOptionOrder(b.optionOrder),
   };
 }
 
@@ -153,6 +167,8 @@ async function persistCoreAttempt(
     result = {
       ...scoreCore(coreAnswersFromLetters(body.answers)),
       contentVersions: CORE_CONTENT_VERSIONS,
+      questionVersions: { QD3: QD3_VERSION },
+      ...(body.optionOrder ? { optionOrder: body.optionOrder } : {}),
     };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Invalid answers.";

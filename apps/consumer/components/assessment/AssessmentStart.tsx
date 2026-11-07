@@ -37,6 +37,8 @@ import {
 
 interface AssessmentStartProps {
   totalQuestions: number;
+  /** Questions in the assessment itself, without About you. */
+  assessmentQuestions: number;
   versionId: string | null;
   versionLabel: string;
 }
@@ -72,6 +74,7 @@ const STEPS: ReadonlyArray<{
 
 export function AssessmentStart({
   totalQuestions,
+  assessmentQuestions,
   versionId,
   versionLabel,
 }: AssessmentStartProps) {
@@ -111,6 +114,12 @@ export function AssessmentStart({
       totalQuestions,
     );
   }, [progress, totalQuestions]);
+
+  // "On question 6 of 46": About you isn't counted, so it reads as question 1.
+  const resumeCount = {
+    current: Math.max(1, (resumeAt ?? 1) - (totalQuestions - assessmentQuestions)),
+    total: assessmentQuestions,
+  };
 
   async function startFresh() {
     if (!termsAccepted && !readPlatformConsent()) {
@@ -286,8 +295,8 @@ export function AssessmentStart({
           >
             <p className="text-body-sm leading-5 text-sand">
               {t("start.resume_banner")
-                .replace("{n}", String(resumeAt))
-                .replace("{total}", String(totalQuestions))}
+                .replace("{n}", String(resumeCount.current))
+                .replace("{total}", String(resumeCount.total))}
             </p>
             <button
               type="button"
@@ -346,9 +355,11 @@ export function AssessmentStart({
                   <p className="text-body-sm font-semibold text-sand leading-tight">
                     {t(step.titleKey)}
                   </p>
-                  <p className="text-[12px] text-sand/55 leading-tight">
-                    {t(step.metaKey)}
-                  </p>
+                  {t(step.metaKey) ? (
+                    <p className="text-[12px] text-sand/55 leading-tight">
+                      {t(step.metaKey)}
+                    </p>
+                  ) : null}
                 </div>
               </li>
             ))}

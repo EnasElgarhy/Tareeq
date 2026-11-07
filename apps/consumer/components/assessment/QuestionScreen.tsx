@@ -8,6 +8,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
 } from "react";
 import { ArrowRight, Pause, RotateCcw, Volume2, VolumeX } from "lucide-react";
 import { TareeqArrowLeft } from "@/components/brand/icons";
@@ -22,23 +23,33 @@ import {
   completeLocalCoreAssessment,
   ensureLocalAssessment,
   readLocalAssessment,
+  resetLocalAssessment,
   saveLocalAnswer,
+  saveOptionOrder,
 } from "@/lib/assessment/progress";
+import { countryLabel } from "@/lib/assessment/country-names";
 import { bumpQuestionAttempt } from "@/lib/assessment/question-attempts";
+import { PACE_NUDGE } from "@/lib/assessment/interstitials";
 import {
-  INTERSTITIALS,
-  findInterstitialFor,
-  markInterstitialSeen,
-  PACE_NUDGE,
-  type Interstitial,
-} from "@/lib/assessment/interstitials";
+  hasCoreFlow,
+  pathAfterQuestion,
+  pathBeforeQuestion,
+  STOP_PATH,
+} from "@/lib/assessment/flow";
 import {
   getMinReadMs,
   isRushedTap,
   recordAnswerPace,
 } from "@/lib/assessment/reading-pace";
 import { useLocale } from "@/components/i18n/LocaleProvider";
-import { getLocalizedText, getQuestionPath } from "@/lib/assessment/questions";
+import { getLocalizedText } from "@/lib/assessment/questions";
+import {
+  AGE_QUESTION_ID,
+  AGE_UNDER_13,
+  CITIZEN_QUESTION,
+  CITIZEN_QUESTION_ID,
+} from "@/lib/core-v2/background";
+import { positionLetter, shuffledFor } from "@/lib/core-v2/option-order";
 import { computeScore, type Question } from "@/lib/scoring";
 import {
   coreAnswersFromLetters,
@@ -81,6 +92,11 @@ interface QuestionScreenProps {
   menaCountries: string[];
   restOfWorldCountries: string[];
 }
+
+const subscribeToNothing = () => () => {};
+const readAttemptId = () => readLocalAssessment()?.assessmentId ?? null;
+const canHover = () =>
+  window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
 /** Per-letter accent — used for the answer-card inset stripe + Kai mood. */
 const OPTION_PALETTE = [
@@ -156,8 +172,13 @@ export function QuestionScreen({
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
   const [confirming, setConfirming] = useState<string | null>(null);
   const [exiting, setExiting] = useState<ExitDirection>(null);
-  const [pendingInterstitial, setPendingInterstitial] =
-    useState<Interstitial | null>(null);
+  /** Citizenship, answered on the country screen (QD2b). */
+  const [citizen, setCitizen] = useState("");
+  /** Stays false until the mouse moves: a cursor resting where the previous
+   * answer was must not highlight the option now under it. */
+  const [hoverArmed, setHoverArmed] = useState(false);
+  /** Only for an attempt created on this screen (a direct link). */
+  const [createdAttemptId, setCreatedAttemptId] = useState<string | null>(null);
   const [kaiVideoReady, setKaiVideoReady] = useState(false);
   /** An option tapped too fast to have been read — selected, awaiting
    * confirmation in RushConfirmSheet. */
@@ -189,20 +210,33 @@ export function QuestionScreen({
   } = useAssessmentAudio();
 
   const isLastQuestion = index === totalQuestions - 1;
+  // About you stands apart from the assessment: no Kai, no audio, no letters.
+  const isAboutYou = question.pillar === 0 && hasCoreFlow(questions);
+  const asksCitizenship = isAboutYou && question.externalId === "QD2";
+  const storedAttemptId = useSyncExternalStore(
+    subscribeToNothing,
+    readAttemptId,
+    () => null,
+  );
+  const attemptId = storedAttemptId ?? createdAttemptId;
+  const shownOptions = useMemo(() => {
+    if (isAboutYou || !hasCoreFlow(questions)) return question.options;
+    return attemptId
+      ? shuffledFor(question.options, attemptId, question.externalId)
+      : [];
+  }, [attemptId, isAboutYou, question, questions]);
   const isSelect = question.kind === "select";
   const isText = question.kind === "text";
   const isExplicit = isSelect || isText;
-  const optionCount = question.options.length;
+  const optionCount = shownOptions.length;
   const isDenseChoice = !isExplicit && optionCount >= 4;
   const optionRangeLabel =
     optionCount > 0
-      ? `A-${question.options[optionCount - 1]?.letter ?? optionCount}`
+      ? `A-${positionLetter(optionCount - 1)}`
       : "";
   const title = getLocalizedText(question.title, locale);
-  const activeNarrationId = pendingInterstitial?.audioId ?? question.externalId;
-  const activeOwnerId = pendingInterstitial
-    ? `interstitial:${pendingInterstitial.key}`
-    : `question:${question.externalId}`;
+  const activeNarrationId = question.externalId;
+  const activeOwnerId = `question:${question.externalId}`;
   const isActiveAudioOwner = playbackOwnerId === activeOwnerId;
   const soundOn = !isMuted;
   const audioState: AudioState = isMuted
@@ -241,15 +275,17 @@ export function QuestionScreen({
     (value: string) => {
       const previous = initialAnswerRef.current;
       if (previous === value) return;
+      const shown = shownOptions.findIndex((o) => o.letter === value);
       trackEvent(previous ? "question_answer_changed" : "question_answered", {
         ...questionContext({
           selectedAnswer: value,
           previousAnswer: previous || null,
+          ...(shown >= 0 ? { shownPosition: shown + 1 } : {}),
         }),
       });
       initialAnswerRef.current = value;
     },
-    [questionContext],
+    [questionContext, shownOptions],
   );
 
   /** Fires once, at the moment this question is actually left (forward or
@@ -279,16 +315,21 @@ export function QuestionScreen({
   );
 
   useEffect(() => {
-    ensureLocalAssessment(assessmentVersion);
+    setCreatedAttemptId(ensureLocalAssessment(assessmentVersion).assessmentId);
     const progress = readLocalAssessment();
     const previousAnswer = progress?.answers[question.externalId] ?? "";
     const isRevisit = previousAnswer !== "";
 
     setSelected(previousAnswer);
+    setCitizen(progress?.answers[CITIZEN_QUESTION_ID] ?? "");
     setConfirming(null);
     setExiting(null);
     setHoveredIdx(null);
-    setPendingInterstitial(null);
+    setHoverArmed(false);
+    // A focused element would carry its highlight into the next question.
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
     setPendingConfirm(null);
     setShowPaceNudge(false);
     wasAnsweredOnOpenRef.current = isRevisit;
@@ -311,6 +352,14 @@ export function QuestionScreen({
     // has no UI concept of skipping a required question (every kind must
     // be answered to advance; see QUESTION_ANALYTICS_ARCHITECTURE.md).
   }, [assessmentVersion, question.externalId, questionContext]);
+
+  useEffect(() => {
+    if (isAboutYou || shownOptions.length === 0) return;
+    saveOptionOrder(
+      question.externalId,
+      shownOptions.map((option) => option.letter),
+    );
+  }, [isAboutYou, question.externalId, shownOptions]);
 
   // Best-effort question_abandoned: fires only on a true page
   // unload/close/navigate-away (pagehide), not on ordinary tab-switching
@@ -338,21 +387,29 @@ export function QuestionScreen({
     () => [
       {
         groupLabel: t("question.select_country_group_mena"),
-        options: menaCountries.map((c) => ({ value: c, label: c })),
+        options: menaCountries.map((c) => ({ value: c, label: countryLabel(c, locale) })),
       },
       {
         groupLabel: t("question.select_country_group_other"),
-        options: restOfWorldCountries.map((c) => ({ value: c, label: c })),
+        options: restOfWorldCountries.map((c) => ({ value: c, label: countryLabel(c, locale) })),
       },
     ],
-    [menaCountries, restOfWorldCountries, t],
+    [menaCountries, restOfWorldCountries, locale, t],
   );
 
   // ---------- Navigation ----------
 
   const commitAndAdvance = useCallback(
     (letter: string) => {
-      if (confirming || exiting || pendingInterstitial) return;
+      if (confirming || exiting) return;
+
+      // Under 13 stops here and nothing is kept (spec §2.2).
+      if (question.externalId === AGE_QUESTION_ID && letter === AGE_UNDER_13) {
+        resetLocalAssessment();
+        router.push(STOP_PATH);
+        return;
+      }
+
       setSelected(letter);
       setConfirming(letter);
       uiSounds.confirm();
@@ -376,35 +433,21 @@ export function QuestionScreen({
       const confirmDelay = reduced ? 70 : 180;
       const exitDelay = reduced ? 50 : 120;
 
-      // Always show at milestones (ignore the per-key "seen" flag) so the
-      // "Did you know?" beats are reliably testable on any run/server.
-      // findInterstitialFor still prefers unseen variants for variety.
-      const shouldShow = !isLastQuestion ? findInterstitialFor(index) : null;
-
       window.setTimeout(() => {
-        if (shouldShow) {
-          stopNarration(activeOwnerId);
-          markInterstitialSeen(shouldShow.key);
-          setConfirming(null);
-          setPendingInterstitial(shouldShow);
-          return;
-        }
         if (isLastQuestion) uiSounds.complete();
         else uiSounds.advance();
         setExiting("forward");
         window.setTimeout(() => {
           leaveQuestion("forward");
-          if (!isLastQuestion) {
-            router.push(getQuestionPath(index + 1));
-            return;
+          if (isLastQuestion) {
+            completeAttempt(
+              progress.answers,
+              questions,
+              index,
+              assessmentVersion,
+            );
           }
-          completeAttempt(
-            progress.answers,
-            questions,
-            index,
-            assessmentVersion,
-          );
-          router.push("/register");
+          router.push(pathAfterQuestion(index, questions));
         }, exitDelay);
       }, confirmDelay);
     },
@@ -414,15 +457,12 @@ export function QuestionScreen({
       index,
       isLastQuestion,
       leaveQuestion,
-      pendingInterstitial,
       question.externalId,
       questionContext,
       questions,
       recordAnswer,
       router,
-      activeOwnerId,
       assessmentVersion,
-      stopNarration,
     ],
   );
 
@@ -440,13 +480,14 @@ export function QuestionScreen({
     if (
       confirming ||
       exiting ||
-      pendingInterstitial ||
       showPaceNudge ||
       pendingConfirm
     ) {
       return;
     }
-    const guarded = !wasAnsweredOnOpenRef.current && !rereadRef.current;
+    // The speed pop-ups belong to the 46 assessment questions only.
+    const guarded =
+      !isAboutYou && !wasAnsweredOnOpenRef.current && !rereadRef.current;
     const elapsedMs = Date.now() - questionViewStartRef.current;
     if (guarded && isRushedTap(elapsedMs, minReadMs)) {
       setSelected(letter);
@@ -478,19 +519,6 @@ export function QuestionScreen({
   const handleOptionTapRef = useRef(handleOptionTap);
   handleOptionTapRef.current = handleOptionTap;
 
-  function dismissInterstitial() {
-    stopNarration(activeOwnerId);
-    setPendingInterstitial(null);
-    setExiting("forward");
-    window.setTimeout(
-      () => {
-        leaveQuestion("forward");
-        router.push(getQuestionPath(index + 1));
-      },
-      prefersReducedMotion() ? 60 : 220,
-    );
-  }
-
   function goPrevious() {
     if (exiting) return;
     stopNarration(activeOwnerId);
@@ -499,14 +527,14 @@ export function QuestionScreen({
     window.setTimeout(
       () => {
         leaveQuestion("back");
-        router.push(index > 0 ? getQuestionPath(index - 1) : "/contract");
+        router.push(pathBeforeQuestion(index, questions));
       },
       prefersReducedMotion() ? 60 : 220,
     );
   }
 
   function goNextExplicit() {
-    if (!selected.trim() || exiting) return;
+    if (!selected.trim() || exiting || (asksCitizenship && !citizen)) return;
     stopNarration(activeOwnerId);
     uiSounds.advance();
     recordAnswer(selected);
@@ -520,12 +548,10 @@ export function QuestionScreen({
     window.setTimeout(
       () => {
         leaveQuestion("forward");
-        if (!isLastQuestion) {
-          router.push(getQuestionPath(index + 1));
-          return;
+        if (isLastQuestion) {
+          completeAttempt(progress.answers, questions, index, assessmentVersion);
         }
-        completeAttempt(progress.answers, questions, index, assessmentVersion);
-        router.push("/register");
+        router.push(pathAfterQuestion(index, questions));
       },
       prefersReducedMotion() ? 60 : 220,
     );
@@ -536,6 +562,12 @@ export function QuestionScreen({
     uiSounds.select();
     recordAnswer(value);
     saveLocalAnswer(question.externalId, value, index, assessmentVersion);
+  }
+
+  function chooseCitizenship(value: string) {
+    setCitizen(value);
+    uiSounds.select();
+    saveLocalAnswer(CITIZEN_QUESTION_ID, value, index, assessmentVersion);
   }
 
   // ---------- Keyboard ----------
@@ -551,7 +583,7 @@ export function QuestionScreen({
         return;
       }
       const asNumber = Number.parseInt(event.key, 10);
-      const option = question.options[asNumber - 1];
+      const option = shownOptions[asNumber - 1];
       if (!option) return;
       event.preventDefault();
       setHoveredIdx(asNumber - 1);
@@ -559,26 +591,26 @@ export function QuestionScreen({
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [isText, isSelect, question.options, selected, commitAndAdvance]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isText, isSelect, shownOptions, selected, commitAndAdvance]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ---------- Audio ----------
 
   useEffect(() => {
-    if (exiting || !kaiVideoReady) return;
+    if (exiting || !kaiVideoReady || isAboutYou) return;
     playNarration({
       audioId: activeNarrationId,
       locale,
       ownerId: activeOwnerId,
-      versionId: pendingInterstitial ? null : versionId,
+      versionId,
     });
     return () => stopNarration(activeOwnerId);
   }, [
     activeNarrationId,
     activeOwnerId,
     exiting,
+    isAboutYou,
     kaiVideoReady,
     locale,
-    pendingInterstitial,
     playNarration,
     stopNarration,
     versionId,
@@ -596,40 +628,16 @@ export function QuestionScreen({
 
   useEffect(() => {
     const nextQuestion = questions[index + 1];
-    if (nextQuestion) {
-      router.prefetch(getQuestionPath(index + 1));
+    if (!nextQuestion) return;
+    router.prefetch(pathAfterQuestion(index, questions));
+    if (nextQuestion.pillar !== 0) {
       preloadNarration({
         audioId: nextQuestion.externalId,
         locale,
         versionId,
       });
     }
-
-    const interstitialAudioIds = new Set(
-      INTERSTITIALS.filter((item) => item.triggerAfterIndex === index).map(
-        (item) => item.audioId,
-      ),
-    );
-    interstitialAudioIds.forEach((audioId) => {
-      preloadNarration({ audioId, locale });
-    });
   }, [index, locale, preloadNarration, questions, router, versionId]);
-
-  useEffect(() => {
-    if (index !== 7) return;
-
-    const controller = new AbortController();
-    const options = {
-      cache: "force-cache" as const,
-      signal: controller.signal,
-    };
-    void Promise.allSettled([
-      window.fetch("/kai/kai-did-you-know-v3.mp4", options),
-      window.fetch("/kai/kai-did-you-know-rest-v3.webp", options),
-    ]);
-
-    return () => controller.abort();
-  }, [index]);
 
   function toggleSound() {
     const nextMuted = soundOn;
@@ -710,17 +718,6 @@ export function QuestionScreen({
 
   return (
     <>
-      {pendingInterstitial ? (
-        <DidYouKnow
-          interstitial={pendingInterstitial}
-          soundOn={soundOn}
-          audioRef={audioRef}
-          onReplay={() => replayNarration(activeOwnerId)}
-          onToggleSound={toggleSound}
-          onDismiss={dismissInterstitial}
-        />
-      ) : null}
-
       {showPaceNudge ? (
         <DidYouKnow
           interstitial={PACE_NUDGE}
@@ -740,6 +737,10 @@ export function QuestionScreen({
         key={question.externalId}
         aria-labelledby="question-text"
         aria-busy={Boolean(exiting)}
+        data-hover-armed={hoverArmed}
+        onMouseMove={() => {
+          if (!hoverArmed && canHover()) setHoverArmed(true);
+        }}
         className={`flex flex-1 flex-col ${isDenseChoice ? "gap-2" : "gap-3"} ${exitClass}`}
       >
         {/* Desktop (lg:) layout — Kai on top, question stretched wider
@@ -755,6 +756,7 @@ export function QuestionScreen({
           {/* Kai + question bubble — centered, bubble free to use more
            *  width at lg: instead of staying capped at its phone size. */}
           <div className="flex flex-col items-center gap-2.5">
+            {isAboutYou ? null : (
             <div
               className={`relative flex items-center justify-center ${
                 isDenseChoice ? "h-[152px] w-[152px]" : "h-[176px] w-[176px]"
@@ -785,6 +787,7 @@ export function QuestionScreen({
                 </div>
               </div>
             </div>
+            )}
 
             {/* Question bubble */}
             <div
@@ -809,9 +812,11 @@ export function QuestionScreen({
             </div>
 
             {/* Audio controls */}
-            <div className="flex items-center justify-center gap-2">
-              {audioControlsButtons}
-            </div>
+            {isAboutYou ? null : (
+              <div className="flex items-center justify-center gap-2">
+                {audioControlsButtons}
+              </div>
+            )}
           </div>
 
           {/* Answers — flex-1 lets a short option list still push the
@@ -819,6 +824,7 @@ export function QuestionScreen({
            *  outer block already centers within the section's height. */}
           <div className="flex min-h-0 flex-1 flex-col gap-2 lg:flex-none lg:gap-3">
             {isSelect ? (
+              <>
               <select
                 value={selected}
                 onChange={(e) => chooseFromSelect(e.target.value)}
@@ -838,6 +844,26 @@ export function QuestionScreen({
                   </optgroup>
                 ))}
               </select>
+              {asksCitizenship ? (
+                <fieldset className="mt-3 grid gap-2">
+                  <legend className="mb-2 text-[15px] font-semibold leading-snug text-sand">
+                    {getLocalizedText(CITIZEN_QUESTION.title, locale)}
+                  </legend>
+                  {CITIZEN_QUESTION.options.map((option) => (
+                    <button
+                      type="button"
+                      key={option.letter}
+                      onClick={() => chooseCitizenship(option.letter)}
+                      aria-pressed={citizen === option.letter}
+                      data-active={citizen === option.letter}
+                      className="assessment-answer flex min-h-[46px] items-center px-3.5 py-2 text-start text-[14px] data-[active=true]:font-semibold data-[active=true]:text-carbon"
+                    >
+                      {getLocalizedText(option.text, locale)}
+                    </button>
+                  ))}
+                </fieldset>
+              ) : null}
+              </>
             ) : isText ? (
               <div className="flex flex-1 flex-col gap-2">
                 <textarea
@@ -856,6 +882,7 @@ export function QuestionScreen({
               </div>
             ) : (
               <div className="grid gap-2 lg:grid-cols-2 lg:gap-3">
+                {isAboutYou ? null : (
                 <p className="assessment-choice-label flex items-center justify-between px-1 lg:col-span-2">
                   <span>
                     {t("question.choose_n_of").replace(
@@ -869,7 +896,8 @@ export function QuestionScreen({
                       : optionRangeLabel}
                   </span>
                 </p>
-                {question.options.map((option, optionIdx) => {
+                )}
+                {shownOptions.map((option, optionIdx) => {
                   const palette =
                     OPTION_PALETTE[optionIdx % OPTION_PALETTE.length] ??
                     OPTION_PALETTE[0]!;
@@ -880,14 +908,12 @@ export function QuestionScreen({
                   return (
                     <button
                       type="button"
-                      key={option.letter}
+                      key={`${question.externalId}:${option.letter}`}
                       onClick={() => handleOptionTap(option.letter)}
-                      onMouseEnter={() => setHoveredIdx(optionIdx)}
+                      onMouseMove={() => {
+                        if (canHover()) setHoveredIdx(optionIdx);
+                      }}
                       onMouseLeave={() =>
-                        setHoveredIdx((v) => (v === optionIdx ? null : v))
-                      }
-                      onFocus={() => setHoveredIdx(optionIdx)}
-                      onBlur={() =>
                         setHoveredIdx((v) => (v === optionIdx ? null : v))
                       }
                       disabled={disabled}
@@ -909,6 +935,7 @@ export function QuestionScreen({
                         isConfirming ? "anim-option-confirm" : "",
                       ].join(" ")}
                     >
+                      {isAboutYou ? null : (
                       <span
                         aria-hidden="true"
                         className={[
@@ -923,8 +950,9 @@ export function QuestionScreen({
                             : undefined
                         }
                       >
-                        {option.letter}
+                        {positionLetter(optionIdx)}
                       </span>
+                      )}
                       <span className="min-w-0 flex-1 text-[14px] leading-snug lg:text-[14.5px]">
                         {getLocalizedText(option.text, locale)}
                       </span>
@@ -978,12 +1006,16 @@ export function QuestionScreen({
             <button
               type="button"
               onClick={goNextExplicit}
-              disabled={!selected.trim() || Boolean(exiting)}
+              disabled={
+                !selected.trim() ||
+                Boolean(exiting) ||
+                (asksCitizenship && !citizen)
+              }
               className="btn-v2 btn-v2--primary assessment-primary-action flex-1"
               data-size="lg"
             >
               {isLastQuestion ? t("nav.finish") : t("nav.next")}
-              <ArrowRight size={18} strokeWidth={2} aria-hidden="true" />
+              <ArrowRight size={18} strokeWidth={2} aria-hidden="true" className="flip-rtl" />
             </button>
           </footer>
         ) : (

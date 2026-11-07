@@ -1,3 +1,4 @@
+import { CORE_BACKGROUND_QUESTIONS } from "@/lib/core-v2/background";
 import {
   CORE_ASSESSMENT_QUESTIONS,
   CORE_QUESTION_SET_LABEL,
@@ -186,14 +187,14 @@ export function getSeedAssessmentContent(): AssessmentContentSnapshot {
   };
 }
 
-/** CORE 2.0: the existing background questions, then question set 5.1. */
+/** CORE 2.0: the About you questions, then question set 5.2. */
 export function getCoreAssessmentContent(): AssessmentContentSnapshot {
   return {
     versionId: null,
     versionLabel: CORE_QUESTION_SET_LABEL,
     source: "seed",
     questions: [
-      ...assessmentQuestions.filter((question) => question.pillar === 0),
+      ...CORE_BACKGROUND_QUESTIONS,
       ...CORE_ASSESSMENT_QUESTIONS,
     ],
   };

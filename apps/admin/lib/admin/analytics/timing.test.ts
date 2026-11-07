@@ -133,6 +133,22 @@ describe("attemptsFromEvents", () => {
     expect(second?.flagged).toBe(true);
   });
 
+  it("uses the position an option was shown in, not its letter", () => {
+    const shown = (questionId: string, shownPosition: number) => [
+      event("question_answered", questionId, { selectedAnswer: "A", shownPosition }),
+      event("question_time_spent", questionId, { timeSpentMs: 5000, direction: "forward" }),
+    ];
+    const [attempt] = attemptsFromEvents([
+      ...shown("P1-01", 1),
+      ...shown("P1-02", 2),
+      ...shown("P1-03", 3),
+      ...shown("P1-04", 4),
+    ]);
+
+    expect(attempt?.parts[0].flags.largestSamePositionShare).toBe(0.25);
+    expect(attempt?.samePositionParts).toEqual([]);
+  });
+
   it("skips events without an attempt id and questions without time", () => {
     const orphan = { ...event("question_time_spent", "P1-01", { timeSpentMs: 100 }), assessmentId: null };
     const answerOnly = event("question_answered", "P1-02", { selectedAnswer: "A" }, { attempt: "a3" });

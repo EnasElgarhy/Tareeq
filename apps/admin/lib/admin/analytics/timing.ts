@@ -66,7 +66,7 @@ function average(values: readonly number[]): number {
   return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
-/** "A" → 1 … CORE shows options in a fixed order, so the letter is the position. */
+/** "A" → 1 … Only for events from before 6 Nov 2026, when options had a fixed order. */
 export function letterToPosition(value: unknown): number | null {
   if (typeof value !== "string") return null;
   const letter = value.trim().toUpperCase();
@@ -162,13 +162,13 @@ function stringMeta(metadata: Record<string, unknown>, key: string): string | nu
 /**
  * Question time per attempt from events. A question's time on screen is the
  * sum of every visit (going back and reading it again counts); its position
- * is the letter of the final answer. Questions with no time sample are left
+ * is where the final answer was on screen. Questions with no time sample are left
  * out: the flag is about time, and an answer without it says nothing.
  */
 function eventAttemptResponses({ events }: EventAttempt): TimedResponse[] {
   const timeByQuestion = new Map<string, number>();
   const pillarByQuestion = new Map<string, unknown>();
-  const answerByQuestion = new Map<string, { at: string; letter: unknown }>();
+  const answerByQuestion = new Map<string, { at: string; letter: unknown; shown: unknown }>();
 
   for (const event of events) {
     if (!event.questionId) continue;
@@ -185,7 +185,11 @@ function eventAttemptResponses({ events }: EventAttempt): TimedResponse[] {
     ) {
       const previous = answerByQuestion.get(id);
       if (!previous || previous.at <= event.occurredAt) {
-        answerByQuestion.set(id, { at: event.occurredAt, letter: event.metadata.selectedAnswer });
+        answerByQuestion.set(id, {
+          at: event.occurredAt,
+          letter: event.metadata.selectedAnswer,
+          shown: event.metadata.shownPosition,
+        });
       }
     }
   }
@@ -194,11 +198,14 @@ function eventAttemptResponses({ events }: EventAttempt): TimedResponse[] {
   for (const [questionId, timeMs] of timeByQuestion) {
     const part = partOf(questionId, pillarByQuestion.get(questionId));
     if (part === null) continue;
+    const answer = answerByQuestion.get(questionId);
     responses.push({
       questionId,
       part,
       timeMs,
-      position: letterToPosition(answerByQuestion.get(questionId)?.letter),
+      // Options are shuffled since 6 Nov 2026, so the letter no longer says
+      // where an option was on screen. Older events have only the letter.
+      position: typeof answer?.shown === "number" ? answer.shown : letterToPosition(answer?.letter),
     });
   }
   return responses;

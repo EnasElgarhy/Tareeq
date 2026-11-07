@@ -4,11 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { ComponentType, SVGProps } from "react";
 import {
-  ClusterIcon,
   HeartIcon,
   LensIcon,
   PathIcon,
-  PulseIcon,
   VibeIcon,
 } from "@/components/brand/ContractIcons";
 import { useAssessmentAudio } from "@/components/assessment/AssessmentAudioProvider";
@@ -17,7 +15,9 @@ import {
   defaultVoiceOnForAssessmentStart,
   uiSounds,
 } from "@/lib/audio/ui-sounds";
+import { ABOUT_YOU_PATH } from "@/lib/assessment/flow";
 import { getQuestionPath } from "@/lib/assessment/questions";
+import { IS_CORE_V2_LIVE } from "@/lib/core-v2/live";
 import type { StringKey } from "@/lib/i18n/strings";
 
 interface ContractIconProps extends SVGProps<SVGSVGElement> {
@@ -31,7 +31,7 @@ interface ContractItem {
 }
 
 /**
- * Six promises. Read like a quiet vow, not a checklist.
+ * Four promises. Read like a quiet vow, not a checklist.
  * Each entry pairs one of the warm-gradient ContractIcons with a
  * single intention — what this assessment is, and what it isn't.
  */
@@ -42,29 +42,19 @@ const ITEMS: ReadonlyArray<ContractItem> = [
     bodyKey: "contract.item1.body",
   },
   {
-    Icon: LensIcon,
+    Icon: HeartIcon,
     titleKey: "contract.item2.title",
     bodyKey: "contract.item2.body",
   },
   {
-    Icon: HeartIcon,
+    Icon: LensIcon,
     titleKey: "contract.item3.title",
     bodyKey: "contract.item3.body",
   },
   {
-    Icon: PulseIcon,
+    Icon: PathIcon,
     titleKey: "contract.item4.title",
     bodyKey: "contract.item4.body",
-  },
-  {
-    Icon: ClusterIcon,
-    titleKey: "contract.item5.title",
-    bodyKey: "contract.item5.body",
-  },
-  {
-    Icon: PathIcon,
-    titleKey: "contract.item6.title",
-    bodyKey: "contract.item6.body",
   },
 ];
 
@@ -106,7 +96,7 @@ export function ContractScreen({
     if (!ctaReady) return;
     defaultVoiceOnForAssessmentStart();
     uiSounds.advance();
-    router.push(getQuestionPath(0));
+    router.push(IS_CORE_V2_LIVE ? ABOUT_YOU_PATH : getQuestionPath(0));
   }
 
   return (
@@ -129,9 +119,9 @@ export function ContractScreen({
         {t("contract.subtitle")}
       </p>
 
-      {/* Mobile: one glass panel with hairline-divided rows, so six
-       *  promises read as a single list rather than six competing cards.
-       *  Desktop (lg): the 3x2 grid of individual cards. */}
+      {/* Mobile: one glass panel with hairline-divided rows, so the
+       *  promises read as a single list rather than competing cards.
+       *  Desktop (lg): a grid of individual cards. */}
       <ol className="contract-list mt-1">
         {ITEMS.map((item, i) => {
           const Icon = item.Icon;

@@ -366,8 +366,8 @@
     {
       "audioId": "kai_intro",
       "path": "/audio/en-british-v1/kai_intro.mp3",
-      "bytes": 185199,
-      "sha256": "1cd65fd6ab093d0e9d37b5976a9594b7fd19b28406b381311615c1868d446425"
+      "bytes": 142149,
+      "sha256": "ecd9b4f68f5e0c54f0027dce3d38410670083ab3aedbbc4d77e6b68b602898d0"
     },
     {
       "audioId": "kai_results",

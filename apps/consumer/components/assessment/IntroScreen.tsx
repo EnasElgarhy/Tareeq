@@ -1,9 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { KaiChromaVideo } from "@/components/brand/KaiChromaVideo";
-import { Typewriter } from "@/components/primitives/Typewriter";
 import { useAssessmentAudio } from "@/components/assessment/AssessmentAudioProvider";
 import {
   INTRO_NARRATION_AUDIO_ID,
@@ -16,10 +15,6 @@ export function IntroScreen() {
   const router = useRouter();
   const { locale, t } = useLocale();
   const introBody = t("intro.body");
-  const [typingDone, setTypingDone] = useState(false);
-  const [introCopyActive, setIntroCopyActive] = useState(false);
-  const [introCopyRun, setIntroCopyRun] = useState(0);
-  const [introTypeSpeed, setIntroTypeSpeed] = useState(44);
   const [kaiVideoReady, setKaiVideoReady] = useState(false);
   const {
     audioRef,
@@ -45,20 +40,6 @@ export function IntroScreen() {
         : providerIsPlaying && ownsIntroAudio
           ? "playing"
           : "idle";
-
-  const syncTypeSpeedFromAudio = useCallback(() => {
-    const duration = audioRef.current?.duration;
-    if (!duration || !Number.isFinite(duration)) return;
-    const targetMs = Math.max(2600, duration * 920);
-    const nextSpeed = Math.round(targetMs / Math.max(introBody.length, 1));
-    setIntroTypeSpeed(Math.min(56, Math.max(24, nextSpeed)));
-  }, [audioRef, introBody.length]);
-
-  function restartIntroCopy() {
-    setTypingDone(false);
-    setIntroCopyActive(false);
-    setIntroCopyRun((run) => run + 1);
-  }
 
   useEffect(() => {
     uiSounds.transition();
@@ -95,40 +76,6 @@ export function IntroScreen() {
     return () => window.clearTimeout(timeout);
   }, [kaiVideoReady]);
 
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    syncTypeSpeedFromAudio();
-    const handleLoadedMetadata = () => syncTypeSpeedFromAudio();
-    const handleEnded = () => setIntroCopyActive(true);
-    audio.addEventListener("loadedmetadata", handleLoadedMetadata);
-    audio.addEventListener("ended", handleEnded);
-    return () => {
-      audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
-      audio.removeEventListener("ended", handleEnded);
-    };
-  }, [audioRef, syncTypeSpeedFromAudio]);
-
-  useEffect(() => {
-    if (!soundOn || audioState === "muted" || audioState === "unavailable") {
-      setIntroCopyActive(true);
-      return;
-    }
-
-    if (audioState === "playing") {
-      syncTypeSpeedFromAudio();
-      setIntroCopyActive(true);
-    }
-
-    if (audioState === "loading") {
-      const timeout = window.setTimeout(() => {
-        setIntroCopyActive(true);
-      }, 260);
-      return () => window.clearTimeout(timeout);
-    }
-  }, [audioState, soundOn, syncTypeSpeedFromAudio]);
-
   function next() {
     stopNarration(INTRO_NARRATION_OWNER_ID);
     uiSounds.advance();
@@ -138,16 +85,12 @@ export function IntroScreen() {
   function toggleSound() {
     const nextMuted = soundOn;
     setMuted(nextMuted);
-    if (nextMuted) {
-      setIntroCopyActive(true);
-    } else {
-      restartIntroCopy();
+    if (!nextMuted) {
       window.setTimeout(() => replayNarration(INTRO_NARRATION_OWNER_ID), 0);
     }
   }
 
   function replayOrUnlock() {
-    restartIntroCopy();
     replayNarration(INTRO_NARRATION_OWNER_ID);
   }
 
@@ -193,43 +136,24 @@ export function IntroScreen() {
         <h1
           id="intro-heading"
           className="text-hero text-sand anim-fade-up"
-          style={{ animationDelay: "700ms" }}
+          style={{ animationDelay: "120ms" }}
         >
           {t("intro.meet_prefix")}
           <span className="text-grad-warm">{t("intro.kai_name")}</span>.
         </h1>
 
-        {/* Body — synced to Kai's actual voice start, with a muted fallback. */}
-        <div className="min-h-[5.6em] max-w-[34ch] text-center lg:text-start">
-          {introCopyActive ? (
-            <Typewriter
-              key={`${introCopyRun}-${introBody}`}
-              as="p"
-              text={introBody}
-              speed={introTypeSpeed}
-              onComplete={() => setTypingDone(true)}
-              className="text-sand/85"
-              style={{
-                fontWeight: 500,
-                fontSize: "clamp(17px, 0.95rem + 1vw, 21px)",
-                lineHeight: 1.45,
-                margin: 0,
-              }}
-            />
-          ) : (
-            <p
-              aria-hidden="true"
-              className="m-0 text-sand/50"
-              style={{
-                fontWeight: 500,
-                fontSize: "clamp(17px, 0.95rem + 1vw, 21px)",
-                lineHeight: 1.45,
-              }}
-            >
-              {t("intro.getting_ready")}
-            </p>
-          )}
-        </div>
+        {/* Shown straight away: Kai's voice joins when it's ready and never
+         *  holds the page up (corrections of 6 Nov 2026, section 3.2). */}
+        <p
+          className="m-0 max-w-[34ch] text-center text-sand/85 lg:text-start"
+          style={{
+            fontWeight: 500,
+            fontSize: "clamp(17px, 0.95rem + 1vw, 21px)",
+            lineHeight: 1.45,
+          }}
+        >
+          {introBody}
+        </p>
 
         {/* Audio controls — mute toggle + replay button. Kai's voice
          *  auto-starts on load; on touch devices the first interaction
@@ -307,7 +231,6 @@ export function IntroScreen() {
 
         <div className="flex-1 lg:hidden" />
 
-        {typingDone ? (
           <div className="anim-cta-spring w-full lg:max-w-[280px]">
             <button
               type="button"
@@ -333,9 +256,7 @@ export function IntroScreen() {
               </svg>
             </button>
           </div>
-        ) : (
-          <div className="h-[60px] w-full lg:hidden" aria-hidden="true" />
-        )}
+
       </div>
     </section>
   );

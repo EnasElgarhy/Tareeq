@@ -97,8 +97,21 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  padding: 0 28px;
+  padding: 4px 28px 12px;
   text-align: center;
+}
+/* The cards below are a fixed example, never the child's own results. */
+.exampleLabel {
+  position: absolute;
+  inset-block-start: 8px;
+  inset-inline-start: 14px;
+  z-index: 3;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #f4c660;
+  color: #14101f;
+  font-size: 11px;
+  font-weight: 800;
 }
 .slideText p {
   font-size: 14px;
@@ -338,62 +351,35 @@
   font-size: 12px;
   color: var(--pay-ink-3);
 }
-.axisTrack {
-  position: relative;
-  height: 30px;
-  margin-inline: 4px;
+.axisParts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  font-size: 11.5px;
+  line-height: 1.2;
+  text-align: center;
 }
-.axisTrack::before,
-.axisFill {
-  content: "";
-  position: absolute;
-  top: 12px;
-  height: 6px;
-  border-radius: 3px;
-}
-.axisTrack::before {
-  inset-inline: 0;
-  background: rgb(255 255 255 / 0.1);
-}
-.axisFill {
-  inset-inline-start: 0;
-  width: 16%;
-  background: linear-gradient(90deg, rgb(127 212 174 / 0.25), var(--pay-mint));
-}
-.axisMid {
-  position: absolute;
-  inset-inline-start: calc(50% - 1px);
-  top: 9px;
-  width: 2px;
-  height: 12px;
-  background: rgb(255 255 255 / 0.28);
-}
-.axisKnob {
-  position: absolute;
-  inset-inline-start: calc(16% - 14px);
-  top: 1px;
-  width: 28px;
-  height: 28px;
-  border-radius: 14px;
-  background: radial-gradient(circle at 35% 30%, #fff, #ddf5ea 60%, #9adfc0);
-  box-shadow: 0 0 0 3px rgb(127 212 174 / 0.35), 0 0 22px 4px rgb(127 212 174 / 0.45);
-}
-.axisEnds {
+.axisPart,
+.axisPartOn {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  font-size: 12.5px;
+  justify-content: center;
+  gap: 4px;
+  min-height: 52px;
+  padding: 6px 4px;
+  border-radius: 10px;
 }
-.axisOn {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-weight: 800;
-  color: #fffcf6;
-}
-.axisOff {
+.axisPart {
+  background: rgb(255 255 255 / 0.06);
+  color: #a9a1c6;
   font-weight: 600;
-  color: #8f86ae;
+}
+.axisPartOn {
+  background: rgb(127 212 174 / 0.2);
+  box-shadow: inset 0 0 0 1px rgb(127 212 174 / 0.55);
+  color: #fffcf6;
+  font-weight: 800;
 }
 .axisIcon {
   display: grid;

@@ -59,6 +59,21 @@ function parseEntryPrompt(requested: string | null): CoreEntryPromptId | null {
   return CORE_ENTRY_PROMPT_IDS.find((id) => id === requested) ?? null;
 }
 
+/**
+ * A launch link (?entry=, ?goal=, ?prompt=) is handled once. The screen can
+ * remount before router.replace clears the URL, and a ref would not survive
+ * that, so the guard lives here and expires once the URL has had time to clear.
+ */
+const LAUNCH_GUARD_MS = 5_000;
+let lastLaunch: { key: string; at: number } | null = null;
+
+function claimLaunch(key: string): boolean {
+  const now = Date.now();
+  if (lastLaunch?.key === key && now - lastLaunch.at < LAUNCH_GUARD_MS) return false;
+  lastLaunch = { key, at: now };
+  return true;
+}
+
 function KaiChatExperience() {
   const { t, locale } = useLocale();
   const kaiAccess = useKaiAccess();
@@ -86,7 +101,6 @@ function KaiChatExperience() {
     null,
   );
   const bottomRef = useRef<HTMLDivElement | null>(null);
-  const consumedLaunchRef = useRef<string | null>(null);
   // A CORE 2.0 student has no legacy assessment context but does have a
   // result: Kai runs on the client prompt for them (lib/kai/core).
   const [hasCoreResult, setHasCoreResult] = useState(false);
@@ -133,9 +147,8 @@ function KaiChatExperience() {
     const goal = parseGoal(searchParams.get("goal"));
     // A report section's "Discuss this with Kai" (spec §6.7).
     const entry = parseEntryPrompt(searchParams.get("entry"));
-    if ((!prompt && !goal && !entry) || consumedLaunchRef.current === launchKey)
-      return;
-    consumedLaunchRef.current = launchKey;
+    if (!prompt && !goal && !entry) return;
+    if (!claimLaunch(launchKey)) return;
 
     if (prompt) {
       if (startWithPrompt(prompt, entry ?? undefined))

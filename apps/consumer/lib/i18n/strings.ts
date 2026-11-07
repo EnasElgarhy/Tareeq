@@ -67,8 +67,8 @@ export const STRINGS = {
   // ---- Did You Know interstitial (components/onboarding/DidYouKnow.tsx) ----
   "interstitial.kai_name": { en: "Kai", ar: "كاي" },
   "interstitial.kai_role": {
-    en: "Your AI career navigator",
-    ar: "مرشدتك المهنية الذكية",
+    en: "Your AI career coach",
+    ar: "مدرّبتك المهنية الشخصية",
   },
   "interstitial.dismiss_aria": { en: "Dismiss", ar: "إغلاق" },
   "rush.body": {
@@ -155,8 +155,8 @@ export const STRINGS = {
   "intro.meet_prefix": { en: "Meet ", ar: "تعرّف على " },
   "intro.kai_name": { en: "Kai", ar: "كاي" },
   "intro.body": {
-    en: "Think of me as a filter for all the noise. We’re looking for your Energy Flows — the stuff that makes you lose track of time. Pick what you’d actually do.",
-    ar: "اعتبرني فلتراً يُبعد عنك كل الضجيج. نحن نبحث عن مساراتك التي تتدفّق فيها طاقتك — الأشياء التي تُنسيك الوقت. اختر ما ستفعله فعلاً.",
+    en: "Hi, I'm Kai, your personal career coach. I'll be with you through the questions, and once your report is ready, we can talk it through together.",
+    ar: "مرحبًا، أنا كاي، مدرّبتك المهنية الشخصية. سأرافقك خلال الأسئلة، وعندما يصبح تقريرك جاهزًا يمكننا مناقشته معًا.",
   },
 
   // ---- Section encouragements (also narration) ----
@@ -1543,41 +1543,53 @@ export const STRINGS = {
 
   // ---- Contract screen (components/assessment/ContractScreen.tsx) ----
   "contract.eyebrow": { en: "Before we begin", ar: "قبل أن نبدأ" },
-  "contract.headline_before": { en: "A quiet", ar: "" },
-  "contract.headline_emphasis": { en: "contract", ar: "عقد" },
-  "contract.headline_after": { en: ".", ar: " هادئ." },
+  "contract.headline_before": {
+    en: "A quiet",
+    ar: "",
+  },
+  "contract.headline_emphasis": {
+    en: "contract",
+    ar: "اتفاق بسيط",
+  },
+  "contract.headline_after": {
+    en: ".",
+    ar: ".",
+  },
   "contract.subtitle": {
-    en: "Six small promises between us before the first question.",
-    ar: "ست وعود صغيرة بيننا قبل السؤال الأول.",
+    en: "Four small promises before the first question.",
+    ar: "أربعة وعود صغيرة قبل السؤال الأول.",
   },
   "contract.item1.title": {
-    en: "Energy over achievement",
-    ar: "الطاقة قبل الإنجاز",
+    en: "No right or wrong answers.",
+    ar: "لا توجد إجابات صحيحة أو خاطئة.",
   },
   "contract.item1.body": {
-    en: "Not what you’re good at in school — what makes time disappear.",
-    ar: "ليس ما تُجيده في المدرسة — بل ما يجعل الوقت يتلاشى.",
+    en: "This isn't a test, and it has nothing to do with your grades.",
+    ar: "هذا ليس اختبارًا، ولا علاقة له بدرجاتك المدرسية.",
   },
   "contract.item2.title": {
-    en: "Curiosity, not distraction",
-    ar: "الفضول، لا التشتت",
+    en: "Pick what you'd actually do.",
+    ar: "ما ستفعله فعلًا.",
   },
   "contract.item2.body": {
-    en: "Pick what ignites a question, not what steals an hour of scrolling.",
-    ar: "اختر ما يشعل سؤالاً، لا ما يسرق ساعة من التمرير.",
+    en: "Choose what's closest to you now, not what you think you should choose.",
+    ar: "الخيار الأقرب إليك الآن، لا ما يبدو أنه الخيار المتوقّع.",
   },
-  "contract.item3.title": { en: "No wrong answers", ar: "لا إجابات خاطئة" },
+  "contract.item3.title": {
+    en: "Directions, not a label.",
+    ar: "توجّهات، لا تصنيف.",
+  },
   "contract.item3.body": {
-    en: "Choosing “gaming” over “studying” tells us how your mind solves.",
-    ar: "اختيار «الألعاب» على «الدراسة» يخبرنا كيف يحلّ عقلك المشكلات.",
+    en: "You won't get one job title or a type. You'll get directions and routes to explore.",
+    ar: "لن تحصل على مسمّى وظيفي واحد أو نوع شخصية، بل على توجّهات ومسارات للاستكشاف.",
   },
   "contract.item4.title": {
-    en: "Intent beneath the habit",
-    ar: "النية تحت العادة",
+    en: "The choice stays yours.",
+    ar: "القرار لك.",
   },
   "contract.item4.body": {
-    en: "We listen to the why behind your scroll, not the scroll itself.",
-    ar: "نستمع إلى «لماذا» خلف تمريرك، لا إلى التمرير نفسه.",
+    en: "We point to directions worth exploring. The decision is always yours.",
+    ar: "نشير إلى توجّهات تستحق الاستكشاف، والقرار يبقى دائمًا لك.",
   },
   "contract.item5.title": {
     en: "A cluster, not a job title",
@@ -1595,23 +1607,53 @@ export const STRINGS = {
     en: "We point the direction. The destination stays yours.",
     ar: "نحن نُشير إلى الاتجاه. الوجهة تبقى لك.",
   },
-  "contract.cta": { en: "I agree, begin", ar: "أوافق، لنبدأ" },
+  "contract.cta": {
+    en: "I'm ready",
+    ar: "لنبدأ",
+  },
 
   // ---- Assessment start screen (components/assessment/AssessmentStart.tsx) ----
   "start.eyebrow": { en: "A career compass", ar: "بوصلة مهنية" },
-  "start.headline_line1": { en: "Find the work", ar: "اعثر على العمل" },
-  "start.headline_line2_before": { en: "that’s been", ar: "الذي كان" },
-  "start.headline_emphasis": { en: "waiting", ar: "بانتظارك" },
-  "start.headline_after": { en: ".", ar: "." },
-  "start.step1.title": { en: "Take the assessment", ar: "أكمل التقييم" },
-  "start.step1.meta": { en: "12 min · 54 questions", ar: "12 د · 54 سؤالاً" },
-  "start.step2.title": { en: "Meet your CORE report", ar: "تعرّف على تقريرك" },
-  "start.step2.meta": {
-    en: "Persona + four pillars",
-    ar: "الشخصية + الركائز الأربع",
+  "start.headline_line1": {
+    en: "Ready to map",
+    ar: "لنرسم",
   },
-  "start.step3.title": { en: "Walk with us", ar: "امشِ معنا" },
-  "start.step3.meta": { en: "Mentors + community", ar: "مرشدون + مجتمع" },
+  "start.headline_line2_before": {
+    en: "your",
+    ar: "",
+  },
+  "start.headline_emphasis": {
+    en: "CORE",
+    ar: "خريطتك المهنية",
+  },
+  "start.headline_after": {
+    en: "?",
+    ar: "",
+  },
+  "start.step1.title": {
+    en: "Take the assessment",
+    ar: "إجراء التقييم",
+  },
+  "start.step1.meta": {
+    en: "About 15 min · 46 questions",
+    ar: "حوالي 15 دقيقة · 46 سؤالًا",
+  },
+  "start.step2.title": {
+    en: "Unlock your CORE career guidance report",
+    ar: "فتح تقرير كور للإرشاد المهني",
+  },
+  "start.step2.meta": {
+    en: "",
+    ar: "",
+  },
+  "start.step3.title": {
+    en: "Access Kai, your AI coach",
+    ar: "التحدث مع كاي، مدرّبتك المهنية الشخصية",
+  },
+  "start.step3.meta": {
+    en: "Discuss your report with your personalized coach",
+    ar: "مناقشة تقريرك مع مدرّبتك الشخصية",
+  },
   "start.resume_banner": {
     en: "On question {n} of {total}",
     ar: "عند السؤال {n} من {total}",
@@ -1639,8 +1681,8 @@ export const STRINGS = {
     ar: "يرجى الموافقة على شروط منصة ماب ماي كور قبل البدء.",
   },
   "start.footer_note": {
-    en: "~12 min · Free · Stays on your device",
-    ar: "~12 د · مجاناً · يبقى على جهازك",
+    en: "About 15 min · Free to answer the questions",
+    ar: "حوالي 15 دقيقة · الإجابة عن الأسئلة مجانًا",
   },
 
   // ---- Registration screen (components/assessment/RegistrationScreen.tsx) ----
@@ -1671,8 +1713,8 @@ export const STRINGS = {
   "register.eyebrow": { en: "One more step", ar: "خطوة أخيرة" },
   "register.headline": { en: "Save your CORE report.", ar: "احفظ تقريرك." },
   "register.subtitle": {
-    en: "Verify your email to save your CORE report and build your final report. Your address is never included in the AI prompt.",
-    ar: "تحقّق من بريدك الإلكتروني لحفظ بوصلتك وإنشاء تقريرك النهائي. لا يتم تضمين عنوان بريدك في طلب الذكاء الاصطناعي.",
+    en: "Verify your email to save your CORE report and build your final report. We never share your email.",
+    ar: "تحقّق من بريدك الإلكتروني لحفظ بوصلتك وإنشاء تقريرك النهائي. نحافظ على خصوصية بريدك الإلكتروني ولا نشاركه أبدًا.",
   },
   "register.name_label": { en: "Name", ar: "الاسم" },
   "register.name_placeholder": { en: "Your name", ar: "اسمك" },
@@ -1737,6 +1779,28 @@ export const STRINGS = {
   "register.resend_cta": { en: "Resend code", ar: "إعادة إرسال الرمز" },
 
   // ---- Assessment chrome header (components/assessment/AssessmentChrome.tsx) ----
+  // ---- Screens around the questions (corrections of 6 Nov 2026) ----
+  "flow.about.head": {
+    en: "Before we start · A few quick questions about you",
+    ar: "قبل أن نبدأ · بعض الأسئلة السريعة عنك",
+  },
+  "flow.divider.head": { en: "Now, your CORE questions", ar: "والآن، أسئلة كور" },
+  "flow.divider.text": {
+    en: "There are no right or wrong answers. Pick what you'd actually do, or the closest thing to it.",
+    ar: "لا توجد إجابات صحيحة أو خاطئة. يكفي اختيار ما ستفعله فعلًا، أو الأقرب إليه.",
+  },
+  "flow.divider.meta": { en: "46 questions · about 15 minutes", ar: "46 سؤالًا · حوالي 15 دقيقة" },
+  "flow.divider.cta": { en: "Start", ar: "ابدأ" },
+  "flow.end": {
+    en: "All done! Your results are ready to unlock.",
+    ar: "انتهينا! نتائجك جاهزة للفتح.",
+  },
+  "chrome.part.1": { en: "Curiosities", ar: "الفضول" },
+  "chrome.part.2": { en: "Operating style", ar: "أسلوب العمل" },
+  "chrome.part.3": { en: "Rewards", ar: "المحفّزات" },
+  "chrome.part.4": { en: "Ecosystem", ar: "البيئة" },
+  "pay.slide.work.mix": { en: "A mix of both", ar: "مزيج من الاثنين" },
+  "pay.slide.example": { en: "Example", ar: "مثال" },
   "chrome.compass_label": { en: "My CORE", ar: "تقرير كور" },
   "chrome.about_you": { en: "About you", ar: "عنك" },
 
@@ -2374,6 +2438,10 @@ export const STRINGS = {
   "marketing.hero.under_cta": {
     en: "Free to start · Arabic or English",
     ar: "البدء مجاني · بالعربية أو الإنجليزية",
+  },
+  "marketing.hero.trust": {
+    en: "Powered by the CORE assessment: built on decades of career research, with the future of work in mind.",
+    ar: "قائم على تقييم كور، المبني على عقود من الأبحاث في الاختيار المهني، مع مراعاة مستقبل العمل.",
   },
   "marketing.hero.time": {
     en: "About 15 minutes · Free to start",
@@ -3056,12 +3124,12 @@ export const STRINGS = {
   },
   "unlock.ask.message_label": { en: "Your message", ar: "رسالتك" },
   "unlock.ask.message.en": {
-    en: "I just finished CORE, a 15-minute exploration of what pulls my interest and the study fields linked to it. Can you unlock my report?",
-    ar: "I just finished CORE, a 15-minute exploration of what pulls my interest and the study fields linked to it. Can you unlock my report?",
+    en: "I've just finished CORE, a career guidance assessment that explores what pulls my interest and the study fields linked to it. Can you help me unlock my report?",
+    ar: "I've just finished CORE, a career guidance assessment that explores what pulls my interest and the study fields linked to it. Can you help me unlock my report?",
   },
   "unlock.ask.message.ar": {
-    en: "أنهيت للتو تقييم كور، وهو استكشاف لمدة 15 دقيقة لما يثير فضولي ولمجالات الدراسة المرتبطة به. هل يمكنك فتح تقريري؟",
-    ar: "أنهيت للتو تقييم كور، وهو استكشاف لمدة 15 دقيقة لما يثير فضولي ولمجالات الدراسة المرتبطة به. هل يمكنك فتح تقريري؟",
+    en: "أنهيت للتو تقييم كور، وهو تقييم للإرشاد المهني يستكشف ما يثير اهتمامي ومجالات الدراسة المرتبطة به. هل يمكنك مساعدتي في فتح تقريري؟",
+    ar: "أنهيت للتو تقييم كور، وهو تقييم للإرشاد المهني يستكشف ما يثير اهتمامي ومجالات الدراسة المرتبطة به. هل يمكنك مساعدتي في فتح تقريري؟",
   },
   "unlock.ask.creating": { en: "Making your private link…", ar: "جارٍ إنشاء رابطك الخاص…" },
   "unlock.ask.whatsapp": { en: "Send on WhatsApp", ar: "أرسل عبر واتساب" },
@@ -3174,13 +3242,19 @@ export const STRINGS = {
     ar: "وجدت تقييمًا قصيرًا اسمه كور، يساعد على اكتشاف ما يثير فضولك ومجالات الدراسة والمهن المرتبطة به. يستغرق نحو 15 دقيقة، والبدء مجاني:",
   },
   // ---- Ask a parent: parent page (/pay/<token>) ----
-  "pay.title": { en: "Your child has finished CORE", ar: "أنهى ابنكم أو ابنتكم تقييم كور" },
+  "pay.title": {
+    en: "Your child has completed the CORE career guidance assessment",
+    ar: "أكمل ابنكم أو ابنتكم تقييم كور للإرشاد المهني",
+  },
   "pay.intro": {
-    en: "Your child has asked you to unlock their CORE report. Here's what's inside.",
-    ar: "طلب منك ابنك أو ابنتك فتح تقرير كور. إليك ما يحتويه.",
+    en: "They've asked you to unlock their report. Here's an example of what's inside.",
+    ar: "وطلب منكم فتح التقرير. إليكم مثالًا على ما يتضمنه.",
   },
   "pay.lang": { en: "عربي", ar: "English" },
-  "pay.slide.curiosity.title": { en: "What sparks their curiosity", ar: "ما الذي يثير فضوله" },
+  "pay.slide.curiosity.title": {
+    en: "What sparks their curiosity",
+    ar: "ما يثير فضوله",
+  },
   "pay.slide.curiosity.body": {
     en: "Their strongest interests, in words they'll recognise.",
     ar: "أقوى اهتماماته، بكلمات سيعرفها.",
@@ -3192,7 +3266,10 @@ export const STRINGS = {
     ar: "تريد أن تعرف السبب. والإجابة نفسها هي المكافأة.",
   },
   "pay.slide.curiosity.chip": { en: "People & Wellbeing", ar: "خدمة الناس ودعمهم" },
-  "pay.slide.work.title": { en: "How they like to work, and where", ar: "كيف يحب أن يعمل، وأين" },
+  "pay.slide.work.title": {
+    en: "How they like to work, and where",
+    ar: "كيف يحب أن يعمل، وبيئة العمل التي يفضّلها",
+  },
   "pay.slide.work.body": { en: "Their style and setting, side by side.", ar: "أسلوبه وبيئته، جنباً إلى جنب." },
   "pay.slide.work.card": { en: "How they like to work", ar: "كيف يحب أن يعمل" },
   "pay.slide.work.axis1": { en: "How set out they like the work", ar: "مدى تنظيم العمل الذي يفضّله" },
@@ -3202,19 +3279,25 @@ export const STRINGS = {
   "pay.slide.work.axis2.a": { en: "Going deep", ar: "التعمق" },
   "pay.slide.work.axis2.b": { en: "A range", ar: "التنوع" },
   "pay.slide.work.chip": { en: "Something different every day", ar: "شيء مختلف كل يوم" },
-  "pay.slide.lead.title": { en: "Where it could lead", ar: "إلى أين قد يقود" },
-  "pay.slide.lead.body": {
-    en: "Job families and study fields, and why each one fits.",
-    ar: "عائلات المهن ومجالات الدراسة، ولماذا يناسبه كل منها.",
+  "pay.slide.lead.title": {
+    en: "Where it could lead",
+    ar: "إلى أين قد يقوده ذلك",
   },
-  "pay.slide.lead.family": { en: "Health sciences", ar: "العلوم الصحية" },
+  "pay.slide.lead.body": {
+    en: "The jobs and study fields they lean toward, and what each one usually offers",
+    ar: "المهن ومجالات الدراسة التي يميل إليها، وما يوفّره كل منها عادةً",
+  },
+  "pay.slide.lead.family": { en: "Medicine and health sciences", ar: "الطب والعلوم الصحية" },
   "pay.slide.lead.job1": { en: "Pharmacist", ar: "صيدلي" },
-  "pay.slide.lead.job2": { en: "Biomedical researcher", ar: "باحث طبي حيوي" },
-  "pay.slide.lead.job3": { en: "Medical lab scientist", ar: "أخصائي مختبر طبي" },
+  "pay.slide.lead.job2": { en: "Biomedical researcher", ar: "باحث في العلوم الطبية الحيوية" },
+  "pay.slide.lead.job3": { en: "Medical laboratory scientist", ar: "أخصائي مختبرات طبية" },
   "pay.slide.lead.back": { en: "Data and patterns", ar: "البيانات والأنماط" },
   "pay.slide.lead.chip": { en: "Closest to their answers", ar: "الأقرب لإجاباته" },
   "pay.slide.lead.chip2": { en: "Making a difference for others", ar: "إحداث فرق للآخرين" },
-  "pay.slide.kai.title": { en: "Small next steps, and Kai", ar: "خطوات صغيرة تالية، وكاي" },
+  "pay.slide.kai.title": {
+    en: "Next steps, and a personal career coach to help them talk their report through, called Kai",
+    ar: "خطوات تالية، ومدرّبة مهنية شخصية تساعده على مناقشة تقريره، تُدعى كاي",
+  },
   "pay.slide.kai.body": {
     en: "Things to watch, try and ask, with a guide to talk it through.",
     ar: "أشياء يشاهدها ويجرّبها ويسأل عنها، مع مرشد يناقشها معه.",

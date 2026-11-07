@@ -43,8 +43,8 @@ export const KAI_EXTRA_NARRATION = [
   {
     id: "kai_intro",
     text: {
-      en: "Hey, I'm Kai. Think of me as a filter for all the noise. There are no wrong answers here — just pick what you would actually do, or the closest thing to it.",
-      ar: "مرحباً، أنا كاي. اعتبرني مِصفاةً تُنقّي كل الضجيج. لا توجد إجابات خاطئة هنا — اختَر فقط ما ستفعله فعلًا، أو أقرب شيء إليه.",
+      en: "Hi, I'm Kai, your personal career coach. I'll be with you through the questions, and once your report is ready, we can talk it through together.",
+      ar: "مرحبًا، أنا كاي، مدرّبتك المهنية الشخصية. سأرافقك خلال الأسئلة، وعندما يصبح تقريرك جاهزًا يمكننا مناقشته معًا.",
     },
   },
   {

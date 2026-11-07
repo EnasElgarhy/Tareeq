@@ -5,7 +5,9 @@ export default async function ContractPage() {
   const content = await loadAttemptAssessmentContent();
   return (
     <ContractScreen
-      firstQuestionAudioId={content.questions[0]?.externalId ?? null}
+      firstQuestionAudioId={
+        content.questions.find((q) => q.pillar !== 0)?.externalId ?? null
+      }
       versionId={content.versionId}
     />
   );

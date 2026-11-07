@@ -3,16 +3,17 @@ import { E2E_EMAIL, mockSupabase, stubKaiChat } from "./fixtures/core";
 import { localeStorageKey } from "./fixtures/report";
 
 /**
- * A new student's whole CORE journey through the real UI: start, the 50
- * questions (4 background + 46 CORE), email-code sign-in, the paywall, the
+ * A new student's whole CORE journey through the real UI: start, About you,
+ * the 46 CORE questions with their part intros, the end screen, email-code
+ * sign-in, the paywall, the
  * report, and Kai from the report. Only the network edges are stubbed:
  * Supabase auth/REST, the persist and payment routes that need a real
  * server session, and Kai's model call.
  */
 
 const QUESTION_COUNT = 50;
-/** Buttons on a question screen that are not answers. */
-const CONTROLS = /Unmute|Replay|Playback|Previous|^Next$|Go back|Kai's voice/i;
+/** Buttons a journey must not tap: controls, and Under 13, which ends it. */
+const CONTROLS = /Unmute|Replay|Playback|Previous|^Next$|Go back|Kai's voice|^Under 13$/i;
 
 async function stubBackend(page: Page) {
   const persisted: Array<Record<string, unknown>> = [];
@@ -52,8 +53,20 @@ async function answerAllQuestions(page: Page) {
   const seen = new Set<string>();
   for (let step = 0; step < QUESTION_COUNT * 6 && !page.url().endsWith("/register"); step++) {
     await page.waitForTimeout(300);
-    if (!/\/q\/\d+/.test(page.url())) continue;
-    seen.add(page.url());
+    // The screens between stages: the dividing page and each part's intro.
+    if (page.url().endsWith("/done")) return seen.size;
+    const between = page.getByRole("button", { name: /^(Start|Continue)$/ });
+    if (/\/(begin|part\/\d)$/.test(page.url()) && (await between.isVisible())) {
+      await between.click({ timeout: 5_000 }).catch(() => undefined);
+      continue;
+    }
+    const url = page.url();
+    if (!/\/q\/\d+/.test(url)) continue;
+    // No option may look chosen before the student touches one.
+    if (!seen.has(url)) {
+      await expect(page.locator('button.assessment-answer[data-active="true"]')).toHaveCount(0);
+    }
+    seen.add(url);
 
     const kaiBreak = page.locator('.assessment-night[aria-hidden="false"] .assessment-primary-action').first();
     if (await kaiBreak.isVisible()) {
@@ -69,6 +82,7 @@ async function answerAllQuestions(page: Page) {
     const country = page.getByRole("combobox");
     if (await country.isVisible()) {
       await country.selectOption({ label: "Jordan" });
+      await page.getByRole("button", { name: "Prefer not to say" }).click({ timeout: 5_000 });
       await page.getByRole("button", { name: "Next", exact: true }).click({ timeout: 5_000 });
       continue;
     }
@@ -77,11 +91,14 @@ async function answerAllQuestions(page: Page) {
       const name = (await button.getAttribute("aria-label")) ?? (await button.innerText());
       if (!CONTROLS.test(name.trim()) && (await button.isEnabled())) options.push(button);
     }
-    // An option can detach mid-tap while the screen moves on; the next pass
-    // re-reads whatever screen is showing.
-    if (options.length > 0) {
-      await options[step % options.length].click({ timeout: 5_000 }).catch(() => undefined);
-    }
+    // Wait for what the tap causes before looking again: .all() locators go by
+    // position, so a second tap mid-move would land on the next screen unchecked.
+    if (page.url() !== url || options.length === 0) continue;
+    await options[step % options.length].click({ timeout: 5_000 }).catch(() => undefined);
+    await Promise.race([
+      page.waitForURL((next) => next.href !== url, { timeout: 2_000 }),
+      reread.waitFor({ state: "visible", timeout: 2_000 }),
+    ]).catch(() => undefined);
   }
   return seen.size;
 }
@@ -105,13 +122,21 @@ test("a new student goes from start to a Kai conversation about their CORE repor
   await page.waitForURL(/\/intro$/);
   await page.getByRole("button", { name: "Continue" }).click();
   await page.waitForURL(/\/contract$/);
-  await page.getByRole("button", { name: "I agree, begin" }).click();
+  await page.getByRole("button", { name: "I'm ready" }).click();
+  await page.waitForURL(/\/about-you$/);
+  await page.getByRole("button", { name: "Continue" }).click();
   await page.waitForURL(/\/q\/0$/);
-  await expect(page.getByText(`01 / ${QUESTION_COUNT}`)).toBeVisible();
+  // About you stands apart: no counter, no MY CORE bar.
+  await expect(page.getByText("/ 46")).toHaveCount(0);
+  await expect(page.getByText("My CORE", { exact: true })).toHaveCount(0);
 
   // Every question, through the real answer buttons.
   expect(await answerAllQuestions(page)).toBe(QUESTION_COUNT);
+  await page.waitForURL(/\/done$/);
+  await expect(page.getByText("All done! Your results are ready to unlock.")).toBeVisible();
+  await page.getByRole("button", { name: "Continue" }).click();
   await page.waitForURL(/\/register$/);
+  await expect(page.getByText("We never share your email.")).toBeVisible();
 
   // Email-code sign-in.
   await page.getByRole("textbox", { name: "Name" }).fill("Sara");
@@ -126,18 +151,22 @@ test("a new student goes from start to a Kai conversation about their CORE repor
   expect(backend.persisted).toHaveLength(1);
   expect(backend.persisted[0]).toMatchObject({
     result: { scoringVersion: "2.0" },
-    answers: { QD2: "Jordan" },
+    answers: { QD2: "Jordan", QD2b: "QD2b-X" },
   });
+  expect(Object.keys(backend.persisted[0].optionOrder as object)).toHaveLength(46);
 
-  const unlock = page.getByRole("button", { name: /unlock/i }).first();
-  await expect(unlock).toBeVisible({ timeout: 15_000 });
+  await page.getByRole("radio", { name: /^Me/ }).click({ timeout: 15_000 });
+  const unlock = page.getByRole("button", { name: /unlock|pay/i }).first();
+  await expect(unlock).toBeEnabled();
   await unlock.click();
+  // The order summary, then checkout (stubbed above as already owned).
+  await page.getByRole("button", { name: /^Unlock for AED/ }).click();
   await expect(page.getByRole("combobox", { name: "Report sections" }).or(
     page.getByRole("navigation", { name: "Report sections" }),
   )).toBeVisible({ timeout: 15_000 });
 
   // Kai from the report, with the student's CORE result attached.
-  await page.getByRole("button", { name: "3 Your curiosity" }).click();
+  await page.getByRole("button", { name: /^\d Your curiosity$/ }).click();
   const discuss = page.locator('a[href*="entry=S3-KAI-Q"]:not([href*="prompt="])').first();
   await discuss.scrollIntoViewIfNeeded();
   await discuss.click();
@@ -152,4 +181,28 @@ test("a new student goes from start to a Kai conversation about their CORE repor
       profile: { country: "Jordan" },
     },
   });
+});
+
+test("a student under 13 is stopped and nothing is kept", async ({ page }) => {
+  await page.addInitScript((key) => {
+    window.localStorage.setItem(key, "en");
+    window.localStorage.setItem("tareeq:sound", "off");
+  }, localeStorageKey);
+
+  await page.goto("/start");
+  await page.locator("label:has(input[type=checkbox])").first().click();
+  await page.getByRole("button", { name: "Begin" }).click();
+  await page.waitForURL(/\/intro$/);
+  await page.getByRole("button", { name: "Continue" }).click();
+  await page.waitForURL(/\/contract$/);
+  await page.getByRole("button", { name: "I'm ready" }).click();
+  await page.waitForURL(/\/about-you$/);
+  await page.getByRole("button", { name: "Continue" }).click();
+  await page.waitForURL(/\/q\/0$/);
+  await page.getByRole("button", { name: "Under 13" }).click();
+
+  await page.waitForURL(/\/stop$/);
+  await expect(page.getByText("Nothing you entered has been saved.")).toBeVisible();
+  const kept = await page.evaluate(() => JSON.stringify(window.localStorage));
+  expect(kept).not.toContain("AGE-U13");
 });

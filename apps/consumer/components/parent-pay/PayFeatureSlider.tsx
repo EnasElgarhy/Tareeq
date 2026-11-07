@@ -61,10 +61,13 @@ export function PayFeatureSlider({ audience = "parent" }: { audience?: "parent" 
             aria-roledescription="slide"
             aria-label={`${i + 1} / ${slides.length}: ${t(say(slide.title))}`}
           >
-            <div className={styles.stage}>{slide.art}</div>
             <div className={styles.slideText}>
               <h2 className={`daybreak-heading ${styles.slideTitle}`}>{t(say(slide.title))}</h2>
               <p>{t(say(slide.body))}</p>
+            </div>
+            <div className={styles.stage}>
+              <span className={styles.exampleLabel}>{t("pay.slide.example")}</span>
+              {slide.art}
             </div>
           </article>
         ))}
@@ -139,6 +142,7 @@ function CuriosityArt() {
 
 type Say = (key: StringKey) => StringKey;
 
+/** Three-part bar, as in the report (spec §6.2): the student's side filled. */
 function WorkAxis({
   label,
   a,
@@ -156,17 +160,13 @@ function WorkAxis({
   return (
     <div className={styles.axis}>
       <span className={styles.axisLabel}>{t(say(label))}</span>
-      <div className={styles.axisTrack} aria-hidden="true">
-        <span className={styles.axisFill} />
-        <span className={styles.axisMid} />
-        <span className={styles.axisKnob} />
-      </div>
-      <div className={styles.axisEnds}>
-        <span className={styles.axisOn}>
+      <div className={styles.axisParts}>
+        <span className={styles.axisPartOn}>
           <span className={styles.axisIcon}>{icon}</span>
           {t(a)}
         </span>
-        <span className={styles.axisOff}>{t(b)}</span>
+        <span className={styles.axisPart}>{t("pay.slide.work.mix")}</span>
+        <span className={styles.axisPart}>{t(b)}</span>
       </div>
     </div>
   );

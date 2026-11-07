@@ -1,5 +1,15 @@
 "use client";
 
+import {
+  ABOUT_YOU_PATH,
+  assessmentCounter,
+  DIVIDER_PATH,
+  END_PATH,
+  firstQuestionOfPart,
+  hasCoreFlow,
+  pathBeforePart,
+  pathBeforeQuestion,
+} from "@/lib/assessment/flow";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
@@ -48,7 +58,11 @@ export function AssessmentChrome({
   const { dir } = useLocale();
   const router = useRouter();
   const questionIndex = getIndexFromPathname(pathname);
-  const hasQuestion = questionIndex !== null;
+  // About you has no counter and no MY CORE bar: it isn't the assessment.
+  const counter =
+    questionIndex === null ? null : assessmentCounter(questionIndex, questions);
+  const hasQuestion =
+    questionIndex !== null && (counter !== null || !hasCoreFlow(questions));
   // Ceremonial screens — Meet Kai and the Contract — get a larger,
   // centered Tareeq mark.
   const isCeremony = pathname === "/intro" || pathname === "/contract";
@@ -93,13 +107,28 @@ export function AssessmentChrome({
       router.push("/home");
       return;
     }
-    if (!hasQuestion) {
+    if (pathname === ABOUT_YOU_PATH) {
+      router.push("/contract");
+      return;
+    }
+    if (pathname === DIVIDER_PATH) {
+      router.push(getQuestionPath(firstQuestionOfPart(1, questions) - 1));
+      return;
+    }
+    if (pathname === END_PATH) {
+      router.push(getQuestionPath(questions.length - 1));
+      return;
+    }
+    const part = /^\/part\/(\d)$/.exec(pathname);
+    if (part) {
+      router.push(pathBeforePart(Number(part[1]), questions));
+      return;
+    }
+    if (questionIndex === null) {
       router.push("/");
       return;
     }
-    router.push(
-      questionIndex > 0 ? getQuestionPath(questionIndex - 1) : "/contract",
-    );
+    router.push(pathBeforeQuestion(questionIndex, questions));
   }
 
   // Always build a snapshot so the animation hook has stable inputs.
@@ -107,8 +136,8 @@ export function AssessmentChrome({
   // simply isn't rendered, but the hook keeps a consistent call site.
   const rawSnapshot = buildCompassSnapshot({
     questions,
-    completedCount: hasQuestion ? questionIndex : 0,
-    activeIndex: hasQuestion ? questionIndex : null,
+    completedCount: questionIndex ?? 0,
+    activeIndex: questionIndex,
   });
   const snapshot = useAnimatedSnapshot(rawSnapshot);
 
@@ -173,8 +202,9 @@ export function AssessmentChrome({
           {hasQuestion ? (
             <QuestionCompassPanel
               snapshot={snapshot}
-              questionIndex={questionIndex}
+              questionIndex={questionIndex ?? 0}
               totalQuestions={totalQuestions}
+              counter={counter}
             />
           ) : (
             <div
@@ -225,12 +255,14 @@ interface QuestionCompassPanelProps {
   snapshot: CompassSnapshot;
   questionIndex: number;
   totalQuestions: number;
+  counter: { current: number; total: number } | null;
 }
 
 function QuestionCompassPanel({
   snapshot,
   questionIndex,
   totalQuestions,
+  counter,
 }: QuestionCompassPanelProps) {
   const { t } = useLocale();
   const activeMeta = snapshot.activePillar
@@ -260,14 +292,17 @@ function QuestionCompassPanel({
                 {t("chrome.compass_label")}
               </p>
               <p className="daybreak-heading truncate text-[14px] leading-tight text-sand">
-                {activeMeta ? activeMeta.name : t("chrome.about_you")}
+                {activeMeta
+                  ? t(`chrome.part.${activeMeta.pillar}`)
+                  : t("chrome.about_you")}
               </p>
             </div>
             <p
               dir="ltr"
               className="shrink-0 rounded-full border border-sand/10 bg-night/25 px-2 py-1 text-[10px] font-semibold tabular-nums text-sand/64"
             >
-              {String(questionIndex + 1).padStart(2, "0")} / {totalQuestions}
+              {String(counter?.current ?? questionIndex + 1).padStart(2, "0")} /{" "}
+              {counter?.total ?? totalQuestions}
             </p>
           </div>
           <span className="mt-1 block h-1 overflow-hidden rounded-full bg-sand/12">

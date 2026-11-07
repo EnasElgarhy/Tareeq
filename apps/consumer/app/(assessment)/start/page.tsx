@@ -9,6 +9,7 @@ export default async function StartPage() {
     <Suspense fallback={null}>
       <AssessmentStart
         totalQuestions={content.questions.length}
+        assessmentQuestions={content.questions.filter((q) => q.pillar !== 0).length}
         versionId={content.versionId}
         versionLabel={content.versionLabel}
       />

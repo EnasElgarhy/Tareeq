@@ -1,5 +1,6 @@
 "use client";
 
+import { ageGroupOf } from "@/lib/core-v2/background";
 import { ArrowRight, Mail, MailCheck, UserRound } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -52,6 +53,7 @@ async function persistAssessment(name: string, locale: string) {
         startedAt: progress.startedAt,
         versionId: progress.versionId,
         versionLabel: progress.versionLabel,
+        optionOrder: progress.optionOrder,
       }),
     });
     if (!response.ok) return;
@@ -109,14 +111,7 @@ export function RegistrationScreen() {
       return;
     }
 
-    const nextAgeGate =
-      progress.answers.QD1 === "A" || progress.answers.QD1 === "B"
-        ? "minor"
-        : progress.answers.QD1 === "C" ||
-            progress.answers.QD1 === "D" ||
-            progress.answers.QD1 === "E"
-          ? "adult"
-          : "unknown";
+    const nextAgeGate = ageGroupOf(progress.answers.QD1);
 
     setAgeGate(nextAgeGate);
     if (nextAgeGate === "minor") {

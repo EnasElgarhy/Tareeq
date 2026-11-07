@@ -828,11 +828,16 @@ button {
     transform var(--duration-fast) var(--ease-standard);
 }
 
-.assessment-answer:hover:not(:disabled) {
-  border-color: var(--answer-accent);
-  background: var(--assessment-panel-hover);
-  box-shadow: var(--assessment-shadow);
-  transform: translateY(-1px);
+/* Hover only for a real mouse that has moved since this question opened: a
+   tap leaves no hover behind, and an idle cursor can't pre-highlight an option
+   (corrections of 6 Nov 2026, section 8.3). */
+@media (hover: hover) and (pointer: fine) {
+  [data-hover-armed="true"] .assessment-answer:hover:not(:disabled):not([data-active="true"]) {
+    border-color: var(--answer-accent);
+    background: var(--assessment-panel-hover);
+    box-shadow: var(--assessment-shadow);
+    transform: translateY(-1px);
+  }
 }
 
 .assessment-answer[data-active="true"] {

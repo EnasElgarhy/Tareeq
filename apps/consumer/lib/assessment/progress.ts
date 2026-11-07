@@ -1,6 +1,7 @@
 import type { CoreResult } from "@/lib/core-v2/types";
 import type { CompassResult } from "@/lib/scoring";
 import type { AssessmentVersionRef } from "@/lib/assessment/content";
+import { CITIZEN_QUESTION_ID } from "@/lib/core-v2/background";
 
 export const assessmentStorageKey = "tareeq.assessment.v4";
 
@@ -16,6 +17,8 @@ export type LocalAssessmentProgress = {
   result?: CompassResult;
   /** CORE 2.0 attempts (question set 5.1) store this instead of `result`. */
   coreResult?: CoreResult;
+  /** Option IDs per question, in the order they were shown (spec §3.1). */
+  optionOrder?: Record<string, string[]>;
 };
 
 type CreateLocalAssessmentOptions = {
@@ -105,8 +108,9 @@ export function answeredQuestionCount(
   progress: LocalAssessmentProgress | null,
 ) {
   if (!progress) return 0;
+  // Citizenship shares the country screen, so it is not a question of its own.
   return Object.keys(progress.answers).filter(
-    (key) => progress.answers[key] !== "",
+    (key) => progress.answers[key] !== "" && key !== CITIZEN_QUESTION_ID,
   ).length;
 }
 
@@ -180,6 +184,16 @@ export function saveLocalAnswer(
   );
 
   return writeLocalAssessment(next);
+}
+
+/** Records the order a question's options were shown in, once per question. */
+export function saveOptionOrder(questionExternalId: string, order: string[]) {
+  const progress = readLocalAssessment();
+  if (!progress || progress.optionOrder?.[questionExternalId]) return;
+  writeLocalAssessment({
+    ...progress,
+    optionOrder: { ...progress.optionOrder, [questionExternalId]: order },
+  });
 }
 
 export function completeLocalAssessment(

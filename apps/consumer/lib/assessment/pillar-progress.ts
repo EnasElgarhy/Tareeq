@@ -30,7 +30,7 @@ export const PILLAR_META: Record<CompassPillar, PillarMeta> = {
   2: {
     pillar: 2,
     letter: "O",
-    name: "Operations",
+    name: "Operating style",
     blurb: "How you actually work",
   },
   3: {
@@ -42,7 +42,7 @@ export const PILLAR_META: Record<CompassPillar, PillarMeta> = {
   4: {
     pillar: 4,
     letter: "E",
-    name: "Ecosystems",
+    name: "Ecosystem",
     blurb: "Where you thrive",
   },
 };

@@ -34,6 +34,12 @@ export const QD1_LETTER_TO_AGE_BAND: Record<string, AgeBand> = {
   C: "18-19",
   D: "20-21",
   E: "22+",
+  // Option IDs, from 6 Nov 2026 on.
+  "AGE-13-15": "under-16",
+  "AGE-16-17": "16-17",
+  "AGE-18-19": "18-19",
+  "AGE-20-21": "20-21",
+  "AGE-22P": "22+",
 };
 
 /**
@@ -48,11 +54,22 @@ export const DEMO_FALLBACK_LABELS: Record<"QD3" | "QD4", Record<string, string>>
     C: "Year 1 or 2 of university",
     D: "Year 3+ of university",
     E: "Not currently in formal education",
+    // QD3 v2 (6 Nov 2026) stores option IDs, so old and new answers stay apart.
+    "QD3-A": "Grade 7 or 8 (Year 8 or 9)",
+    "QD3-B": "Grade 9 or 10 (Year 10 or 11)",
+    "QD3-C": "Grade 11 or 12 (Year 12 or 13)",
+    "QD3-D": "Gap year, or between school and university",
+    "QD3-E": "College, diploma or vocational programme",
+    "QD3-F": "University, year 1 or 2",
+    "QD3-G": "University, year 3 or above",
+    "QD3-H": "Not currently studying",
   },
   QD4: {
     A: "Female",
     B: "Male",
     C: "Prefer not to say",
+    "QD4-F": "Female",
+    "QD4-M": "Male",
   },
 };
 
