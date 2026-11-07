@@ -61,4 +61,55 @@ describe("admin invite callback", () => {
       "/admin/accept-invite?error=invalid_or_expired",
     );
   });
+
+  it("sends an email-link or Google sign-in to the admin, not the invite page", async () => {
+    mocks.exchangeCodeForSession.mockResolvedValue({ error: null });
+
+    const response = await GET(
+      new Request("https://0.0.0.0:3000/admin/auth/callback?flow=login&code=link-code"),
+    );
+
+    expect(mocks.exchangeCodeForSession).toHaveBeenCalledWith("link-code");
+    expect(response.headers.get("location")).toBe("/admin/content");
+  });
+
+  it("lands a forgotten-password sign-in on the new password page", async () => {
+    mocks.exchangeCodeForSession.mockResolvedValue({ error: null });
+
+    const response = await GET(
+      new Request("https://0.0.0.0:3000/admin/auth/callback?flow=login&next=password&code=c"),
+    );
+
+    expect(response.headers.get("location")).toBe("/admin/password");
+  });
+
+  it("ignores any other destination after sign-in", async () => {
+    mocks.exchangeCodeForSession.mockResolvedValue({ error: null });
+
+    const response = await GET(
+      new Request(
+        "https://0.0.0.0:3000/admin/auth/callback?flow=login&next=https%3A%2F%2Fevil.example&code=c",
+      ),
+    );
+
+    expect(response.headers.get("location")).toBe("/admin/content");
+  });
+
+  it("returns a failed or expired sign-in to the login page", async () => {
+    mocks.exchangeCodeForSession.mockResolvedValue({ error: new Error("denied") });
+
+    const failed = await GET(
+      new Request("https://0.0.0.0:3000/admin/auth/callback?flow=login&code=bad"),
+    );
+    const cancelled = await GET(
+      new Request("https://0.0.0.0:3000/admin/auth/callback?flow=login&error=access_denied"),
+    );
+    const noCode = await GET(
+      new Request("https://0.0.0.0:3000/admin/auth/callback?flow=login"),
+    );
+
+    for (const response of [failed, cancelled, noCode]) {
+      expect(response.headers.get("location")).toBe("/admin/login?error=signin");
+    }
+  });
 });

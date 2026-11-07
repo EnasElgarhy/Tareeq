@@ -202,6 +202,16 @@ export function AdminSidebar({
             {email ?? "Signed in"}
           </p>
         </div>
+        <Link
+          href="/admin/password"
+          aria-label="Change password"
+          title="Change password"
+          className="rounded-adm-sm p-1.5 text-adm-lilac transition-colors duration-adm-fast hover:bg-white/[0.08] hover:text-white"
+        >
+          <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
+            <path d="M15.5 7.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM12.5 10.5V20m0-4h3m-3 2.5h2" {...stroke} />
+          </svg>
+        </Link>
         <button
           type="button"
           onClick={signOut}

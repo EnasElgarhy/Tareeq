@@ -146,6 +146,11 @@
   color: var(--adm-ink);
 }
 
+/* On the night backdrop (login, invite) display type is paper, not ink. */
+.adm .adm-on-dark .adm-display {
+  color: rgb(var(--adm-paper-rgb));
+}
+
 /* ---- Scrollbars (admin only, warm) ----------------------------------- */
 .adm ::-webkit-scrollbar {
   width: 10px;

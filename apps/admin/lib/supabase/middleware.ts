@@ -55,8 +55,10 @@ export async function updateSession(request: NextRequest) {
   }
 
   // Authenticated user on the login page → dashboard. (Not for the invite
-  // flow: an authenticated invitee still needs the accept page.)
-  if (user && pathname === LOGIN_PATH) {
+  // flow: an authenticated invitee still needs the accept page. And not with
+  // an `error`: a signed-in non-admin sent back here by requireAdmin would
+  // otherwise bounce between the two pages forever.)
+  if (user && pathname === LOGIN_PATH && !request.nextUrl.searchParams.has("error")) {
     return NextResponse.redirect(new URL("/admin/content", request.url));
   }
 
