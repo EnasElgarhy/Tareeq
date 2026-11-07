@@ -119,7 +119,7 @@ function CoreAnswers({ decoded }: { decoded: DecodedCoreAnswer[] }) {
     })),
     {
       key: "other",
-      title: "Other answers",
+      title: "About you",
       rows: decoded.filter((d) => d.pillar === null),
     },
   ].filter((g) => g.rows.length > 0);
@@ -193,6 +193,18 @@ export default async function RunDetailPage({
         description={`${answeredCount} of ${questionCount} questions answered · ${versionLabel}`}
         actions={
           <>
+            {isCore && run.completedAt && (
+              <a
+                href={`/admin/report-view/${assessmentId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-9 items-center gap-1.5 rounded-adm-md bg-adm-violet px-4 text-[13px] font-semibold text-white transition-colors hover:bg-adm-violet/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-adm-violet"
+              >
+                View report
+                <span aria-hidden="true">↗</span>
+                <span className="sr-only">(opens the student&apos;s report in a new tab)</span>
+              </a>
+            )}
             <GenerationBadge generation={detail.generation} />
             <StatusBadge status={run.completedAt ? "published" : "draft"} />
           </>

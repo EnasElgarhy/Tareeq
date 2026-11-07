@@ -29,6 +29,14 @@ const nextConfig: NextConfig = {
         ],
       })),
       {
+        // Signed admin links to a student's report: never stored or indexed.
+        source: "/report-view/:path*",
+        headers: [
+          { key: "Cache-Control", value: "private, no-store" },
+          { key: "X-Robots-Tag", value: "noindex, nofollow" },
+        ],
+      },
+      {
         source: "/audio/:path*",
         headers: [
           {

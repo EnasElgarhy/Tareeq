@@ -3,6 +3,7 @@ import {
   CORE_DISPLAY_NAME,
   type AssessmentGeneration,
 } from "@/lib/admin/assessment-generation";
+import { labelBackgroundAnswers } from "@/lib/admin/core/background-answers";
 import { loadVersionGenerations } from "@/lib/admin/assessment-generation.server";
 import { getAssessmentForVersion } from "@/lib/admin/catalog";
 import {
@@ -302,10 +303,12 @@ export async function getRunDetail(
       generation,
       run,
       versionLabel,
-      decodedCore: decodeCoreAnswers(
-        CORE_QUESTION_SET,
-        raw.answers as Record<string, unknown> | null,
-        run.locale,
+      decodedCore: labelBackgroundAnswers(
+        decodeCoreAnswers(
+          CORE_QUESTION_SET,
+          raw.answers as Record<string, unknown> | null,
+          run.locale,
+        ),
       ),
     };
   }
