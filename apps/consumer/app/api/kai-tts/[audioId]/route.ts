@@ -1,4 +1,6 @@
 import { getKaiNarrationText } from "@/lib/audio/kai-narration";
+import { createClipCache } from "@/lib/audio/clip-cache";
+import { createRateLimiter } from "@/lib/rate-limit";
 import { getLocalizedText } from "@/lib/assessment/questions";
 import { loadPublishedAssessmentContent } from "@/lib/assessment/content.server";
 import {
@@ -81,6 +83,26 @@ async function fetchPersistedAudio(
   }
 }
 
+// A public fallback (the static files come first) that students hit before
+// signing up, so it is made cheap to abuse rather than locked: generated
+// clips are remembered, and new generations are limited per visitor
+// (security review, 12 Nov 2026).
+const clipCache = createClipCache(300);
+const generationLimiter = createRateLimiter({ limit: 20, windowMs: 10 * 60_000 });
+
+function clientIp(request: Request): string {
+  return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+}
+
+function audioResponse(body: ArrayBuffer | ReadableStream<Uint8Array> | null): Response {
+  return new Response(body, {
+    headers: {
+      "Content-Type": "audio/mpeg",
+      "Cache-Control": "public, max-age=86400",
+    },
+  });
+}
+
 type RouteContext = {
   params: Promise<{ audioId: string }>;
 };
@@ -114,6 +136,13 @@ export async function GET(request: Request, context: RouteContext) {
     ? await fetchPersistedAudio(decodedAudioId, locale, versionId)
     : null;
   if (persisted) return persisted;
+
+  const cacheKey = `${decodedAudioId}:${shortAudioLocale(locale)}:${versionId ?? ""}`;
+  const cached = clipCache.get(cacheKey);
+  if (cached) return audioResponse(cached);
+  if (generationLimiter.isLimited(clientIp(request))) {
+    return Response.json({ error: "Too many requests." }, { status: 429 });
+  }
 
   const apiKey = process.env.ELEVENLABS_API_KEY || process.env.ELEVEN_API_KEY;
   if (!apiKey) {
@@ -155,19 +184,16 @@ export async function GET(request: Request, context: RouteContext) {
   );
 
   if (!response.ok) {
-    return new Response(await response.text(), {
+    // The provider's error body can name the account or quota: log it, never return it.
+    console.error("[kai-tts] ElevenLabs request failed", {
       status: response.status,
-      headers: {
-        "Content-Type":
-          response.headers.get("Content-Type") || "application/json",
-      },
+      audioId: decodedAudioId,
+      body: (await response.text()).slice(0, 300),
     });
+    return Response.json({ error: "Narration is unavailable." }, { status: 502 });
   }
 
-  return new Response(response.body, {
-    headers: {
-      "Content-Type": "audio/mpeg",
-      "Cache-Control": "private, max-age=86400",
-    },
-  });
+  const clip = await response.arrayBuffer();
+  clipCache.set(cacheKey, clip);
+  return audioResponse(clip);
 }

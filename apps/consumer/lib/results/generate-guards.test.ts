@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import {
   MAX_ANSWER_LENGTH,
   MAX_ANSWERS,
-  createRateLimiter,
   isBoundedAnswerRecord,
   sanitizeName,
 } from "./generate-guards";
@@ -38,16 +37,5 @@ describe("sanitizeName", () => {
   it("gives nothing for a missing or empty name", () => {
     expect(sanitizeName(undefined)).toBeUndefined();
     expect(sanitizeName("   ")).toBeUndefined();
-  });
-});
-
-describe("createRateLimiter", () => {
-  it("allows the limit per window, then refuses until the window ends", () => {
-    const limiter = createRateLimiter({ limit: 2, windowMs: 1000 });
-    expect(limiter.isLimited("u1", 0)).toBe(false);
-    expect(limiter.isLimited("u1", 10)).toBe(false);
-    expect(limiter.isLimited("u1", 20)).toBe(true);
-    expect(limiter.isLimited("u2", 20)).toBe(false);
-    expect(limiter.isLimited("u1", 1001)).toBe(false);
   });
 });

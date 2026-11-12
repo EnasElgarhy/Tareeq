@@ -10,11 +10,8 @@ import {
 } from "@/lib/results/framework";
 import type { PersonalizedCompassReport } from "@/lib/results/types";
 import { isLocale, type Locale } from "@/lib/i18n/locale";
-import {
-  createRateLimiter,
-  isBoundedAnswerRecord,
-  sanitizeName,
-} from "@/lib/results/generate-guards";
+import { createRateLimiter } from "@/lib/rate-limit";
+import { isBoundedAnswerRecord, sanitizeName } from "@/lib/results/generate-guards";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";

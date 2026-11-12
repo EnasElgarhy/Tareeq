@@ -1,4 +1,5 @@
 import { getKaiNarrationText } from "@/lib/audio/kai-narration";
+import { requireAdmin } from "@/lib/auth/require-admin";
 
 export const runtime = "nodejs";
 
@@ -12,6 +13,9 @@ type RouteContext = {
 };
 
 export async function GET(request: Request, context: RouteContext) {
+  // Spends ElevenLabs credits and /api sits outside the admin middleware:
+  // admins only (security review, 12 Nov 2026). Used by admin previews.
+  await requireAdmin();
   const { audioId } = await context.params;
   const url = new URL(request.url);
   const locale = url.searchParams.get("locale") || "en";
