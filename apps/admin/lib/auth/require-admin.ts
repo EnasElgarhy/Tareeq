@@ -3,9 +3,9 @@ import {
   type AdminPermission,
   type AdminRole,
   hasPermission,
-  isAdminRole,
   permissionsForRole,
 } from "@/lib/admin/team/permissions";
+import { adminRoleFromMembership } from "@/lib/admin/team/membership";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -19,36 +19,16 @@ export interface AdminIdentity {
 
 /**
  * Resolve the current user's admin role, or null if they're not an admin.
- *
- * Source of truth is `admin_members` (role + status). Backward-compatible:
- * - If `admin_members` doesn't exist yet (migration 202607150002 not applied)
- *   or the user has no member row, fall back to the legacy binary gate
- *   (`profiles.role = 'admin'`) and treat such a user as an **owner** — so no
- *   existing admin loses access before/after the migration lands.
- * - A `suspended` member has no access.
+ * The `admin_members` row is the only source of truth; a `suspended` member
+ * has no access. There is no `profiles.role` fallback (see membership.ts).
  */
 async function resolveAdminRole(userId: string): Promise<AdminRole | null | "suspended"> {
-  const admin = createSupabaseAdminClient();
-
-  // admin_members may not exist yet — ignore the error and fall through.
-  const { data: member } = await admin
+  const { data: member } = await createSupabaseAdminClient()
     .from("admin_members")
     .select("role,status")
     .eq("user_id", userId)
     .maybeSingle();
-
-  if (member && isAdminRole(member.role)) {
-    if (member.status === "suspended") return "suspended";
-    return member.role;
-  }
-
-  // Legacy fallback: a binary admin with no member row is a full owner.
-  const { data: profile } = await admin
-    .from("profiles")
-    .select("role")
-    .eq("id", userId)
-    .single();
-  return profile?.role === "admin" ? "owner" : null;
+  return adminRoleFromMembership(member);
 }
 
 /**
