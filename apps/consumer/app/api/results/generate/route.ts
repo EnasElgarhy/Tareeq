@@ -10,12 +10,22 @@ import {
 } from "@/lib/results/framework";
 import type { PersonalizedCompassReport } from "@/lib/results/types";
 import { isLocale, type Locale } from "@/lib/i18n/locale";
+import {
+  createRateLimiter,
+  isBoundedAnswerRecord,
+  sanitizeName,
+} from "@/lib/results/generate-guards";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 
 const GEMINI_ENDPOINT_BASE =
   "https://generativelanguage.googleapis.com/v1beta/models";
 const DEFAULT_MODEL = "gemini-2.5-flash";
+
+// Each call spends AI credits: a signed-in student gets a few per window
+// (security review, 12 Nov 2026). A report is generated once per attempt.
+const generateLimiter = createRateLimiter({ limit: 5, windowMs: 10 * 60_000 });
 
 type GenerateResultBody = {
   name?: string;
@@ -25,14 +35,6 @@ type GenerateResultBody = {
   versionId?: string | null;
   versionLabel?: string;
 };
-
-function isAnswerRecord(value: unknown): value is Record<string, string> {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    Object.values(value).every((entry) => typeof entry === "string")
-  );
-}
 
 function extractJsonObject(text: string) {
   try {
@@ -58,6 +60,17 @@ function normalizeString(value: unknown, fallback: string) {
 }
 
 export async function POST(request: Request) {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return Response.json({ error: "Not authenticated." }, { status: 401 });
+  }
+  if (generateLimiter.isLimited(user.id)) {
+    return Response.json({ error: "Too many requests." }, { status: 429 });
+  }
+
   let body: GenerateResultBody;
 
   try {
@@ -66,9 +79,9 @@ export async function POST(request: Request) {
     return Response.json({ error: "Invalid JSON body." }, { status: 400 });
   }
 
-  if (!isAnswerRecord(body.answers)) {
+  if (!isBoundedAnswerRecord(body.answers)) {
     return Response.json(
-      { error: "answers must be a string record." },
+      { error: "answers must be a bounded string record." },
       { status: 400 },
     );
   }
@@ -85,11 +98,12 @@ export async function POST(request: Request) {
       { status: 409 },
     );
   }
+  const name = sanitizeName(body.name);
   const questions = content.questions;
   const result = computeScore(body.answers, questions);
   const fallback = buildFallbackReport({
     result,
-    name: body.name,
+    name,
     fallbackReason: "Gemini generation was not available.",
     locale,
   });
@@ -121,7 +135,7 @@ export async function POST(request: Request) {
 
   const promptPayload = {
     learner: {
-      name: body.name || "the learner",
+      name: name || "the learner",
       // Do not send email to Gemini. The app collects it for account/contact
       // continuity; generation only needs the learner's first-person context.
     },

@@ -1,4 +1,5 @@
 import { hasCoreAnswers } from "@/lib/admin/core/framework";
+import { requireAdmin } from "@/lib/auth/require-admin";
 import { assessmentQuestions } from "@/lib/assessment/questions";
 import { buildBaseReport } from "@/lib/results/framework";
 import {
@@ -71,6 +72,9 @@ function isLlmRateLimited(ip: string): boolean {
 }
 
 export async function POST(request: Request) {
+  // Spends AI credits, and /api sits outside the admin middleware: admins
+  // only (security review, 12 Nov 2026).
+  await requireAdmin();
   let body: GenerateResultBody;
 
   try {
