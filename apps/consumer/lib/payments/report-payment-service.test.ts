@@ -256,7 +256,9 @@ describe("stripeReportPaymentService.restorePurchase", () => {
     expect(readReportAccess(reportId).isPaid).toBe(false);
   });
 
-  it("keeps the cache when the server does not answer", async () => {
+  it("stays locked when the server does not answer, whatever the cache says", async () => {
+    // A blocked or failed check must not open a paid report (security review,
+    // 12 Nov 2026): only the server's "active" unlocks it.
     unlockStoredReport(reportId, "payment-1");
     mockFetch(new TypeError("Failed to fetch"));
 
@@ -265,8 +267,33 @@ describe("stripeReportPaymentService.restorePurchase", () => {
       assessmentId,
     });
 
-    expect(restored.isPaid).toBe(true);
-    expect(readReportAccess(reportId).isPaid).toBe(true);
+    expect(restored.isPaid).toBe(false);
+    expect(restored.status).toBe("preview");
+  });
+
+  it("stays locked when the server refuses to answer", async () => {
+    unlockStoredReport(reportId, "payment-1");
+    mockFetch(jsonResponse(401, { error: "not_authenticated" }));
+
+    const restored = await stripeReportPaymentService.restorePurchase({
+      reportId,
+      assessmentId,
+    });
+
+    expect(restored.isPaid).toBe(false);
+  });
+
+  it("stays locked without an assessment id, even with a paid cache", async () => {
+    unlockStoredReport(reportId, "payment-1");
+    const fetchMock = mockFetch();
+
+    const restored = await stripeReportPaymentService.restorePurchase({
+      reportId,
+      assessmentId: null,
+    });
+
+    expect(restored.isPaid).toBe(false);
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it("does not call the server without an assessment id", async () => {

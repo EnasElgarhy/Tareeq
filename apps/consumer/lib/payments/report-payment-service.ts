@@ -193,6 +193,11 @@ function cacheUnlocked(
  * `localStorage` is a render cache: it makes a reload instant, and it is
  * overwritten the moment the server disagrees with it.
  */
+/** The cached value when it claims nothing paid, otherwise the locked preview. */
+function lockedView(reportId: string, cached: ReportAccess): ReportAccess {
+  return cached.isPaid || cached.status === "unlocked" ? createPreviewAccess(reportId) : cached;
+}
+
 export const stripeReportPaymentService: ReportPaymentService = {
   async createCheckoutSession(input) {
     let response: Response;
@@ -275,9 +280,10 @@ export const stripeReportPaymentService: ReportPaymentService = {
   async restorePurchase(input) {
     const cached = readReportAccess(input.reportId);
 
-    // Nothing to ask yet. The cached value renders, and the next call — once
-    // the assessment id resolves — reconciles it against the server.
-    if (!input.assessmentId) return cached;
+    // Only the server's "active" opens a paid report; a "paid" value in
+    // this browser's storage never does on its own (security review,
+    // 12 Nov 2026). Nothing to ask yet: locked until the id resolves.
+    if (!input.assessmentId) return lockedView(input.reportId, cached);
 
     const lookup = await fetchEntitlement(input.assessmentId);
 
@@ -300,11 +306,9 @@ export const stripeReportPaymentService: ReportPaymentService = {
       return cached;
     }
 
-    // `denied` / `unavailable`: the server did not answer the question, so
-    // there is nothing to reconcile against. Keeping the cache means a paid
-    // user who is briefly offline still sees the report they bought; it is
-    // corrected on the first request that does get through.
-    return cached;
+    // `denied` / `unavailable`: the server did not confirm, so the report
+    // stays locked. The cache is left alone: the next answer settles it.
+    return lockedView(input.reportId, cached);
   },
 };
 
