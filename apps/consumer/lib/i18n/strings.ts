@@ -2044,6 +2044,31 @@ export const STRINGS = {
     ar: "مساراتك المهنية وبيئات العمل المناسبة لك وخطواتك التالية جاهزة.",
   },
   "paywall.success.dismiss_aria": { en: "Dismiss", ar: "إغلاق" },
+  "paywall.success.core": {
+    en: "Start with At a glance, then use Next to move through each section.",
+    ar: "ابدأ بـ«نظرة سريعة»، ثم استخدم «التالي» للانتقال بين الأقسام.",
+  },
+  // ---- Payment confirmed (inside the checkout window) ----
+  "paywall.done.label": { en: "Payment confirmed", ar: "تم تأكيد الدفع" },
+  "paywall.done.title": {
+    en: "Your full CORE report is unlocked",
+    ar: "تقرير كور الكامل أصبح مفتوحًا لك",
+  },
+  "paywall.done.body": {
+    en: "Everything is open now: your curiosities, how you like to work, where it could lead and your next steps.",
+    ar: "كل شيء مفتوح الآن: فضولك، وطريقتك المفضّلة في العمل، وإلى أين قد يقودك ذلك، وخطواتك التالية.",
+  },
+  "paywall.done.offer": { en: "Offer", ar: "الخصم" },
+  "paywall.done.paid": { en: "Paid today", ar: "المدفوع اليوم" },
+  "paywall.done.receipt": {
+    en: "Your receipt is on its way to {email}",
+    ar: "إيصالك في الطريق إلى {email}",
+  },
+  "paywall.done.open": { en: "Open my full report", ar: "افتح تقريري الكامل" },
+  "paywall.done.help": {
+    en: "Questions about your payment?",
+    ar: "أسئلة عن الدفع؟",
+  },
   // ---- Payments & Invoices ----
   "payments.title": { en: "Payments & invoices", ar: "المدفوعات والفواتير" },
   "payments.subtitle": {
@@ -3360,6 +3385,15 @@ export const STRINGS = {
   "pay.paid.pending": {
     en: "Your payment went through. The report unlocks within a minute, and your receipt is on its way.",
     ar: "تمت عملية الدفع. سيُفتح التقرير خلال دقيقة، والإيصال في الطريق إليك.",
+  },
+  "pay.paid.share": { en: "Tell your child it's unlocked", ar: "أخبر طفلك أن التقرير مفتوح" },
+  "pay.paid.share_note": {
+    en: "Sends a WhatsApp message with the link to their report.",
+    ar: "يرسل رسالة واتساب فيها رابط تقريره.",
+  },
+  "pay.paid.share_message": {
+    en: "I've unlocked your CORE report. Open it here: {link}",
+    ar: "فتحت لك تقرير كور. افتحه من هنا: {link}",
   },
   "pay.paid.tip_title": { en: "A good way to start", ar: "بداية جيدة" },
   "pay.paid.tip": {

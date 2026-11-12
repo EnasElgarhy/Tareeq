@@ -44,3 +44,16 @@ export function formatOfferListPrice(
 export function hasOfferDiscount(offer: ReportOffer): boolean {
   return offer.discountPercent > 0 && offer.listAmountMinor > offer.amountMinor;
 }
+
+/** What the offer took off, e.g. "AED 90"; `null` without an offer. */
+export function formatOfferSaving(
+  offer: ReportOffer,
+  locale: string,
+): string | null {
+  if (!hasOfferDiscount(offer)) return null;
+  return formatMinorAmount(
+    offer.listAmountMinor - offer.amountMinor,
+    offer.currency,
+    locale,
+  );
+}

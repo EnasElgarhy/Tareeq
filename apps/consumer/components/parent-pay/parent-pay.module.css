@@ -163,7 +163,9 @@
   height: 6px;
   border-radius: 3px;
   background: rgb(255 255 255 / 0.3);
-  transition: width 240ms var(--pay-ease), background 240ms;
+  transition:
+    width 240ms var(--pay-ease),
+    background 240ms;
 }
 .dot[data-active="true"] > span {
   width: 18px;
@@ -173,9 +175,15 @@
 /* Floating UI pieces */
 .glass {
   position: absolute;
-  background: linear-gradient(180deg, rgb(58 48 92 / 0.62), rgb(30 24 52 / 0.72));
+  background: linear-gradient(
+    180deg,
+    rgb(58 48 92 / 0.62),
+    rgb(30 24 52 / 0.72)
+  );
   border: 1px solid rgb(255 255 255 / 0.16);
-  box-shadow: 0 26px 50px -22px rgb(0 0 0 / 0.9), inset 0 1px 0 rgb(255 255 255 / 0.12);
+  box-shadow:
+    0 26px 50px -22px rgb(0 0 0 / 0.9),
+    inset 0 1px 0 rgb(255 255 255 / 0.12);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 }
@@ -186,7 +194,11 @@
   gap: 8px;
   padding: 8px 12px;
   border-radius: 16px;
-  background: linear-gradient(180deg, rgb(64 54 98 / 0.82), rgb(36 29 62 / 0.88));
+  background: linear-gradient(
+    180deg,
+    rgb(64 54 98 / 0.82),
+    rgb(36 29 62 / 0.88)
+  );
   border: 1px solid rgb(255 255 255 / 0.18);
   box-shadow: 0 16px 30px -16px rgb(0 0 0 / 0.9);
   backdrop-filter: blur(14px);
@@ -243,7 +255,11 @@
 .vignette {
   position: absolute;
   inset: 0;
-  background: radial-gradient(closest-side at 50% 52%, rgb(9 8 26 / 0) 60%, var(--pay-night) 100%);
+  background: radial-gradient(
+    closest-side at 50% 52%,
+    rgb(9 8 26 / 0) 60%,
+    var(--pay-night) 100%
+  );
 }
 .glow {
   position: absolute;
@@ -251,7 +267,11 @@
   top: 30px;
   height: 260px;
   border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(157 139 224 / 0.3), rgb(9 8 26 / 0));
+  background: radial-gradient(
+    closest-side,
+    rgb(157 139 224 / 0.3),
+    rgb(9 8 26 / 0)
+  );
 }
 .curiosityCard {
   inset-inline: 40px;
@@ -500,14 +520,23 @@
   top: 40px;
   height: 300px;
   border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(244 198 96 / 0.2), rgb(9 8 26 / 0));
+  background: radial-gradient(
+    closest-side,
+    rgb(244 198 96 / 0.2),
+    rgb(9 8 26 / 0)
+  );
   pointer-events: none;
 }
 .ticketBorder {
   position: relative;
   padding: 1px;
   border-radius: 28px;
-  background: linear-gradient(160deg, rgb(244 198 96 / 0.85), rgb(157 139 224 / 0.35) 45%, rgb(255 255 255 / 0.1));
+  background: linear-gradient(
+    160deg,
+    rgb(244 198 96 / 0.85),
+    rgb(157 139 224 / 0.35) 45%,
+    rgb(255 255 255 / 0.1)
+  );
 }
 .ticket {
   overflow: hidden;
@@ -619,8 +648,14 @@
   right: -11px;
 }
 .perforation {
-  background: linear-gradient(90deg, transparent 18px, transparent calc(100% - 18px)),
-    repeating-linear-gradient(90deg, rgb(255 255 255 / 0.14) 0 6px, transparent 6px 12px) 18px 10px / calc(100% - 36px) 2px no-repeat;
+  background:
+    linear-gradient(90deg, transparent 18px, transparent calc(100% - 18px)),
+    repeating-linear-gradient(
+        90deg,
+        rgb(255 255 255 / 0.14) 0 6px,
+        transparent 6px 12px
+      )
+      18px 10px / calc(100% - 36px) 2px no-repeat;
 }
 .ticketBottom {
   display: flex;
@@ -640,7 +675,9 @@
   font-size: 13.5px;
   line-height: 1.5;
   cursor: pointer;
-  transition: background 200ms, border-color 200ms;
+  transition:
+    background 200ms,
+    border-color 200ms;
 }
 .consent[data-checked="true"] {
   background: rgb(244 198 96 / 0.12);
@@ -692,12 +729,16 @@
   color: rgb(245 238 230 / 0.55);
   font-size: 16px;
   font-weight: 800;
-  transition: box-shadow 300ms, transform 150ms;
+  transition:
+    box-shadow 300ms,
+    transform 150ms;
 }
 .payButton[data-ready="true"] {
   background: linear-gradient(180deg, #f8d47e, var(--pay-gold-deep));
   color: #14101f;
-  box-shadow: inset 0 0 0 1px rgb(255 236 190 / 0.6), 0 16px 36px -10px rgb(240 185 74 / 0.75);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 236 190 / 0.6),
+    0 16px 36px -10px rgb(240 185 74 / 0.75);
 }
 .payButton[data-ready="true"]:active {
   transform: scale(0.98);
@@ -790,6 +831,86 @@
   line-height: 1.15;
   color: var(--pay-ink);
 }
+.paidLabel {
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--pay-gold);
+}
+.receipt {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  max-width: 420px;
+  margin-top: 8px;
+  padding: 16px 18px;
+  border-radius: 20px;
+  background: rgb(255 255 255 / 0.05);
+  border: 1px solid rgb(255 255 255 / 0.1);
+  text-align: start;
+  font-size: 14px;
+}
+.receipt > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+.receipt dt {
+  color: var(--pay-ink-2);
+}
+.receipt dd {
+  color: var(--pay-ink-2);
+}
+.receiptSaving {
+  font-weight: 700;
+  color: var(--pay-gold) !important;
+}
+.receiptTotal {
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px dashed rgb(255 255 255 / 0.16);
+}
+.receiptTotal dt,
+.receiptTotal dd {
+  font-weight: 700;
+  color: var(--pay-ink) !important;
+}
+.receiptTotal dd {
+  font-size: 18px;
+}
+.shareButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 420px;
+  min-height: 52px;
+  margin-top: 8px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f8d47e, var(--pay-gold-deep));
+  color: #2a1c05;
+  font-size: 15px;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 14px 30px -14px rgb(240 185 74 / 0.75);
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+.shareButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 36px -14px rgb(240 185 74 / 0.85);
+}
+.shareButton:focus-visible {
+  outline: 2px solid var(--pay-gold);
+  outline-offset: 3px;
+}
+.shareNote {
+  font-size: 12.5px;
+  color: var(--pay-ink-2);
+  opacity: 0.8;
+}
 .tip {
   margin-top: 12px;
   padding: 16px;
@@ -797,6 +918,22 @@
   background: rgb(255 255 255 / 0.05);
   border: 1px solid rgb(255 255 255 / 0.1);
   text-align: start;
+}
+.tipWithIcon {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.tipIcon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: rgb(244 198 96 / 0.12);
+  border: 1px solid rgb(244 198 96 / 0.22);
+  color: var(--pay-gold);
 }
 .tip strong {
   color: var(--pay-gold);
@@ -885,11 +1022,23 @@
   }
   .stage :is(.artWide, .artStart, .artEnd) {
     mask-image:
-      linear-gradient(90deg, transparent 0%, #000 14%, #000 86%, transparent 100%),
+      linear-gradient(
+        90deg,
+        transparent 0%,
+        #000 14%,
+        #000 86%,
+        transparent 100%
+      ),
       linear-gradient(180deg, #000 0%, #000 70%, transparent 100%);
     mask-composite: intersect;
     -webkit-mask-image:
-      linear-gradient(90deg, transparent 0%, #000 14%, #000 86%, transparent 100%),
+      linear-gradient(
+        90deg,
+        transparent 0%,
+        #000 14%,
+        #000 86%,
+        transparent 100%
+      ),
       linear-gradient(180deg, #000 0%, #000 70%, transparent 100%);
     -webkit-mask-composite: source-in;
   }
@@ -929,7 +1078,12 @@
   }
   .ticketBorder {
     border-radius: 24px;
-    background: linear-gradient(160deg, rgb(244 198 96 / 0.55), rgb(157 139 224 / 0.25) 40%, rgb(255 255 255 / 0.08));
+    background: linear-gradient(
+      160deg,
+      rgb(244 198 96 / 0.55),
+      rgb(157 139 224 / 0.25) 40%,
+      rgb(255 255 255 / 0.08)
+    );
   }
   .ticket {
     border-radius: 23px;

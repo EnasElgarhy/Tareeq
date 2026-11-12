@@ -1391,6 +1391,38 @@ button {
     animation: none;
   }
 }
+/* Payment confirmed: the gold ring settles, the tick draws itself, the
+   receipt and button rise in after it. Only transform, opacity and stroke. */
+@keyframes paid-ring-in {
+  0% { opacity: 0; transform: scale(0.6); }
+  70% { opacity: 1; transform: scale(1.06); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes paid-tick-draw {
+  from { stroke-dashoffset: 30; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes paid-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.anim-paid-ring {
+  animation: paid-ring-in 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.anim-paid-tick {
+  stroke-dasharray: 30;
+  animation: paid-tick-draw 420ms cubic-bezier(0.65, 0, 0.35, 1) 360ms both;
+}
+.anim-paid-rise {
+  animation: paid-rise 460ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .anim-paid-ring,
+  .anim-paid-tick,
+  .anim-paid-rise {
+    animation: none;
+  }
+}
 .anim-contract-spine {
   animation: contract-spine-grow 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
   transform-origin: top;

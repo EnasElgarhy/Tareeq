@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import {
@@ -7,6 +8,7 @@ import {
   type CheckoutStage,
 } from "@/components/results/report-access/CheckoutSheet";
 import { ParentUnlockedCard } from "@/components/core-report/AskParent";
+import { ReportUnlockedNotice } from "@/components/results/report-access/ReportUnlockedNotice";
 import { trackEvent } from "@/lib/analytics/track";
 import type { StringKey } from "@/lib/i18n/strings";
 import {
@@ -43,6 +45,11 @@ interface ReportAccessExperienceProps {
   email: string;
   /** The locked story for this kind of report (legacy v4 or CORE 2.0). */
   renderLocked(props: LockedStoryProps): ReactNode;
+  /**
+   * The report section to open after paying (?section=); the first one the
+   * locked story did not show in full. Without it the report opens at its top.
+   */
+  landingSection?: string;
   children: ReactNode;
 }
 
@@ -73,9 +80,13 @@ export function ReportAccessExperience({
   generatedAt,
   email,
   renderLocked,
+  landingSection,
   children,
 }: ReportAccessExperienceProps) {
   const { t } = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const reportId = useMemo(
     () => reportIdFromGeneratedAt(generatedAt),
     [generatedAt],
@@ -94,6 +105,8 @@ export function ReportAccessExperience({
   const retryStepRef = useRef<"checkout" | "confirm">("checkout");
   const previewTrackedRef = useRef(false);
   const [unlockedByParent, setUnlockedByParent] = useState(false);
+  /** Paid in this visit: the report opens with the "unlocked" note on top. */
+  const [justPaid, setJustPaid] = useState(false);
 
   // Resolve the server-side assessment id (the entitlement key), then
   // reconcile the local access cache against the server. These are one
@@ -194,9 +207,14 @@ export function ReportAccessExperience({
     }
   }
 
+  /**
+   * `celebrate`: the student just paid here, so the sheet turns into the
+   * confirmation. A parent's payment or one made earlier opens the report.
+   */
   async function confirmAndUnlock(
     resolvedAssessmentId: string,
     provider: PaymentProvider,
+    celebrate = false,
   ) {
     setStage("confirming");
     setError(null);
@@ -216,7 +234,7 @@ export function ReportAccessExperience({
         payment.paymentId,
       );
       setAccess(unlocked);
-      setStage(null);
+      setStage(celebrate ? "succeeded" : null);
       setClientSecret(null);
       trackEvent("payment_succeeded", {
         reportId,
@@ -237,7 +255,24 @@ export function ReportAccessExperience({
     void startCheckout();
   }
 
+  /** From the confirmation into the report, at the first newly open section. */
+  function openUnlockedReport() {
+    setStage(null);
+    setJustPaid(true);
+    if (landingSection) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("section", landingSection);
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    }
+    window.scrollTo({ top: 0 });
+  }
+
   function closeCheckout() {
+    // Closing the confirmation is the same as opening the report.
+    if (stage === "succeeded") {
+      openUnlockedReport();
+      return;
+    }
     // Never while the server is being asked whether the payment landed: the
     // sheet is the only place that outcome is reported.
     if (stage === "confirming") return;
@@ -252,7 +287,7 @@ export function ReportAccessExperience({
     // A payment that completed but was not yet confirmed must not restart
     // checkout — that would charge the customer twice. Ask the server again.
     if (retryStepRef.current === "confirm" && assessmentId) {
-      void confirmAndUnlock(assessmentId, "stripe");
+      void confirmAndUnlock(assessmentId, "stripe", true);
       return;
     }
     void startCheckout();
@@ -268,7 +303,7 @@ export function ReportAccessExperience({
       );
       return;
     }
-    void confirmAndUnlock(assessmentId, "stripe");
+    void confirmAndUnlock(assessmentId, "stripe", true);
   }
 
   if (!access) {
@@ -287,7 +322,25 @@ export function ReportAccessExperience({
         {unlockedByParent ? (
           <ParentUnlockedCard onDismiss={() => setUnlockedByParent(false)} />
         ) : null}
+        {justPaid ? (
+          <ReportUnlockedNotice
+            description={landingSection ? t("paywall.success.core") : undefined}
+          />
+        ) : null}
         {children}
+        {stage === "succeeded" ? (
+          <CheckoutSheet
+            offer={offer}
+            stage={stage}
+            clientSecret={null}
+            error={null}
+            email={email}
+            onClose={closeCheckout}
+            onComplete={handleCheckoutComplete}
+            onRetry={retryCheckout}
+            onOpenReport={openUnlockedReport}
+          />
+        ) : null}
       </div>
     );
   }
@@ -311,6 +364,8 @@ export function ReportAccessExperience({
           onClose={closeCheckout}
           onComplete={handleCheckoutComplete}
           onRetry={retryCheckout}
+          email={email}
+          onOpenReport={openUnlockedReport}
         />
       ) : null}
     </div>

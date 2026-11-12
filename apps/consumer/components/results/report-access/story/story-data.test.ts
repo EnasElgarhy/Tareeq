@@ -3,6 +3,7 @@ import {
   fill,
   formatOfferListPrice,
   formatOfferPrice,
+  formatOfferSaving,
   hasOfferDiscount,
 } from "./story-data";
 
@@ -32,6 +33,11 @@ describe("offer pricing", () => {
   it("shows the list price the offer is taken from", () => {
     expect(plain(formatOfferListPrice(launch, "en"))).toBe("AED 450");
     expect(plain(formatOfferPrice(launch, "en"))).toBe("AED 360");
+  });
+
+  it("states what the offer saved, or nothing without one", () => {
+    expect(plain(formatOfferSaving(launch, "en") ?? "")).toBe("AED 90");
+    expect(formatOfferSaving({ ...launch, discountPercent: 0 }, "en")).toBeNull();
   });
 
   it("only reports a discount when the pay price is really lower", () => {

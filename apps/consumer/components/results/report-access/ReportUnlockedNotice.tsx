@@ -6,7 +6,12 @@ import { useLocale } from "@/components/i18n/LocaleProvider";
 
 /** The "your complete report is unlocked" status, in the app's language.
  *  Dismissible — the user can close it once they've read it. */
-export function ReportUnlockedNotice() {
+export function ReportUnlockedNotice({
+  description,
+}: {
+  /** Replaces the default line under the title. */
+  description?: string;
+} = {}) {
   const { t } = useLocale();
   const [dismissed, setDismissed] = useState(false);
 
@@ -25,7 +30,7 @@ export function ReportUnlockedNotice() {
           {t("paywall.success")}
         </p>
         <p className="mt-0.5 text-[12.5px] leading-relaxed text-[color:var(--day-ink-2)]">
-          {t("paywall.success.description")}
+          {description ?? t("paywall.success.description")}
         </p>
       </div>
       <button

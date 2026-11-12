@@ -10,6 +10,7 @@ import { createPortal } from "react-dom";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import type { ReportOffer } from "@/lib/payments/report-access";
 import { getStripe, isStripeConfigured } from "@/lib/payments/stripe-client";
+import { PaymentConfirmed } from "@/components/results/report-access/PaymentConfirmed";
 import {
   fill,
   formatOfferListPrice,
@@ -23,9 +24,15 @@ import {
  * `confirming` is the window between Embedded Checkout firing `onComplete`
  * and the server confirming the entitlement. The sheet stays open and locked
  * for it, because closing early would hide the only place the outcome is
- * reported.
+ * reported. `succeeded` is the payment confirmed: the sheet turns into the
+ * confirmation and its only way on is into the report.
  */
-export type CheckoutStage = "creating" | "ready" | "confirming" | "failed";
+export type CheckoutStage =
+  | "creating"
+  | "ready"
+  | "confirming"
+  | "failed"
+  | "succeeded";
 
 interface CheckoutSheetProps {
   offer: ReportOffer;
@@ -37,6 +44,10 @@ interface CheckoutSheetProps {
   /** Embedded Checkout reported completion. Not proof of payment. */
   onComplete(): void;
   onRetry(): void;
+  /** Where Stripe sends the receipt, shown on the confirmation. */
+  email: string;
+  /** Leaves the confirmation for the unlocked report. */
+  onOpenReport(): void;
 }
 
 export function CheckoutSheet({
@@ -47,6 +58,8 @@ export function CheckoutSheet({
   onClose,
   onComplete,
   onRetry,
+  email,
+  onOpenReport,
 }: CheckoutSheetProps) {
   const { locale, t } = useLocale();
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -127,112 +140,122 @@ export function CheckoutSheet({
         aria-describedby="checkout-description"
         className="anim-sheet-up relative flex max-h-[92dvh] w-full max-w-[520px] flex-col overflow-hidden rounded-t-[24px] border border-sand/12 bg-[#17102f] text-sand shadow-[0_-24px_80px_rgba(0,0,0,0.55)] md:rounded-[24px]"
       >
-        <header className="flex items-start gap-3 border-b border-sand/10 px-5 pb-4 pt-5 sm:px-6">
-          <span className="grid size-10 shrink-0 place-items-center rounded-full bg-violet/20 text-violet-soft">
-            <LockKey size={19} weight="duotone" aria-hidden="true" />
-          </span>
-          <div className="min-w-0 flex-1">
-            <p className="text-[11px] font-semibold text-violet-soft">
-              {t("paywall.checkout.label")}
-            </p>
-            <h2
-              id="checkout-title"
-              className="mt-1 text-[22px] font-bold leading-tight"
-            >
-              {t("paywall.checkout.title")}
-            </h2>
-          </div>
-          <button
-            ref={closeRef}
-            type="button"
-            onClick={onClose}
-            disabled={isBusy}
-            className="grid size-11 shrink-0 place-items-center rounded-full border border-sand/10 bg-sand/[0.05] text-sand/70 transition hover:bg-sand/[0.09] hover:text-sand focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-soft disabled:opacity-40"
-            aria-label={t("paywall.checkout.close")}
-          >
-            <X size={18} aria-hidden="true" />
-          </button>
-        </header>
+        {stage === "succeeded" ? (
+          <PaymentConfirmed
+            offer={offer}
+            email={email}
+            onOpenReport={onOpenReport}
+          />
+        ) : (
+          <>
+            <header className="flex items-start gap-3 border-b border-sand/10 px-5 pb-4 pt-5 sm:px-6">
+              <span className="grid size-10 shrink-0 place-items-center rounded-full bg-violet/20 text-violet-soft">
+                <LockKey size={19} weight="duotone" aria-hidden="true" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-[11px] font-semibold text-violet-soft">
+                  {t("paywall.checkout.label")}
+                </p>
+                <h2
+                  id="checkout-title"
+                  className="mt-1 text-[22px] font-bold leading-tight"
+                >
+                  {t("paywall.checkout.title")}
+                </h2>
+              </div>
+              <button
+                ref={closeRef}
+                type="button"
+                onClick={onClose}
+                disabled={isBusy}
+                className="grid size-11 shrink-0 place-items-center rounded-full border border-sand/10 bg-sand/[0.05] text-sand/70 transition hover:bg-sand/[0.09] hover:text-sand focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-soft disabled:opacity-40"
+                aria-label={t("paywall.checkout.close")}
+              >
+                <X size={18} aria-hidden="true" />
+              </button>
+            </header>
 
-        <div className="overflow-y-auto px-5 py-5 sm:px-6">
-          <div className="flex items-center justify-between gap-4 rounded-[14px] border border-sand/10 bg-sand/[0.045] p-4">
-            <div>
-              <p className="text-[14px] font-bold text-sand">
-                {t("paywall.product")}
-              </p>
-              <p className="mt-1 text-[11px] text-sand/50">
-                {t("paywall.one_time")}
-              </p>
-            </div>
-            <div className="text-end">
-              <p className="text-[20px] font-bold text-sand">{price}</p>
-              {showDiscount ? (
-                <p className="mt-0.5 text-[11px] font-semibold text-sand/55">
-                  <s>
-                    <span className="sr-only">
-                      {fill(t("paywall.offer.full_price"), {
-                        price: listPrice,
+            <div className="overflow-y-auto px-5 py-5 sm:px-6">
+              <div className="flex items-center justify-between gap-4 rounded-[14px] border border-sand/10 bg-sand/[0.045] p-4">
+                <div>
+                  <p className="text-[14px] font-bold text-sand">
+                    {t("paywall.product")}
+                  </p>
+                  <p className="mt-1 text-[11px] text-sand/50">
+                    {t("paywall.one_time")}
+                  </p>
+                </div>
+                <div className="text-end">
+                  <p className="text-[20px] font-bold text-sand">{price}</p>
+                  {showDiscount ? (
+                    <p className="mt-0.5 text-[11px] font-semibold text-sand/55">
+                      <s>
+                        <span className="sr-only">
+                          {fill(t("paywall.offer.full_price"), {
+                            price: listPrice,
+                          })}
+                        </span>
+                        <span aria-hidden="true">{listPrice}</span>
+                      </s>
+                      {" · "}
+                      {fill(t("paywall.offer.percent_off"), {
+                        percent: String(offer.discountPercent),
                       })}
-                    </span>
-                    <span aria-hidden="true">{listPrice}</span>
-                  </s>
-                  {" · "}
-                  {fill(t("paywall.offer.percent_off"), {
-                    percent: String(offer.discountPercent),
-                  })}
+                    </p>
+                  ) : null}
+                </div>
+              </div>
+
+              <p
+                id="checkout-description"
+                className="mt-4 text-[13px] leading-6 text-sand/62"
+              >
+                {t("paywall.checkout.description")}
+              </p>
+
+              <div className="mt-5">
+                <PaymentArea
+                  stage={stage}
+                  clientSecret={clientSecret}
+                  onComplete={onComplete}
+                  onRetry={onRetry}
+                />
+              </div>
+
+              {error ? (
+                <p
+                  role="alert"
+                  className="mt-4 rounded-[12px] border border-error/25 bg-error/10 p-3 text-[12px] leading-5 text-sand/75"
+                >
+                  {error}
                 </p>
               ) : null}
+
+              <div className="mt-5 flex items-center justify-center gap-2 text-[11px] text-sand/45">
+                <ShieldCheck size={15} weight="duotone" aria-hidden="true" />
+                {t("paywall.checkout.security")}
+              </div>
             </div>
-          </div>
 
-          <p
-            id="checkout-description"
-            className="mt-4 text-[13px] leading-6 text-sand/62"
-          >
-            {t("paywall.checkout.description")}
-          </p>
-
-          <div className="mt-5">
-            <PaymentArea
-              stage={stage}
-              clientSecret={clientSecret}
-              onComplete={onComplete}
-              onRetry={onRetry}
-            />
-          </div>
-
-          {error ? (
-            <p
-              role="alert"
-              className="mt-4 rounded-[12px] border border-error/25 bg-error/10 p-3 text-[12px] leading-5 text-sand/75"
-            >
-              {error}
-            </p>
-          ) : null}
-
-          <div className="mt-5 flex items-center justify-center gap-2 text-[11px] text-sand/45">
-            <ShieldCheck size={15} weight="duotone" aria-hidden="true" />
-            {t("paywall.checkout.security")}
-          </div>
-        </div>
-
-        <footer className="border-t border-sand/10 bg-[#17102f] px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 sm:px-6">
-          <p className="text-center text-[10px] leading-4 text-sand/38">
-            <a
-              href="/terms"
-              className="text-inherit underline underline-offset-2"
-            >
-              {t("paywall.checkout.terms")}
-            </a>
-            {" · "}
-            <a
-              href="/privacy"
-              className="text-inherit underline underline-offset-2"
-            >
-              {t("paywall.checkout.privacy")}
-            </a>
-          </p>
-        </footer>
+            <footer className="border-t border-sand/10 bg-[#17102f] px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 sm:px-6">
+              <p className="text-center text-[10px] leading-4 text-sand/38">
+                <a
+                  href="/terms"
+                  className="text-inherit underline underline-offset-2"
+                >
+                  {t("paywall.checkout.terms")}
+                </a>
+                {" · "}
+                <a
+                  href="/privacy"
+                  className="text-inherit underline underline-offset-2"
+                >
+                  {t("paywall.checkout.privacy")}
+                </a>
+              </p>
+            </footer>
+          </>
+        )}
       </section>
     </div>,
     document.body,

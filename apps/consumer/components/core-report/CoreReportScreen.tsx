@@ -20,6 +20,9 @@ interface CoreReportScreenProps {
   preview?: { isUnlocked: boolean };
 }
 
+/** The locked story shows At a glance only in part, so paying opens it in full. */
+const LANDING_SECTION = "S2";
+
 /**
  * The Compass tab for a CORE 2.0 result: the same paywall as before, then
  * the report as navigable sections.
@@ -44,9 +47,7 @@ export function CoreReportScreen({
       {/* The page name stays the h1 for screen readers but reads as a quiet
           label, so each chapter's own title is the one big heading. */}
       <header className="sr-only">
-        <h1>
-          {t("home.compass.title")}
-        </h1>
+        <h1>{t("home.compass.title")}</h1>
       </header>
       <CoreReport model={model} generatedAt={generatedAt} />
     </>
@@ -63,13 +64,20 @@ export function CoreReportScreen({
         </p>
       ) : null}
       {preview?.isUnlocked ? (
-        <div className="daybreak-reveal flex w-full flex-col gap-5">{report}</div>
+        <div className="daybreak-reveal flex w-full flex-col gap-5">
+          {report}
+        </div>
       ) : (
         <ReportAccessExperience
           generatedAt={generatedAt}
           email={email}
+          landingSection={LANDING_SECTION}
           renderLocked={(locked) => (
-            <LockedCoreStory model={model} generatedAt={generatedAt} {...locked} />
+            <LockedCoreStory
+              model={model}
+              generatedAt={generatedAt}
+              {...locked}
+            />
           )}
         >
           {report}
