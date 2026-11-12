@@ -38,14 +38,24 @@ describe("safeguarding alert email", () => {
     expect(mocks.sendEmail.mock.calls[0][0].to).toEqual(["enas@mapmycore.com"]);
 
     process.env.SAFEGUARDING_ALERT_TO = "a@x.test, b@x.test";
-    await sendSafeguardingAlert(alert);
+    await sendSafeguardingAlert({ ...alert, threadId: "thread-2" });
     expect(mocks.sendEmail.mock.calls[1][0].to).toEqual(["a@x.test", "b@x.test"]);
+  });
+
+  it("emails once per student and conversation, and logs every repeat", async () => {
+    const repeat = { ...alert, threadId: "thread-repeat" };
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    await sendSafeguardingAlert(repeat);
+    await sendSafeguardingAlert({ ...repeat, requestId: "req-2" });
+    await sendSafeguardingAlert({ ...repeat, threadId: "thread-other" });
+    expect(mocks.sendEmail).toHaveBeenCalledTimes(2);
+    expect(warn).toHaveBeenCalledTimes(1);
   });
 
   it("never throws when sending fails", async () => {
     mocks.sendEmail.mockRejectedValue(new Error("SES down"));
     const log = vi.spyOn(console, "error").mockImplementation(() => {});
-    await expect(sendSafeguardingAlert(alert)).resolves.toBeUndefined();
+    await expect(sendSafeguardingAlert({ ...alert, threadId: "thread-fail" })).resolves.toBeUndefined();
     expect(log).toHaveBeenCalled();
   });
 });

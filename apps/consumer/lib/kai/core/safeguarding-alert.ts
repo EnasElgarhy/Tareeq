@@ -2,6 +2,7 @@ import "server-only";
 
 import { BRAND } from "@/lib/brand";
 import { recipientsFrom, sendEmail } from "@/lib/email/send-email";
+import { createRateLimiter } from "@/lib/rate-limit";
 
 /**
  * Who hears about a safeguarding_alert (28 Oct update, Part A.5): an email
@@ -10,6 +11,14 @@ import { recipientsFrom, sendEmail } from "@/lib/email/send-email";
  * never quotes what the student wrote.
  */
 const DEFAULT_RECIPIENT = "enas@mapmycore.com";
+
+/**
+ * One email per student and conversation every six hours: the first one
+ * already sends someone to review that whole conversation, and repeats
+ * (or a student scripting them) would bury other alerts. Every alert is
+ * still logged (security review, 12 Nov 2026).
+ */
+const emailedRecently = createRateLimiter({ limit: 1, windowMs: 6 * 60 * 60_000 });
 
 export interface SafeguardingAlert {
   userId: string;
@@ -42,6 +51,14 @@ export function buildSafeguardingEmail(alert: SafeguardingAlert) {
 
 /** Never throws: a failed email is logged loudly, and Kai's reply still goes out. */
 export async function sendSafeguardingAlert(alert: SafeguardingAlert): Promise<void> {
+  if (emailedRecently.isLimited(`${alert.userId}:${alert.threadId ?? ""}`)) {
+    console.warn("[kai/core] safeguarding alert repeated; already emailed for this conversation", {
+      userId: alert.userId,
+      threadId: alert.threadId,
+      requestId: alert.requestId,
+    });
+    return;
+  }
   const to = recipientsFrom(process.env.SAFEGUARDING_ALERT_TO ?? DEFAULT_RECIPIENT);
   try {
     const result = await sendEmail({ to, ...buildSafeguardingEmail(alert) });
