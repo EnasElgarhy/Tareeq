@@ -96,6 +96,11 @@ jobs:
     needs: verify
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
+    # One deploy per environment at a time: a push that lands mid-deploy
+    # waits instead of failing with "isn't in RUNNING state".
+    concurrency:
+      group: apprunner-${{ inputs.environment }}
+      cancel-in-progress: false
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -117,7 +122,10 @@ jobs:
           REGISTRY: ${{ steps.ecr-login.outputs.registry }}
           REPOSITORY: ${{ vars.ECR_REPOSITORY }}
           IMAGE_TAG: ${{ inputs.environment }}-${{ github.sha }}
+        # next/font downloads Google Fonts at build time, and that download
+        # fails now and then; the build is retried up to three times.
         run: |
+          build() {
           docker build \
             --build-arg NEXT_PUBLIC_SUPABASE_URL="${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}" \
             --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY="${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" \
@@ -134,11 +142,26 @@ jobs:
             -t "$REGISTRY/$REPOSITORY:$IMAGE_TAG" \
             -t "$REGISTRY/$REPOSITORY:${{ inputs.environment }}" \
             .
+          }
+          for attempt in 1 2 3; do
+            if build; then break; fi
+            if [ "$attempt" = "3" ]; then echo "Build failed 3 times."; exit 1; fi
+            echo "Build attempt $attempt failed; retrying in 30s."
+            sleep 30
+          done
           docker push "$REGISTRY/$REPOSITORY:$IMAGE_TAG"
           docker push "$REGISTRY/$REPOSITORY:${{ inputs.environment }}"
 
       - name: Trigger App Runner deployment
         run: |
+          SERVICE_ARN="${{ vars.APP_RUNNER_SERVICE_ARN }}"
+          # A deploy started elsewhere (console, another workflow) must finish first.
+          for i in $(seq 1 30); do
+            STATUS=$(aws apprunner describe-service --service-arn "$SERVICE_ARN" --query "Service.Status" --output text)
+            [ "$STATUS" = "RUNNING" ] && break
+            echo "App Runner is $STATUS; waiting before deploying."
+            sleep 20
+          done
           aws apprunner start-deployment \
             --service-arn "${{ vars.APP_RUNNER_SERVICE_ARN }}"
 
