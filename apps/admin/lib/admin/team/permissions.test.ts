@@ -5,6 +5,7 @@ import {
   canManageTargetRole,
   hasPermission,
   isAdminRole,
+  hasActiveOwner,
   isLastOwner,
   permissionsForRole,
 } from "@/lib/admin/team/permissions";
@@ -82,5 +83,13 @@ describe("isLastOwner", () => {
   });
   it("false for non-owner targets", () => {
     expect(isLastOwner("admin", ["owner"])).toBe(false);
+  });
+});
+
+describe("hasActiveOwner", () => {
+  it("is true while any active member is an owner", () => {
+    expect(hasActiveOwner(["admin", "owner"])).toBe(true);
+    expect(hasActiveOwner(["admin", "viewer"])).toBe(false);
+    expect(hasActiveOwner([])).toBe(false);
   });
 });

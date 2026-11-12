@@ -72,6 +72,11 @@ export function isLastOwner(
   return allActiveRoles.filter((r) => r === "owner").length <= 1;
 }
 
+/** True while at least one active member is an owner. */
+export function hasActiveOwner(allActiveRoles: readonly AdminRole[]): boolean {
+  return allActiveRoles.includes("owner");
+}
+
 /** Human labels for the UI. */
 export const ROLE_LABELS: Record<AdminRole, string> = {
   owner: "Owner",

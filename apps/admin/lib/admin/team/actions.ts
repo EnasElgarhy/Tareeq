@@ -10,6 +10,7 @@ import {
   canManageTargetRole,
   isLastOwner,
   ROLE_LABELS,
+  hasActiveOwner,
 } from "@/lib/admin/team/permissions";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
@@ -29,6 +30,17 @@ async function audit(sb: Sb, actorId: string, action: string, targetId: string |
 async function activeRoles(sb: Sb): Promise<AdminRole[]> {
   const { data } = await sb.from("admin_members").select("role,status").eq("status", "active");
   return ((data ?? []) as Array<{ role: AdminRole }>).map((r) => r.role);
+}
+
+/**
+ * Re-checked after the write: two owners demoting each other at the same
+ * moment both pass the check before it. If the team is left with no active
+ * owner, the change is undone (security review, 12 Nov 2026).
+ */
+async function keepAnOwner(sb: Sb, undo: () => PromiseLike<unknown>, message: string): Promise<void> {
+  if (hasActiveOwner(await activeRoles(sb))) return;
+  await undo();
+  throw new Error(message);
 }
 
 async function originFromHeaders(): Promise<string> {
@@ -186,6 +198,11 @@ export async function changeRole(userId: string, role: string): Promise<void> {
 
   const { error } = await sb.from("admin_members").update({ role: newRole, updated_at: new Date().toISOString() }).eq("user_id", userId);
   if (error) throw new Error(error.message);
+  await keepAnOwner(
+    sb,
+    () => sb.from("admin_members").update({ role: currentRole }).eq("user_id", userId),
+    "You can't demote the last owner.",
+  );
   await audit(sb, actor.id, "team.role_changed", userId, { from: currentRole, to: newRole });
   revalidatePath("/admin/team");
 }
@@ -195,7 +212,7 @@ export async function setMemberStatus(userId: string, status: "active" | "suspen
   const nextStatus = z.enum(["active", "suspended"]).parse(status);
   const sb = createSupabaseAdminClient();
 
-  const { data: target } = await sb.from("admin_members").select("role").eq("user_id", userId).maybeSingle();
+  const { data: target } = await sb.from("admin_members").select("role,status").eq("user_id", userId).maybeSingle();
   if (!target) throw new Error("Member not found.");
   const targetRole = target.role as AdminRole;
   if (!canManageTargetRole(actor.role, targetRole)) throw new Error("You can't change that member.");
@@ -205,6 +222,11 @@ export async function setMemberStatus(userId: string, status: "active" | "suspen
 
   const { error } = await sb.from("admin_members").update({ status: nextStatus, updated_at: new Date().toISOString() }).eq("user_id", userId);
   if (error) throw new Error(error.message);
+  await keepAnOwner(
+    sb,
+    () => sb.from("admin_members").update({ status: target.status }).eq("user_id", userId),
+    "You can't suspend the last owner.",
+  );
   await audit(sb, actor.id, "team.status_changed", userId, { status: nextStatus });
   revalidatePath("/admin/team");
 }
@@ -213,7 +235,7 @@ export async function removeMember(userId: string): Promise<void> {
   const actor = await requirePermission("team.manage");
   const sb = createSupabaseAdminClient();
 
-  const { data: target } = await sb.from("admin_members").select("role").eq("user_id", userId).maybeSingle();
+  const { data: target } = await sb.from("admin_members").select("*").eq("user_id", userId).maybeSingle();
   if (!target) throw new Error("Member not found.");
   const targetRole = target.role as AdminRole;
   if (!canManageTargetRole(actor.role, targetRole)) throw new Error("You can't remove that member.");
@@ -223,6 +245,11 @@ export async function removeMember(userId: string): Promise<void> {
   // stops granting access. (The auth user itself is left intact.)
   const { error } = await sb.from("admin_members").delete().eq("user_id", userId);
   if (error) throw new Error(error.message);
+  await keepAnOwner(
+    sb,
+    () => sb.from("admin_members").insert(target),
+    "You can't remove the last owner.",
+  );
   await sb.from("profiles").update({ role: "user" }).eq("id", userId);
   await audit(sb, actor.id, "team.member_removed", userId, { role: targetRole });
   revalidatePath("/admin/team");
