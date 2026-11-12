@@ -253,6 +253,46 @@ export function normalizeIntent(
     : fallback;
 }
 
+/**
+ * Size limits on what reaches the model (security review, 12 Nov 2026).
+ * Well above what the app sends; they only bound a forged request.
+ */
+export const MAX_CHAT_MESSAGE_LENGTH = 4_000;
+const MAX_RECENT_MESSAGES = 20;
+const MAX_RECENT_MESSAGE_LENGTH = 4_000;
+const MAX_SUMMARY_LENGTH = 2_000;
+const MAX_MEMORY_ITEMS = 60;
+const MAX_MEMORY_VALUE_LENGTH = 200;
+const MAX_DISPLAY_NAME_LENGTH = 80;
+
+/** The same context, cut to the limits above (newest turns kept). */
+function boundedContext(context: KaiChatContext): KaiChatContext {
+  return {
+    ...context,
+    user: {
+      ...context.user,
+      displayName: context.user.displayName.slice(0, MAX_DISPLAY_NAME_LENGTH),
+    },
+    conversation: {
+      ...context.conversation,
+      summary: context.conversation.summary.slice(0, MAX_SUMMARY_LENGTH),
+      recentMessages: context.conversation.recentMessages
+        .slice(-MAX_RECENT_MESSAGES)
+        .map((message) => ({
+          ...message,
+          text: String(message.text ?? "").slice(0, MAX_RECENT_MESSAGE_LENGTH),
+        })),
+    },
+    memories: {
+      personSummary: context.memories.personSummary.slice(0, MAX_SUMMARY_LENGTH),
+      items: context.memories.items.slice(0, MAX_MEMORY_ITEMS).map((item) => ({
+        ...item,
+        value: String(item.value ?? "").slice(0, MAX_MEMORY_VALUE_LENGTH),
+      })),
+    },
+  };
+}
+
 function isValidContext(value: unknown): value is KaiChatContext {
   if (typeof value !== "object" || value === null) return false;
   const candidate = value as Partial<KaiChatContext>;
@@ -291,6 +331,12 @@ export function validateChatRequest(
     (typeof candidate.message !== "string" || !candidate.message.trim())
   ) {
     return { ok: false, error: "message is required when kind is 'reply'." };
+  }
+  if (
+    typeof candidate.message === "string" &&
+    candidate.message.length > MAX_CHAT_MESSAGE_LENGTH
+  ) {
+    return { ok: false, error: "message is too long." };
   }
 
   const persistenceIds = [
@@ -334,7 +380,7 @@ export function validateChatRequest(
     ok: true,
     value: {
       kind: candidate.kind,
-      context: candidate.context,
+      context: boundedContext(candidate.context),
       message: candidate.message,
       threadId: candidate.threadId,
       threadTitle:

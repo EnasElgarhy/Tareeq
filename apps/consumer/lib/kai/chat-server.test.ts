@@ -5,6 +5,7 @@ import {
   normalizeIntent,
   normalizeQuickReplies,
   validateChatRequest,
+  MAX_CHAT_MESSAGE_LENGTH,
 } from "@/lib/kai/chat-server";
 
 function validContext() {
@@ -22,6 +23,47 @@ function validContext() {
 }
 
 describe("validateChatRequest", () => {
+  it("refuses a reply message longer than the limit", () => {
+    const result = validateChatRequest({
+      kind: "reply",
+      context: validContext(),
+      message: "x".repeat(MAX_CHAT_MESSAGE_LENGTH + 1),
+    });
+    expect(result.ok).toBe(false);
+  });
+
+  it("trims an oversized context instead of sending it to the model", () => {
+    const context = {
+      ...validContext(),
+      user: { displayName: "n".repeat(1_000), locale: "en" },
+      conversation: {
+        goal: "find_majors",
+        summary: "s".repeat(10_000),
+        recentMessages: Array.from({ length: 50 }, (_, i) => ({
+          role: i % 2 === 0 ? "user" : "assistant",
+          text: `turn ${i} ${"t".repeat(10_000)}`,
+        })),
+      },
+      memories: {
+        items: Array.from({ length: 500 }, () => ({ category: "interest", value: "v".repeat(1_000) })),
+        personSummary: "p".repeat(10_000),
+      },
+    };
+
+    const result = validateChatRequest({ kind: "open", context });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    const trimmed = result.value.context;
+    expect(trimmed.conversation.recentMessages).toHaveLength(20);
+    expect(trimmed.conversation.recentMessages[19].text.startsWith("turn 49")).toBe(true);
+    expect(trimmed.conversation.recentMessages[0].text.length).toBeLessThanOrEqual(4_000);
+    expect(trimmed.conversation.summary.length).toBeLessThanOrEqual(2_000);
+    expect(trimmed.memories.personSummary.length).toBeLessThanOrEqual(2_000);
+    expect(trimmed.memories.items).toHaveLength(60);
+    expect(trimmed.memories.items[0].value.length).toBeLessThanOrEqual(200);
+    expect(trimmed.user.displayName.length).toBeLessThanOrEqual(80);
+  });
+
   it("accepts a well-formed 'open' request", () => {
     const result = validateChatRequest({
       kind: "open",

@@ -1,3 +1,4 @@
+import { createRateLimiter } from "@/lib/rate-limit";
 import {
   buildComparisonRecoverySchema,
   buildContextPrompt,
@@ -288,11 +289,22 @@ async function callGeminiOnce(
   return { ok: true, parsed, sources: streamed.sources ?? [] };
 }
 
+// Every chat turn spends AI credits (security review, 12 Nov 2026): a body
+// far beyond any real conversation is refused, and each student gets a
+// burst and a daily allowance well above normal use.
+const MAX_CHAT_BODY_BYTES = 200_000;
+const chatBurstLimiter = createRateLimiter({ limit: 15, windowMs: 60_000 });
+const chatDailyLimiter = createRateLimiter({ limit: 300, windowMs: 24 * 60 * 60_000 });
+
 export async function POST(request: Request) {
   const requestStartedAt = performance.now();
   let body: unknown;
   try {
-    body = await request.json();
+    const raw = await request.text();
+    if (raw.length > MAX_CHAT_BODY_BYTES) {
+      return Response.json({ error: "Request is too large." }, { status: 413 });
+    }
+    body = JSON.parse(raw);
   } catch {
     return Response.json({ error: "Invalid JSON body." }, { status: 400 });
   }
@@ -314,6 +326,12 @@ export async function POST(request: Request) {
   const access = await hasPaidReportAccess(createSupabaseAdminClient(), user.id);
   const denied = paidAccessError(access) ?? kaiAccessError(access);
   if (denied) return denied;
+  if (chatBurstLimiter.isLimited(user.id) || chatDailyLimiter.isLimited(user.id)) {
+    return Response.json(
+      { error: "You're sending messages very fast. Give it a minute and try again." },
+      { status: 429 },
+    );
+  }
 
   let repositoryAvailable = false;
   try {
