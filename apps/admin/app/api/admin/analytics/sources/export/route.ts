@@ -2,13 +2,13 @@ import { NextResponse } from "next/server";
 import { parseSourceReportParams } from "@/lib/admin/analytics/by-source";
 import { buildSourceReportCsv } from "@/lib/admin/analytics/by-source-csv";
 import { getSourceReport } from "@/lib/admin/analytics/by-source-queries";
-import { requireAdmin } from "@/lib/auth/require-admin";
+import { requirePermission } from "@/lib/auth/require-admin";
 
 export const runtime = "nodejs";
 
 /** CSV of the weekly By source report, for the week and options on the page. */
 export async function GET(request: Request) {
-  await requireAdmin();
+  await requirePermission("exports.run");
 
   const params = parseSourceReportParams(Object.fromEntries(new URL(request.url).searchParams));
   try {

@@ -9,7 +9,7 @@ import {
 import { SUPPORTED_LOCALES } from "@/lib/admin/locales";
 import { listResultProfiles } from "@/lib/admin/scoring-content";
 import { trackEvent } from "@/lib/analytics/track";
-import { requireAdmin } from "@/lib/auth/require-admin";
+import { requirePermission } from "@/lib/auth/require-admin";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 const GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models";
@@ -89,7 +89,7 @@ export async function autoTranslateAssessment(
   versionId: string,
   rawLocale: unknown,
 ): Promise<{ translated: number }> {
-  const admin = await requireAdmin();
+  const admin = await requirePermission("content.edit");
   const targetLocale = localeSchema.parse(rawLocale);
   const sb = createSupabaseAdminClient();
 

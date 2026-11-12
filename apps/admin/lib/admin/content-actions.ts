@@ -10,7 +10,7 @@ import {
 import { assertVersionWritable } from "@/lib/admin/assessment-generation.server";
 import { typeHasOptions } from "@/lib/admin/content";
 import { normalizeKind, parseCsvRecords } from "@/lib/admin/csv";
-import { requireAdmin } from "@/lib/auth/require-admin";
+import { requirePermission } from "@/lib/auth/require-admin";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 const localizedSchema = z.record(z.string(), z.string());
@@ -94,7 +94,7 @@ interface SourceQuestion {
 export async function createDraftFromVersion(
   sourceVersionId: string,
 ): Promise<string> {
-  const admin = await requireAdmin();
+  const admin = await requirePermission("content.edit");
   await assertVersionWritable(sourceVersionId);
   const sb = createSupabaseAdminClient();
 
@@ -174,7 +174,7 @@ export async function createDraftFromVersion(
 export async function publishVersion(
   versionId: string,
 ): Promise<AudioRegenSummary> {
-  await requireAdmin();
+  await requirePermission("content.edit");
   await assertVersionWritable(versionId);
   const sb = createSupabaseAdminClient();
 
@@ -201,7 +201,7 @@ export async function publishVersion(
 
 /** Delete a draft (cascades to its questions + options). Refuses the active one. */
 export async function deleteDraftVersion(versionId: string): Promise<void> {
-  await requireAdmin();
+  await requirePermission("content.edit");
   await assertVersionWritable(versionId);
   const sb = createSupabaseAdminClient();
 
@@ -232,7 +232,7 @@ export async function saveQuestion(
   questionId: string,
   rawInput: unknown,
 ): Promise<void> {
-  await requireAdmin();
+  await requirePermission("content.edit");
   const sb = createSupabaseAdminClient();
   await assertDraft(sb, versionId);
 
@@ -291,7 +291,7 @@ export async function renameVersion(
   versionId: string,
   rawLabel: unknown,
 ): Promise<void> {
-  await requireAdmin();
+  await requirePermission("content.edit");
   await assertVersionWritable(versionId);
   const label = z.string().trim().min(1).max(80).parse(rawLabel);
   const sb = createSupabaseAdminClient();
@@ -316,7 +316,7 @@ export async function addQuestion(
   versionId: string,
   rawInput: unknown,
 ): Promise<string> {
-  await requireAdmin();
+  await requirePermission("content.edit");
   const sb = createSupabaseAdminClient();
   await assertDraft(sb, versionId);
 
@@ -371,7 +371,7 @@ export async function deleteQuestion(
   versionId: string,
   questionId: string,
 ): Promise<void> {
-  await requireAdmin();
+  await requirePermission("content.edit");
   const sb = createSupabaseAdminClient();
   await assertDraft(sb, versionId);
 
@@ -401,7 +401,7 @@ export async function duplicateQuestion(
   versionId: string,
   questionId: string,
 ): Promise<string> {
-  await requireAdmin();
+  await requirePermission("content.edit");
   const sb = createSupabaseAdminClient();
   await assertDraft(sb, versionId);
 
@@ -476,7 +476,7 @@ export async function setQuestionArchived(
   questionId: string,
   archived: boolean,
 ): Promise<void> {
-  await requireAdmin();
+  await requirePermission("content.edit");
   const sb = createSupabaseAdminClient();
   await assertDraft(sb, versionId);
 
@@ -504,7 +504,7 @@ export async function moveQuestion(
   questionId: string,
   dir: "up" | "down",
 ): Promise<void> {
-  await requireAdmin();
+  await requirePermission("content.edit");
   const sb = createSupabaseAdminClient();
   await assertDraft(sb, versionId);
 
@@ -567,7 +567,7 @@ export async function importQuestionsCsv(
   versionId: string,
   csvText: string,
 ): Promise<ImportResult> {
-  await requireAdmin();
+  await requirePermission("content.edit");
   const sb = createSupabaseAdminClient();
   await assertDraft(sb, versionId);
 

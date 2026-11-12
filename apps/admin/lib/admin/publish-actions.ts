@@ -17,7 +17,7 @@ import {
   listResultProfiles,
 } from "@/lib/admin/scoring-content";
 import { trackEvent } from "@/lib/analytics/track";
-import { requireAdmin } from "@/lib/auth/require-admin";
+import { requirePermission } from "@/lib/auth/require-admin";
 import { executeScoringSpec } from "@/lib/scoring/spec-executor";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
@@ -33,7 +33,7 @@ export async function publishAssessment(
   allowSingleLanguage = false,
 ): Promise<void> {
   const sb = createSupabaseAdminClient();
-  const admin = await requireAdmin();
+  const admin = await requirePermission("content.edit");
 
   const { data: cat, error: ce } = await sb
     .from("assessments_catalog")
@@ -155,7 +155,7 @@ export async function unpublishAssessment(
   versionId: string,
 ): Promise<void> {
   const sb = createSupabaseAdminClient();
-  await requireAdmin();
+  await requirePermission("content.edit");
 
   const { error: spec } = await sb
     .from("scoring_specs")

@@ -9,7 +9,7 @@ import {
   CORE_QUESTION_SET,
   validateQuestionSet,
 } from "@/lib/admin/core/framework";
-import { requireAdmin } from "@/lib/auth/require-admin";
+import { requirePermission } from "@/lib/auth/require-admin";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 /**
@@ -42,7 +42,7 @@ const itemEditSchema = z.object({
 });
 
 export async function createCoreDraft(rawInput: unknown): Promise<string> {
-  const admin = await requireAdmin();
+  const admin = await requirePermission("content.edit");
   const input = createSchema.parse(rawInput);
   if (input.targetVersion === CORE_QUESTION_SET.version) {
     throw new Error(
@@ -72,7 +72,7 @@ export async function saveCoreDraftItem(
   draftId: string,
   rawInput: unknown,
 ): Promise<void> {
-  const admin = await requireAdmin();
+  const admin = await requirePermission("content.edit");
   const input = itemEditSchema.parse(rawInput);
   const draft = await getCoreDraft(draftId);
   if (!draft) throw new Error("Draft not found.");
@@ -103,7 +103,7 @@ export async function saveCoreDraftItem(
 
 /** Freeze a finished draft once it has been downloaded for the developer. */
 export async function markCoreDraftHandedOff(draftId: string): Promise<void> {
-  const admin = await requireAdmin();
+  const admin = await requirePermission("content.edit");
   const draft = await getCoreDraft(draftId);
   if (!draft) throw new Error("Draft not found.");
   const problems = [
@@ -127,7 +127,7 @@ export async function markCoreDraftHandedOff(draftId: string): Promise<void> {
 }
 
 export async function deleteCoreDraft(draftId: string): Promise<void> {
-  await requireAdmin();
+  await requirePermission("content.edit");
   const sb = createSupabaseAdminClient();
   const { error } = await sb
     .from("core_question_set_drafts")

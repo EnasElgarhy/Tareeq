@@ -9,7 +9,7 @@ import {
   parseRangeFromSearchParams,
 } from "@/lib/admin/analytics/filters";
 import { getAnalyticsViewModel } from "@/lib/admin/analytics/queries";
-import { requireAdmin } from "@/lib/auth/require-admin";
+import { requirePermission } from "@/lib/auth/require-admin";
 
 export const runtime = "nodejs";
 
@@ -35,7 +35,7 @@ const FILTER_KEYS = [
  * the rest of the query string is the same filter set the page itself reads.
  */
 export async function GET(request: Request) {
-  await requireAdmin();
+  await requirePermission("exports.run");
 
   const url = new URL(request.url);
   const typeParam = url.searchParams.get("type");

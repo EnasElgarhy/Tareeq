@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { listAssessmentCategories } from "@/lib/admin/custom-content";
 import { validateCustomQuestion } from "@/lib/admin/custom-question-validation";
-import { requireAdmin } from "@/lib/auth/require-admin";
+import { requirePermission } from "@/lib/auth/require-admin";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 /** Custom-assessment questions share one synthetic pillar; order is by position. */
@@ -48,7 +48,7 @@ export async function addAssessmentCategory(
   catalogId: string,
   rawInput: unknown,
 ): Promise<void> {
-  await requireAdmin();
+  await requirePermission("content.edit");
   const input = categorySchema.parse(rawInput);
   const sb = createSupabaseAdminClient();
 
@@ -70,7 +70,7 @@ export async function addAssessmentCategory(
 }
 
 export async function deleteAssessmentCategory(categoryId: string): Promise<void> {
-  await requireAdmin();
+  await requirePermission("content.edit");
   const sb = createSupabaseAdminClient();
 
   const { data: cat, error: e1 } = await sb
@@ -193,7 +193,7 @@ export async function addCustomQuestion(
   versionId: string,
   rawInput: unknown,
 ): Promise<string> {
-  await requireAdmin();
+  await requirePermission("content.edit");
   const sb = createSupabaseAdminClient();
   const catalogId = await assertCustomDraft(sb, versionId);
   const input = questionInputSchema.parse(rawInput);
@@ -232,7 +232,7 @@ export async function saveCustomQuestion(
   questionId: string,
   rawInput: unknown,
 ): Promise<void> {
-  await requireAdmin();
+  await requirePermission("content.edit");
   const sb = createSupabaseAdminClient();
   const catalogId = await assertCustomDraft(sb, versionId);
   const input = questionInputSchema.parse(rawInput);
@@ -261,7 +261,7 @@ export async function deleteCustomQuestion(
   versionId: string,
   questionId: string,
 ): Promise<void> {
-  await requireAdmin();
+  await requirePermission("content.edit");
   const sb = createSupabaseAdminClient();
   await assertCustomDraft(sb, versionId);
 

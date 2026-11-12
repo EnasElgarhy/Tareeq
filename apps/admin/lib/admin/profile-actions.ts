@@ -7,7 +7,7 @@ import {
   validateResultProfile,
 } from "@/lib/admin/profile-validation";
 import { trackEvent } from "@/lib/analytics/track";
-import { requireAdmin } from "@/lib/auth/require-admin";
+import { requirePermission } from "@/lib/auth/require-admin";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 type AdminClient = ReturnType<typeof createSupabaseAdminClient>;
@@ -45,7 +45,7 @@ export async function setScoringStrategy(
   rawStrategy: unknown,
   versionId?: string,
 ): Promise<void> {
-  await requireAdmin();
+  await requirePermission("content.edit");
   const strategy = z
     .enum(["first_match", "highest_score_wins"])
     .parse(rawStrategy);
@@ -82,7 +82,7 @@ export async function saveResultProfile(
   rawInput: unknown,
   versionId?: string,
 ): Promise<string> {
-  const admin = await requireAdmin();
+  const admin = await requirePermission("content.edit");
   const input = profileSchema.parse(rawInput);
   const sb = createSupabaseAdminClient();
   await assertEditableCatalog(sb, catalogId);
@@ -168,7 +168,7 @@ export async function deleteResultProfile(
   profileId: string,
   versionId?: string,
 ): Promise<void> {
-  await requireAdmin();
+  await requirePermission("content.edit");
   const sb = createSupabaseAdminClient();
   // Rules referencing this profile cascade (FK ON DELETE CASCADE).
   const { error } = await sb.from("result_profiles").delete().eq("id", profileId);
@@ -198,7 +198,7 @@ export async function saveProfileRule(
   rawInput: unknown,
   versionId?: string,
 ): Promise<string> {
-  const admin = await requireAdmin();
+  const admin = await requirePermission("content.edit");
   const input = ruleSchema.parse(rawInput);
   const sb = createSupabaseAdminClient();
   await assertEditableCatalog(sb, catalogId);
@@ -257,7 +257,7 @@ export async function deleteProfileRule(
   ruleId: string,
   versionId?: string,
 ): Promise<void> {
-  await requireAdmin();
+  await requirePermission("content.edit");
   const sb = createSupabaseAdminClient();
   const { error } = await sb.from("result_rules").delete().eq("id", ruleId);
   if (error) throw new Error(error.message);

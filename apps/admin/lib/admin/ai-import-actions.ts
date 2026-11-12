@@ -10,7 +10,7 @@ import {
 } from "@/lib/admin/ai-extract";
 import { extractTextFromUpload } from "@/lib/admin/parse-document";
 import { trackEvent } from "@/lib/analytics/track";
-import { requireAdmin } from "@/lib/auth/require-admin";
+import { requirePermission } from "@/lib/auth/require-admin";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 type AdminClient = ReturnType<typeof createSupabaseAdminClient>;
@@ -49,7 +49,7 @@ export async function parseUploadedDocument(
   catalogId: string,
   formData: FormData,
 ): Promise<{ text: string; fileName: string; fileType: string; storagePath: string | null }> {
-  await requireAdmin();
+  await requirePermission("content.edit");
   const sb = createSupabaseAdminClient();
   await assertCustomDraft(sb, catalogId);
 
@@ -80,7 +80,7 @@ export async function runExtraction(
   catalogId: string,
   rawInput: unknown,
 ): Promise<ExtractedDraft> {
-  const admin = await requireAdmin();
+  const admin = await requirePermission("content.edit");
   const input = extractSchema.parse(rawInput);
   const sb = createSupabaseAdminClient();
   await assertCustomDraft(sb, catalogId);
@@ -151,7 +151,7 @@ export async function applyExtractedDraft(
   versionId: string,
   rawDraft: unknown,
 ): Promise<{ categories: number; questions: number; profiles: number; rules: number }> {
-  const admin = await requireAdmin();
+  const admin = await requirePermission("content.edit");
   const sb = createSupabaseAdminClient();
   await assertCustomDraft(sb, catalogId);
   const draft = normalizeExtractedDraft(rawDraft); // re-normalise: never trust client input

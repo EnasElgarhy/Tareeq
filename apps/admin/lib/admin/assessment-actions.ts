@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { SUPPORTED_LOCALES } from "@/lib/admin/locales";
 import { trackEvent } from "@/lib/analytics/track";
-import { requireAdmin } from "@/lib/auth/require-admin";
+import { requirePermission } from "@/lib/auth/require-admin";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 const localeEnum = z.enum(SUPPORTED_LOCALES);
@@ -36,7 +36,7 @@ export interface CreateAssessmentResult {
 export async function createAssessment(
   rawInput: unknown,
 ): Promise<CreateAssessmentResult> {
-  const admin = await requireAdmin();
+  const admin = await requirePermission("content.edit");
   const input = createAssessmentSchema.parse(rawInput);
   const sb = createSupabaseAdminClient();
 
@@ -113,7 +113,7 @@ export async function updateAssessmentSetup(
   catalogId: string,
   rawInput: unknown,
 ): Promise<void> {
-  const admin = await requireAdmin();
+  const admin = await requirePermission("content.edit");
   const input = updateSetupSchema.parse(rawInput);
   const sb = createSupabaseAdminClient();
 
