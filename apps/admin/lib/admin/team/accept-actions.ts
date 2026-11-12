@@ -1,6 +1,7 @@
 "use server";
 
 import { isAdminRole } from "@/lib/admin/team/permissions";
+import { exactEmailPattern } from "@/lib/admin/team/email-match";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -19,12 +20,16 @@ export async function finalizeInvite(): Promise<{ ok: boolean; error?: string }>
     data: { user },
   } = await supabase.auth.getUser();
   if (!user?.email) return { ok: false, error: "You're not signed in — open the link from your invitation email." };
+  // Only a confirmed address can claim the invitation sent to it.
+  if (!user.email_confirmed_at) {
+    return { ok: false, error: "Confirm your email first — open the link from your invitation email." };
+  }
 
   const sb = createSupabaseAdminClient();
   const { data: inv, error } = await sb
     .from("admin_invitations")
     .select("id,role,status,expires_at")
-    .ilike("email", user.email)
+    .ilike("email", exactEmailPattern(user.email))
     .eq("status", "pending")
     .order("created_at", { ascending: false })
     .limit(1)
