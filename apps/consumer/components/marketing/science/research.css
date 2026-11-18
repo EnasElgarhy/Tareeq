@@ -1,0 +1,66 @@
+/* The research page (/research). Motion is kept to one moment, the curiosity
+   circle drawing in, plus feedback on what the reader taps. */
+
+html:has(.research-page) {
+  scroll-behavior: smooth;
+}
+
+/* ---- The curiosity circle: the ring draws, the eight points arrive in
+   circle order, the opposite spokes settle, then the gold "split in two" arc.
+   It is drawn by default; only an armed figure (not yet seen, motion
+   allowed) starts hidden and plays once when it comes into view. ---- */
+.cc-ring,
+.cc-arc {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+.cc-ring {
+  transition: stroke-dashoffset 900ms cubic-bezier(0.77, 0, 0.175, 1);
+}
+.cc-node {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    opacity 240ms ease-out,
+    transform 380ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition-delay: calc(520ms + var(--i) * 70ms);
+}
+.cc-label {
+  transition: opacity 300ms ease-out;
+  transition-delay: calc(580ms + var(--i) * 70ms);
+}
+.cc-spoke {
+  transition: opacity 420ms ease-out 1100ms;
+}
+.cc-arc {
+  transition: stroke-dashoffset 620ms cubic-bezier(0.77, 0, 0.175, 1) 1250ms;
+}
+.cc[data-armed] .cc-ring,
+.cc[data-armed] .cc-arc {
+  stroke-dashoffset: 1;
+}
+.cc[data-armed] .cc-node {
+  opacity: 0;
+  transform: scale(0.6);
+}
+.cc[data-armed] .cc-label,
+.cc[data-armed] .cc-spoke {
+  opacity: 0;
+}
+
+/* ---- References open with a short settle, answering the tap. ---- */
+@keyframes research-refs-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+.research-refs[open] .research-refs-list {
+  animation: research-refs-in 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:has(.research-page) {
+    scroll-behavior: auto;
+  }
+}

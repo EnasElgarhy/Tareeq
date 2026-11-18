@@ -1,6 +1,7 @@
 "use client";
 
 import { Check, Star } from "lucide-react";
+import { type CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { coreWording } from "@/lib/core-v2/content/core-content";
 import { CURIOSITY_CODES } from "@/lib/core-v2/types";
@@ -31,6 +32,7 @@ const CIRCLE_COPY = {
 export function CuriosityCircle() {
   const { locale } = useLocale();
   const copy = CIRCLE_COPY[locale];
+  const armed = useDrawInOnView();
   const R = 30; // ring radius, % of the box
   const nodes = CURIOSITY_CODES.map((code, i) => {
     const a = ((-90 + i * 45) * Math.PI) / 180;
@@ -38,18 +40,24 @@ export function CuriosityCircle() {
   });
 
   return (
-    <figure className="grid items-center gap-8 rounded-[32px] bg-[#08051A] p-6 text-[#F5EEE6] sm:p-10 lg:grid-cols-[1fr_0.8fr]">
+    <figure
+      ref={armed.ref}
+      data-armed={armed.isArmed || undefined}
+      className="cc grid items-center gap-8 rounded-[32px] bg-[#08051A] p-6 text-[#F5EEE6] sm:p-10 lg:grid-cols-[1fr_0.8fr]"
+    >
       <div dir="ltr" className="relative mx-auto aspect-square w-full max-w-[460px]">
         <svg viewBox="0 0 100 100" aria-hidden="true" className="absolute inset-0 h-full w-full">
-          <circle cx="50" cy="50" r={R} fill="none" stroke="#C8B6F0" strokeOpacity="0.35" strokeWidth="0.5" />
+          <circle className="cc-ring" pathLength={1} transform="rotate(-90 50 50)" cx="50" cy="50" r={R} fill="none" stroke="#C8B6F0" strokeOpacity="0.35" strokeWidth="0.5" />
           {nodes.slice(0, 4).map((n, i) => {
             const o = nodes[i + 4];
-            return <line key={n.code} x1={n.x} y1={n.y} x2={o.x} y2={o.y} stroke="#C8B6F0" strokeOpacity="0.18" strokeWidth="0.35" strokeDasharray="1 1.4" />;
+            return <line className="cc-spoke" key={n.code} x1={n.x} y1={n.y} x2={o.x} y2={o.y} stroke="#C8B6F0" strokeOpacity="0.18" strokeWidth="0.35" strokeDasharray="1 1.4" />;
           })}
-          {nodes.map((n) => (
-            <circle key={n.code} cx={n.x} cy={n.y} r={HANDS_ON.has(n.code) ? 3.2 : 2.6} fill={HANDS_ON.has(n.code) ? "#F4C660" : "#9D7FF0"} />
+          {nodes.map((n, i) => (
+            <circle className="cc-node" style={{ "--i": i } as CSSProperties} key={n.code} cx={n.x} cy={n.y} r={HANDS_ON.has(n.code) ? 3.2 : 2.6} fill={HANDS_ON.has(n.code) ? "#F4C660" : "#9D7FF0"} />
           ))}
           <path
+            className="cc-arc"
+            pathLength={1}
             d={`M ${nodes[6].x} ${nodes[6].y} A ${R} ${R} 0 0 1 ${nodes[7].x} ${nodes[7].y}`}
             fill="none"
             stroke="#F4C660"
@@ -57,15 +65,15 @@ export function CuriosityCircle() {
             strokeLinecap="round"
           />
         </svg>
-        {nodes.map((n) => (
+        {nodes.map((n, i) => (
           <span
             key={n.code}
             lang={locale}
             dir={locale === "ar" ? "rtl" : "ltr"}
-            className={`absolute w-[24%] -translate-x-1/2 -translate-y-1/2 text-center text-[11px] font-semibold leading-tight sm:text-[13px] ${
+            className={`cc-label absolute w-[24%] -translate-x-1/2 -translate-y-1/2 text-center text-[11px] font-semibold leading-tight sm:text-[13px] ${
               HANDS_ON.has(n.code) ? "text-[#F4C660]" : "text-[#F5EEE6]/85"
             }`}
-            style={{ left: `${n.lx}%`, top: `${n.ly}%` }}
+            style={{ left: `${n.lx}%`, top: `${n.ly}%`, "--i": i } as CSSProperties}
           >
             {coreWording(locale, `CUR-${n.code}-NAME`)}
           </span>
@@ -90,6 +98,37 @@ export function CuriosityCircle() {
       </figcaption>
     </figure>
   );
+}
+
+/**
+ * Arms the circle's draw-in only when it is still below the fold and motion
+ * is allowed, then plays it once as it comes into view. Without JavaScript,
+ * with reduced motion, or when it is already on screen, it simply shows drawn.
+ */
+function useDrawInOnView() {
+  const ref = useRef<HTMLElement>(null);
+  const [isArmed, setArmed] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (el.getBoundingClientRect().top < window.innerHeight) return;
+    setArmed(true);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setArmed(false);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "0px 0px -20% 0px" },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return { ref, isArmed };
 }
 
 const CHOOSE_COPY = {

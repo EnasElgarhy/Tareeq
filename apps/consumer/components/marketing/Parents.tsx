@@ -1,6 +1,6 @@
 "use client";
 
-import { Baby, EyeOff, FlaskConical, HeartHandshake, Lock, Plus, Share2, ShieldCheck, Trash2, Users } from "lucide-react";
+import { Baby, Check, EyeOff, FlaskConical, HeartHandshake, Lock, Plus, Share2, ShieldCheck, Sparkles, Trash2, Users } from "lucide-react";
 import Link from "next/link";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { getReportOffer } from "@/lib/payments/report-access";
@@ -249,39 +249,81 @@ function Privacy({ copy }: { copy: ParentsCopy }) {
   );
 }
 
-/** The price as a ticket: one payment, what it includes, torn at the fold. */
+/** "Kai… results through (available for 3 months…)" → ["Kai… results through", "available for 3 months…"]. */
+function splitDetail(item: string): [string, string] {
+  const match = item.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
+  return match ? [match[1], match[2]] : [item, ""];
+}
+
+/**
+ * The price as a ticket: the offer and the price on the night stub, what it
+ * includes on the paper side, a perforated fold between them with a notch
+ * bitten out at the top and bottom. The approved wording is kept word for
+ * word; only its layout changes.
+ */
 function Price({ copy }: { copy: ParentsCopy }) {
   const offer = getReportOffer();
   const full = Math.round(offer.listAmountMinor / 100);
   const now = Math.round(offer.amountMinor / 100);
-  const notch = "radial-gradient(circle at 0 50%, transparent 16px, #000 17px)";
+  const [offerLabel, ...terms] = copy.price.under.split(/\s*·\s*/);
   return (
     <section id="parents-price" aria-labelledby="parents-price-title" className="py-24 md:py-32">
       <Container>
         <Heading id="parents-price-title" question={copy.questions.price} headline={copy.price.headline} />
-        <div className="mt-12 grid overflow-hidden rounded-[30px] shadow-[0_40px_80px_-40px_rgba(34,18,72,0.5)] md:grid-cols-[0.8fr_1.2fr]">
-          <div className="relative flex flex-col justify-center gap-3 bg-[#221248] p-8 text-[#F5EEE6] sm:p-10">
-            <span className="text-lg text-[#F5EEE6]/50 line-through">{copy.price.full(full)}</span>
-            <span className="font-heading text-6xl font-bold tracking-[-0.03em] text-[#F4C660] sm:text-7xl">{copy.price.now(now)}</span>
-            <span className="text-sm text-[#F5EEE6]/70">{copy.price.under}</span>
+        <div className="relative mt-12 grid overflow-hidden rounded-[30px] shadow-[0_40px_80px_-40px_rgba(34,18,72,0.5)] md:grid-cols-[0.85fr_1.15fr]">
+          {/* Night stub: the offer, the price and the one action. */}
+          <div className="relative flex flex-col gap-7 bg-[#221248] p-8 text-[#F5EEE6] sm:p-10">
+            <span className="inline-flex w-max items-center gap-2 rounded-full border border-[#F4C660]/40 bg-[#F4C660]/10 px-3.5 py-1.5 text-[13px] font-semibold text-[#F4C660]">
+              <Sparkles aria-hidden="true" className="size-4" />
+              {offerLabel}
+            </span>
+            <div className="grid gap-1">
+              <span className="text-lg text-[#F5EEE6]/55">
+                <span className="sr-only">{copy.price.full(full)}</span>
+                <s aria-hidden="true" className="decoration-[#F2A8B3]/80 decoration-2">{copy.price.full(full)}</s>
+              </span>
+              <span className="font-heading text-6xl font-bold leading-none tracking-[-0.03em] text-[#F4C660] sm:text-7xl">{copy.price.now(now)}</span>
+            </div>
+            {terms.length ? (
+              <ul className="grid gap-2 text-[15px] text-[#F5EEE6]/80">
+                {terms.map((term) => (
+                  <li key={term} className="flex items-center gap-2.5">
+                    <Check aria-hidden="true" className="size-4 text-[#F4C660]" />
+                    {term}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+            <SendToChildButton className={`${CTA} mt-auto w-full sm:w-max`} placement="parents-price" />
           </div>
-          <div
-            className="relative bg-[#FFFCF6] p-8 sm:p-10"
-            style={{ WebkitMaskImage: notch, maskImage: notch }}
-          >
-            <span aria-hidden="true" className="absolute inset-y-6 start-0 hidden border-s-2 border-dashed border-[#221248]/15 md:block" />
+
+          {/* Perforation: a dashed fold with a notch at each end (desktop). */}
+          <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 start-[42.5%] hidden w-0 md:block">
+            <span className="absolute -top-4 size-8 -translate-x-1/2 rounded-full bg-[var(--day-bg)] rtl:translate-x-1/2" />
+            <span className="absolute inset-y-6 border-s-2 border-dashed border-[#221248]/20" />
+            <span className="absolute -bottom-4 size-8 -translate-x-1/2 rounded-full bg-[var(--day-bg)] rtl:translate-x-1/2" />
+          </span>
+
+          {/* Paper side: what is included, then the free-to-start note. */}
+          <div className="flex flex-col bg-[#FFFCF6] p-8 sm:p-10 md:ps-14">
             <h3 className="font-heading text-xl font-semibold">{copy.price.includedTitle}</h3>
-            <ul className="mt-5 grid gap-4">
-              {copy.price.included.map((item, i) => (
-                <li key={item} className="grid grid-cols-[2rem_1fr] items-start gap-3 leading-relaxed text-[var(--day-ink-2)]">
-                  <span className="grid size-8 place-items-center rounded-full bg-[#EEEBF6] font-heading text-sm font-semibold text-[#4B3D82]">
-                    {i + 1}
-                  </span>
-                  <span className="pt-1">{item}</span>
-                </li>
-              ))}
+            <ul className="mt-6 grid gap-5">
+              {copy.price.included.map((item) => {
+                const [main, detail] = splitDetail(item);
+                return (
+                  <li key={item} className="grid grid-cols-[1.75rem_1fr] items-start gap-3.5">
+                    <span aria-hidden="true" className="mt-0.5 grid size-7 place-items-center rounded-full bg-[#221248] text-[#F4C660]">
+                      <Check className="size-4" strokeWidth={2.5} />
+                    </span>
+                    <span className="grid gap-1">
+                      <span className="text-[16.5px] font-medium leading-snug text-[var(--day-ink)]">{main}</span>
+                      {detail ? <span className="text-sm text-[var(--day-ink-3)] first-letter:uppercase">{detail}</span> : null}
+                    </span>
+                  </li>
+                );
+              })}
             </ul>
-            <p className="mt-6 text-sm text-[var(--day-ink-3)]">{copy.price.note}</p>
+            <p className="mt-8 border-t border-[var(--day-line)] pt-5 text-sm text-[var(--day-ink-2)] md:mt-auto">{copy.price.note}</p>
           </div>
         </div>
       </Container>
