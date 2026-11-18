@@ -154,7 +154,9 @@ export async function seedCoreStudent(page: Page, locale: "en" | "ar" = "en") {
       },
       result: CORE_CASE_01_RESULT,
       generatedAt: CORE_GENERATED_AT,
-      registration: makeResultRegistration({ email: E2E_EMAIL }),
+      // A registered student always has the server's assessment id; the report
+      // only opens once the entitlement check for it says "active".
+      registration: makeResultRegistration({ email: E2E_EMAIL, assessmentId: "e2e-core-attempt" }),
       access: makeUnlockedAccess(CORE_GENERATED_AT),
       selectedLocale: locale,
     },

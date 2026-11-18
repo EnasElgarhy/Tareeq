@@ -13,12 +13,17 @@ const VIEWPORTS = [
 ] as const;
 
 /** The report is a deck: a list of section buttons on desktop, a select on phones. */
-async function openReportSection(page: Page, index: number, label: string) {
+/** By name: the section numbers move when the report's order changes. */
+async function openReportSection(page: Page, label: string) {
   const select = page.getByRole("combobox", { name: "Report sections" });
   if (await select.isVisible()) {
-    await select.selectOption({ label: `${index}. ${label}` });
+    const option = await select
+      .locator("option", { hasText: new RegExp(`^\\d+\\. ${label}$`) })
+      .first()
+      .textContent();
+    await select.selectOption({ label: option ?? label });
   } else {
-    await page.getByRole("button", { name: `${index} ${label}` }).click();
+    await page.getByRole("button", { name: new RegExp(`^\\d+ ${label}$`) }).click();
   }
 }
 
@@ -33,7 +38,7 @@ for (const viewport of VIEWPORTS) {
     test("a tapped answer opens Kai with the report context", async ({ page }) => {
       const requests = await stubKaiChat(page);
       await page.goto("/compass");
-      await openReportSection(page, 3, "Your curiosity");
+      await openReportSection(page, "Your curiosity");
 
       const chip = page.locator('a[href*="entry=S3-KAI-Q"][href*="prompt="]').first();
       await chip.scrollIntoViewIfNeeded();
@@ -63,7 +68,7 @@ for (const viewport of VIEWPORTS) {
     }) => {
       const requests = await stubKaiChat(page, "Which family would you like to know more about?");
       await page.goto("/compass");
-      await openReportSection(page, 4, "Where it leads");
+      await openReportSection(page, "Where it leads");
 
       const button = page.locator('a[href*="entry=S4-KAI-Q"]:not([href*="prompt="])').first();
       await button.scrollIntoViewIfNeeded();

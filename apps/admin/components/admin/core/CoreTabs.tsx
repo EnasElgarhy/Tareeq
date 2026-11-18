@@ -8,6 +8,11 @@ const TABS = [
     href: "/admin/content/core/wording",
   },
   { key: "bank", label: "Career bank", href: "/admin/content/core/bank" },
+  {
+    key: "subject-guide",
+    label: "Subject guide",
+    href: "/admin/content/core/subject-guide",
+  },
 ] as const;
 
 export type CoreTab = (typeof TABS)[number]["key"];

@@ -64,6 +64,10 @@ export function buildCoreResponseSchema() {
         description: "Tool calls the rules ask for in this turn, if any.",
       },
       summary: { type: "STRING", description: "One sentence summing up the conversation so far." },
+      uses_subject_guide: {
+        type: "BOOLEAN",
+        description: "True when this reply says anything about school subjects, streams, tracks, sections or admission patterns.",
+      },
     },
     required: ["text"],
   };
@@ -108,8 +112,23 @@ function turnInstruction(input: CoreTurnInput): string {
     input.payload.ENTRY_PROMPT && !hasKaiSpoken
       ? "\nThe student saw ENTRY_PROMPT in the report and is answering it."
       : "";
-  return `The student just said: ${JSON.stringify(input.message ?? "")}${answering}\n\nWrite Kai's reply now.`;
+  return `The student just said: ${JSON.stringify(input.message ?? "")}${answering}\n\n${SUBJECT_REPLY_CHECK}\n\nWrite Kai's reply now.`;
 }
+
+/**
+ * SUBJECT CHOICES in the system prompt, as a per-reply check. A live audit
+ * (17 Nov 2026) found the model dropping the two add-ons and offering other
+ * countries' patterns when the student's was not covered.
+ */
+const SUBJECT_REPLY_CHECK =
+  "If this reply uses SUBJECT_GUIDE (school subjects, streams, tracks, sections or admission patterns): " +
+  "describe, never prescribe, and say the guide was last updated on its version date. " +
+  "End the reply with one short sentence, in the student's language, saying that requirements differ between universities and change, " +
+  "and that the school counsellor and the university's official website have the final word " +
+  "(in Arabic, for example: «تختلف الشروط بين الجامعات وتتغيّر، والكلمة الأخيرة للمرشد المدرسي والموقع الرسمي للجامعة.»). " +
+  "If SUBJECT_GUIDE.country is null, or the entry's status says not yet researched, not confirmed or not yet official, " +
+  "give no subject details for it: say you do not have checked information and point to the counsellor and the official admission portal. " +
+  "Never give another country's pattern instead.";
 
 /** The per-request user turn: the payload (spec §7.1), the conversation, the ask. */
 export function buildCoreTurnPrompt(input: CoreTurnInput): string {

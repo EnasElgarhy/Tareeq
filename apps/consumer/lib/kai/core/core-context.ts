@@ -1,4 +1,5 @@
 import type { CareerBank, CareerFamily, CareerJob } from "@/lib/core-v2/bank";
+import { type SubjectGuide, type SubjectGuideView, subjectGuideFor } from "./subject-guide";
 import { buildSection4, type FamilyView, type MeetCard } from "@/lib/core-v2/section4";
 import { findShifts, shiftsToRaise, type Shift } from "@/lib/core-v2/shifts";
 import {
@@ -76,6 +77,8 @@ export interface CoreKaiContextInput {
   /** Already gated by flags_live: a flag students cannot see is not raised. */
   isAttemptFlagged: boolean;
   priorDisagreements: readonly CoreDisagreement[];
+  /** The current subject guide (admin upload, else the bundled version). */
+  subjectGuide: SubjectGuide;
 }
 
 export interface CoreKaiAxisReading {
@@ -121,6 +124,8 @@ export interface CoreKaiContext {
   VERIFIED_LINKS: string[];
   /** Pending from the client (spec §15); Kai uses its built-in fallback. */
   SAFETY_CONTACTS: string[];
+  /** Subject guide (17 Nov 2026): the only source Kai may use on subjects. */
+  SUBJECT_GUIDE: SubjectGuideView;
 }
 
 /** Report bars per axis: the heading and the two ends (file 04, Section 2). */
@@ -279,5 +284,9 @@ export function buildCoreKaiContext(input: CoreKaiContextInput): CoreKaiContext 
     })),
     VERIFIED_LINKS: [],
     SAFETY_CONTACTS: [...SAFETY_CONTACTS],
+    SUBJECT_GUIDE: subjectGuideFor(input.subjectGuide, {
+      country: input.profile.country,
+      familyIds: cards.map((card) => card.familyId),
+    }),
   };
 }

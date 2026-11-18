@@ -1,0 +1,1434 @@
+{
+ "name": "Map My CORE subject guide for Kai",
+ "version": "1.0 (2026-11-17)",
+ "status": "Approved by The ME Project for upload on 17 November 2026. Each entry carries its own status; follow rule_for_kai for entries marked not yet researched, not confirmed or not yet official. Recheck at least yearly and after any announced change.",
+ "rule_for_kai": [
+  "Use only this guide for anything about school subjects, streams, tracks or sections. Never add from your own knowledge.",
+  "First ask the student's country, school system and grade.",
+  "Say 'students interested in this field usually take...' and 'for example, [university] asked for ... in [year]'. Never say 'you should', 'you need' or 'you must'.",
+  "Always add that requirements differ between universities and change, and that the school counsellor and the university's official website have the final word.",
+  "Never discourage a curiosity because of subjects already chosen. If a usual subject is missing, say that routes often exist (foundation, bridging or qualifying programmes, or a track change where the system allows it) and suggest asking the counsellor.",
+  "If an entry is missing or marked 'not yet researched', 'not confirmed' or 'not yet official', say you do not have checked information and point to the counsellor.",
+  "Quote the year of any example or rule you mention."
+ ],
+ "field_groups": {
+  "MED": {
+   "name": "1. Medicine and veterinary medicine",
+   "study_fields": [
+    "medicine",
+    "veterinary medicine"
+   ]
+  },
+  "PHARM": {
+   "name": "2. Pharmacy, dentistry route and biomedical laboratory sciences",
+   "study_fields": [
+    "pharmacy",
+    "biomedical science",
+    "medical laboratory science",
+    "genetics",
+    "biomedical science with business",
+    "regulatory affairs"
+   ]
+  },
+  "ALLIED": {
+   "name": "3. Nursing, therapies and allied health",
+   "study_fields": [
+    "nursing",
+    "nutrition and dietetics",
+    "physiotherapy",
+    "speech and language therapy",
+    "prosthetics and orthotics",
+    "emergency medical services",
+    "exercise physiology",
+    "veterinary nursing",
+    "art therapy",
+    "medical illustration",
+    "public health"
+   ]
+  },
+  "ENG": {
+   "name": "4. Engineering",
+   "study_fields": [
+    "aerospace engineering",
+    "architectural engineering",
+    "automotive and marine engineering",
+    "biomedical engineering",
+    "civil engineering",
+    "computer engineering",
+    "electrical and electronic engineering",
+    "energy and nuclear engineering",
+    "engineering management",
+    "engineering technology",
+    "engineering with management",
+    "industrial engineering",
+    "mechanical engineering",
+    "mechatronics",
+    "motorsport engineering",
+    "product design engineering",
+    "quality engineering",
+    "robotics",
+    "telecommunications",
+    "sound engineering",
+    "construction management",
+    "ergonomics",
+    "chemical",
+    "chemical engineering",
+    "petroleum",
+    "materials science"
+   ]
+  },
+  "COMP": {
+   "name": "5. Computer science, software and data",
+   "study_fields": [
+    "artificial intelligence",
+    "computer science",
+    "cybersecurity",
+    "data science",
+    "software engineering",
+    "bioinformatics",
+    "computational science",
+    "sports analytics"
+   ]
+  },
+  "INFOSYS": {
+   "name": "6. Information systems and technology",
+   "study_fields": [
+    "information systems",
+    "information technology",
+    "management information systems",
+    "information management",
+    "business with computing",
+    "digital media technology",
+    "educational technology",
+    "human-computer interaction",
+    "health informatics"
+   ]
+  },
+  "LIFESCI": {
+   "name": "7. Biology, environment and life sciences",
+   "study_fields": [
+    "biology",
+    "marine biology",
+    "life sciences",
+    "food science",
+    "forensic science",
+    "animal science",
+    "forestry and conservation",
+    "environmental science",
+    "environmental studies",
+    "marine science"
+   ]
+  },
+  "PHYSMATH": {
+   "name": "8. Physics, chemistry, mathematics and statistics",
+   "study_fields": [
+    "chemistry",
+    "physics",
+    "mathematics",
+    "statistics",
+    "actuarial science",
+    "geology",
+    "earth and atmospheric science"
+   ]
+  },
+  "ECONFIN": {
+   "name": "9. Economics, accounting and finance",
+   "study_fields": [
+    "accounting",
+    "finance",
+    "economics",
+    "risk management",
+    "health economics"
+   ]
+  },
+  "BUSMGMT": {
+   "name": "10. Business, management, marketing, hospitality and tourism",
+   "study_fields": [
+    "business",
+    "business administration",
+    "management",
+    "marketing",
+    "human resources",
+    "logistics",
+    "supply chain and logistics",
+    "operations management",
+    "project management",
+    "entrepreneurship",
+    "e-commerce",
+    "real estate",
+    "quality management",
+    "facilities management",
+    "customer experience",
+    "nonprofit management",
+    "social entrepreneurship",
+    "fashion merchandising",
+    "marketing communication",
+    "advertising",
+    "public relations",
+    "arts management",
+    "design management",
+    "healthcare management",
+    "hospitality management",
+    "tourism",
+    "tourism business",
+    "tourism management",
+    "event management"
+   ]
+  },
+  "LAW": {
+   "name": "11. Law and sharia",
+   "study_fields": [
+    "law",
+    "sharia and law",
+    "intellectual property law"
+   ]
+  },
+  "SOC": {
+   "name": "12. Psychology, social sciences, politics and public policy",
+   "study_fields": [
+    "psychology",
+    "clinical psychology",
+    "counselling",
+    "social work",
+    "sociology",
+    "social sciences",
+    "international relations",
+    "political science",
+    "public administration",
+    "public policy",
+    "security studies",
+    "development studies",
+    "science policy"
+   ]
+  },
+  "EDU": {
+   "name": "13. Education and teaching",
+   "study_fields": [
+    "education",
+    "education with arts",
+    "educational administration",
+    "educational media",
+    "special education",
+    "a subject degree with a teaching qualification"
+   ]
+  },
+  "ARCH": {
+   "name": "14. Architecture, interior and urban design",
+   "study_fields": [
+    "architecture",
+    "interior design",
+    "landscape architecture",
+    "urban design"
+   ]
+  },
+  "DESIGN": {
+   "name": "15. Design, animation and games",
+   "study_fields": [
+    "industrial design",
+    "product design",
+    "graphic design",
+    "fashion design",
+    "textile design",
+    "jewellery design",
+    "visual communication",
+    "interaction design",
+    "animation",
+    "game design",
+    "design and technology"
+   ]
+  },
+  "MEDIA": {
+   "name": "16. Media, journalism and communication",
+   "study_fields": [
+    "journalism",
+    "journalism with science",
+    "mass communication",
+    "media production",
+    "media studies",
+    "film and media production",
+    "digital media",
+    "science communication",
+    "sports media",
+    "photography"
+   ]
+  },
+  "ARTS": {
+   "name": "17. Music, performing arts, literature and archaeology",
+   "study_fields": [
+    "music",
+    "performing arts",
+    "creative writing",
+    "arabic or english literature",
+    "archaeology"
+   ]
+  },
+  "SPORT": {
+   "name": "18. Sport and exercise",
+   "study_fields": [
+    "sports science",
+    "exercise science",
+    "physical education",
+    "sports management",
+    "sports marketing",
+    "coaching"
+   ]
+  },
+  "APPLIED": {
+   "name": "19. Aviation, maritime, police, military and technical routes",
+   "study_fields": [
+    "emergency and disaster management",
+    "police academies",
+    "military and naval colleges",
+    "civil defence training",
+    "aviation",
+    "aviation operations",
+    "aviation technology",
+    "pilot training",
+    "aircraft maintenance",
+    "maritime operations",
+    "maritime studies",
+    "technical diplomas",
+    "applied technology programmes"
+   ]
+  }
+ },
+ "job_families": [
+  {
+   "id": "F-RD-1",
+   "family": "Medicine and health sciences",
+   "family_ar": "الطب والعلوم الصحية",
+   "study_fields": "Medicine, pharmacy, biomedical science, medical laboratory science",
+   "study_fields_ar": "الطب، الصيدلة، العلوم الطبية الحيوية، علوم المختبرات الطبية",
+   "field_groups": [
+    "MED",
+    "PHARM"
+   ]
+  },
+  {
+   "id": "F-RD-2",
+   "family": "Life and environmental sciences",
+   "family_ar": "علوم الحياة والبيئة",
+   "study_fields": "Biology, environmental science, marine science, food science",
+   "study_fields_ar": "الأحياء، علوم البيئة، علوم البحار، علوم الأغذية",
+   "field_groups": [
+    "LIFESCI"
+   ]
+  },
+  {
+   "id": "F-RD-3",
+   "family": "Physical and earth sciences",
+   "family_ar": "الفيزياء والكيمياء وعلوم الأرض",
+   "study_fields": "Chemistry, physics, geology, earth and atmospheric science",
+   "study_fields_ar": "الكيمياء، الفيزياء، الجيولوجيا، علوم الأرض والغلاف الجوي",
+   "field_groups": [
+    "PHYSMATH"
+   ]
+  },
+  {
+   "id": "F-RD-4",
+   "family": "Human behaviour and society",
+   "family_ar": "السلوك الإنساني والمجتمع",
+   "study_fields": "Psychology, economics, sociology, social sciences",
+   "study_fields_ar": "علم النفس، الاقتصاد، علم الاجتماع، العلوم الاجتماعية",
+   "field_groups": [
+    "SOC",
+    "ECONFIN"
+   ]
+  },
+  {
+   "id": "F-RD-5",
+   "family": "Data and patterns",
+   "family_ar": "البيانات والأنماط",
+   "study_fields": "Mathematics, statistics, data science, actuarial science",
+   "study_fields_ar": "الرياضيات، الإحصاء، علم البيانات، العلوم الاكتوارية",
+   "field_groups": [
+    "PHYSMATH",
+    "COMP"
+   ]
+  },
+  {
+   "id": "F-RD-6",
+   "family": "Investigation and diagnosis",
+   "family_ar": "التقصّي والتشخيص",
+   "study_fields": "Forensic science, public health, chemistry, archaeology",
+   "study_fields_ar": "علوم الأدلة الجنائية، الصحة العامة، الكيمياء، علم الآثار",
+   "field_groups": [
+    "LIFESCI",
+    "ALLIED",
+    "PHYSMATH",
+    "ARTS"
+   ]
+  },
+  {
+   "id": "F-IE-1",
+   "family": "Design",
+   "family_ar": "التصميم",
+   "study_fields": "Graphic design, visual communication, interior design, product design",
+   "study_fields_ar": "التصميم الجرافيكي، الاتصال المرئي، التصميم الداخلي، تصميم المنتجات",
+   "field_groups": [
+    "DESIGN",
+    "ARCH"
+   ]
+  },
+  {
+   "id": "F-IE-2",
+   "family": "Architecture and spaces",
+   "family_ar": "العمارة والمساحات",
+   "study_fields": "Architecture, landscape architecture, urban design",
+   "study_fields_ar": "العمارة، عمارة المناظر الطبيعية، التصميم العمراني",
+   "field_groups": [
+    "ARCH"
+   ]
+  },
+  {
+   "id": "F-IE-3",
+   "family": "Writing and storytelling",
+   "family_ar": "الكتابة ورواية القصص",
+   "study_fields": "Journalism, creative writing, Arabic or English literature, media studies",
+   "study_fields_ar": "الصحافة، الكتابة الإبداعية، الأدب العربي أو الإنجليزي، الدراسات الإعلامية",
+   "field_groups": [
+    "MEDIA",
+    "ARTS"
+   ]
+  },
+  {
+   "id": "F-IE-4",
+   "family": "Film, photography and animation",
+   "family_ar": "الأفلام والتصوير والرسوم المتحركة",
+   "study_fields": "Film and media production, animation, photography, digital media",
+   "study_fields_ar": "إنتاج الأفلام والإعلام، الرسوم المتحركة، التصوير الفوتوغرافي، الإعلام الرقمي",
+   "field_groups": [
+    "MEDIA",
+    "DESIGN"
+   ]
+  },
+  {
+   "id": "F-IE-5",
+   "family": "Music and performance",
+   "family_ar": "الموسيقى والفنون الأدائية",
+   "study_fields": "Music, performing arts, sound engineering",
+   "study_fields_ar": "الموسيقى، الفنون الأدائية، هندسة الصوت",
+   "field_groups": [
+    "ARTS",
+    "ENG"
+   ]
+  },
+  {
+   "id": "F-IE-6",
+   "family": "Fashion and crafts",
+   "family_ar": "الأزياء والحِرف الفنية",
+   "study_fields": "Fashion design, textile design, jewellery design",
+   "study_fields_ar": "تصميم الأزياء، تصميم المنسوجات، تصميم المجوهرات",
+   "field_groups": [
+    "DESIGN"
+   ]
+  },
+  {
+   "id": "F-PW-1",
+   "family": "Patient care and therapy",
+   "family_ar": "رعاية المرضى والعلاج",
+   "study_fields": "Nursing, physiotherapy, speech and language therapy, medicine",
+   "study_fields_ar": "التمريض، العلاج الطبيعي، علاج النطق واللغة، الطب",
+   "field_groups": [
+    "ALLIED",
+    "MED"
+   ]
+  },
+  {
+   "id": "F-PW-2",
+   "family": "Mind and counselling",
+   "family_ar": "الصحة النفسية والإرشاد",
+   "study_fields": "Psychology, counselling, clinical psychology",
+   "study_fields_ar": "علم النفس، الإرشاد النفسي، علم النفس الإكلينيكي",
+   "field_groups": [
+    "SOC"
+   ]
+  },
+  {
+   "id": "F-PW-3",
+   "family": "Teaching and learning",
+   "family_ar": "التعليم والتعلّم",
+   "study_fields": "Education, a subject degree with a teaching qualification, special education",
+   "study_fields_ar": "التربية، شهادة في مادة دراسية مع مؤهل تربوي، التربية الخاصة",
+   "field_groups": [
+    "EDU"
+   ]
+  },
+  {
+   "id": "F-PW-4",
+   "family": "Coaching and people development",
+   "family_ar": "الكوتشينج وتنمية الأفراد",
+   "study_fields": "Human resources, psychology, education",
+   "study_fields_ar": "الموارد البشرية، علم النفس، التربية",
+   "field_groups": [
+    "BUSMGMT",
+    "SOC",
+    "EDU"
+   ]
+  },
+  {
+   "id": "F-PW-5",
+   "family": "Community and social care",
+   "family_ar": "الرعاية المجتمعية والاجتماعية",
+   "study_fields": "Social work, development studies, sociology, public health",
+   "study_fields_ar": "الخدمة الاجتماعية، دراسات التنمية، علم الاجتماع، الصحة العامة",
+   "field_groups": [
+    "SOC",
+    "ALLIED"
+   ]
+  },
+  {
+   "id": "F-PW-6",
+   "family": "Service and hospitality",
+   "family_ar": "الخدمة والضيافة",
+   "study_fields": "Hospitality management, tourism, customer experience",
+   "study_fields_ar": "إدارة الضيافة، السياحة، تجربة العملاء",
+   "field_groups": [
+    "BUSMGMT"
+   ]
+  },
+  {
+   "id": "F-EI-1",
+   "family": "Starting and running businesses",
+   "family_ar": "تأسيس الأعمال وإدارتها",
+   "study_fields": "Business administration, entrepreneurship, management",
+   "study_fields_ar": "إدارة الأعمال، ريادة الأعمال، الإدارة",
+   "field_groups": [
+    "BUSMGMT"
+   ]
+  },
+  {
+   "id": "F-EI-2",
+   "family": "Marketing, communications and sales",
+   "family_ar": "التسويق والاتصال والمبيعات",
+   "study_fields": "Marketing, mass communication, public relations, business",
+   "study_fields_ar": "التسويق، الإعلام، العلاقات العامة، إدارة الأعمال",
+   "field_groups": [
+    "BUSMGMT",
+    "MEDIA"
+   ]
+  },
+  {
+   "id": "F-EI-3",
+   "family": "Law and advocacy",
+   "family_ar": "القانون والمحاماة",
+   "study_fields": "Law, Sharia and law",
+   "study_fields_ar": "القانون، الشريعة والقانون",
+   "field_groups": [
+    "LAW"
+   ]
+  },
+  {
+   "id": "F-EI-4",
+   "family": "Diplomacy, government and policy",
+   "family_ar": "الدبلوماسية والحكومة والسياسات",
+   "study_fields": "International relations, political science, public policy",
+   "study_fields_ar": "العلاقات الدولية، العلوم السياسية، السياسات العامة",
+   "field_groups": [
+    "SOC"
+   ]
+  },
+  {
+   "id": "F-EI-5",
+   "family": "Investment, real estate and deals",
+   "family_ar": "الاستثمار والعقارات والصفقات",
+   "study_fields": "Finance, economics, real estate, business",
+   "study_fields_ar": "المالية، الاقتصاد، العقارات، إدارة الأعمال",
+   "field_groups": [
+    "ECONFIN",
+    "BUSMGMT"
+   ]
+  },
+  {
+   "id": "F-EI-6",
+   "family": "Events, sports and tourism management",
+   "family_ar": "إدارة الفعاليات والرياضة والسياحة",
+   "study_fields": "Event management, sports management, tourism management",
+   "study_fields_ar": "إدارة الفعاليات، الإدارة الرياضية، إدارة السياحة",
+   "field_groups": [
+    "BUSMGMT",
+    "SPORT"
+   ]
+  },
+  {
+   "id": "F-PE-1",
+   "family": "Finance and accounting",
+   "family_ar": "المالية والمحاسبة",
+   "study_fields": "Accounting, finance",
+   "study_fields_ar": "المحاسبة، المالية",
+   "field_groups": [
+    "ECONFIN"
+   ]
+  },
+  {
+   "id": "F-PE-2",
+   "family": "Audit, risk and compliance",
+   "family_ar": "التدقيق والمخاطر والامتثال",
+   "study_fields": "Accounting, finance, risk management, law",
+   "study_fields_ar": "المحاسبة، المالية، إدارة المخاطر، القانون",
+   "field_groups": [
+    "ECONFIN",
+    "LAW"
+   ]
+  },
+  {
+   "id": "F-PE-3",
+   "family": "Operations, logistics and supply chain",
+   "family_ar": "العمليات والخدمات اللوجستية وسلاسل الإمداد",
+   "study_fields": "Supply chain and logistics, operations management, business",
+   "study_fields_ar": "سلاسل الإمداد والخدمات اللوجستية، إدارة العمليات، إدارة الأعمال",
+   "field_groups": [
+    "BUSMGMT"
+   ]
+  },
+  {
+   "id": "F-PE-4",
+   "family": "Project and programme management",
+   "family_ar": "إدارة المشاريع والبرامج",
+   "study_fields": "Project management, business, engineering management",
+   "study_fields_ar": "إدارة المشاريع، إدارة الأعمال، الإدارة الهندسية",
+   "field_groups": [
+    "BUSMGMT",
+    "ENG"
+   ]
+  },
+  {
+   "id": "F-PE-5",
+   "family": "Government and organisational administration",
+   "family_ar": "الإدارة الحكومية والمؤسسية",
+   "study_fields": "Public administration, business administration",
+   "study_fields_ar": "الإدارة العامة، إدارة الأعمال",
+   "field_groups": [
+    "SOC",
+    "BUSMGMT"
+   ]
+  },
+  {
+   "id": "F-PE-6",
+   "family": "Quality, information and records",
+   "family_ar": "الجودة والمعلومات والسجلات",
+   "study_fields": "Quality management, information management, health informatics",
+   "study_fields_ar": "إدارة الجودة، إدارة المعلومات، المعلوماتية الصحية",
+   "field_groups": [
+    "BUSMGMT",
+    "INFOSYS"
+   ]
+  },
+  {
+   "id": "F-TS-1",
+   "family": "Software and app development",
+   "family_ar": "تطوير البرمجيات والتطبيقات",
+   "study_fields": "Computer science, software engineering",
+   "study_fields_ar": "علوم الحاسوب، هندسة البرمجيات",
+   "field_groups": [
+    "COMP"
+   ]
+  },
+  {
+   "id": "F-TS-2",
+   "family": "Artificial intelligence",
+   "family_ar": "الذكاء الاصطناعي",
+   "study_fields": "Computer science, artificial intelligence, mathematics",
+   "study_fields_ar": "علوم الحاسوب، الذكاء الاصطناعي، الرياضيات",
+   "field_groups": [
+    "COMP",
+    "PHYSMATH"
+   ]
+  },
+  {
+   "id": "F-TS-3",
+   "family": "Cybersecurity",
+   "family_ar": "الأمن السيبراني",
+   "study_fields": "Cybersecurity, computer science",
+   "study_fields_ar": "الأمن السيبراني، علوم الحاسوب",
+   "field_groups": [
+    "COMP"
+   ]
+  },
+  {
+   "id": "F-TS-4",
+   "family": "Networks, cloud and infrastructure",
+   "family_ar": "الشبكات والحوسبة السحابية والبنية التحتية",
+   "study_fields": "Computer engineering, information technology, telecommunications",
+   "study_fields_ar": "هندسة الحاسوب، تقنية المعلومات، الاتصالات",
+   "field_groups": [
+    "ENG",
+    "INFOSYS"
+   ]
+  },
+  {
+   "id": "F-TS-5",
+   "family": "Data engineering and analytics",
+   "family_ar": "هندسة البيانات وتحليلها",
+   "study_fields": "Data science, information systems, computer science",
+   "study_fields_ar": "علم البيانات، نظم المعلومات، علوم الحاسوب",
+   "field_groups": [
+    "COMP",
+    "INFOSYS"
+   ]
+  },
+  {
+   "id": "F-TS-6",
+   "family": "Smart systems and digital transformation",
+   "family_ar": "الأنظمة الذكية والتحول الرقمي",
+   "study_fields": "Information systems, computer engineering",
+   "study_fields_ar": "نظم المعلومات، هندسة الحاسوب",
+   "field_groups": [
+    "INFOSYS",
+    "ENG"
+   ]
+  },
+  {
+   "id": "F-IR-1",
+   "family": "Mechanical and manufacturing engineering",
+   "family_ar": "الهندسة الميكانيكية والتصنيع",
+   "study_fields": "Mechanical engineering, mechatronics, industrial engineering",
+   "study_fields_ar": "الهندسة الميكانيكية، الميكاترونكس، الهندسة الصناعية",
+   "field_groups": [
+    "ENG"
+   ]
+  },
+  {
+   "id": "F-IR-2",
+   "family": "Electrical, electronics and robotics",
+   "family_ar": "الكهرباء والإلكترونيات والروبوتات",
+   "study_fields": "Electrical and electronic engineering, robotics",
+   "study_fields_ar": "الهندسة الكهربائية والإلكترونية، الروبوتات",
+   "field_groups": [
+    "ENG"
+   ]
+  },
+  {
+   "id": "F-IR-3",
+   "family": "Civil engineering and construction",
+   "family_ar": "الهندسة المدنية والإنشاءات",
+   "study_fields": "Civil engineering, architectural engineering, construction management",
+   "study_fields_ar": "الهندسة المدنية، الهندسة المعمارية، إدارة الإنشاءات",
+   "field_groups": [
+    "ENG"
+   ]
+  },
+  {
+   "id": "F-IR-4",
+   "family": "Energy: oil, gas and renewables",
+   "family_ar": "الطاقة: النفط والغاز والطاقة المتجددة",
+   "study_fields": "Petroleum, chemical, energy and nuclear engineering",
+   "study_fields_ar": "هندسة البترول، الهندسة الكيميائية، هندسة الطاقة، الهندسة النووية",
+   "field_groups": [
+    "ENG"
+   ]
+  },
+  {
+   "id": "F-IR-5",
+   "family": "Aerospace, automotive and marine",
+   "family_ar": "الطيران والفضاء والسيارات والبحرية",
+   "study_fields": "Aerospace engineering, aircraft maintenance, automotive and marine engineering",
+   "study_fields_ar": "هندسة الطيران والفضاء، صيانة الطائرات، هندسة السيارات، الهندسة البحرية",
+   "field_groups": [
+    "ENG",
+    "APPLIED"
+   ]
+  },
+  {
+   "id": "F-IR-6",
+   "family": "Technical specialists and prototyping",
+   "family_ar": "التخصصات الفنية والنماذج الأولية",
+   "study_fields": "Technical diplomas, applied technology programmes, engineering technology",
+   "study_fields_ar": "الدبلومات الفنية، برامج التقنية التطبيقية، تقنية الهندسة",
+   "field_groups": [
+    "APPLIED",
+    "ENG"
+   ]
+  },
+  {
+   "id": "F-AE-1",
+   "family": "Competitive sport and coaching",
+   "family_ar": "الرياضة التنافسية والتدريب",
+   "study_fields": "Sports science, coaching, physical education",
+   "study_fields_ar": "علوم الرياضة، التدريب الرياضي، التربية البدنية",
+   "field_groups": [
+    "SPORT"
+   ]
+  },
+  {
+   "id": "F-AE-2",
+   "family": "Fitness and physical education",
+   "family_ar": "اللياقة البدنية والتربية البدنية",
+   "study_fields": "Sports science, exercise science, physical education",
+   "study_fields_ar": "علوم الرياضة، علوم التمرين، التربية البدنية",
+   "field_groups": [
+    "SPORT"
+   ]
+  },
+  {
+   "id": "F-AE-3",
+   "family": "Emergency and protective services",
+   "family_ar": "خدمات الطوارئ والحماية",
+   "study_fields": "Emergency medical services, police academies, civil defence training",
+   "study_fields_ar": "خدمات الإسعاف، أكاديميات الشرطة، تدريب الدفاع المدني",
+   "field_groups": [
+    "ALLIED",
+    "APPLIED"
+   ]
+  },
+  {
+   "id": "F-AE-4",
+   "family": "Military and national security",
+   "family_ar": "العسكرية والأمن الوطني",
+   "study_fields": "Military and naval colleges, security studies",
+   "study_fields_ar": "الكليات العسكرية والبحرية، الدراسات الأمنية",
+   "field_groups": [
+    "APPLIED",
+    "SOC"
+   ]
+  },
+  {
+   "id": "F-AE-5",
+   "family": "Aviation and maritime operations",
+   "family_ar": "الطيران والعمليات البحرية",
+   "study_fields": "Pilot training, aviation, maritime studies",
+   "study_fields_ar": "التدريب على الطيران، علوم الطيران، الدراسات البحرية",
+   "field_groups": [
+    "APPLIED"
+   ]
+  },
+  {
+   "id": "F-AE-6",
+   "family": "Outdoors, animals and fieldwork",
+   "family_ar": "الطبيعة والحيوانات والعمل الميداني",
+   "study_fields": "Animal science, environmental studies, veterinary nursing, forestry and conservation",
+   "study_fields_ar": "علوم الحيوان، الدراسات البيئية، التمريض البيطري، الغابات وحماية البيئة",
+   "field_groups": [
+    "LIFESCI",
+    "ALLIED"
+   ]
+  },
+  {
+   "id": "F-RD-EI",
+   "family": "Science and business",
+   "family_ar": "العلوم والأعمال",
+   "study_fields": "Biomedical science with business, intellectual property law, science policy",
+   "study_fields_ar": "العلوم الطبية الحيوية مع إدارة الأعمال، قانون الملكية الفكرية، السياسات العلمية",
+   "field_groups": [
+    "PHARM",
+    "LAW",
+    "SOC"
+   ]
+  },
+  {
+   "id": "F-RD-PE",
+   "family": "Research operations and regulation",
+   "family_ar": "إدارة البحوث وتنظيمها",
+   "study_fields": "Pharmacy, life sciences, health economics, regulatory affairs",
+   "study_fields_ar": "الصيدلة، علوم الحياة، اقتصاديات الصحة، الشؤون التنظيمية",
+   "field_groups": [
+    "PHARM",
+    "LIFESCI",
+    "ECONFIN"
+   ]
+  },
+  {
+   "id": "F-IE-PE",
+   "family": "Creative production and management",
+   "family_ar": "الإنتاج والإدارة الإبداعية",
+   "study_fields": "Media production, arts management, fashion merchandising",
+   "study_fields_ar": "الإنتاج الإعلامي، إدارة الفنون، تسويق الأزياء",
+   "field_groups": [
+    "MEDIA",
+    "BUSMGMT"
+   ]
+  },
+  {
+   "id": "F-IE-TS",
+   "family": "Digital design and creative technology",
+   "family_ar": "التصميم الرقمي والتقنية الإبداعية",
+   "study_fields": "Interaction design, game design, digital media technology",
+   "study_fields_ar": "تصميم التفاعل، تصميم الألعاب، تقنيات الإعلام الرقمي",
+   "field_groups": [
+    "DESIGN",
+    "INFOSYS"
+   ]
+  },
+  {
+   "id": "F-PW-TS",
+   "family": "Health and learning technology",
+   "family_ar": "تقنيات الصحة والتعليم",
+   "study_fields": "Health informatics, educational technology, human-computer interaction",
+   "study_fields_ar": "المعلوماتية الصحية، تقنيات التعليم، التفاعل بين الإنسان والحاسوب",
+   "field_groups": [
+    "INFOSYS"
+   ]
+  },
+  {
+   "id": "F-PW-IR",
+   "family": "Engineering for people",
+   "family_ar": "الهندسة في خدمة الإنسان",
+   "study_fields": "Biomedical engineering, prosthetics and orthotics, ergonomics",
+   "study_fields_ar": "الهندسة الطبية الحيوية، الأطراف الصناعية والأجهزة التقويمية، هندسة العوامل البشرية (الأرغونوميا)",
+   "field_groups": [
+    "ENG",
+    "ALLIED"
+   ]
+  },
+  {
+   "id": "F-PW-AE",
+   "family": "Movement and care",
+   "family_ar": "الحركة والرعاية",
+   "study_fields": "Physiotherapy, emergency medical services, physical education",
+   "study_fields_ar": "العلاج الطبيعي، خدمات الإسعاف، التربية البدنية",
+   "field_groups": [
+    "ALLIED",
+    "SPORT"
+   ]
+  },
+  {
+   "id": "F-EI-IR",
+   "family": "Engineering business",
+   "family_ar": "أعمال الهندسة",
+   "study_fields": "Engineering with management, construction management",
+   "study_fields_ar": "الهندسة مع الإدارة، إدارة المشاريع الإنشائية",
+   "field_groups": [
+    "ENG"
+   ]
+  },
+  {
+   "id": "F-EI-AE",
+   "family": "Sport and adventure business",
+   "family_ar": "أعمال الرياضة والمغامرة",
+   "study_fields": "Sports management, sports marketing, coaching, tourism business",
+   "study_fields_ar": "الإدارة الرياضية، التسويق الرياضي، التدريب الرياضي، أعمال السياحة",
+   "field_groups": [
+    "SPORT",
+    "BUSMGMT"
+   ]
+  },
+  {
+   "id": "F-RD-PW",
+   "family": "Clinical and health sciences",
+   "family_ar": "العلوم السريرية والصحية",
+   "study_fields": "Psychology, nutrition and dietetics, genetics, public health",
+   "study_fields_ar": "علم النفس، التغذية العلاجية، علم الوراثة، الصحة العامة",
+   "field_groups": [
+    "SOC",
+    "ALLIED",
+    "PHARM"
+   ]
+  },
+  {
+   "id": "F-IE-EI",
+   "family": "Creative industries and advertising",
+   "family_ar": "الصناعات الإبداعية والإعلان",
+   "study_fields": "Advertising, marketing communication, design management",
+   "study_fields_ar": "الإعلان، الاتصال التسويقي، إدارة التصميم",
+   "field_groups": [
+    "BUSMGMT"
+   ]
+  },
+  {
+   "id": "F-PW-PE",
+   "family": "Care and people operations",
+   "family_ar": "إدارة الرعاية وشؤون الأفراد",
+   "study_fields": "Healthcare management, human resources, educational administration",
+   "study_fields_ar": "إدارة الرعاية الصحية، الموارد البشرية، الإدارة التربوية",
+   "field_groups": [
+    "BUSMGMT",
+    "EDU"
+   ]
+  },
+  {
+   "id": "F-EI-TS",
+   "family": "Technology business and products",
+   "family_ar": "أعمال التقنية ومنتجاتها",
+   "study_fields": "Information systems, business with computing, e-commerce",
+   "study_fields_ar": "نظم المعلومات، إدارة الأعمال مع الحوسبة، التجارة الإلكترونية",
+   "field_groups": [
+    "INFOSYS",
+    "BUSMGMT"
+   ]
+  },
+  {
+   "id": "F-PE-IR",
+   "family": "Industrial and facilities operations",
+   "family_ar": "العمليات الصناعية وإدارة المرافق",
+   "study_fields": "Industrial engineering, facilities management, quality engineering",
+   "study_fields_ar": "الهندسة الصناعية، إدارة المرافق، هندسة الجودة",
+   "field_groups": [
+    "ENG",
+    "BUSMGMT"
+   ]
+  },
+  {
+   "id": "F-PE-AE",
+   "family": "Field and emergency operations",
+   "family_ar": "العمليات الميدانية والطوارئ",
+   "study_fields": "Emergency and disaster management, aviation operations, maritime operations",
+   "study_fields_ar": "إدارة الطوارئ والكوارث، عمليات الطيران، العمليات البحرية",
+   "field_groups": [
+    "APPLIED"
+   ]
+  },
+  {
+   "id": "F-RD-TS",
+   "family": "Data science and computational research",
+   "family_ar": "علم البيانات والبحث الحاسوبي",
+   "study_fields": "Data science, bioinformatics, computational science",
+   "study_fields_ar": "علم البيانات، المعلوماتية الحيوية، العلوم الحاسوبية",
+   "field_groups": [
+    "COMP"
+   ]
+  },
+  {
+   "id": "F-IE-IR",
+   "family": "Design and making",
+   "family_ar": "التصميم والتصنيع",
+   "study_fields": "Industrial design, product design engineering, design and technology",
+   "study_fields_ar": "التصميم الصناعي، هندسة تصميم المنتجات، التصميم والتقنية",
+   "field_groups": [
+    "DESIGN",
+    "ENG"
+   ]
+  },
+  {
+   "id": "F-IE-AE",
+   "family": "Physical performance and action media",
+   "family_ar": "الأداء الحركي وإعلام المغامرة",
+   "study_fields": "Film and media production, performing arts, sports media",
+   "study_fields_ar": "إنتاج الأفلام والإعلام، الفنون الأدائية، الإعلام الرياضي",
+   "field_groups": [
+    "MEDIA",
+    "ARTS"
+   ]
+  },
+  {
+   "id": "F-RD-IE",
+   "family": "Science communication and visualisation",
+   "family_ar": "التواصل العلمي وعرض العلوم بصريًا",
+   "study_fields": "Science communication, medical illustration, journalism with science",
+   "study_fields_ar": "التواصل العلمي، الرسم الطبي، الصحافة العلمية",
+   "field_groups": [
+    "MEDIA",
+    "ALLIED"
+   ]
+  },
+  {
+   "id": "F-IE-PW",
+   "family": "Creative arts for learning and wellbeing",
+   "family_ar": "الفنون الإبداعية للتعلّم والرفاه",
+   "study_fields": "Art therapy, education with arts, educational media",
+   "study_fields_ar": "العلاج بالفن، التعليم بالفنون، الإعلام التربوي",
+   "field_groups": [
+    "ALLIED",
+    "EDU"
+   ]
+  },
+  {
+   "id": "F-PW-EI",
+   "family": "People leadership and social enterprise",
+   "family_ar": "قيادة الأفراد والمشاريع الاجتماعية",
+   "study_fields": "Human resources, social entrepreneurship, nonprofit management",
+   "study_fields_ar": "الموارد البشرية، ريادة الأعمال الاجتماعية، إدارة المنظمات غير الربحية",
+   "field_groups": [
+    "BUSMGMT"
+   ]
+  },
+  {
+   "id": "F-EI-PE",
+   "family": "Business management and consulting",
+   "family_ar": "إدارة الأعمال والاستشارات",
+   "study_fields": "Business administration, management, finance",
+   "study_fields_ar": "إدارة الأعمال، الإدارة، المالية",
+   "field_groups": [
+    "BUSMGMT",
+    "ECONFIN"
+   ]
+  },
+  {
+   "id": "F-PE-TS",
+   "family": "Business systems and IT governance",
+   "family_ar": "أنظمة الأعمال وحوكمة تقنية المعلومات",
+   "study_fields": "Information systems, management information systems, logistics",
+   "study_fields_ar": "نظم المعلومات، نظم المعلومات الإدارية، الخدمات اللوجستية",
+   "field_groups": [
+    "INFOSYS",
+    "BUSMGMT"
+   ]
+  },
+  {
+   "id": "F-TS-IR",
+   "family": "Robotics and smart machines",
+   "family_ar": "الروبوتات والآلات الذكية",
+   "study_fields": "Mechatronics, computer engineering, robotics",
+   "study_fields_ar": "الميكاترونكس، هندسة الحاسوب، الروبوتات",
+   "field_groups": [
+    "ENG"
+   ]
+  },
+  {
+   "id": "F-TS-AE",
+   "family": "Sports and field technology",
+   "family_ar": "التقنية الرياضية والميدانية",
+   "study_fields": "Sports analytics, aviation technology, computer engineering",
+   "study_fields_ar": "تحليلات الرياضة، تقنيات الطيران، هندسة الحاسوب",
+   "field_groups": [
+    "COMP",
+    "APPLIED",
+    "ENG"
+   ]
+  },
+  {
+   "id": "F-RD-IR",
+   "family": "Engineering science and R&D",
+   "family_ar": "العلوم الهندسية والبحث والتطوير",
+   "study_fields": "Materials science, biomedical engineering, chemical engineering",
+   "study_fields_ar": "علوم المواد، الهندسة الطبية الحيوية، الهندسة الكيميائية",
+   "field_groups": [
+    "ENG"
+   ]
+  },
+  {
+   "id": "F-RD-AE",
+   "family": "Sports, field and animal sciences",
+   "family_ar": "علوم الرياضة والعمل الميداني وعلوم الحيوان",
+   "study_fields": "Sports science, exercise physiology, marine biology, veterinary medicine",
+   "study_fields_ar": "علوم الرياضة، فسيولوجيا التمرين، الأحياء البحرية، الطب البيطري",
+   "field_groups": [
+    "SPORT",
+    "ALLIED",
+    "LIFESCI",
+    "MED"
+   ]
+  },
+  {
+   "id": "F-IR-AE",
+   "family": "Hands-on technical work in the field",
+   "family_ar": "العمل الفني الميداني",
+   "study_fields": "Engineering technology, motorsport engineering, aircraft maintenance",
+   "study_fields_ar": "تقنية الهندسة، هندسة رياضة السيارات، صيانة الطائرات",
+   "field_groups": [
+    "ENG",
+    "APPLIED"
+   ]
+  }
+ ],
+ "countries": {
+  "UAE": {
+   "note": "No national admission rule since November 2024; each university sets its own. Ministry stream decision at end of grade 8/9; moving into the Advanced stream is not possible in grades 11-12.",
+   "by_field_group": {
+    "MED": {
+     "usual_pattern": "Biology and chemistry, plus maths or physics, at high grades. In the Ministry system: the Advanced or Elite stream.",
+     "examples": "UAE University (Jan 2025): 90% in maths and 90% in two of biology, chemistry, physics (or A-level B, IB 5, AP 4), plus an entry test and interviews. General and Applied stream students, and Indian and Pakistani board students, are not admitted to medicine.\nUniversity of Sharjah (2023–24): biology and chemistry required. British: both at IGCSE plus B at AS or C at A-level in one. IB: both studied, 5 at HL in one. American: two biology, two chemistry and one physics course at B or above.\nAjman University (June 2026): medicine asks for 85% (Elite) or 90% (Advanced) with 90% in maths and in two of biology, chemistry, physics; the General stream is not listed. British: chemistry, biology, physics, maths and English at IGCSE (four A, one B) plus two sciences at AS or A-level. IB: two sciences at HL, 32 points. Indian boards: 85% with physics, chemistry and biology in grade 12 at 80%.\nUniversity of Sharjah (FAQ, 2025–26): the General stream is not accepted for medicine, dentistry, pharmacy or physiotherapy.\nVeterinary medicine at UAE University: ranked by maths and science, plus interviews.",
+     "status": "Sourced (four universities)."
+    },
+    "PHARM": {
+     "usual_pattern": "Biology and chemistry, usually with maths. Dentistry and pharmacy are admitted like medicine at most UAE universities, at a slightly lower grade.",
+     "examples": "Ajman University (June 2026): dentistry 80% (Elite) or 85% (Advanced) with 90% in maths and two sciences; pharmacy 70% or 75% with 80% in maths and two sciences; the General stream is not listed for either.\nUniversity of Sharjah (2023–24 and 2025–26 FAQ): dentistry and pharmacy require biology and chemistry; General stream not accepted.\nHigher Colleges of Technology (2025): medical laboratory science is an applied bachelor open to the Advanced (70%) and General (80%) streams, with physics and chemistry or biology required for science-based programmes.\nUK pattern (Russell Group): biomedical sciences and biochemistry: chemistry and biology.",
+     "status": "Sourced."
+    },
+    "ALLIED": {
+     "usual_pattern": "Biology is the usual base; chemistry commonly expected.",
+     "examples": "UAE University (Jan 2025): nutrition, dietetics and speech-language pathology have no fixed minimum; applicants are ranked by maths and science grades when places are short.\nUniversity of Sharjah (2023–24): health sciences accept the General stream only through a qualifying programme covering chemistry, biology, physics and maths.\nAjman University (June 2026): nursing 60% (Elite), 65% (Advanced) or 70% (General), English 80%; physiotherapy 60%, 70% or 75%, English 80%.\nHigher Colleges of Technology (2025): nursing, midwifery, emergency medical services and health information management are applied bachelors open to the Advanced and General streams.\nUniversity of Sharjah (FAQ, 2025–26): General stream not accepted for physiotherapy; accepted for other health sciences with a preparatory semester.\nUK pattern (Russell Group): nursing usually asks for biology; physiotherapy biology, sometimes a second science.",
+     "status": "Sourced."
+    },
+    "ENG": {
+     "usual_pattern": "Maths and physics. Chemistry as well for chemical, petroleum and materials engineering.",
+     "examples": "UAE University (Jan 2025): 80% in maths, 80% in physics and in chemistry or biology (or A-level C, IB 4, AP 3).\nKhalifa University (2025–26): maths and two sciences in grade 12; 80% from the Advanced or Elite stream, 90% from the General stream; British: three AS or A-levels including maths and one science at C; IB: maths and one science, 4 in each; CBSE: maths and two sciences, 75%. Its own test covers maths, physics and chemistry.\nAmerican University of Sharjah: B or above in maths and physics for science and engineering majors.\nZayed University (2025): intelligent systems engineering asks for 85% in maths, 80% in physics and 80% in another science; British: two A-levels at C in related subjects; IB: two related HL subjects at 5.\nAjman University (June 2026): engineering 75% (Elite), 80% (Advanced) or 90% (General), with 80% in maths and physics and 80% in biology or chemistry.\nAmerican University in Dubai (2025–26): maths, physics and one science; 75%, 80% or 90% by stream.\nEmirates Aviation University (2024–25): aeronautical and aerospace engineering and aircraft maintenance: 70% (Elite), 75% (Advanced) or 80% (General) in maths and physics; British: maths and physics at AS level.\nUniversity of Sharjah (FAQ, 2025–26): General stream admitted to engineering with a placement test in physics and maths.\nUK pattern: chemical engineering: chemistry and maths.",
+     "status": "Sourced (seven universities)."
+    },
+    "COMP": {
+     "usual_pattern": "Maths. One science is often expected; physics is useful.",
+     "examples": "Khalifa University (2025–26): computer science asks for maths and one of physics, chemistry or biology.\nUniversity of Sharjah (2023–24): computer engineering and cybersecurity need the scientific route with two sciences and maths.\nHigher Colleges of Technology (2025): data science, cybersecurity and software engineering are applied bachelors open to the Advanced (70%) and General (80%) streams.\nUK pattern (Russell Group): computing: computing, maths and physics useful.",
+     "status": "Sourced."
+    },
+    "INFOSYS": {
+     "usual_pattern": "Maths helps. No particular subjects at most universities.",
+     "examples": "UAE University (Jan 2025): information technology has no fixed minimum; ranked by maths and science.\nUniversity of Sharjah (2023–24): information systems and multimedia technology set a minimum average only, with no named subjects.\nAjman University (June 2026): IT networking and security 60%, 70% or 75% by stream with 75% in maths; information systems project management with 70% in maths.",
+     "status": "Sourced."
+    },
+    "LIFESCI": {
+     "usual_pattern": "Biology and chemistry; maths useful. Two of biology, chemistry and geography for environmental science.",
+     "examples": "Khalifa University (2025–26): cell and molecular biology asks for maths and one of physics, chemistry or biology.\nUAE University (Jan 2025): science and agriculture have no fixed minimum; ranked by maths and science.\nAmerican University in Dubai (2025–26): biology asks for 70% in one science.\nUK pattern (Russell Group): biology: biology and chemistry; environmental science: two of biology, chemistry, geography.",
+     "status": "Sourced."
+    },
+    "PHYSMATH": {
+     "usual_pattern": "Maths for all. Physics for physics; chemistry for chemistry; two sciences for geology.",
+     "examples": "Khalifa University (2025–26): maths and science for all science programmes; chemistry for the chemistry degree; maths and one science for applied maths, statistics and data science.\nUK pattern (Russell Group): physics: maths and physics; mathematics and actuarial routes: maths, further maths useful; geology: two of maths, physics, chemistry, biology.",
+     "status": "Sourced."
+    },
+    "ECONFIN": {
+     "usual_pattern": "Maths is usually expected. Economics and business as school subjects are useful where offered.",
+     "examples": "UAE University (Jan 2025): business and economics have no fixed minimum; ranked by maths grade when places are short.\nUK pattern (Russell Group): economics: maths essential; accountancy: maths essential, business and economics useful.",
+     "status": "Partly sourced. UAE examples naming maths for economics or finance: to add."
+    },
+    "BUSMGMT": {
+     "usual_pattern": "No particular subjects are usually required. Maths helps.",
+     "examples": "UAE University (Jan 2025): business has no fixed minimum; ranked by maths grade when places are short.\nUniversity of Sharjah (2023–24): business administration sets a minimum average only.\nAmerican University of Sharjah: B or above in specified subjects for business majors (subjects not listed on the page read).\nAjman University (June 2026): management, marketing, finance, accounting and hospitality management: 60% in every stream, English 80%, no named subjects.\nHigher Colleges of Technology (2025): business analytics, marketing, accounting, finance, tourism, logistics and HR open to the Advanced and General streams.\nEmirates Aviation University (2024–25): aviation management 70% overall, no maths or physics requirement.\nUK pattern (Russell Group): business and management: none essential; maths, business and economics useful.",
+     "status": "Sourced."
+    },
+    "LAW": {
+     "usual_pattern": "No particular subjects. Strong Arabic for law taught in Arabic; strong English and essay subjects for law taught in English.",
+     "examples": "UAE University (Jan 2025): law asks for 70% in maths and 80% in Arabic.\nUniversity of Sharjah (2023–24): law sets a minimum average only.\nAjman University (June 2026): law 60% in every stream with 70% in maths.\nUniversity of Dubai (2024–25, law with a University of London route): 70% (Elite), 75% (Advanced) or 80% (General); British: five IGCSE plus two AS or one A-level; IB 80%; Indian 65%; a maths placement score.\nUK pattern (Russell Group): law: English; history and other essay subjects useful.",
+     "status": "Sourced."
+    },
+    "SOC": {
+     "usual_pattern": "No particular subjects for most. One science is useful for psychology. Essay subjects (history, English, Arabic) are useful for politics and policy.",
+     "examples": "UAE University (Jan 2025): humanities and social sciences have no fixed minimum; ranked by maths.\nUniversity of Sharjah (2023–24): arts, social sciences and humanities set a minimum average only.\nAjman University (June 2026): psychology, sociology and social work: 60% in every stream, no named subjects.\nUK pattern (Russell Group): psychology: one of biology, chemistry or physics; sociology and politics: none essential.",
+     "status": "Sourced."
+    },
+    "EDU": {
+     "usual_pattern": "No particular subjects for primary and early years. For secondary teaching: the subject you would teach.",
+     "examples": "UAE University (Jan 2025): education has no fixed minimum; ranked by maths.\nHigher Colleges of Technology (2025): early childhood education is an applied bachelor open to the Advanced and General streams.\nUK pattern (Russell Group): secondary teacher training: at least one subject from the school curriculum you would teach.",
+     "status": "Partly sourced."
+    },
+    "ARCH": {
+     "usual_pattern": "Maths and often physics, plus art or design and a portfolio of work.",
+     "examples": "American University of Sharjah: a portfolio for architecture and interior design, and B or above in specified subjects; STEM majors may need B in maths and physics.\nZayed University (2025): architecture asks for 80% in maths (or SAT 500).\nAjman University (June 2026): architecture 65%, 70% or 75% by stream, English 80%; architectural engineering as for engineering (maths, physics and a science at 80%); interior design 60% in every stream.\nAmerican University in Dubai (2025–26): architecture needs a portfolio (three artworks and three building photos with a written justification) and SAT maths 590 or a placement test.\nUK pattern (Russell Group): architecture: art at many universities; maths, design and technology or physics useful; portfolio.",
+     "status": "Sourced."
+    },
+    "DESIGN": {
+     "usual_pattern": "Art or design and a portfolio of work. Maths or computing useful for interaction and game design.",
+     "examples": "American University of Sharjah: a portfolio for design management.\nUniversity of Sharjah (2023–24): fine arts and design set a minimum average only.\nAmerican University in Dubai (2025–26): visual communication and interior design: maths placement, no portfolio stated.\nHigher Colleges of Technology (2025): design and media production, digital media: applied bachelors open to the Advanced and General streams.\nUK pattern (Russell Group): art and design: art plus a portfolio; computer games design: ICT or computing, with maths, art and design useful.",
+     "status": "Sourced."
+    },
+    "MEDIA": {
+     "usual_pattern": "No particular subjects. English, Arabic or media studies are usual.",
+     "examples": "University of Sharjah (2023–24): communication sets a minimum average only, with no named subjects.\nAjman University (June 2026): mass communication 60% in every stream, no named subjects.\nUniversity of Sharjah (FAQ, 2025–26): communication needs an interview; Arabic-track mass communication and public relations ask for an EmSAT-equivalent score.\nUK pattern (Russell Group): media and communication: English or media studies.",
+     "status": "Sourced."
+    },
+    "ARTS": {
+     "usual_pattern": "Music usually needs music study, an instrument grade and an audition. Performing arts: an audition. Literature: the language. Archaeology: no particular subjects; history and a science useful.",
+     "examples": "UAE examples: not yet researched.\nUK pattern (Russell Group): music: music plus grade 7 or 8 on an instrument; English: English literature; archaeology: none essential.",
+     "status": "Not yet researched in the UAE."
+    },
+    "SPORT": {
+     "usual_pattern": "One science (often biology) for sport and exercise science. No particular subjects for sports management and coaching.",
+     "examples": "UAE University (Jan 2025): health and physical education sits in the College of Education: no fixed minimum, ranked by maths.\nUK pattern (Russell Group): sports science: one of biology, chemistry, maths or physics; PE and psychology useful.",
+     "status": "Partly sourced."
+    },
+    "APPLIED": {
+     "usual_pattern": "These routes have their own entry rules (colleges, academies and licensing bodies), often including maths, physics, English and medical fitness.",
+     "examples": "Emirates Aviation University (2024–25): aircraft maintenance engineering: maths and physics (70%, 75% or 80% by stream); aviation management: 70% overall, no named subjects. No undergraduate pilot programme; pilot training is through flight academies with their own entry rules.\nHigher Colleges of Technology (2025): aviation engineering and vocational diplomas (60% Advanced, 70% General).\nPolice and military colleges: not yet researched.",
+     "status": "Partly sourced."
+    }
+   }
+  },
+  "Saudi Arabia": {
+   "note": "Track chosen after the first secondary year. Weighted admission score at most universities: 30% school, 30% aptitude test, 40% achievement test. Scientific achievement test for General, Health and Life, Computer Science and Engineering tracks; theoretical for Sharia and Business.",
+   "by_field_group": {
+    "MED": {
+     "usual_pattern": "Health and Life track is the natural route; the General and Computer Science and Engineering tracks are also accepted. Scientific Achievement Test. High averages.",
+     "examples": "Imam University (1447/48, 2025–26): health and applied colleges accept the General, Health and Life, and Computer Science and Engineering tracks; medicine asks for a 90% average and at least 80 on the tests; weights 30/30/40.\nKing Saud University (1446): medicine, dentistry, pharmacy, emergency medical services, nursing and applied medical sciences accept only the General, Computer Science and Engineering, and Health and Life tracks; weights 30/30/40.\nKing Abdulaziz University (1447): health and science colleges accept the same three tracks.",
+     "status": "Sourced (three official guides)."
+    },
+    "PHARM": {
+     "usual_pattern": "As for medicine: Health and Life, General or Computer Science and Engineering track; scientific Achievement Test.",
+     "examples": "King Saud University (1446): pharmacy and applied medical sciences accept the three scientific tracks only.",
+     "status": "Sourced."
+    },
+    "ALLIED": {
+     "usual_pattern": "As for medicine. Nursing adds an interview at some universities.",
+     "examples": "King Saud University (1446): nursing and applied medical sciences accept the three scientific tracks only.\nImam University (1447/48): nursing requires a personal interview.",
+     "status": "Sourced."
+    },
+    "ENG": {
+     "usual_pattern": "Computer Science and Engineering track is the natural route; General and Health and Life also accepted. Scientific Achievement Test.",
+     "examples": "King Saud University (1446): engineering accepts only the General, Computer Science and Engineering, and Health and Life tracks.\nKFUPM (2025): accepts the same three tracks and international-school science students; weighted score 50% aptitude, 40% achievement, 10% school average, or an early-admission test; SAT 1350 route.\nKing Abdulaziz University (1447): science colleges accept the same three tracks.",
+     "status": "Sourced (three official guides)."
+    },
+    "COMP": {
+     "usual_pattern": "Computer Science and Engineering track (cybersecurity is one of its subjects); General and Health and Life also accepted.",
+     "examples": "King Saud University (1446): computer and information sciences accept the three scientific tracks only. KFUPM (2025): as for engineering.",
+     "status": "Sourced."
+    },
+    "INFOSYS": {
+     "usual_pattern": "Any scientific track; information systems programmes that sit in business colleges also accept the Business track.",
+     "examples": "King Saud University (1446): computer and information sciences: scientific tracks only; business administration college: scientific tracks plus the Business track.",
+     "status": "Sourced at college level."
+    },
+    "LIFESCI": {
+     "usual_pattern": "Health and Life or General track; scientific Achievement Test.",
+     "examples": "King Saud University (1446): sciences, and food and agriculture, accept the three scientific tracks only. King Abdulaziz University (1447): same.",
+     "status": "Sourced."
+    },
+    "PHYSMATH": {
+     "usual_pattern": "Computer Science and Engineering or General track; scientific Achievement Test.",
+     "examples": "King Saud University (1446): sciences college accepts the three scientific tracks only.",
+     "status": "Sourced."
+    },
+    "ECONFIN": {
+     "usual_pattern": "Business Administration track is the natural route (accounting, economics and finance are among its subjects); the three scientific tracks are also accepted.",
+     "examples": "King Abdulaziz University (1447): the Faculty of Economics and Administration and the Rabigh business college accept the General, Computer Science and Engineering, Health and Life, and Business Administration tracks.\nImam University (1447/48): the Business Administration track leads to the College of Business.\nKing Saud University (1446): business administration accepts the three scientific tracks and the Business track; not the Sharia track.",
+     "status": "Sourced."
+    },
+    "BUSMGMT": {
+     "usual_pattern": "As for economics and finance: Business Administration track, or any scientific track.",
+     "examples": "As above.",
+     "status": "Sourced."
+    },
+    "LAW": {
+     "usual_pattern": "Sharia track is the natural route for sharia; law colleges also take the Business and scientific tracks at some universities. Theoretical Achievement Test for Sharia and Business tracks.",
+     "examples": "King Saud University (1446): law and political science sits among the humanities colleges, which accept all five tracks.\nKing Abdulaziz University (1447): humanities colleges accept all five tracks.",
+     "status": "Sourced."
+    },
+    "SOC": {
+     "usual_pattern": "Any track. Humanities colleges accept all five.",
+     "examples": "King Saud University (1446): humanities and social sciences, and law and political science, accept all five tracks. King Abdulaziz University (1447): same.",
+     "status": "Sourced."
+    },
+    "EDU": {
+     "usual_pattern": "Any track for early childhood and humanities subjects; a scientific track for teaching science or maths.",
+     "examples": "King Saud University (1446): education accepts all five tracks. King Abdulaziz University (1447): early childhood programme accepts all five tracks.",
+     "status": "Sourced at college level."
+    },
+    "ARCH": {
+     "usual_pattern": "Architecture sits with the scientific colleges: Computer Science and Engineering, General or Health and Life track; scientific Achievement Test.",
+     "examples": "King Saud University (1446): architecture and planning accepts the three scientific tracks only.\nQassim University (1447): architecture and planning requires a skills test.",
+     "status": "Sourced."
+    },
+    "DESIGN": {
+     "usual_pattern": "Design and fine arts sit with the humanities colleges: any track; an aptitude test or portfolio is common.",
+     "examples": "King Saud University (1446): fine arts accepts all five tracks.\nQassim University (1447): fine arts and design admitted on the 50/50 school-and-aptitude score.",
+     "status": "Sourced at college level."
+    },
+    "MEDIA": {
+     "usual_pattern": "Any track (humanities colleges).",
+     "examples": "King Saud University (1446) and King Abdulaziz University (1447): humanities colleges accept all five tracks.",
+     "status": "Sourced at college level."
+    },
+    "ARTS": {
+     "usual_pattern": "Any track (humanities colleges).",
+     "examples": "King Saud University (1446): languages, tourism and archaeology, and fine arts accept all five tracks.",
+     "status": "Sourced at college level."
+    },
+    "SPORT": {
+     "usual_pattern": "Any track, plus the college's own admission test.",
+     "examples": "King Saud University (1446): sports sciences and physical activity accepts all five tracks and requires its own admission test.\nQassim University (1447): sports sciences admitted on the 50/50 school-and-aptitude score.",
+     "status": "Sourced."
+    },
+    "APPLIED": {
+     "usual_pattern": "Military, police, aviation and technical colleges have their own entry rules, often including a scientific track, fitness and age limits.",
+     "examples": "Not confirmed.",
+     "status": "Not yet researched."
+    }
+   }
+  },
+  "Egypt": {
+   "note": "Thanaweya Amma sections (Sciences, Mathematics, Literary) and the new Baccalaureate tracks (Medicine and Life Sciences; Engineering and Computer Science; Business; Arts and Humanities). The official faculty mapping for Baccalaureate tracks was not published as of August 2026.",
+   "by_field_group": {
+    "MED": {
+     "thanaweya_amma_section": "Sciences (علمي علوم): medicine, dentistry, pharmacy, veterinary medicine.",
+     "baccalaureate_track_expected": "Medicine and Life Sciences: biology and chemistry (advanced) in grade 12, maths or physics in grade 11. Expected to be the only track for medicine, dentistry, pharmacy, veterinary medicine, physiotherapy and nursing (academic analysis, Apr 2026).",
+     "international_certificates": "IGCSE: 8 O-levels including biology, chemistry, physics, maths and English at C. American: 8 subjects including the same five, plus SAT, ACT or EST. IB: HL chemistry and biology.",
+     "status": "Sourced"
+    },
+    "PHARM": {
+     "thanaweya_amma_section": "Sciences: pharmacy, dentistry.",
+     "baccalaureate_track_expected": "Medicine and Life Sciences.",
+     "international_certificates": "As for medicine. MSA University (pharmacy): IGCSE 8 subjects with English, maths, biology, chemistry, physics; IB: HL biology and chemistry; American: the same five plus a subject test including biology.",
+     "status": "Sourced"
+    },
+    "ALLIED": {
+     "thanaweya_amma_section": "Sciences: nursing, physiotherapy, applied health sciences.",
+     "baccalaureate_track_expected": "Medicine and Life Sciences.",
+     "international_certificates": "As for medicine (physiotherapy is in the same group).",
+     "status": "Sourced"
+    },
+    "ENG": {
+     "thanaweya_amma_section": "Mathematics (علمي رياضة): engineering, petroleum and mining engineering, fine arts (architecture).",
+     "baccalaureate_track_expected": "Engineering and Computer Science: maths and physics (advanced) in grade 12, chemistry or programming in grade 11. Expected to be the only track for engineering, urban planning, computers and information, AI and fine arts architecture (academic analysis, Apr 2026).",
+     "international_certificates": "IGCSE: 9 subjects including English, maths, chemistry, physics and one AS or A-level maths. American: 9 subjects including advanced maths, maths, chemistry, physics and English (or 8 with a maths subject test). IB: HL maths and physics.",
+     "status": "Sourced"
+    },
+    "COMP": {
+     "thanaweya_amma_section": "Mathematics: computers and information.",
+     "baccalaureate_track_expected": "Engineering and Computer Science.",
+     "international_certificates": "Listed under both the medicine and engineering groups in the guidelines: confirm with the university.",
+     "status": "Sourced"
+    },
+    "INFOSYS": {
+     "thanaweya_amma_section": "Mathematics (computers and information); some higher institutes of computer science also take the Literary section.",
+     "baccalaureate_track_expected": "Engineering and Computer Science, or Business.",
+     "international_certificates": "As for computing or business, by programme.",
+     "status": "Partly sourced"
+    },
+    "LIFESCI": {
+     "thanaweya_amma_section": "Faculty of Science: listed under Mathematics in the 2026 lists; biology departments usually take the Sciences section. Agriculture: Sciences and Mathematics.",
+     "baccalaureate_track_expected": "Medicine and Life Sciences.",
+     "international_certificates": "As for medicine (biology and chemistry).",
+     "status": "Partly sourced: confirm science faculty rules by section"
+    },
+    "PHYSMATH": {
+     "thanaweya_amma_section": "Mathematics: Faculty of Science. Statistics: commerce, economics and political science.",
+     "baccalaureate_track_expected": "Engineering and Computer Science.",
+     "international_certificates": "As for engineering.",
+     "status": "Partly sourced"
+    },
+    "ECONFIN": {
+     "thanaweya_amma_section": "All three sections: commerce. Sciences and Literary: economics and political science.",
+     "baccalaureate_track_expected": "Business: economics (advanced) and maths in grade 12, accounting or business administration in grade 11. Expected: commerce and economics open to the Business track and to the scientific tracks (academic analysis, Apr 2026).",
+     "international_certificates": "IGCSE or American: 8 subjects including English, the rest from the Ministry list. IB: 6 subjects including English, 3 HL and 3 SL (MSA management sciences; Badya business).",
+     "status": "Sourced"
+    },
+    "BUSMGMT": {
+     "thanaweya_amma_section": "All three sections: commerce, tourism and hotels.",
+     "baccalaureate_track_expected": "Business.",
+     "international_certificates": "As for economics.",
+     "status": "Sourced"
+    },
+    "LAW": {
+     "thanaweya_amma_section": "All three sections: law. Law in English: Mathematics and Literary in the 2026 lists.",
+     "baccalaureate_track_expected": "Arts and Humanities (expected).",
+     "international_certificates": "Not in the guidelines read.",
+     "status": "Partly sourced"
+    },
+    "SOC": {
+     "thanaweya_amma_section": "Sciences and Literary: arts, economics and political science. Literary: social work.",
+     "baccalaureate_track_expected": "Arts and Humanities: psychology in grade 11, geography (advanced) and statistics in grade 12. Expected: arts, social work, law, media, tourism and education open to all four tracks (academic analysis, Apr 2026).",
+     "international_certificates": "Not in the guidelines read.",
+     "status": "Partly sourced"
+    },
+    "EDU": {
+     "thanaweya_amma_section": "All three sections: education, specific education, early childhood.",
+     "baccalaureate_track_expected": "Any track, by subject taught (expected).",
+     "international_certificates": "Not in the guidelines read.",
+     "status": "Partly sourced"
+    },
+    "ARCH": {
+     "thanaweya_amma_section": "Mathematics: engineering (architecture departments) and fine arts (architecture department).",
+     "baccalaureate_track_expected": "Engineering and Computer Science.",
+     "international_certificates": "As for engineering.",
+     "status": "Sourced"
+    },
+    "DESIGN": {
+     "thanaweya_amma_section": "Mathematics: applied arts. Literary (and Sciences for some departments): fine arts. Interior design at private universities: scientific sections only.",
+     "baccalaureate_track_expected": "Arts and Humanities, or Engineering for applied arts (not yet official).",
+     "international_certificates": "MSA arts and design: interior design needs the science subjects (English, maths, biology or AS maths, chemistry, physics; IB HL biology and chemistry or HL maths and physics); fashion, graphic and media, cinema and theatre: English plus 7 subjects from the Ministry list.",
+     "status": "Sourced"
+    },
+    "MEDIA": {
+     "thanaweya_amma_section": "Sciences and Literary: mass communication.",
+     "baccalaureate_track_expected": "Arts and Humanities (expected).",
+     "international_certificates": "Not in the guidelines read.",
+     "status": "Partly sourced"
+    },
+    "ARTS": {
+     "thanaweya_amma_section": "Sciences and Literary: arts, languages (Alsun), archaeology, music education.",
+     "baccalaureate_track_expected": "Arts and Humanities (expected). Languages (Alsun) expected to need the second foreign language elective in grade 11 (academic analysis, Apr 2026).",
+     "international_certificates": "MSA languages: IGCSE or American 8 subjects including English and a second foreign language; IB 6 subjects including English and a second foreign language.",
+     "status": "Partly sourced"
+    },
+    "SPORT": {
+     "thanaweya_amma_section": "All three sections: physical education.",
+     "baccalaureate_track_expected": "Any track (expected).",
+     "international_certificates": "Not in the guidelines read.",
+     "status": "Partly sourced"
+    },
+    "APPLIED": {
+     "thanaweya_amma_section": "Police Academy (2026): any Thanaweya Amma or Azhar certificate at 65% or above, Egyptian nationality, age and height limits, then aptitude, medical, fitness, psychological, language and IT tests. Military colleges: own rules.",
+     "baccalaureate_track_expected": "Not yet announced.",
+     "international_certificates": "Not applicable.",
+     "status": "Partly sourced (police)"
+    }
+   }
+  }
+ }
+}

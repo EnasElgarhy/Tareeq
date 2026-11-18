@@ -1,4 +1,6 @@
 import { coreBank, coreWording } from "@/lib/core-v2/content/core-content";
+import { BUNDLED_SUBJECT_GUIDE, type SubjectGuide } from "./subject-guide";
+import { withSubjectClosing } from "./subject-closing";
 import type { KaiChatContext } from "@/lib/kai/chat-context";
 import { fallbackMessage, normalizeQuickReplies } from "@/lib/kai/chat-server";
 import type { KaiMessage } from "@/lib/kai/chat-types";
@@ -45,7 +47,11 @@ export interface CoreTurnResult {
   recoveredViaSimplified: boolean;
 }
 
-export function coreKaiPayload(core: CoreKaiRequest, locale: string): CoreKaiContext {
+export function coreKaiPayload(
+  core: CoreKaiRequest,
+  locale: string,
+  subjectGuide: SubjectGuide = BUNDLED_SUBJECT_GUIDE,
+): CoreKaiContext {
   const language: Locale = isLocale(locale) ? locale : DEFAULT_LOCALE;
   return buildCoreKaiContext({
     locale: language,
@@ -57,6 +63,7 @@ export function coreKaiPayload(core: CoreKaiRequest, locale: string): CoreKaiCon
     previousResult: core.previousResult,
     isAttemptFlagged: core.isFlagged && IS_FLAGS_LIVE,
     priorDisagreements: core.priorDisagreements,
+    subjectGuide,
   });
 }
 
@@ -66,6 +73,8 @@ function parsedText(parsed: Record<string, unknown>): string | null {
 
 export async function runCoreKaiTurn(input: {
   core: CoreKaiRequest;
+  /** Defaults to the bundled guide; the chat route passes the current one. */
+  subjectGuide?: SubjectGuide;
   context: KaiChatContext;
   kind: "open" | "reply";
   message?: string;
@@ -77,7 +86,7 @@ export async function runCoreKaiTurn(input: {
   const locale = context.user.locale;
   const systemPrompt = buildCoreSystemPrompt();
   const prompt = buildCoreTurnPrompt({
-    payload: coreKaiPayload(input.core, locale),
+    payload: coreKaiPayload(input.core, locale, input.subjectGuide),
     conversationSummary: context.conversation.summary,
     recentMessages: context.conversation.recentMessages,
     kind: input.kind,
@@ -133,7 +142,11 @@ export async function runCoreKaiTurn(input: {
     id: `kai-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     role: "kai",
     createdAt: new Date().toISOString(),
-    text,
+    text: withSubjectClosing(
+      text,
+      attempt.parsed.uses_subject_guide === true,
+      isLocale(locale) ? locale : DEFAULT_LOCALE,
+    ),
     quickReplies: quickReplies && quickReplies.length > 0 ? quickReplies : undefined,
   };
   return {

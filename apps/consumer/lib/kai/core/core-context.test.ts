@@ -10,7 +10,9 @@ import {
   type CoreResult,
 } from "@/lib/core-v2/types";
 import type { Locale } from "@/lib/i18n/locale";
+import { SAMPLE_STUDENT } from "@/lib/core-v2/content/sample";
 import { buildCoreKaiContext, type CoreKaiContextInput } from "./core-context";
+import { BUNDLED_SUBJECT_GUIDE } from "./subject-guide";
 
 /* eslint-disable @typescript-eslint/no-explicit-any -- fixture JSON */
 type Case = any;
@@ -49,6 +51,7 @@ function build(
     previousResult: null,
     isAttemptFlagged: false,
     priorDisagreements: [],
+    subjectGuide: BUNDLED_SUBJECT_GUIDE,
     ...overrides,
   });
 }
@@ -67,6 +70,19 @@ function referenceShown(report: Case) {
 const reportCases = all.filter((c) => c.expected_report);
 
 describe("buildCoreKaiContext", () => {
+  it("passes the subject guide for the student's country and report families", () => {
+    const context = build(scoreCore(SAMPLE_STUDENT), {
+      profile: { gender: "female", ageBand: "13-17", academicStage: null, country: "Saudi Arabia" },
+    });
+    expect(context.SUBJECT_GUIDE.version).toBe("1.0 (2026-11-17)");
+    expect(context.SUBJECT_GUIDE.country?.name).toBe("Saudi Arabia");
+    // Every family the report shows has its subject-guide row.
+    expect(context.SUBJECT_GUIDE.job_families.map((family) => family.family).sort()).toEqual(
+      [...new Set(context.REPORT.families_shown)].sort(),
+    );
+  });
+
+
   it.each(reportCases.map((c) => [c.case, c]))(
     "%s: families shown and highlighted jobs match kai_context()",
     (_name, c: Case) => {

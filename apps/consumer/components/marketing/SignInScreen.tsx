@@ -1,11 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { BrandMark } from "@/components/primitives/BrandMark";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { OtpSignIn } from "@/components/auth/OtpSignIn";
-import { KaiOrb } from "@/components/marketing/KaiOrb";
 import { WayArrow, WayCompass } from "@/components/marketing/WayIcons";
 import { BRAND } from "@/lib/brand";
 
@@ -29,9 +29,9 @@ export function SignInScreen() {
         />
         <Link
           href="/"
-          className="absolute left-8 top-8 flex items-center gap-3"
+          className="absolute left-8 top-8 flex items-center gap-2"
         >
-          <KaiOrb size={30} speed={18} />
+          <BrandMark tone="aurora" height={24} />
           <span className="font-heading text-xl font-bold text-[#F5EEE6]">
             {BRAND.name}
           </span>
@@ -56,9 +56,9 @@ export function SignInScreen() {
         </Link>
         <Link
           href="/"
-          className="absolute left-6 top-6 flex items-center gap-2.5 lg:hidden"
+          className="absolute left-6 top-6 flex items-center gap-2 lg:hidden"
         >
-          <KaiOrb size={26} speed={18} />
+          <BrandMark tone="flat" height={20} />
           <span className="font-heading text-lg font-bold">{BRAND.name}</span>
         </Link>
 

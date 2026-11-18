@@ -55,6 +55,19 @@ describe("buildCoreTurnPrompt", () => {
     priorDisagreements: [],
   };
 
+  it("reminds Kai of the subject-guide add-ons on every reply", () => {
+    const prompt = buildCoreTurnPrompt({
+      payload: coreKaiPayload(core, "en"),
+      conversationSummary: "",
+      recentMessages: [],
+      kind: "reply",
+      message: "Which subjects do I need for medicine?",
+    });
+    expect(prompt).toContain("final word");
+    expect(prompt).toContain("version date");
+    expect(prompt).toContain("Never give another country's pattern");
+  });
+
   it("carries the payload, the conversation and the opening ask", () => {
     const payload = coreKaiPayload(core, "en");
     const prompt = buildCoreTurnPrompt({

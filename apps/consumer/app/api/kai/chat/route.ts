@@ -1,4 +1,5 @@
 import { createRateLimiter } from "@/lib/rate-limit";
+import { loadSubjectGuide } from "@/lib/kai/core/subject-guide.server";
 import {
   buildComparisonRecoverySchema,
   buildContextPrompt,
@@ -445,6 +446,7 @@ export async function POST(request: Request) {
             Math.max(1_000, 15_000 - (performance.now() - requestStartedAt));
           const turn = await runCoreKaiTurn({
             core,
+            subjectGuide: await loadSubjectGuide(),
             context,
             kind,
             message,
