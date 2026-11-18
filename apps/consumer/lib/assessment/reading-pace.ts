@@ -37,7 +37,7 @@ export const RUSH_HINTS: ReadonlyArray<LocalizedText> = [
   { en: "Easy there, champ 🐢", ar: "شوي شوي يا بطل 🐢" },
   { en: "No prize for finishing first 🏁", ar: "لا جائزة لمن ينهي أولاً 🏁" },
   { en: "Did you even blink? 😮", ar: "هل رمشت حتى؟ 😮" },
-  { en: "Your Compass felt a breeze 🌪️", ar: "بوصلتك شعرت بنسمة هواء 🌪️" },
+  { en: "Your CORE felt a breeze 🌪️", ar: "تقريرك شعر بنسمة هواء 🌪️" },
 ];
 
 /**

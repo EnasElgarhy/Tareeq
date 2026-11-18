@@ -49,7 +49,7 @@ interface EntitlementRow {
 class EntitlementDatabase {
   readonly rows: EntitlementRow[] = [];
   /** parent_pay_links: only what the webhook touches. */
-  readonly parentLinks: { id: string; status: string }[] = [];
+  readonly parentLinks: { id: string; status: string; consent?: Record<string, unknown> | null }[] = [];
   readonly from = vi.fn((table: string) => {
     if (table === "parent_pay_links") return this.parentLinkTable();
     if (table !== "report_entitlements") {
@@ -68,6 +68,20 @@ class EntitlementDatabase {
 
   private parentLinkTable() {
     return {
+      select: () => {
+        const filters = new Map<string, unknown>();
+        const query = {
+          eq: (column: string, value: unknown) => {
+            filters.set(column, value);
+            return query;
+          },
+          maybeSingle: async () => {
+            const link = this.parentLinks.find((row) => row.id === filters.get("id"));
+            return { data: link ? { consent: link.consent ?? null } : null, error: null };
+          },
+        };
+        return query;
+      },
       update: (values: Record<string, unknown>) => {
         const filters = new Map<string, unknown>();
         const query = {
@@ -514,6 +528,32 @@ describe("POST /api/payments/webhook", () => {
       post: "p2-carousel-03-ar",
       medium: "paid",
     });
+  });
+
+  it("adds the payer's email to the parent's consent record", async () => {
+    const LINK_ID = "55555555-5555-4555-8555-555555555555";
+    const consent = { consented_at: "2026-11-18T10:00:00.000Z", wording_version: "2026-10-28" };
+    database.parentLinks.push({ id: LINK_ID, status: "pending", consent });
+    const event = checkoutCompletedEvent("cs_parent_email");
+    Object.assign(event.data.object.metadata, { parent_link_id: LINK_ID, payer: "parent" });
+    Object.assign(event.data.object, { customer_details: { email: "Parent@Example.com " } });
+
+    await deliver(event);
+
+    expect(database.parentLinks[0].consent).toEqual({ ...consent, payer_email: "parent@example.com" });
+  });
+
+  it("keeps the consent record unchanged when Stripe has no payer email", async () => {
+    const LINK_ID = "66666666-6666-4666-8666-666666666666";
+    const consent = { consented_at: "2026-11-18T10:00:00.000Z", wording_version: "2026-10-28" };
+    database.parentLinks.push({ id: LINK_ID, status: "pending", consent });
+    const event = checkoutCompletedEvent("cs_parent_no_email");
+    Object.assign(event.data.object.metadata, { parent_link_id: LINK_ID, payer: "parent" });
+
+    await deliver(event);
+
+    expect(database.parentLinks[0].status).toBe("paid");
+    expect(database.parentLinks[0].consent).toEqual(consent);
   });
 
   it("leaves a student's own payment to the browser's tracking", async () => {

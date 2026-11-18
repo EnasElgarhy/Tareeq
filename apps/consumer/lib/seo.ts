@@ -45,7 +45,6 @@ export const PRIVATE_PATHS = [
   "/home-preview",
   "/report-design-check",
   "/pay-design-check",
-  "/redesign",
   "/share/",
 ] as const;
 

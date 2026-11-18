@@ -73,7 +73,7 @@ export const STRINGS = {
   "interstitial.dismiss_aria": { en: "Dismiss", ar: "إغلاق" },
   "rush.body": {
     en: "You picked before you could read the question and every answer. Rushed answers make your CORE report less accurate.",
-    ar: "اخترت قبل أن تقرأ السؤال وكل الإجابات. الإجابات المتسرعة تجعل بوصلتك أقل دقة.",
+    ar: "اخترت قبل أن تقرأ السؤال وكل الإجابات. الإجابات المتسرعة تجعل تقريرك أقل دقة.",
   },
   "rush.track_yours": { en: "You took {s}s", ar: "استغرقت {s} ث" },
   "rush.track_needed": {
@@ -99,9 +99,9 @@ export const STRINGS = {
   },
   "share.owner_heading": {
     en: "{name}’s CORE report",
-    ar: "بوصلة {name} المهنية",
+    ar: "تقرير كور الخاص بـ{name}",
   },
-  "share.owner_heading_fallback": { en: "A CORE report", ar: "بوصلة مهنية" },
+  "share.owner_heading_fallback": { en: "A CORE report", ar: "تقرير كور" },
   "share.intro_tagline": {
     en: "Map My CORE turns a student’s answers into a personal direction to explore — not a fixed destination.",
     ar: "يُحوّل ماب ماي كور إجابات الطالب إلى اتجاه شخصي للاستكشاف — لا وجهة نهائية محددة.",
@@ -112,11 +112,11 @@ export const STRINGS = {
   },
   "share.cta_title": {
     en: "Curious what yours would say?",
-    ar: "هل تتساءل ماذا ستقول بوصلتك؟",
+    ar: "هل تتساءل ماذا سيقول تقريرك؟",
   },
   "share.cta_button": {
     en: "Take your own CORE report",
-    ar: "خذ بوصلتك المهنية الخاصة",
+    ar: "احصل على تقرير كور الخاص بك",
   },
   "share.cta_meta": {
     en: "Free · ~12 minutes · No account needed to start",
@@ -129,15 +129,15 @@ export const STRINGS = {
   },
   "share.not_found_body": {
     en: "It may have expired, or the result was removed. You can still take your own CORE report.",
-    ar: "قد يكون منتهي الصلاحية، أو تمت إزالة النتيجة. لا يزال بإمكانك أخذ بوصلتك المهنية الخاصة.",
+    ar: "قد يكون منتهي الصلاحية، أو تمت إزالة النتيجة. لا يزال بإمكانك الحصول على تقرير كور الخاص بك.",
   },
   "share.intro_reveal_heading": {
     en: "{name} shared their CORE report with you.",
-    ar: "بوصلة {name} المهنية بين يديك.",
+    ar: "تقرير كور الخاص بـ{name} بين يديك.",
   },
   "share.intro_reveal_heading_fallback": {
     en: "A CORE report was shared with you.",
-    ar: "تمت مشاركة بوصلة مهنية معك.",
+    ar: "تمت مشاركة تقرير كور معك.",
   },
   "share.intro_reveal_subtitle": {
     en: "Take a look at what Map My CORE found.",
@@ -180,10 +180,6 @@ export const STRINGS = {
     en: "Almost there. These final answers help me see the kind of environment where you can actually grow.",
     ar: "اقتربنا. هذه الإجابات الأخيرة تساعدني على رؤية البيئة التي يمكنك أن تنمو فيها حقاً.",
   },
-  "kai.results": {
-    en: "Nice work. Here's your CORE report. Remember — this is a compass, not a GPS. You still get to choose the destination.",
-    ar: "عمل رائع. هذه بوصلتك المهنية. تذكّر — إنها بوصلة، لا خريطة تقودك خطوة بخطوة. ما زلت أنت من يختار الوجهة.",
-  },
 
   // ---- Audio controls ----
   "audio.mute": { en: "Mute Kai's voice", ar: "كتم صوت كاي" },
@@ -209,7 +205,7 @@ export const STRINGS = {
   },
   "kai.panel.empty_body": {
     en: "Finish your CORE report first, then I can guide you with more personal advice.",
-    ar: "أكمل بوصلتك المهنية أولاً، وبعدها يمكنني إرشادك بنصائح أكثر خصوصية.",
+    ar: "أكمل تقرير كور أولاً، وبعدها يمكنني إرشادك بنصائح أكثر خصوصية.",
   },
   "kai.panel.empty_cta": { en: "Start Assessment", ar: "ابدأ التقييم" },
   "kai.panel.noticed_label": {
@@ -290,8 +286,8 @@ export const STRINGS = {
   },
   "profile.achievement.core_complete": { en: "First CORE report", ar: "أول تقرير كور" },
   "profile.achievement.core_complete_sub": {
-    en: "Answered all 40 CORE questions",
-    ar: "أجبت عن جميع أسئلة بوصلة CORE الأربعين",
+    en: "Answered all the CORE questions",
+    ar: "أجبت عن جميع أسئلة كور",
   },
   "profile.achievement.deep_dive": {
     en: "Deep Dive done",
@@ -316,7 +312,7 @@ export const STRINGS = {
   },
   "profile.activity.core_complete": {
     en: "Completed CORE",
-    ar: "أكملت بوصلة CORE",
+    ar: "أكملت تقييم كور",
   },
   "profile.activity.profile_created": {
     en: "Created your profile",
@@ -340,7 +336,7 @@ export const STRINGS = {
 
   "profile.resultHero.eyebrow": {
     en: "CORE · Curiosity signal",
-    ar: "بوصلة CORE · إشارة الفضول",
+    ar: "كور · إشارة الفضول",
   },
   "profile.resultHero.style_label": { en: "Style", ar: "الأسلوب" },
   "profile.resultHero.view_report": {
@@ -395,7 +391,7 @@ export const STRINGS = {
   },
   "profile.proactive.compass_highlight": {
     en: "One thing stood out from your CORE report: {cluster} + {archetype}.",
-    ar: "شيء واحد لفت الانتباه في بوصلتك: {cluster} + {archetype}.",
+    ar: "شيء واحد لفت الانتباه في تقريرك: {cluster} + {archetype}.",
   },
   "profile.proactive.start_cta": { en: "Get started", ar: "ابدأ الآن" },
   "profile.proactive.inactivity_nudge": {
@@ -438,7 +434,7 @@ export const STRINGS = {
   "kai.loading.thinking": { en: "Kai is thinking…", ar: "كاي تفكر…" },
   "kai.loading.connecting": {
     en: "Kai is connecting this to your CORE report…",
-    ar: "كاي تربط هذا ببوصلتك…",
+    ar: "كاي تربط هذا بتقريرك…",
   },
   "kai.loading.preparing": {
     en: "Kai is preparing an answer for you…",
@@ -503,7 +499,7 @@ export const STRINGS = {
   "kai.chat.signed_out_cta": { en: "Sign in", ar: "تسجيل الدخول" },
   "kai.chat.no_assessment": {
     en: "I'll know much more after your CORE report.",
-    ar: "سأعرف أكثر بكثير بعد بوصلتك المهنية.",
+    ar: "سأعرف أكثر بكثير بعد تقرير كور الخاص بك.",
   },
 
   "kai.memory.resume_cta": {
@@ -572,7 +568,7 @@ export const STRINGS = {
 
   "kai.celebration.core_title": {
     en: "CORE complete!",
-    ar: "اكتملت بوصلة CORE!",
+    ar: "اكتمل كور!",
   },
   "kai.celebration.core_subtitle": {
     en: "Your AI career profile just came online.",
@@ -648,13 +644,13 @@ export const STRINGS = {
   },
   "kai.panel.locked.deep_dive.body": {
     en: "A voiced, 1-on-1 conversation with Kai that goes deeper than your CORE report alone.",
-    ar: "محادثة صوتية فردية مع كاي تتعمّق أكثر من بوصلتك وحدها.",
+    ar: "محادثة صوتية فردية مع كاي تتعمّق أكثر من تقريرك وحده.",
   },
 
   // ---- Home tab (Overview) ----
   "home.overview.empty_title": {
-    en: "Your compass lives here",
-    ar: "بوصلتك تعيش هنا",
+    en: "Your CORE report lives here",
+    ar: "تقرير كور الخاص بك هنا",
   },
   "home.overview.empty_description": {
     en: "Take CORE to unlock your personalized home — career directions, next steps, and a guide who knows how you're wired.",
@@ -675,8 +671,8 @@ export const STRINGS = {
     ar: "خريطة فضولك",
   },
   "home.overview.clusters_subtitle": {
-    en: "The signals that make up your compass — strongest first.",
-    ar: "الإشارات التي تُكوّن بوصلتك — الأقوى أولاً.",
+    en: "The signals that make up your CORE report, strongest first.",
+    ar: "الإشارات التي يتكوّن منها تقريرك، الأقوى أولاً.",
   },
 
   // ---- Compass tab (components/home/CompassScreen.tsx + CompassReportView.tsx) ----
@@ -687,7 +683,7 @@ export const STRINGS = {
   },
   "home.compass.empty_title": {
     en: "Your profile starts with your CORE report",
-    ar: "ملفك يبدأ من بوصلتك",
+    ar: "ملفك يبدأ من تقرير كور",
   },
   "home.compass.empty_description": {
     en: "Take CORE to create your profile, or sign in to restore one you've already completed.",
@@ -705,8 +701,8 @@ export const STRINGS = {
   },
   "home.explore.title": { en: "Explore", ar: "استكشف" },
   "home.explore.subtitle": {
-    en: "The full map your compass points toward.",
-    ar: "الخريطة الكاملة التي تشير إليها بوصلتك.",
+    en: "The full map your CORE report points toward.",
+    ar: "الخريطة الكاملة التي يشير إليها تقريرك.",
   },
 
   // ---- You tab ----
@@ -748,12 +744,12 @@ export const STRINGS = {
 
   // ---- Dashboard access ----
   "dashboard.access.checking": {
-    en: "Finding your saved compass…",
-    ar: "جارٍ البحث عن بوصلتك المحفوظة…",
+    en: "Finding your saved CORE report…",
+    ar: "جارٍ البحث عن تقريرك المحفوظ…",
   },
   "dashboard.access.title": {
-    en: "Your profile starts with your compass",
-    ar: "ملفك يبدأ من بوصلتك",
+    en: "Your profile starts with your CORE report",
+    ar: "ملفك يبدأ من تقرير كور",
   },
   "dashboard.access.body": {
     en: "Complete the assessment to create your profile, or sign in to restore one you already completed.",
@@ -781,7 +777,7 @@ export const STRINGS = {
   },
   "dashboard.access.no_result_body": {
     en: "This account does not have a completed CORE report. Take the assessment to create your profile.",
-    ar: "لا يحتوي هذا الحساب على بوصلة مهنية مكتملة. ابدأ التقييم لإنشاء ملفك.",
+    ar: "لا يحتوي هذا الحساب على تقرير كور مكتمل. ابدأ التقييم لإنشاء ملفك.",
   },
   "dashboard.access.different_account": {
     en: "Use a different account",
@@ -807,21 +803,21 @@ export const STRINGS = {
     ar: "شاهد يوماً في الحياة",
   },
   "home.feed.unlock_footer": {
-    en: "Unlocks as Map My CORE rolls out — the more you complete, the more your compass reveals.",
-    ar: "يُفتح مع نمو ماب ماي كور — كلما أكملت أكثر، كشفت بوصلتك أكثر.",
+    en: "Unlocks as Map My CORE rolls out. The more you complete, the more your CORE report reveals.",
+    ar: "يُفتح مع نمو ماب ماي كور. كلما أكملت أكثر، كشف تقريرك أكثر.",
   },
   "home.feed.ask_kai_eyebrow": { en: "Ask Kai", ar: "اسأل كاي" },
   "home.feed.ask_kai_title": {
-    en: "Your guide knows your compass",
-    ar: "دليلك يعرف بوصلتك",
+    en: "Your guide knows your CORE report",
+    ar: "دليلك يعرف تقريرك",
   },
   "home.feed.ask_kai_subtitle": {
     en: "Based on your CORE report",
-    ar: "بناءً على بوصلتك",
+    ar: "بناءً على تقريرك",
   },
   "home.feed.ask_kai_focus": {
     en: "Your CORE report points toward {paths}.",
-    ar: "بوصلتك تشير نحو {paths}.",
+    ar: "تقريرك يشير نحو {paths}.",
   },
   "home.feed.ask_kai_action_continue": {
     en: "Continue exploring",
@@ -837,11 +833,11 @@ export const STRINGS = {
   },
   "home.feed.ask_kai_prompt_continue": {
     en: "Let's keep exploring my CORE results.",
-    ar: "لنواصل استكشاف نتائج بوصلتي.",
+    ar: "لنواصل استكشاف نتائج تقرير كور الخاص بي.",
   },
   "home.feed.ask_kai_prompt_parents": {
     en: "Help me explain my CORE results to my parents.",
-    ar: "ساعدني في شرح نتائج بوصلتي لوالديّ.",
+    ar: "ساعدني في شرح نتائج تقرير كور لوالديّ.",
   },
   "home.feed.ask_kai_prompt_compare": {
     en: "Compare some similar career paths for me.",
@@ -857,8 +853,8 @@ export const STRINGS = {
     ar: "الفضول يتفوق على اليقين.",
   },
   "home.feed.spark.curiosity.body": {
-    en: "Only about 27% of graduates work in a field tied to their major. Your compass points toward {cluster} — but it's a direction to test, not a verdict.",
-    ar: "حوالي 27% فقط من الخريجين يعملون في مجال مرتبط بتخصصهم. بوصلتك تشير إلى {cluster} — لكنه اتجاه لتجربته، لا حكماً نهائياً.",
+    en: "Only about 27% of graduates work in a field tied to their major. Your CORE report points toward {cluster}, but it's a direction to test, not a verdict.",
+    ar: "حوالي 27% فقط من الخريجين يعملون في مجال مرتبط بتخصصهم. تقريرك يشير إلى {cluster}، لكنه اتجاه لتجربته، لا حكماً نهائياً.",
   },
   "home.feed.spark.curiosity.source": {
     en: "Federal Reserve Bank of New York",
@@ -902,8 +898,8 @@ export const STRINGS = {
     ar: "أن تكون إنسانياً هو ميزة تنافسية.",
   },
   "home.feed.spark.softskills.body": {
-    en: "Most young workers now say soft skills matter more in the age of AI. How you work with people is part of your compass too.",
-    ar: "يقول معظم العاملين الشباب الآن إن المهارات الشخصية أصبحت أهم في عصر الذكاء الاصطناعي. طريقة تعاملك مع الناس جزء من بوصلتك أيضاً.",
+    en: "Most young workers now say soft skills matter more in the age of AI. How you work with people is part of your CORE report too.",
+    ar: "يقول معظم العاملين الشباب الآن إن المهارات الشخصية أصبحت أهم في عصر الذكاء الاصطناعي. طريقة تعاملك مع الناس جزء مما يكشفه تقريرك أيضاً.",
   },
   "home.feed.spark.softskills.source": {
     en: "Deloitte Gen Z Survey 2025",
@@ -951,8 +947,8 @@ export const STRINGS = {
     ar: "محتار من أين تبدأ؟",
   },
   "home.feed.step.ask_kai.body": {
-    en: "Kai knows your compass. Ask how someone wired like you usually gets into {cluster}.",
-    ar: "كاي تعرف بوصلتك. اسألها كيف يدخل شخص مُكوَّن مثلك عادةً إلى {cluster}.",
+    en: "Kai knows your CORE report. Ask how someone wired like you usually gets into {cluster}.",
+    ar: "كاي تعرف تقريرك. اسألها كيف يدخل شخص مُكوَّن مثلك عادةً إلى {cluster}.",
   },
   "home.feed.step.ask_kai.cta": { en: "Open Kai", ar: "افتح كاي" },
 
@@ -993,7 +989,7 @@ export const STRINGS = {
   },
 
   // ---- Home hero / progress / tab bar / tiles ----
-  "home.hero.eyebrow": { en: "Your compass points to", ar: "بوصلتك تشير إلى" },
+  "home.hero.eyebrow": { en: "Your CORE report points to", ar: "تقريرك يشير إلى" },
   "home.hero.confidence": {
     en: "{label} signal · {percent}%",
     ar: "إشارة {label} · {percent}%",
@@ -1024,7 +1020,7 @@ export const STRINGS = {
     ar: "العودة إلى النظرة العامة",
   },
 
-  "home.empty.start_cta": { en: "Start your compass", ar: "ابدأ بوصلتك" },
+  "home.empty.start_cta": { en: "Start your CORE", ar: "ابدأ تقييم كور" },
 
   "home.tile.career_path": { en: "Career path", ar: "مسار مهني" },
   "home.tile.day_in_life": { en: "Day in the life", ar: "يوم في الحياة" },
@@ -1078,7 +1074,7 @@ export const STRINGS = {
   },
 
   // ---- Journey module names (lib/profile/journey.ts) — small, fixed set ----
-  "journey.module.core_compass": { en: "CORE", ar: "بوصلة CORE" },
+  "journey.module.core_compass": { en: "CORE", ar: "كور" },
   "journey.module.deep_dive": {
     en: "Deep Dive Interview",
     ar: "مقابلة معمّقة",
@@ -1127,6 +1123,23 @@ export const STRINGS = {
   "auth.otp.verify_failed": {
     en: "That code is invalid or has expired.",
     ar: "هذا الرمز غير صالح أو منتهي الصلاحية.",
+  },
+  "auth.signin.title": { en: "Sign in", ar: "تسجيل الدخول" },
+  "auth.signin.subtitle": {
+    en: "We'll email you a 6-digit code. No password needed.",
+    ar: "سنرسل إلى بريدك رمزاً من 6 أرقام. لا حاجة لكلمة مرور.",
+  },
+  "auth.signin.new_here": { en: "New to Map My CORE?", ar: "أول زيارة لك إلى Map My CORE؟" },
+  "auth.signin.start": { en: "Take the assessment", ar: "ابدأ التقييم" },
+  "auth.signin.back": { en: "Back to site", ar: "العودة إلى الموقع" },
+  "auth.signin.kai_quote": {
+    en: "Welcome back. The road remembers you.",
+    ar: "أهلاً بعودتك. الطريق ما زال يذكرك.",
+  },
+  "auth.signin.kai_name": { en: "Kai", ar: "كاي" },
+  "auth.signin.kai_alt": {
+    en: "Kai on a lantern-lit path at night, looking back toward the dawn",
+    ar: "كاي على طريق تضيئه الفوانيس ليلاً، تنظر نحو الفجر",
   },
   "auth.otp.email_label": { en: "Email address", ar: "البريد الإلكتروني" },
   "auth.otp.sending": { en: "Sending…", ar: "جارٍ الإرسال…" },
@@ -1285,7 +1298,7 @@ export const STRINGS = {
   },
 
   // ---- Results screen (components/assessment/ResultsScreen.tsx) ----
-  "results.hero.chip": { en: "Your curiosities", ar: "بوصلة الفضول" },
+  "results.hero.chip": { en: "Your curiosities", ar: "ما يثير فضولك" },
   "results.hero.badge": { en: "CORE v4", ar: "كور v4" },
   "results.hero.eyebrow": { en: "Curiosity signal", ar: "إشارة الفضول" },
   "results.hero.subtitle": {
@@ -1309,8 +1322,8 @@ export const STRINGS = {
   },
   "results.core.curiosities_label": { en: "Curiosities", ar: "الفضول" },
   "results.core.curiosities_body": {
-    en: "This is what keeps pulling your attention. It is why the compass starts with {cluster}, while the full score map below still shows every cluster signal.",
-    ar: "هذا ما يستمر في جذب انتباهك. لهذا تبدأ البوصلة بـ{cluster}، بينما تُظهر خريطة النتائج الكاملة أدناه كل إشارات الفئات.",
+    en: "This is what keeps pulling your attention. It is why your report starts with {cluster}, while the full score map below still shows every cluster signal.",
+    ar: "هذا ما يستمر في جذب انتباهك. لهذا يبدأ تقريرك بـ{cluster}، بينما تُظهر خريطة النتائج الكاملة أدناه كل إشارات الفئات.",
   },
   "results.core.operations_label": { en: "Operations", ar: "طريقة العمل" },
   "results.core.operations_body": {
@@ -1416,7 +1429,7 @@ export const STRINGS = {
   },
   "results.export.title": {
     en: "{name}’s CORE report",
-    ar: "بوصلة {name} المهنية",
+    ar: "تقرير كور الخاص بـ{name}",
   },
   "results.export.subtitle": {
     en: "A portable copy of your Map My CORE result, including the signals, paths, and next steps that stood out.",
@@ -1440,7 +1453,7 @@ export const STRINGS = {
   },
   "results.parent.title": {
     en: "{name}’s CORE report",
-    ar: "بوصلة {name} المهنية",
+    ar: "تقرير كور الخاص بـ{name}",
   },
   "results.parent.intro": {
     en: "A conversation guide for supporting exploration without turning one result into a final decision.",
@@ -1591,29 +1604,12 @@ export const STRINGS = {
     en: "We point to directions worth exploring. The decision is always yours.",
     ar: "نشير إلى توجّهات تستحق الاستكشاف، والقرار يبقى دائمًا لك.",
   },
-  "contract.item5.title": {
-    en: "A cluster, not a job title",
-    ar: "فئة، لا مسمى وظيفي",
-  },
-  "contract.item5.body": {
-    en: "You won’t get “Accountant.” You’ll get a world where people like you thrive.",
-    ar: "لن تحصل على «محاسب». ستحصل على عالم يزدهر فيه أشخاص مثلك.",
-  },
-  "contract.item6.title": {
-    en: "A compass, not a GPS",
-    ar: "بوصلة، لا نظام تحديد مواقع",
-  },
-  "contract.item6.body": {
-    en: "We point the direction. The destination stays yours.",
-    ar: "نحن نُشير إلى الاتجاه. الوجهة تبقى لك.",
-  },
   "contract.cta": {
     en: "I'm ready",
     ar: "لنبدأ",
   },
 
   // ---- Assessment start screen (components/assessment/AssessmentStart.tsx) ----
-  "start.eyebrow": { en: "A career compass", ar: "بوصلة مهنية" },
   "start.headline_line1": {
     en: "Ready to map",
     ar: "لنرسم",
@@ -1659,6 +1655,10 @@ export const STRINGS = {
     ar: "عند السؤال {n} من {total}",
   },
   "start.resume_cta": { en: "Resume", ar: "استئناف" },
+  "start.resume_banner_about_you": {
+    en: "You're still in About you",
+    ar: "ما زلت في قسم «عنك»",
+  },
   "start.saved_banner": {
     en: "Your answers are saved.",
     ar: "تم حفظ إجاباتك.",
@@ -1688,7 +1688,7 @@ export const STRINGS = {
   // ---- Registration screen (components/assessment/RegistrationScreen.tsx) ----
   "register.name_error": {
     en: "Enter the name you want on your CORE report.",
-    ar: "أدخل الاسم الذي تريده على بوصلتك.",
+    ar: "أدخل الاسم الذي تريده على تقرير كور الخاص بك.",
   },
   "register.email_error": {
     en: "Enter a valid email address.",
@@ -1714,7 +1714,7 @@ export const STRINGS = {
   "register.headline": { en: "Save your CORE report.", ar: "احفظ تقريرك." },
   "register.subtitle": {
     en: "Verify your email to save your CORE report and build your final report. We never share your email.",
-    ar: "تحقّق من بريدك الإلكتروني لحفظ بوصلتك وإنشاء تقريرك النهائي. نحافظ على خصوصية بريدك الإلكتروني ولا نشاركه أبدًا.",
+    ar: "تحقّق من بريدك الإلكتروني لحفظ تقرير كور وإنشاء تقريرك النهائي. نحافظ على خصوصية بريدك الإلكتروني ولا نشاركه أبدًا.",
   },
   "register.name_label": { en: "Name", ar: "الاسم" },
   "register.name_placeholder": { en: "Your name", ar: "اسمك" },
@@ -1729,7 +1729,7 @@ export const STRINGS = {
   },
   "register.consent_minor_notice": {
     en: "Research opt-in is off because this response is marked under 18. You can still receive your CORE report.",
-    ar: "خيار المشاركة البحثية معطّل لأن هذه الإجابة مُصنّفة لأقل من 18 عاماً. ما زال بإمكانك الحصول على بوصلتك.",
+    ar: "خيار المشاركة البحثية معطّل لأن هذه الإجابة مُصنّفة لأقل من 18 عاماً. ما زال بإمكانك الحصول على تقرير كور الخاص بك.",
   },
   "register.consent_general": {
     en: "Use my anonymized answers for CORE research.",
@@ -1803,6 +1803,7 @@ export const STRINGS = {
   "pay.slide.example": { en: "Example", ar: "مثال" },
   "chrome.compass_label": { en: "My CORE", ar: "تقرير كور" },
   "chrome.about_you": { en: "About you", ar: "عنك" },
+  "chrome.back": { en: "Go back", ar: "رجوع" },
 
   // ---- Analyzing screen (components/assessment/AnalyzingScreen.tsx) ----
   "analyzing.step1.title": {
@@ -1888,13 +1889,13 @@ export const STRINGS = {
   "share_card.in_cluster": { en: "in {cluster}", ar: "في {cluster}" },
   "share_card.driven_by": { en: "Driven by {driver}", ar: "بدافع {driver}" },
   "share_card.footer": {
-    en: "FIND YOUR TAREEQ ✦ tareeq.app",
-    ar: "اكتشف طريقك ✦ tareeq.app",
+    en: "DISCOVER YOUR CORE ✦ mapmycore.com",
+    ar: "اكتشف تقريرك ✦ mapmycore.com",
   },
 
   // Share card modal (components/results/ShareCardModal.tsx)
   "share_card.modal.close_aria": { en: "Close", ar: "إغلاق" },
-  "share_card.modal.share_cta": { en: "Share your compass", ar: "شارك بوصلتك" },
+  "share_card.modal.share_cta": { en: "Share your CORE report", ar: "شارك تقريرك" },
   "share_card.modal.preparing": {
     en: "Preparing image…",
     ar: "جارٍ تجهيز الصورة…",
@@ -1914,14 +1915,6 @@ export const STRINGS = {
   "paywall.preview.ready": {
     en: "Your profile is ready",
     ar: "ملفك الشخصي جاهز",
-  },
-  "paywall.preview.illustration_alt": {
-    en: "Kai reveals your personal compass across an unfolding map.",
-    ar: "كاي تكشف بوصلتك الشخصية على خريطة ممتدة.",
-  },
-  "paywall.preview.reveal_label": {
-    en: "Your compass points to",
-    ar: "تشير بوصلتك إلى",
   },
   "paywall.preview.traits": { en: "Your key traits", ar: "سماتك الأساسية" },
   "paywall.preview.direction_label": {
@@ -2242,7 +2235,7 @@ export const STRINGS = {
   // English copy is the Figma frame text (file 7xRXQDTxrVi52vz4Ag7bar, node
   // 3:661); the stop titles reuse the wording already used for the same
   // sections elsewhere in the report. ----
-  "paywall.v2.eyebrow": { en: "Your CORE report", ar: "بوصلة مسارك المهني" },
+  "paywall.v2.eyebrow": { en: "Your CORE report", ar: "تقرير كور الخاص بك" },
   "paywall.v2.headline": {
     en: "Your direction is becoming clear.",
     ar: "اتجاهك بدأ يتّضح.",
@@ -2257,8 +2250,8 @@ export const STRINGS = {
   },
   "paywall.routes.eyebrow": { en: "Possible Routes", ar: "مسارات محتملة" },
   "paywall.routes.title": {
-    en: "Your compass points toward several paths.",
-    ar: "بوصلتك تشير إلى عدة مسارات.",
+    en: "Your CORE report points toward several paths.",
+    ar: "تقريرك يشير إلى عدة مسارات.",
   },
   "paywall.routes.route_label": { en: "Route {n}", ar: "المسار {n}" },
   "paywall.routes.signal": { en: "{percent}% signal", ar: "إشارة {percent}%" },
@@ -2286,8 +2279,8 @@ export const STRINGS = {
     ar: "إلى أين قد يقودك كل مسار.",
   },
   "paywall.explore.sub": {
-    en: "Your compass gives you the direction. The full report shows you the destinations.",
-    ar: "بوصلتك تمنحك الاتجاه، التقرير الكامل يريك الوجهات.",
+    en: "Your CORE report gives you the direction. The full report shows you the destinations.",
+    ar: "يمنحك تقريرك الاتجاه، والتقرير الكامل يريك الوجهات.",
   },
   "paywall.explore.locked": { en: "Locked", ar: "مقفل" },
   "paywall.explore.stop1": {
@@ -2323,8 +2316,8 @@ export const STRINGS = {
   },
   "paywall.v2.title_emphasis": { en: "partially explored.", ar: "جزء بسيط." },
   "paywall.v2.body": {
-    en: "Unlock your complete career compass and see where your strongest signals can take you.",
-    ar: "افتح بوصلة مسارك الكاملة واكتشف إلى أين قد تأخذك أقوى إشاراتك.",
+    en: "Unlock your full CORE report and see where your strongest signals can take you.",
+    ar: "افتح تقرير كور الكامل واكتشف إلى أين قد تأخذك أقوى إشاراتك.",
   },
   "paywall.v2.check1": {
     en: "Personalized career matches",
@@ -2391,8 +2384,8 @@ export const STRINGS = {
     ar: "الخريطة الكاملة داخل تقريرك",
   },
   "access.explore.sub": {
-    en: "Everything your compass points at, written out — not just the headline direction.",
-    ar: "كل ما تشير إليه بوصلتك مكتوباً بالتفصيل، لا الاتجاه العام وحده.",
+    en: "Everything your CORE report points at, written out, not just the headline direction.",
+    ar: "كل ما يشير إليه تقريرك مكتوباً بالتفصيل، لا الاتجاه العام وحده.",
   },
   "access.plans.title": {
     en: "Plans are built from your full report",
@@ -2407,8 +2400,8 @@ export const STRINGS = {
     ar: "صورتك المهنية الكاملة مقفلة",
   },
   "access.overview.sub": {
-    en: "Unlock your complete report to see career matches, personality insights, and decision patterns — everything your compass reveals.",
-    ar: "افتح تقريرك الكامل لرؤية المسارات المهنية ورؤى الشخصية وأنماط القرارات — كل ما تكشفه بوصلتك.",
+    en: "Unlock your complete report to see career matches, personality insights, and decision patterns: everything your CORE report reveals.",
+    ar: "افتح تقريرك الكامل لرؤية المسارات المهنية ورؤى الشخصية وأنماط القرارات، وكل ما يكشفه تقريرك.",
   },
   "access.lock.badge": {
     en: "Locked",
@@ -2901,14 +2894,6 @@ export const STRINGS = {
     en: "Built on decades of validated career theories, not guesswork.",
     ar: "مبني على عقود من النظريات المهنية الموثقة، وليس التخمين.",
   },
-  "marketing.science.body": {
-    en: "CORE draws on four established frameworks in career and personality psychology: Holland's RIASEC model for Curiosities (what captures your attention), Big Five personality research for Operations (how you naturally work), Self-Determination Theory for Rewards (what drives you), and Person-Environment Fit theory for Ecosystems (where you thrive). Scoring is transparent and rule-based — no black box, no machine learning guessing at you. And because these frameworks were largely built and validated in the US and Europe, CORE adds context specific to how the MENA job market and education system actually work.",
-    ar: "يعتمد CORE على أربعة أطر راسخة في علم النفس المهني والشخصي: نموذج RIASEC لهولاند للفضول (ما يشد انتباهك)، أبحاث السمات الشخصية الخمس الكبرى لطريقة العمل (كيف تعمل طبيعياً)، نظرية التحديد الذاتي للمكافآت (ما يحفزك)، ونظرية التوافق بين الشخص والبيئة للبيئات (أين تزدهر). التسجيل شفاف وقائم على قواعد — لا صندوق أسود، ولا تعلم آلي يخمن شخصيتك. ولأن هذه الأطر صُممت وتحقق منها بشكل كبير في الولايات المتحدة وأوروبا، يضيف CORE سياقاً خاصاً بكيفية عمل سوق العمل ونظام التعليم في منطقة الشرق الأوسط وشمال أفريقيا فعلياً.",
-  },
-  "marketing.science.designer": {
-    en: "Designed by Enas Elgarhy, a BPS-certified assessor and ICF-accredited coach, with 22+ years in people development and psychometric assessment — including tools like Hogan, Saville, Korn Ferry, and MBTI — across the MENA region.",
-    ar: "صممته إيناس الجارحي، مُقيّمة معتمدة من BPS ومدربة معتمدة من ICF، بخبرة تزيد عن ٢٢ عاماً في تطوير الأفراد والتقييم النفسي — تشمل أدوات مثل Hogan و Saville و Korn Ferry و MBTI — عبر منطقة الشرق الأوسط وشمال أفريقيا.",
-  },
 
   // ---- Marketing: Kai showcase ----
   "marketing.kai.heading1": {
@@ -3049,7 +3034,7 @@ export const STRINGS = {
   },
   "core.cover.preview_label": {
     en: "Your CORE report · First look",
-    ar: "بوصلة مسارك المهني · نظرة أولى",
+    ar: "تقرير كور الخاص بك · نظرة أولى",
   },
   "core.cover.label": { en: "Your starting point", ar: "نقطة انطلاقك" },
   "core.cover.preview_title": {
@@ -3079,7 +3064,7 @@ export const STRINGS = {
     en: "Explore your CORE",
     ar: "استكشف كور الخاص بك",
   },
-  "core.cover.guide": { en: "How to read your compass", ar: "كيف تقرأ بوصلتك" },
+  "core.cover.guide": { en: "How to read your CORE report", ar: "كيف تقرأ تقريرك" },
   "core.offer.title": {
     en: "Turn curiosity into possibilities.",
     ar: "حوّل فضولك إلى فرص.",

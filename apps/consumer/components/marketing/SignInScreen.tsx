@@ -1,109 +1,162 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { BrandMark } from "@/components/primitives/BrandMark";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { OtpSignIn } from "@/components/auth/OtpSignIn";
-import { WayArrow, WayCompass } from "@/components/marketing/WayIcons";
+import { useLocale } from "@/components/i18n/LocaleProvider";
+import { WayArrow } from "@/components/marketing/WayIcons";
 import { BRAND } from "@/lib/brand";
+
+const KAI_PATH = "/marketing/daybreak/kai/kai-path.jpg";
+/** Strong ease-out: the dawn rises fast, then settles. */
+const EASE_OUT = [0.23, 1, 0.32, 1] as const;
 
 export function SignInScreen() {
   const router = useRouter();
+  const { t } = useLocale();
+  const reduceMotion = useReducedMotion();
 
   return (
-    <main className="marketing-site surface-day grid min-h-dvh grid-cols-1 lg:grid-cols-[1.05fr_1fr]">
-      <section className="relative hidden overflow-hidden bg-[#08051A] lg:block">
+    <main className="marketing-site surface-day grid min-h-dvh grid-cols-1 overflow-x-clip md:grid-cols-[1fr_1fr] lg:grid-cols-[1.05fr_1fr]">
+      {/* Desktop: Kai's night path fills the left half. */}
+      <section className="relative hidden overflow-hidden bg-[#08051A] md:block">
         <Image
-          src="/marketing/daybreak/kai/kai-path.jpg"
-          alt="Kai on a lantern-lit path at night, looking back toward the dawn"
+          src={KAI_PATH}
+          alt={t("auth.signin.kai_alt")}
           fill
           priority
-          sizes="52vw"
+          sizes="(min-width: 1024px) 52vw, 50vw"
           className="object-cover object-[50%_30%]"
         />
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,5,26,0.5)_0%,transparent_40%,rgba(8,5,26,0.58)_100%)]"
+          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,5,26,0.5)_0%,transparent_40%,rgba(8,5,26,0.7)_100%)]"
         />
-        <Link
-          href="/"
-          className="absolute left-8 top-8 flex items-center gap-2"
-        >
+        <Link href="/" className="absolute start-8 top-8 flex items-center gap-2">
           <BrandMark tone="aurora" height={24} />
           <span className="font-heading text-xl font-bold text-[#F5EEE6]">
             {BRAND.name}
           </span>
         </Link>
-        <div className="absolute bottom-10 left-8 right-8">
-          <p className="font-hand max-w-sm text-3xl leading-snug text-[#F5EEE6]">
-            Welcome back. The road remembers you.
-          </p>
-          <p className="mt-2 text-sm text-[#F5EEE6]/60">— Kai</p>
-        </div>
+        <KaiQuote className="absolute bottom-12 end-8 start-8" />
       </section>
 
-      <section className="relative flex min-h-dvh items-center justify-center bg-[color:var(--day-bg)] px-6 py-24 text-[color:var(--day-ink)] sm:py-16">
-        <Link
-          href="/"
-          className="absolute right-6 top-6 inline-flex items-center gap-2 text-sm text-[color:var(--day-ink-3)] transition-colors hover:text-[color:var(--day-ink)]"
-        >
-          <span className="inline-flex rotate-180">
-            <WayArrow size={15} />
-          </span>
-          Back to site
-        </Link>
-        <Link
-          href="/"
-          className="absolute left-6 top-6 flex items-center gap-2 lg:hidden"
-        >
-          <BrandMark tone="flat" height={20} />
-          <span className="font-heading text-lg font-bold">{BRAND.name}</span>
-        </Link>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ type: "spring", stiffness: 90, damping: 18 }}
-          className="w-full max-w-sm"
-        >
-          <p className="mb-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#7A4A21]">
-            <span aria-hidden="true">✦</span>
-            Sign in
-          </p>
-          <h1 className="font-heading text-3xl font-semibold leading-tight sm:text-4xl">
-            Pick up where <span className="text-[#6D5BA8]">you left off.</span>
-          </h1>
-          <p className="mb-6 mt-3 text-[15px] leading-relaxed text-[color:var(--day-ink-2)]">
-            Enter your email and we’ll send you a one-time verification code. No
-            password needed.
-          </p>
-
-          <OtpSignIn
-            variant="daybreak"
-            onSignedIn={() => router.replace("/home")}
+      <section className="relative flex min-h-dvh flex-col bg-[#08051A] text-[color:var(--day-ink)] md:bg-[color:var(--day-bg)] md:px-6">
+        {/* Phone: the same night path, cropped to Kai, above the form. */}
+        <div className="relative h-[54svh] min-h-[320px] max-h-[500px] overflow-hidden md:hidden">
+          <Image
+            src={KAI_PATH}
+            alt={t("auth.signin.kai_alt")}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-[30%_8%] rtl:-scale-x-100"
           />
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,5,26,0.7)_0%,rgba(8,5,26,0)_30%,rgba(8,5,26,0)_55%,rgba(8,5,26,0.75)_100%)]"
+          />
+          <KaiQuote className="absolute bottom-16 end-6 start-[42%] text-end" compact />
+        </div>
 
-          <div className="mt-6 flex items-start gap-3 rounded-story-alt border border-[color:var(--day-line)] bg-[color:var(--day-card)] px-5 py-4">
-            <span className="mt-0.5 text-[#7A4A21]">
-              <WayCompass size={20} />
+        {/* Back sits on the start side, as in the assessment flow, so its
+            arrow points out the way the visitor came in. */}
+        <header className="absolute inset-x-0 top-0 z-10 flex items-center justify-between px-6 pt-[max(env(safe-area-inset-top),1.5rem)] md:static md:px-0">
+          <Link
+            href="/"
+            className="-ms-2 inline-flex items-center gap-2 rounded-full px-2 py-1 text-sm text-[#F5EEE6]/80 transition-colors duration-150 hover:text-[#F5EEE6] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F4C660] md:text-[color:var(--day-ink-3)] md:hover:text-[color:var(--day-ink)] md:focus-visible:ring-[#6D5BA8]"
+          >
+            <span className="inline-flex rotate-180 rtl:rotate-0">
+              <WayArrow size={15} />
             </span>
-            <div>
-              <p className="text-sm leading-relaxed text-[color:var(--day-ink-2)]">
-                New to {BRAND.name}? Start with the assessment. Your account is linked
-                to your results after verification.
-              </p>
+            {t("auth.signin.back")}
+          </Link>
+          <Link href="/" className="flex items-center gap-2 md:hidden">
+            <BrandMark tone="aurora" height={20} />
+            <span className="font-heading text-lg font-bold text-[#F5EEE6]">
+              {BRAND.name}
+            </span>
+          </Link>
+        </header>
+
+        {/* The form is the dawn: on phones it rises over the night scene
+            with a curved, gold-lit horizon for its top edge. */}
+        <motion.div
+          initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, ease: EASE_OUT }}
+          className="relative -mt-12 flex flex-1 flex-col bg-[color:var(--day-bg)] px-6 pb-[max(env(safe-area-inset-bottom),2.5rem)] pt-4 md:mt-0 md:items-center md:justify-center md:bg-transparent md:px-0 md:py-16"
+        >
+          <Horizon />
+          <div className="relative w-full max-w-sm self-center">
+            <h1 className="font-heading text-[2rem] font-semibold leading-tight tracking-[-0.02em] sm:text-4xl">
+              {t("auth.signin.title")}
+            </h1>
+            <p className="mb-7 mt-2 text-[15px] leading-relaxed text-[color:var(--day-ink-2)] md:mb-8 md:mt-3">
+              {t("auth.signin.subtitle")}
+            </p>
+
+            <OtpSignIn variant="daybreak" onSignedIn={() => router.replace("/home")} />
+
+            <p className="mt-8 border-t border-[color:var(--day-line)] pt-6 text-sm text-[color:var(--day-ink-2)]">
+              {t("auth.signin.new_here")}{" "}
               <Link
                 href="/start"
-                className="mt-1 inline-flex font-semibold text-[#6D5BA8] transition-colors hover:text-[#7A4A21]"
+                className="font-semibold text-[#6D5BA8] underline decoration-[#6D5BA8]/30 underline-offset-4 transition-colors duration-150 hover:decoration-[#6D5BA8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6D5BA8]"
               >
-                Take the assessment
+                {t("auth.signin.start")}
               </Link>
-            </div>
+            </p>
           </div>
         </motion.div>
       </section>
     </main>
+  );
+}
+
+function KaiQuote({ className, compact = false }: { className: string; compact?: boolean }) {
+  const { t } = useLocale();
+  return (
+    <figure className={className}>
+      <blockquote
+        className={`font-hand text-balance leading-snug text-[#F5EEE6] [text-shadow:0_2px_16px_rgba(8,5,26,0.6)] ${
+          compact ? "text-[1.35rem]" : "max-w-[18ch] text-3xl"
+        }`}
+      >
+        {t("auth.signin.kai_quote")}
+      </blockquote>
+      <figcaption className="mt-1.5 text-sm text-[#F5EEE6]/60">
+        {t("auth.signin.kai_name")}
+      </figcaption>
+    </figure>
+  );
+}
+
+/**
+ * The phone layout's top edge: a shallow curve of the day colour rising
+ * over the night scene, with a thin gold line glowing along it.
+ */
+function Horizon() {
+  const curve = "M0 40 Q200 0 400 40";
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 400 40"
+      preserveAspectRatio="none"
+      className="pointer-events-none absolute inset-x-0 -top-[39px] h-10 w-full md:hidden"
+    >
+      <path d={`${curve} Z`} fill="var(--day-bg)" />
+      <path
+        d={curve}
+        fill="none"
+        stroke="#F4C660"
+        strokeWidth={1.5}
+        vectorEffect="non-scaling-stroke"
+        className="[filter:drop-shadow(0_0_6px_rgba(244,198,96,0.75))]"
+      />
+    </svg>
   );
 }

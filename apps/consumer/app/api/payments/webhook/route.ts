@@ -254,12 +254,14 @@ async function markParentLinkPaid(
   const linkId = session.metadata?.parent_link_id;
   if (session.payment_status !== "paid" || !isUuid(linkId)) return false;
 
+  const consent = await consentWithPayerEmail(admin, linkId, payerEmail(session));
   const { data, error } = await admin
     .from(PARENT_LINKS_TABLE)
     .update({
       status: "paid",
       paid_at: new Date().toISOString(),
       stripe_session_id: session.id,
+      ...(consent ? { consent } : {}),
     })
     .eq("id", linkId)
     .eq("status", "pending")
@@ -268,6 +270,40 @@ async function markParentLinkPaid(
     throw new Error(`Parent link update failed: ${error.message}`);
   }
   return (data?.length ?? 0) > 0;
+}
+
+/** The email the parent paid with, as Stripe collected it. */
+function payerEmail(session: Stripe.Checkout.Session): string | null {
+  const email = session.customer_details?.email ?? session.customer_email ?? null;
+  const trimmed = email?.trim().toLowerCase();
+  return trimmed ? trimmed : null;
+}
+
+/**
+ * The parent's consent record with the payer's email added, so the record
+ * holds the time, the wording version and who ticked the box (developer
+ * update of 28 Oct). The email is only known once Stripe has collected it.
+ * Returns null when there is nothing to add.
+ *
+ * @throws on a database fault, so the caller can answer 500.
+ */
+async function consentWithPayerEmail(
+  admin: SupabaseClient,
+  linkId: string,
+  email: string | null,
+): Promise<Record<string, unknown> | null> {
+  if (!email) return null;
+  const { data, error } = await admin
+    .from(PARENT_LINKS_TABLE)
+    .select("consent")
+    .eq("id", linkId)
+    .maybeSingle();
+  if (error) {
+    throw new Error(`Parent link read failed: ${error.message}`);
+  }
+  const current = data?.consent;
+  const base = current && typeof current === "object" ? (current as Record<string, unknown>) : {};
+  return { ...base, payer_email: email };
 }
 
 /**

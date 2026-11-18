@@ -100,9 +100,12 @@ export function OpeningSection({
         <ul className="grid gap-2 lg:grid-cols-2">
           {CORE_LETTERS.map((letter) => (
             <li key={letter} className={styles.keyRow}>
-              <span aria-hidden="true" className={styles.letterTile}>
-                {letter}
-              </span>
+              {/* Arabic lines carry no Latin letters (staging corrections v4, row 15). */}
+              {locale === "ar" ? null : (
+                <span aria-hidden="true" className={styles.letterTile}>
+                  {letter}
+                </span>
+              )}
               <span className="grid gap-0.5">
                 <span className="daybreak-heading text-[16px] leading-tight">
                   <LetterName letter={letter} />

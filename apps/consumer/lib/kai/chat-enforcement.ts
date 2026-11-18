@@ -227,11 +227,11 @@ export function buildFallbackBlocks(
     const body =
       confidence !== undefined
         ? ar
-          ? `بوصلتك تشير إلى ${cluster} بثقة ${confidence}%، وهذا يعني أن إجاباتك أظهرت اهتمامًا حقيقيًا ومتسقًا بهذا الاتجاه.`
-          : `Your compass points to ${cluster} with ${confidence}% confidence — your answers showed a real, consistent pull toward this direction.`
+          ? `تقريرك يشير إلى ${cluster} بثقة ${confidence}%، وهذا يعني أن إجاباتك أظهرت اهتمامًا حقيقيًا ومتسقًا بهذا الاتجاه.`
+          : `Your CORE report points to ${cluster} with ${confidence}% confidence — your answers showed a real, consistent pull toward this direction.`
         : ar
-          ? `بوصلتك تشير إلى ${cluster}، وهذا اتجاه يستحق الاستكشاف بجدية.`
-          : `Your compass points to ${cluster} — a direction worth exploring seriously.`;
+          ? `تقريرك يشير إلى ${cluster}، وهذا اتجاه يستحق الاستكشاف بجدية.`
+          : `Your CORE report points to ${cluster} — a direction worth exploring seriously.`;
     blocks.push({
       type: "insight_block",
       title: ar ? "لماذا هذا مهم لك" : "Why this matters for you",

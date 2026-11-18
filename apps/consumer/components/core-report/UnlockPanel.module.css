@@ -81,6 +81,11 @@
   font-size: 15px;
   box-shadow: 0 6px 14px -6px rgba(0, 0, 0, 0.35);
 }
+.veilLetters > [data-blank] {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+}
 .veilLetters > [data-letter="O"] {
   background: #3e8e6e;
 }

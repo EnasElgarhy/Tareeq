@@ -52,8 +52,9 @@ export function LockedCoreStory({
           <div className={styles.veil}>
             <span className={styles.veilLetters} aria-hidden="true">
               {CORE_LETTERS.filter((letter) => letter !== "C").map((letter) => (
-                <span key={letter} data-letter={letter}>
-                  {letter}
+                <span key={letter} data-letter={letter} data-blank={locale === "ar" || undefined}>
+                  {/* Arabic shows the colours only, no Latin letters (v4, row 15). */}
+                  {locale === "ar" ? null : letter}
                 </span>
               ))}
             </span>

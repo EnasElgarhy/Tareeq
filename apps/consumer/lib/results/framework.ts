@@ -1009,7 +1009,7 @@ function buildArabicNarrative({
     : "دوافعك تبدو متوازنة، لذا يهم السياق: قيّم الفرص من خلال الفريق والمهمة ومنحنى التعلم والاستقرار معًا.";
 
   const headline = isMultiCurious
-    ? "بوصلة فضولك تشير إلى نقاط التقاطع"
+    ? "ما يثير فضولك يشير إلى نقاط التقاطع"
     : `إجاباتك تشير إلى فضول عالٍ تجاه ${cluster.name}`;
 
   const summary = isMultiCurious

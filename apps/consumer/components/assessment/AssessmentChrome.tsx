@@ -14,7 +14,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import { ScreenIllustration } from "@/components/assessment/ScreenIllustration";
-import { TareeqArrowLeft } from "@/components/brand/icons";
 import { CompassProgress } from "@/components/brand/CompassProgress";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { uiSounds } from "@/lib/audio/ui-sounds";
@@ -28,8 +27,7 @@ import { useAnimatedSnapshot } from "@/lib/assessment/use-animated-snapshot";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import type { Question } from "@/lib/scoring";
 import "./assessment-theme.css";
-import { BRAND } from "@/lib/brand";
-import { BrandMark } from "@/components/primitives/BrandMark";
+import { FlowHeader } from "@/components/assessment/FlowHeader";
 
 interface AssessmentChromeProps {
   children: ReactNode;
@@ -45,9 +43,9 @@ function getIndexFromPathname(pathname: string) {
 /**
  * AssessmentChrome v2 — night surface for the entire flow.
  *
- * Header layout:
- *   /start, /intro, /contract   →  [back]                [tareeq mark]
- *   /q/[index]                  →  [back] [readable compass panel]
+ * Header: one FlowHeader on every screen ([back] [brand] [profile]),
+ * at a fixed width so it never moves between screens. Question screens
+ * add the compass progress panel as a row under it.
  */
 export function AssessmentChrome({
   children,
@@ -63,8 +61,7 @@ export function AssessmentChrome({
     questionIndex === null ? null : assessmentCounter(questionIndex, questions);
   const hasQuestion =
     questionIndex !== null && (counter !== null || !hasCoreFlow(questions));
-  // Ceremonial screens — Meet Kai and the Contract — get a larger,
-  // centered Tareeq mark.
+  // Ceremonial screens — Meet Kai and the Contract.
   const isCeremony = pathname === "/intro" || pathname === "/contract";
   // Hero screens (ceremony + /start) get a genuine two-column desktop
   // layout (illustration + copy), which needs real width to breathe —
@@ -155,8 +152,25 @@ export function AssessmentChrome({
         <ScreenIllustration pathname={pathname} isRtl={dir === "rtl"} />
       ) : null}
 
+      <FlowHeader
+        tone={isLightSurface ? "sand" : "night"}
+        onBack={goBack}
+        end={<ProfileChip pathname={pathname} />}
+      />
+
+      {hasQuestion ? (
+        <div className="relative z-10 mx-auto w-full max-w-[480px] px-5 pb-1 md:max-w-[560px] lg:max-w-[900px]">
+          <QuestionCompassPanel
+            snapshot={snapshot}
+            questionIndex={questionIndex ?? 0}
+            totalQuestions={totalQuestions}
+            counter={counter}
+          />
+        </div>
+      ) : null}
+
       <div
-        className={`relative z-10 mx-auto flex h-full w-full max-w-[480px] flex-1 flex-col px-5 ${
+        className={`relative z-10 mx-auto flex min-h-0 w-full max-w-[480px] flex-1 flex-col px-5 ${
           isHero
             ? "md:max-w-[560px] lg:max-w-[960px]"
             : hasQuestion
@@ -166,79 +180,8 @@ export function AssessmentChrome({
                 : isRegistration
                   ? "md:max-w-[560px] lg:max-w-[960px]"
                   : "md:max-w-[560px] lg:max-w-[640px]"
-        } ${
-          hasQuestion
-            ? "gap-2 pb-3 pt-[max(env(safe-area-inset-top),0.625rem)]"
-            : "gap-3 pb-4 pt-[max(env(safe-area-inset-top),0.875rem)]"
-        }`}
+        } ${hasQuestion ? "pb-3" : "pb-4"}`}
       >
-        {/* Header
-         *
-         * Two layouts:
-         *  · question screens (/q/*) — back-button left, readable compass panel
-         *  · everywhere else        — back-button + counter left, Tareeq mark right
-         *                              (mark goes centered + larger on ceremony screens)
-         */}
-        <header
-          className={
-            hasQuestion
-              ? "relative z-10 grid grid-cols-[2.5rem_minmax(0,1fr)] items-center gap-2 lg:mx-auto lg:w-full lg:max-w-[900px]"
-              : "relative z-10 flex h-10 items-center justify-between gap-2"
-          }
-        >
-          <button
-            type="button"
-            onClick={goBack}
-            aria-label="Go back"
-            className={`shrink-0 ${
-              isLightSurface
-                ? "inline-flex size-10 items-center justify-center rounded-full border border-carbon/10 bg-carbon/[0.04] text-carbon transition hover:bg-carbon/[0.08] active:scale-95"
-                : "assessment-icon-button size-10"
-            }`}
-          >
-            <TareeqArrowLeft size={15} className="flip-rtl" />
-          </button>
-
-          {hasQuestion ? (
-            <QuestionCompassPanel
-              snapshot={snapshot}
-              questionIndex={questionIndex ?? 0}
-              totalQuestions={totalQuestions}
-              counter={counter}
-            />
-          ) : (
-            <div
-              className={
-                isCeremony
-                  ? "absolute left-1/2 top-1/2 inline-flex -translate-x-1/2 -translate-y-1/2 items-center gap-2"
-                  : "inline-flex items-center gap-2"
-              }
-            >
-              {/* Tareeq mark — centered + larger on ceremony screens, right on others */}
-              <Link
-                href="/"
-                aria-label={`${BRAND.name} home`}
-                className="inline-flex items-center gap-1.5"
-              >
-                <BrandMark tone={isLightSurface ? "flat" : "aurora"} height={isCeremony ? 26 : 20} />
-                <span
-                  dir="ltr"
-                  lang="en"
-                  className={`font-heading font-bold leading-none tracking-[-0.025em] ${
-                    isLightSurface ? "text-carbon" : "text-sand"
-                  } ${isCeremony ? "text-[20px]" : "text-[16px]"}`}
-                >
-                  {BRAND.name}
-                </span>
-              </Link>
-
-              {/* Profile chip — only visible when the user has registered.
-               *  Hidden on /profile itself (no point linking to current). */}
-              <ProfileChip pathname={pathname} />
-            </div>
-          )}
-        </header>
-
         {/* Scrollable content well — the chrome locks to the viewport, but
          *  inner content can overflow vertically on short phones (iPhone SE,
          *  landscape, etc.) and scroll. `overscroll-contain` keeps the rubber

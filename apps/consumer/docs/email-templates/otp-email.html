@@ -4,82 +4,80 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="color-scheme" content="dark light">
-<meta name="supported-color-schemes" content="dark light">
-<title>Your Tareeq verification code</title>
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
+<title>Your Map My CORE sign-in code</title>
+<!--
+  Map My CORE sign-in code email (Supabase Auth).
+  Paste into Supabase → Authentication → Emails, in BOTH the "Magic link"
+  and "Confirm signup" templates: email OTP uses the first for returning
+  users and the second for new ones. {{ .Token }} is the code.
+  Subject for both: Your Map My CORE sign-in code · رمز الدخول إلى Map My CORE
+  The logo is served from the site: public/email/mmc-lockup.png.
+-->
 <!--[if mso]>
-<noscript>
-<xml>
-<o:OfficeDocumentSettings>
-<o:PixelsPerInch>96</o:PixelsPerInch>
-</o:OfficeDocumentSettings>
-</xml>
-</noscript>
+<noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
 <![endif]-->
 <style>
   body, table, td { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
   table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
   img { border: 0; line-height: 100%; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; }
-  body { margin: 0; padding: 0; width: 100% !important; height: 100% !important; background-color: #0E0A28; }
-  a { color: #9D7FF0; }
-
-  @media (max-width: 480px) {
-    .email-container { width: 100% !important; }
-    .email-padding { padding-left: 20px !important; padding-right: 20px !important; }
-    .otp-code { font-size: 34px !important; letter-spacing: 8px !important; }
+  body { margin: 0; padding: 0; width: 100% !important; background-color: #F4EEE3; }
+  a { color: #6D5BA8; }
+  @media (max-width: 520px) {
+    .container { width: 100% !important; }
+    .pad { padding-left: 24px !important; padding-right: 24px !important; }
+    .code { font-size: 34px !important; letter-spacing: 8px !important; }
   }
 </style>
 </head>
-<body style="margin:0; padding:0; background-color:#0E0A28;">
+<body style="margin:0; padding:0; background-color:#F4EEE3;">
 <div style="display:none; max-height:0; overflow:hidden; mso-hide:all;">
-  Your Tareeq verification code is ready — it expires in 60 minutes.
+  Your code is {{ .Token }}. It works for one hour. &#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;
 </div>
 
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#0E0A28;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F4EEE3;">
   <tr>
-    <td align="center" style="padding: 40px 16px;">
+    <td align="center" style="padding:40px 16px 32px;">
+      <table role="presentation" class="container" width="480" cellpadding="0" cellspacing="0" border="0" style="width:480px; max-width:100%;">
 
-      <table role="presentation" class="email-container" width="480" cellpadding="0" cellspacing="0" border="0" style="width:480px; max-width:100%;">
-
-        <!-- Logo -->
+        <!-- Brand -->
         <tr>
-          <td align="center" style="padding-bottom: 32px;">
-            <img src="https://hiffzrbctjxoekthfbyg.supabase.co/storage/v1/object/public/public-brand-assets/tareeq-logo-email.png" width="132" height="88" alt="Tareeq" style="display:block; width:132px; height:88px;">
+          <td align="center" style="padding-bottom:28px;">
+            <a href="https://mapmycore.com" style="text-decoration:none;">
+              <img src="https://staging.mapmycore.com/email/mmc-lockup.png" width="200" height="39" alt="Map My CORE" style="display:block; width:200px; height:39px; font-family:Helvetica, Arial, sans-serif; font-size:20px; font-weight:700; color:#221248;">
+            </a>
           </td>
         </tr>
 
         <!-- Card -->
         <tr>
-          <td class="email-padding" style="background: linear-gradient(180deg, #1B1240 0%, #0E0A28 100%); background-color:#1B1240; border: 1px solid rgba(245,238,230,0.12); border-radius: 24px; padding: 44px 40px;">
-
+          <td style="background-color:#FFFCF6; border:1px solid #E6DCCB; border-radius:20px; overflow:hidden;">
+            <!-- Kai on her path at sunrise; the gold horizon is the card's edge -->
+            <img src="https://staging.mapmycore.com/email/kai-lantern-header.jpg" width="480" alt="Kai, your guide on Map My CORE, holding a lantern at sunrise" style="display:block; width:100%; max-width:480px; height:auto; border-radius:20px 20px 0 0; background-color:#3B2A6B;">
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr><td class="pad" style="padding:8px 40px 32px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+
+              <!-- English -->
               <tr>
-                <td align="center" style="padding-bottom: 14px;">
-                  <span style="display:inline-block; padding: 6px 14px; border-radius: 999px; background-color: rgba(157,127,240,0.16); border: 1px solid rgba(157,127,240,0.35); font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #C8B6F0;">
-                    A Career Compass
-                  </span>
+                <td style="font-family:-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; font-size:26px; line-height:1.25; font-weight:700; color:#1D1530; padding-bottom:8px;">
+                  Your sign-in code
                 </td>
               </tr>
               <tr>
-                <td align="center" style="padding-bottom: 10px; font-family: Georgia, 'Times New Roman', serif; font-size: 26px; line-height: 1.25; font-weight: 700; color: #F5EEE6;">
-                  Your verification code
-                </td>
-              </tr>
-              <tr>
-                <td align="center" style="padding-bottom: 30px; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6; color: rgba(245,238,230,0.68);">
-                  Enter this code to continue in Tareeq. It expires in 60 minutes.
+                <td style="font-family:-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; font-size:15px; line-height:1.6; color:#4B4360; padding-bottom:24px;">
+                  Type this code on the Map My CORE sign-in screen. It works for one hour.
                 </td>
               </tr>
 
-              <!-- OTP code -->
+              <!-- The code: night block, dawn-gold digits -->
               <tr>
-                <td align="center" style="padding-bottom: 30px;">
-                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                <td align="center" style="padding-bottom:24px;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                     <tr>
-                      <td align="center" style="background-color: rgba(244,198,96,0.08); border: 1px solid rgba(244,198,96,0.4); border-radius: 16px; padding: 20px 32px;">
-                        <span class="otp-code" style="font-family: 'Courier New', Courier, monospace; font-size: 40px; font-weight: 700; letter-spacing: 12px; color: #F4C660;">
-                          {{ .Token }}
-                        </span>
+                      <td align="center" style="background-color:#221248; border-radius:16px; padding:24px 12px; border-bottom:3px solid #F4C660;">
+                        <span class="code" style="font-family:'SF Mono', Menlo, Consolas, 'Courier New', monospace; font-size:40px; line-height:1; font-weight:700; letter-spacing:12px; color:#F4C660; mso-line-height-rule:exactly;">{{ .Token }}</span>
                       </td>
                     </tr>
                   </table>
@@ -87,27 +85,61 @@
               </tr>
 
               <tr>
-                <td align="center" style="padding-bottom: 4px; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12.5px; line-height: 1.6; color: rgba(245,238,230,0.45);">
-                  Didn&rsquo;t request this? You can safely ignore this email —<br>
-                  no changes will be made to your account.
+                <td style="font-family:-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; font-size:13px; line-height:1.6; color:#625A74; padding-bottom:28px; border-bottom:1px solid #EDE5D7;">
+                  Didn't ask for this code? You can ignore this email. Nobody can sign in without it.
                 </td>
               </tr>
-            </table>
 
+              <!-- Arabic -->
+              <tr>
+                <td dir="rtl" align="right" style="font-family:'Geeza Pro', 'Segoe UI', Tahoma, Arial, sans-serif; font-size:22px; line-height:1.4; font-weight:700; color:#1D1530; padding-top:28px; padding-bottom:6px; text-align:right;">
+                  رمز الدخول الخاص بك
+                </td>
+              </tr>
+              <tr>
+                <td dir="rtl" align="right" style="font-family:'Geeza Pro', 'Segoe UI', Tahoma, Arial, sans-serif; font-size:15px; line-height:1.8; color:#4B4360; padding-bottom:8px; text-align:right;">
+                  اكتب الرمز أعلاه في صفحة تسجيل الدخول إلى <span dir="ltr" style="white-space:nowrap; unicode-bidi:isolate;">Map My CORE</span>. صالح لمدة ساعة واحدة.
+                </td>
+              </tr>
+              <tr>
+                <td dir="rtl" align="right" style="font-family:'Geeza Pro', 'Segoe UI', Tahoma, Arial, sans-serif; font-size:13px; line-height:1.8; color:#625A74; text-align:right;">
+                  لم تطلب هذا الرمز؟ يمكنك تجاهل هذه الرسالة، فلا يمكن لأحد الدخول من دونه.
+                </td>
+              </tr>
+
+              <!-- Kai's sign-off -->
+              <tr>
+                <td style="padding-top:28px;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F6F0FB; border-radius:14px;">
+                    <tr>
+                      <td style="padding:16px 20px 6px; font-family:-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; font-size:14px; line-height:1.5; color:#4A3B86;">
+                        See you inside. I'm ready when you are. <span style="font-weight:700;">Kai</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td dir="rtl" align="right" style="padding:0 20px 16px; font-family:'Geeza Pro', 'Segoe UI', Tahoma, Arial, sans-serif; font-size:14px; line-height:1.7; color:#4A3B86; text-align:right;">
+                        أراك هناك، وأنا بانتظارك. <span style="font-weight:700;">كاي</span>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+
+            </table>
+              </td></tr>
+            </table>
           </td>
         </tr>
 
         <!-- Footer -->
         <tr>
-          <td align="center" style="padding: 28px 16px 0;">
-            <p style="margin:0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12px; line-height: 1.6; color: rgba(245,238,230,0.38);">
-              Tareeq &middot; Discover what you&rsquo;re built for
-            </p>
+          <td align="center" style="padding:24px 16px 0; font-family:-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; font-size:12px; line-height:1.7; color:#665E78;">
+            Map My CORE &middot; <a href="https://mapmycore.com" style="color:#6D5BA8; text-decoration:none;">mapmycore.com</a><br>
+            Questions? <a href="mailto:support@mapmycore.com" style="color:#6D5BA8; text-decoration:none;">support@mapmycore.com</a>
           </td>
         </tr>
 
       </table>
-
     </td>
   </tr>
 </table>

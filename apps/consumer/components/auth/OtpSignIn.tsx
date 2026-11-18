@@ -10,6 +10,12 @@ import {
   verifyEmailOtp,
 } from "@/lib/auth/otp";
 
+/** Sign-in page (daybreak) styles: flat on the page, no card around the form. */
+const DAYBREAK_FIELD =
+  "w-full rounded-xl border border-[color:var(--day-line)] bg-[color:var(--day-card)] text-[color:var(--day-ink)] outline-none focus-visible:!outline-none transition-[border-color,box-shadow] duration-150 placeholder:text-[color:var(--day-ink-3)] focus:border-[#6D5BA8] focus:shadow-[0_0_0_3px_rgba(109,91,168,0.18)]";
+const DAYBREAK_PRIMARY =
+  "inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#221248] px-5 text-[14px] font-bold text-[#FFFCF6] transition-[background-color,transform] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] hover:bg-[#34205F] active:scale-[0.97] disabled:pointer-events-none disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6D5BA8] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--day-bg)]";
+
 function isValidEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
@@ -81,7 +87,7 @@ export function OtpSignIn({
         onSubmit={handleSend}
         className={
           isDaybreak
-            ? "rounded-story grid gap-3 border border-[color:var(--day-line)] bg-[color:var(--day-card)] p-4 shadow-[var(--day-shadow-card)] lg:p-5"
+            ? "grid gap-4"
             : "glass-card grid gap-3 !p-4"
         }
       >
@@ -98,15 +104,15 @@ export function OtpSignIn({
           <span className="relative">
             <Mail
               size={17}
-              className={`pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 ${isDaybreak ? "text-[color:var(--day-ink-3)]" : "text-carbon/45"}`}
+              className={`pointer-events-none absolute start-4 top-1/2 -translate-y-1/2 ${isDaybreak ? "text-[color:var(--day-ink-3)]" : "text-carbon/45"}`}
             />
             <input
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               className={
                 isDaybreak
-                  ? "h-[52px] w-full rounded-[10px] border border-[color:var(--day-line)] bg-[color:var(--day-inset)] py-3 pl-11 pr-4 text-[16px] font-semibold text-[color:var(--day-ink)] outline-none focus-visible:ring-2 focus-visible:ring-[#6D5BA8]"
-                  : "h-[52px] w-full rounded-2xl bg-sand py-3 pl-11 pr-4 text-[16px] font-semibold text-carbon outline-none shadow-sand-sm focus-visible:ring-2 focus-visible:ring-gold"
+                  ? `${DAYBREAK_FIELD} h-[52px] py-3 ps-11 pe-4 text-[16px] font-medium`
+                  : "h-[52px] w-full rounded-2xl bg-sand py-3 ps-11 pe-4 text-[16px] font-semibold text-carbon outline-none shadow-sand-sm focus-visible:ring-2 focus-visible:ring-gold"
               }
               placeholder="you@example.com"
               autoComplete="email"
@@ -125,14 +131,14 @@ export function OtpSignIn({
           type="submit"
           className={
             isDaybreak
-              ? "inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#221248] px-5 text-[14px] font-bold text-[#FFFCF6] shadow-[0_12px_24px_rgba(34,18,72,0.2)] transition hover:bg-[#34205F] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6D5BA8] focus-visible:ring-offset-2"
+              ? DAYBREAK_PRIMARY
               : "btn-v2 btn-v2--primary w-full"
           }
           data-size="lg"
           disabled={sending}
         >
           {sending ? t("auth.otp.sending") : t("auth.otp.send_cta")}
-          <ArrowRight size={18} />
+          <ArrowRight size={18} className="flip-rtl" />
         </button>
       </form>
     );
@@ -143,21 +149,21 @@ export function OtpSignIn({
       onSubmit={handleVerify}
       className={
         isDaybreak
-          ? "rounded-story grid gap-3 border border-[color:var(--day-line)] bg-[color:var(--day-card)] p-4 shadow-[var(--day-shadow-card)] lg:p-5"
+          ? "grid gap-4"
           : "glass-card grid gap-3 !p-4"
       }
     >
       <div
         className={
           isDaybreak
-            ? "rounded-[10px] border border-[color:var(--day-line)] bg-[color:var(--day-inset)] p-3"
+            ? ""
             : "rounded-2xl border border-sand/12 bg-sand/[0.06] p-3"
         }
       >
         <p
           className={
             isDaybreak
-              ? "daybreak-eyebrow"
+              ? "text-[12px] font-semibold text-[color:var(--day-ink-2)]"
               : "text-[12px] font-semibold uppercase text-sand/45"
           }
         >
@@ -182,11 +188,13 @@ export function OtpSignIn({
         onChange={(event) => setCode(event.target.value)}
         className={
           isDaybreak
-            ? "h-14 w-full rounded-[10px] border border-[color:var(--day-line)] bg-[color:var(--day-inset)] px-4 text-center text-[20px] font-bold text-[color:var(--day-ink)] outline-none focus-visible:ring-2 focus-visible:ring-[#6D5BA8]"
+            ? `${DAYBREAK_FIELD} h-14 px-4 text-center text-[22px] font-bold tracking-[0.3em] tabular-nums`
             : "h-14 w-full rounded-2xl bg-sand px-4 text-center text-[20px] font-bold text-carbon outline-none shadow-sand-sm focus-visible:ring-2 focus-visible:ring-gold"
         }
         placeholder={"0".repeat(OTP_MIN_LENGTH)}
         inputMode="numeric"
+        autoComplete="one-time-code"
+        aria-label={t("auth.otp.code_label")}
         maxLength={OTP_MAX_LENGTH}
       />
 
@@ -200,14 +208,14 @@ export function OtpSignIn({
         type="submit"
         className={
           isDaybreak
-            ? "inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#221248] px-5 text-[14px] font-bold text-[#FFFCF6] shadow-[0_12px_24px_rgba(34,18,72,0.2)] transition hover:bg-[#34205F] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6D5BA8] focus-visible:ring-offset-2"
+            ? DAYBREAK_PRIMARY
             : "btn-v2 btn-v2--primary w-full"
         }
         data-size="lg"
         disabled={verifying}
       >
         {verifying ? t("auth.otp.verifying") : t("auth.otp.signin_cta")}
-        <ArrowRight size={18} />
+        <ArrowRight size={18} className="flip-rtl" />
       </button>
 
       <button
@@ -218,7 +226,7 @@ export function OtpSignIn({
         }}
         className={
           isDaybreak
-            ? "inline-flex h-10 w-full items-center justify-center rounded-full border border-[color:var(--day-line)] bg-transparent px-4 text-[13px] font-bold text-[color:var(--day-ink-2)] transition hover:bg-[color:var(--day-inset)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6D5BA8]"
+            ? "inline-flex h-10 w-full items-center justify-center rounded-full px-4 text-[13px] font-semibold text-[color:var(--day-ink-2)] transition-[color,transform] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] hover:text-[color:var(--day-ink)] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6D5BA8]"
             : "btn-v2 btn-v2--ghost-on-dark w-full"
         }
         data-size="md"

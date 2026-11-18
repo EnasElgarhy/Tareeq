@@ -31,7 +31,9 @@
 .hero {
   position: relative;
   overflow: hidden;
-  border-radius: 22px;
+  /* Only the top is rounded: the wave is the bottom edge. Rounding the
+     bottom too left a hairline of the night colour around the wave. */
+  border-radius: 22px 22px 0 0;
   background: linear-gradient(180deg, var(--r-night) 0%, var(--r-dusk) 100%);
   color: #fff;
   isolation: isolate;

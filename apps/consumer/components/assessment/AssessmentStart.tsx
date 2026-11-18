@@ -10,6 +10,7 @@ import {
   INTRO_NARRATION_AUDIO_ID,
   INTRO_NARRATION_OWNER_ID,
 } from "@/components/assessment/intro-audio";
+import { resumePosition } from "@/lib/assessment/resume-position";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import {
   defaultVoiceOnForAssessmentStart,
@@ -115,11 +116,8 @@ export function AssessmentStart({
     );
   }, [progress, totalQuestions]);
 
-  // "On question 6 of 46": About you isn't counted, so it reads as question 1.
-  const resumeCount = {
-    current: Math.max(1, (resumeAt ?? 1) - (totalQuestions - assessmentQuestions)),
-    total: assessmentQuestions,
-  };
+  // "On question 6 of 46", or "Still in About you", which has no number.
+  const resumeCount = resumePosition(resumeAt ?? 1, totalQuestions, assessmentQuestions);
 
   async function startFresh() {
     if (!termsAccepted && !readPlatformConsent()) {
@@ -294,9 +292,11 @@ export function AssessmentStart({
             className="anim-bubble-in glass-card flex items-center justify-between gap-3 !p-3 !rounded-2xl"
           >
             <p className="text-body-sm leading-5 text-sand">
-              {t("start.resume_banner")
-                .replace("{n}", String(resumeCount.current))
-                .replace("{total}", String(resumeCount.total))}
+              {resumeCount.inAboutYou
+                ? t("start.resume_banner_about_you")
+                : t("start.resume_banner")
+                    .replace("{n}", String(resumeCount.current))
+                    .replace("{total}", String(resumeCount.total))}
             </p>
             <button
               type="button"
@@ -397,7 +397,9 @@ export function AssessmentStart({
             data-size="lg"
           >
             {canResume
-              ? t("start.resume_at_cta").replace("{n}", String(resumeAt))
+              ? resumeCount.inAboutYou
+                ? t("start.resume_cta")
+                : t("start.resume_at_cta").replace("{n}", String(resumeCount.current))
               : t("start.begin_cta")}
             <svg
               width="18"

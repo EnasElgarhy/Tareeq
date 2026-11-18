@@ -17,8 +17,8 @@ function buildOpeningInsight(assessment: KaiAssessmentContext, locale: string): 
 
   if (locale === "ar") {
     return hasNuance
-      ? `كنت أراجع بوصلتك المهنية. شيء واحد لفت انتباهي: "${assessment.primaryCluster}" هو اتجاهك الأقوى، لكن أسلوب عملك كـ"${assessment.archetype}" يوحي بأنك قد لا تستمتع بكل أنواع الأدوار في هذا المسار.`
-      : `كنت أراجع بوصلتك المهنية. شيء واحد لفت انتباهي: "${assessment.primaryCluster}" هو اتجاهك الأقوى، ومحرك "${assessment.rewardDriver}" يفسّر جزءاً كبيراً من سبب استمرار هذا الاهتمام.`;
+      ? `كنت أراجع تقرير كور الخاص بك. شيء واحد لفت انتباهي: "${assessment.primaryCluster}" هو اتجاهك الأقوى، لكن أسلوب عملك كـ"${assessment.archetype}" يوحي بأنك قد لا تستمتع بكل أنواع الأدوار في هذا المسار.`
+      : `كنت أراجع تقرير كور الخاص بك. شيء واحد لفت انتباهي: "${assessment.primaryCluster}" هو اتجاهك الأقوى، ومحرك "${assessment.rewardDriver}" يفسّر جزءاً كبيراً من سبب استمرار هذا الاهتمام.`;
   }
 
   return hasNuance
