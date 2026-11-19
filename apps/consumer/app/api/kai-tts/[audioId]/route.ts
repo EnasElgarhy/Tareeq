@@ -13,9 +13,10 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 export const runtime = "nodejs";
 
 const ELEVENLABS_TTS_ENDPOINT = "https://api.elevenlabs.io/v1/text-to-speech";
-// Dedicated Arabic voice — overridable via ELEVENLABS_VOICE_ID_AR.
+// Kai's Arabic voice (Noura, Gulf; docs/KAI_ARABIC_VOICE_GUIDE.md), overridable
+// via ELEVENLABS_VOICE_ID_AR. The earlier voice was removed from ElevenLabs.
 const KAI_VOICE_ID_AR =
-  process.env.ELEVENLABS_VOICE_ID_AR || "TnMRj7MvjNftqf5An7lL";
+  process.env.ELEVENLABS_VOICE_ID_AR || "isQLuoVuANx6FjDxyasX";
 const KAI_MODEL_ID =
   process.env.ELEVENLABS_MODEL_ID || "eleven_multilingual_v2";
 const AUDIO_CLIPS_BUCKET = "kai-audio-clips";

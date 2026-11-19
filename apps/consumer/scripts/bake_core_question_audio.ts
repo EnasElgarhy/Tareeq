@@ -18,7 +18,7 @@ const EN_DIR = resolve("public/audio/en-british-v1");
 const AR_DIR = resolve("public/audio");
 const MANIFEST_PATH = resolve("public/audio/core-5.1-audio-manifest.json");
 /** Same as the live Arabic voice in app/api/kai-tts/[audioId]/route.ts. */
-const DEFAULT_AR_VOICE = "TnMRj7MvjNftqf5An7lL";
+const DEFAULT_AR_VOICE = "isQLuoVuANx6FjDxyasX";
 const AR_SETTINGS = {
   stability: 0.48,
   similarity_boost: 0.84,
