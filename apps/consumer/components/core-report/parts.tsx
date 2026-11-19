@@ -203,7 +203,7 @@ const KAI_TALKING_MS = 1700;
 type KaiPhase = "waiting" | "typing" | "talking" | "done";
 
 /** The section question travels as ENTRY_PROMPT (`entry`); a tapped answer as the first message. */
-function kaiHref(questionId: string, answer: string | null): string {
+export function kaiHref(questionId: string, answer: string | null): string {
   const base = `/kai?goal=explain_results&entry=${encodeURIComponent(questionId)}`;
   return answer ? `${base}&prompt=${encodeURIComponent(answer)}` : base;
 }

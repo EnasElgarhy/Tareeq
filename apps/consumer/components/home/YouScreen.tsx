@@ -13,6 +13,7 @@ import { PaymentsSection } from "@/components/home/PaymentsScreen";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { signOut } from "@/lib/auth/otp";
 import { useKaiProfile } from "@/lib/kai/useKaiProfile";
+import { readCurrentReportGeneratedAt } from "@/lib/results/current-report";
 import {
   getModuleNameKey,
   readProfileSnapshot,
@@ -33,8 +34,16 @@ const MODULE_ICONS: Record<string, ReactNode> = {
  * Settings needs a real account, so it degrades to a sign-in prompt
  * rather than gating the whole tab behind auth.
  */
+function formatTakenOn(iso: string, locale: string): string {
+  return new Date(iso).toLocaleDateString(locale === "ar" ? "ar" : "en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
 export function YouScreen() {
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
   const router = useRouter();
   const { authState, displayName, email, reload } = useKaiProfile();
   // useKaiProfile()'s own `snapshot` only populates once signed in (it's
@@ -45,10 +54,12 @@ export function YouScreen() {
   );
 
   const [ready, setReady] = useState(false);
+  const [reportTakenAt, setReportTakenAt] = useState<string | null>(null);
   const [signInCount, setSignInCount] = useState(0);
 
   useEffect(() => {
     setLocalSnapshot(readProfileSnapshot());
+    setReportTakenAt(readCurrentReportGeneratedAt());
     setReady(true);
   }, []);
 
@@ -88,6 +99,15 @@ export function YouScreen() {
             ))}
           </div>
         </div>
+      ) : reportTakenAt ? (
+        <NoCompassEmptyState
+          title={t("home.you.ready_title")}
+          description={t("home.you.ready_description").replace(
+            "{date}",
+            formatTakenOn(reportTakenAt, locale),
+          )}
+          action={{ href: "/compass", label: t("home.report.open_cta") }}
+        />
       ) : (
         <NoCompassEmptyState
           title={t("home.you.empty_title")}

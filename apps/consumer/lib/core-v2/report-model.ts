@@ -150,7 +150,6 @@ function sectionBlocks(
         ...section4.directions.flatMap((d) => d.full.map((f) => f.worthChecking)),
         ...(section4.directions.some((d) => d.more.length > 0) ? ["S4-MORE-LABEL"] : []),
         "S4-REQ-NOTE",
-        "P2-QUALIFIER",
         "S4-KAI-Q",
       ];
     case "S5":

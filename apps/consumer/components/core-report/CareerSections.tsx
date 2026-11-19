@@ -598,9 +598,6 @@ export function MeaningSection({ model }: { model: ReportModel }) {
       <p className="text-[12.5px] leading-relaxed text-[color:var(--day-ink-3)]">
         <Block id="S4-REQ-NOTE" />
       </p>
-      <p className="text-[12.5px] italic text-[color:var(--day-ink-3)]">
-        <Block id="P2-QUALIFIER" />
-      </p>
       <KaiPrompt
         questionId="S4-KAI-Q"
         answers={[t("core.kai.s4_day"), t("core.kai.s4_fit")]}

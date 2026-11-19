@@ -471,14 +471,9 @@ export function MeaningSection({ model }: { model: ReportModel }) {
           </section>
         );
       })}
-      <div className="grid gap-1.5 text-[12.5px] leading-relaxed text-[color:var(--r-ink-3)]">
-        <p>
-          <Block id="S4-REQ-NOTE" />
-        </p>
-        <p className="italic">
-          <Block id="P2-QUALIFIER" />
-        </p>
-      </div>
+      <p className="text-[12.5px] leading-relaxed text-[color:var(--r-ink-3)]">
+        <Block id="S4-REQ-NOTE" />
+      </p>
       <KaiPrompt questionId="S4-KAI-Q" answers={[t("core.kai.s4_day"), t("core.kai.s4_fit")]} />
     </div>
   );

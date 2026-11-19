@@ -81,7 +81,7 @@ export const PARENTS_COPY: Record<Locale, ParentsCopy> = {
         },
         {
           title: "Kai keeps the conversation going.",
-          body: "Your child can talk their results through with Kai, their AI coach, whenever they need.",
+          body: "Your child can talk their results through with Kai, their personal career coach, whenever they need.",
         },
       ],
     },
@@ -155,7 +155,7 @@ export const PARENTS_COPY: Record<Locale, ParentsCopy> = {
       included: [
         "Your child’s full report, with the job families, study fields, routes and next steps",
         "A section written for parents",
-        "Kai, their AI coach, to talk the results through (available for 3 months from taking CORE)",
+        "Kai, their personal career coach, to talk the results through (available for 3 months from taking CORE)",
       ],
       note: "Answering the questions is free. You only pay to unlock the report.",
     },

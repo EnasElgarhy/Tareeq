@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
   CompassScene,
@@ -18,14 +17,17 @@ import { APP_ACCENT } from "@/components/home/app-accent";
 import { CareerTile } from "@/components/home/CareerTile";
 import { CollectionTile } from "@/components/home/CollectionTile";
 import { CompassHero } from "@/components/home/CompassHero";
+import { CoreOverview } from "@/components/home/CoreOverview";
 import { FeedCardView } from "@/components/home/FeedCards";
 import { FeedCarousel } from "@/components/home/FeedCarousel";
 import { NoCompassEmptyState } from "@/components/home/NoCompassEmptyState";
+import { OverviewHeader } from "@/components/home/OverviewHeader";
 import { ProgressRingCard } from "@/components/home/ProgressRingCard";
 import { StreakCard } from "@/components/home/StreakCard";
 import { PaidFeatureLock, PaidAccessChecking } from "@/components/access/PaidFeatureLock";
 import { usePaidAccess } from "@/lib/payments/use-paid-access";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { readCoreReport, type StoredCoreReport } from "@/lib/core-v2/storage";
 import { buildHomeFeed, type NextLockedModule } from "@/lib/home/feed";
 import { readActiveConversation } from "@/lib/kai/chat-storage";
 import type { KaiConversation } from "@/lib/kai/chat-types";
@@ -38,6 +40,7 @@ import { proactiveMomentHref, renderProactiveMomentText } from "@/lib/kai/proact
 import { deriveAchievements } from "@/lib/profile/activity";
 import { getModuleDurationKey, getModuleNameKey, getModuleTaglineKey, readProfileSnapshot, type ProfileSnapshot } from "@/lib/profile/journey";
 import { computeStreak, recordVisitToday } from "@/lib/profile/streak";
+import { readCurrentReportGeneratedAt } from "@/lib/results/current-report";
 import { CLUSTER_VISUALS, getClusterLabel, getClusterTagline } from "@/lib/results/cluster-visuals";
 import { getConfidenceLabelKey } from "@/lib/results/report-labels";
 import type { ClusterCode } from "@/lib/scoring";
@@ -53,18 +56,6 @@ const COLLECTION_SCENES = [
   PeakReachedScene,
 ];
 const CAREER_SCENES = [CompassScene, PersonaScene, CommunityScene];
-
-function firstNameOf(name: string): string {
-  return name.trim().split(/\s+/)[0] || name;
-}
-
-function initialsOf(name: string): string {
-  const parts = name.trim().split(/\s+/);
-  if (parts.length === 1) return (parts[0]?.[0] ?? "?").toUpperCase();
-  return (
-    (parts[0]?.[0] ?? "") + (parts[parts.length - 1]?.[0] ?? "")
-  ).toUpperCase();
-}
 
 function youtubeSearchUrl(query: string): string {
   return `https://www.youtube.com/results?search_query=${encodeURIComponent(
@@ -87,9 +78,13 @@ export function OverviewScreen() {
   const [conversation, setConversation] = useState<KaiConversation | null>(null);
   const [daysSinceLastSeen, setDaysSinceLastSeen] = useState<number | null>(null);
   const [visitDates, setVisitDates] = useState<string[]>([]);
+  const [hasAnyReport, setHasAnyReport] = useState(false);
+  const [coreReport, setCoreReport] = useState<StoredCoreReport | null>(null);
 
   useEffect(() => {
     setSnapshot(readProfileSnapshot());
+    setHasAnyReport(readCurrentReportGeneratedAt() !== null);
+    setCoreReport(readCoreReport());
     setSeed(Math.floor(new Date().getTime() / MS_PER_DAY));
     setConversation(readActiveConversation());
     // Read the PRIOR last-seen value before overwriting it with "now" —
@@ -166,6 +161,17 @@ export function OverviewScreen() {
   }, [report, snapshot, seed, nextModule, proactiveMomentForFeed, t]);
 
   if (!ready) return null;
+  // No report yet: invite them to take CORE rather than showing a paywall
+  // for a report that does not exist.
+  if (!hasAnyReport) {
+    return (
+      <NoCompassEmptyState
+        title={t("home.overview.empty_title")}
+        description={t("home.overview.empty_description")}
+        action={{ href: "/start", label: t("home.overview.empty_cta") }}
+      />
+    );
+  }
   if (access === "checking") return <PaidAccessChecking className="min-h-full" />;
   if (access === "unpaid") {
     return (
@@ -175,20 +181,21 @@ export function OverviewScreen() {
     );
   }
   if (!report || !snapshot) {
-    return (
+    // Paid, but the report cannot be read on this device: send them to it.
+    const reportReady = (
       <NoCompassEmptyState
-        title={t("home.overview.empty_title")}
-        description={t("home.overview.empty_description")}
+        title={t("home.overview.ready_title")}
+        description={t("home.overview.ready_description")}
+        action={{ href: "/compass", label: t("home.report.open_cta") }}
       />
     );
+    // CORE 2.0 reports have their own Overview; the feed below is built from
+    // the legacy report.
+    return coreReport ? <CoreOverview report={coreReport} fallback={reportReady} /> : reportReady;
   }
 
   const streak = computeStreak(visitDates, new Date());
   const achievements = deriveAchievements(snapshot, streak.badgeUnlocked);
-
-  const fullName = snapshot.registration?.name ?? "there";
-  const firstName = firstNameOf(fullName);
-  const initials = snapshot.registration ? initialsOf(fullName) : "T";
 
   const todayCard = feed.find((c) => c.kind === "today");
   const nextStepCard = feed.find((c) => c.kind === "next-step");
@@ -203,29 +210,17 @@ export function OverviewScreen() {
 
   return (
     <section className="flex flex-1 flex-col gap-6 pb-5 lg:gap-7">
-      <header className="daybreak-reveal flex items-center justify-between gap-3 pt-1">
-        <div className="min-w-0">
-          <p className="daybreak-eyebrow">✦ {t("home.hero.eyebrow")}</p>
-          <h1 className="daybreak-heading mt-1 text-[30px] leading-[1.05] text-[color:var(--day-ink)] sm:text-[36px]">
-            {t("home.overview.greeting").replace("{name}", firstName)}
-          </h1>
-          {proactiveContext?.showInactivityNudge && proactiveContext.daysSinceLastSeen !== null ? (
-            <p className="mt-0.5 text-[11.5px] text-[color:var(--day-ink-3)]">
-              {t("profile.proactive.inactivity_nudge").replace(
+      <OverviewHeader
+        name={snapshot.registration?.name ?? null}
+        nudge={
+          proactiveContext?.showInactivityNudge && proactiveContext.daysSinceLastSeen !== null
+            ? t("profile.proactive.inactivity_nudge").replace(
                 "{days}",
                 String(proactiveContext.daysSinceLastSeen),
-              )}
-            </p>
-          ) : null}
-        </div>
-        <Link
-          href="/you"
-          aria-label={t("home.overview.avatar_label")}
-          className="grid size-11 shrink-0 place-items-center rounded-full border border-[color:var(--day-line)] bg-[color:var(--day-elevated)] font-heading text-[13px] font-bold text-[color:var(--day-ink-2)] shadow-[var(--day-shadow-card)] transition active:scale-95"
-        >
-          {initials}
-        </Link>
-      </header>
+              )
+            : null
+        }
+      />
 
       <CompassHero
         clusterLabel={getClusterLabel(report.clusterCode, t)}

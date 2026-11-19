@@ -481,8 +481,12 @@ export const STRINGS = {
     ar: "كاي تختار ما يناسبك أكثر…",
   },
   "kai.chat.subtitle": {
-    en: "Your AI Career Coach",
-    ar: "مدربتك المهنية بالذكاء الاصطناعي",
+    en: "Your personal career coach",
+    ar: "مدرّبتك المهنية الشخصية",
+  },
+  "kai.chat.ai_notice": {
+    en: "Kai is an AI, not a person. Check important facts with your school counsellor.",
+    ar: "كاي مساعدة بالذكاء الاصطناعي، وليست شخصًا. تحقّق من المعلومات المهمة مع المرشد الأكاديمي في مدرستك.",
   },
   "kai.chat.suggested_next": { en: "Suggested next", ar: "اقتراحات للمتابعة" },
   "kai.chat.history": { en: "Conversation history", ar: "سجل المحادثات" },
@@ -590,8 +594,8 @@ export const STRINGS = {
 
   "kai.action.explain_results": { en: "Explain my result", ar: "اشرح نتيجتي" },
   "kai.action.find_majors": {
-    en: "Find majors that fit me",
-    ar: "ابحث عن تخصصات تناسبني",
+    en: "Find study fields linked to my results",
+    ar: "مجالات دراسة مرتبطة بنتائجي",
   },
   "kai.action.compare_careers": {
     en: "Compare two careers",
@@ -653,9 +657,35 @@ export const STRINGS = {
     ar: "تقرير كور الخاص بك هنا",
   },
   "home.overview.empty_description": {
-    en: "Take CORE to unlock your personalized home — career directions, next steps, and a guide who knows how you're wired.",
-    ar: "خض تقييم كور لفتح صفحتك الرئيسية الشخصية — اتجاهات مهنية، خطوات قادمة، ودليل يعرف كيف أنت مُكوَّن.",
+    en: "Take CORE to see the job families and study fields your curiosities point to, with next steps and Kai to talk it through.",
+    ar: "خض تقييم كور لترى مجموعات المهن ومجالات الدراسة التي يشير إليها فضولك، مع خطوات تالية وكاي لمناقشتها.",
   },
+  "home.overview.empty_cta": { en: "Start the assessment", ar: "ابدأ التقييم" },
+  "home.overview.ready_title": {
+    en: "Your CORE report is ready",
+    ar: "تقرير كور جاهز",
+  },
+  "home.overview.ready_description": {
+    en: "Open your report, see your next steps, and talk it through with Kai.",
+    ar: "افتح تقريرك، واطّلع على خطواتك التالية، وناقشه مع كاي.",
+  },
+  "home.report.open_cta": { en: "Open your CORE report", ar: "افتح تقرير كور" },
+  // The Overview for CORE 2.0 reports (components/home/CoreOverview.tsx).
+  "home.overview.core.families_title": {
+    en: "Job families to explore",
+    ar: "مجموعات مهن للاستكشاف",
+  },
+  "home.overview.core.families_subtitle": {
+    en: "Areas to explore, not a list to choose from.",
+    ar: "مجالات للاستكشاف، لا قائمة للاختيار منها.",
+  },
+  "home.overview.core.study_title": { en: "Study fields", ar: "مجالات الدراسة" },
+  "home.overview.core.steps_title": { en: "Your next steps", ar: "خطواتك التالية" },
+  "home.overview.core.steps_more": {
+    en: "See all your next steps",
+    ar: "اطّلع على كل خطواتك التالية",
+  },
+  "home.overview.core.kai_open": { en: "Talk it through with Kai", ar: "ناقشه مع كاي" },
   "home.overview.greeting": { en: "Hello, {name}", ar: "أهلاً، {name}" },
   "home.overview.avatar_label": { en: "Your profile", ar: "ملفك الشخصي" },
   "home.overview.paths_title": {
@@ -723,6 +753,11 @@ export const STRINGS = {
   "home.you.empty_description": {
     en: "Take CORE to start unlocking modules and save your progress.",
     ar: "خض تقييم كور لتبدأ بفتح الوحدات وحفظ تقدمك.",
+  },
+  "home.you.ready_title": { en: "Your CORE report", ar: "تقرير كور" },
+  "home.you.ready_description": {
+    en: "Taken on {date}. Open it any time.",
+    ar: "أجريته في {date}. يمكنك فتحه في أي وقت.",
   },
   "home.you.signin_title": {
     en: "Sign in to save your progress",
@@ -1643,11 +1678,11 @@ export const STRINGS = {
     ar: "",
   },
   "start.step3.title": {
-    en: "Access Kai, your AI coach",
+    en: "Talk with Kai, your personal career coach",
     ar: "التحدث مع كاي، مدرّبتك المهنية الشخصية",
   },
   "start.step3.meta": {
-    en: "Discuss your report with your personalized coach",
+    en: "Talk your report through with your personal coach",
     ar: "مناقشة تقريرك مع مدرّبتك الشخصية",
   },
   "start.resume_banner": {
@@ -1795,13 +1830,13 @@ export const STRINGS = {
     en: "All done! Your results are ready to unlock.",
     ar: "انتهينا! نتائجك جاهزة للفتح.",
   },
-  "chrome.part.1": { en: "Curiosities", ar: "الفضول" },
-  "chrome.part.2": { en: "Operating style", ar: "أسلوب العمل" },
-  "chrome.part.3": { en: "Rewards", ar: "المحفّزات" },
-  "chrome.part.4": { en: "Ecosystem", ar: "البيئة" },
+  "chrome.part.1": { en: "Curiosities", ar: "ما يثير فضولك" },
+  "chrome.part.2": { en: "Operating style", ar: "طريقتك في العمل" },
+  "chrome.part.3": { en: "Rewards", ar: "ما يحفّزك" },
+  "chrome.part.4": { en: "Ecosystem", ar: "أجواء العمل" },
   "pay.slide.work.mix": { en: "A mix of both", ar: "مزيج من الاثنين" },
   "pay.slide.example": { en: "Example", ar: "مثال" },
-  "chrome.compass_label": { en: "My CORE", ar: "تقرير كور" },
+  "chrome.compass_label": { en: "My CORE", ar: "تقييم كور" },
   "chrome.about_you": { en: "About you", ar: "عنك" },
   "chrome.back": { en: "Go back", ar: "رجوع" },
 
@@ -2070,10 +2105,10 @@ export const STRINGS = {
   },
   "payments.section_label": { en: "Purchase history", ar: "سجل المشتريات" },
   "payments.product.report": {
-    en: "Career Discovery Report",
-    ar: "تقرير اكتشاف المسار المهني",
+    en: "CORE career guidance report",
+    ar: "تقرير كور للإرشاد المهني",
   },
-  "payments.type.premium_unlock": { en: "Premium unlock", ar: "فتح مميز" },
+  "payments.type.premium_unlock": { en: "Report unlock", ar: "فتح التقرير" },
   "payments.status.paid": { en: "Paid", ar: "مدفوع" },
   "payments.status.refunded": { en: "Refunded", ar: "مسترد" },
   "payments.view_invoice": { en: "View invoice", ar: "عرض الفاتورة" },
@@ -2114,8 +2149,8 @@ export const STRINGS = {
     ar: "تم فتح تقريرك",
   },
   "invite.subtitle": {
-    en: "Your Map My CORE team gave you free access to your Career Discovery Report — no payment needed.",
-    ar: "منحك فريق ماب ماي كور وصولاً مجانياً إلى تقرير اكتشاف مسارك المهني — دون الحاجة إلى الدفع.",
+    en: "Your Map My CORE team gave you free access to your CORE career guidance report. No payment needed.",
+    ar: "منحك فريق ماب ماي كور وصولاً مجانياً إلى تقرير كور للإرشاد المهني، دون الحاجة إلى الدفع.",
   },
   "invite.cta": { en: "View my report", ar: "عرض تقريري" },
   "invite.signin_title": {
@@ -2439,15 +2474,15 @@ export const STRINGS = {
   // ---- Marketing: hero ----
   "marketing.hero.headline1": {
     en: "Your curiosities have direction.",
-    ar: "لفضولك اتجاه.",
+    ar: "لنرسم خريطتك المهنية.",
   },
   "marketing.hero.headline2": {
     en: "Map where they could lead.",
-    ar: "لنرسم خريطة إلى أين قد يقودك.",
+    ar: "لفضولك اتجاه، فلنكتشف إلى أين قد يقودك.",
   },
   "marketing.hero.subtitle": {
-    en: "In 15 minutes, see the study fields and careers your everyday choices point to, with Kai, your AI coach, to talk it through.",
-    ar: "خلال 15 دقيقة، تتّضح أمامك مجالات الدراسة والمهن التي تشير إليها اختياراتك اليومية، ومعك كاي، مدرّبك المهني الذكي، لمناقشتها.",
+    en: "In 15 minutes, see the study fields and careers your everyday choices point to, with Kai, your personal career coach, to talk it through.",
+    ar: "خلال 15 دقيقة، تتّضح أمامك مجالات الدراسة والمهن التي تشير إليها اختياراتك اليومية، ومعك كاي، مدرّبتك المهنية الشخصية، لمناقشتها.",
   },
   "marketing.hero.cta": {
     en: "Discover your CORE",
@@ -2592,8 +2627,8 @@ export const STRINGS = {
     ar: "وضوح حقيقي لمستقبل أبنائكم، بلا تخمين.",
   },
   "marketing.why.parents.1_title": {
-    en: "An AI coach",
-    ar: "مدربة بالذكاء الاصطناعي",
+    en: "A personal career coach",
+    ar: "مدرّبة مهنية شخصية",
   },
   "marketing.why.parents.1_body": {
     en: "Meet Kai, a personalized coach who translates report findings into clear choices.",
@@ -2658,12 +2693,12 @@ export const STRINGS = {
     ar: "عدة مسارات تستحق الاستكشاف، لا مسمّى وظيفي واحد ولا قالب جاهز.",
   },
   "marketing.whyPanel.learners.3_title": {
-    en: "Kai, your AI coach",
-    ar: "كاي، مدرّبك المهني الذكي",
+    en: "Kai, your personal career coach",
+    ar: "كاي، مدرّبتك المهنية الشخصية",
   },
   "marketing.whyPanel.learners.3_body": {
     en: "Kai has read your report and is there whenever you want to talk it through. Ask anything, without judgement, and make the choice yourself.",
-    ar: "قرأ كاي تقريرك، وهو حاضر متى أردت مناقشته. كل الأسئلة مرحّب بها دون أحكام، والقرار يبقى لك.",
+    ar: "قرأت كاي تقريرك، وهي حاضرة متى أردت مناقشته. كل الأسئلة مرحّب بها دون أحكام، والقرار يبقى لك.",
   },
   "marketing.whyPanel.learners.4_title": {
     en: "Room to grow",
@@ -2788,7 +2823,7 @@ export const STRINGS = {
   },
   "marketing.card4.note": {
     en: "Kai has read your report, so every chat starts from your results.",
-    ar: "قرأ كاي تقريرك، لذلك تبدأ كل محادثة من نتائجك.",
+    ar: "قرأت كاي تقريرك، لذلك تبدأ كل محادثة من نتائجك.",
   },
   "marketing.results.close_heading": {
     en: "Your CORE has direction.",
@@ -2796,7 +2831,7 @@ export const STRINGS = {
   },
   "marketing.results.close_body": {
     en: "Map where it could lead.",
-    ar: "لنرسم خريطة إلى أين قد يقودك.",
+    ar: "لنرسم خريطتك المهنية.",
   },
 
   // ---- Marketing: story cards ----
@@ -2865,12 +2900,12 @@ export const STRINGS = {
   },
   "marketing.card4.eyebrow": { en: "Your guide", ar: "مرشدتك" },
   "marketing.card4.headline": {
-    en: "Go deeper with Kai, your AI coach.",
-    ar: "تعمّق أكثر مع كاي، مدرّبك المهني الذكي.",
+    en: "Go deeper with Kai, your personal career coach.",
+    ar: "تعمّق أكثر مع كاي، مدرّبتك المهنية الشخصية.",
   },
   "marketing.card4.body": {
     en: "Kai has read your report. Ask anything, think it through, and make the choice yourself.",
-    ar: "قرأ كاي تقريرك. كل الأسئلة مرحّب بها، للتفكير بهدوء، والقرار يبقى لك.",
+    ar: "قرأت كاي تقريرك. كل الأسئلة مرحّب بها، للتفكير بهدوء، والقرار يبقى لك.",
   },
   "marketing.card4.detail1": {
     en: "Ask anything about your results",
@@ -2988,8 +3023,8 @@ export const STRINGS = {
     ar: "كيف يبدو يوم عادي؟",
   },
   "core.kai.s4_fit": {
-    en: "How does it fit what motivates me?",
-    ar: "كيف يتوافق مع ما يحفّزني؟",
+    en: "How does it connect to what motivates me?",
+    ar: "كيف يرتبط بما يحفّزني؟",
   },
   "core.kai.s5_prepare": {
     en: "Help me prepare my questions",
@@ -3322,7 +3357,7 @@ export const STRINGS = {
   "pay.summary.one_time": { en: "One payment · yours to keep", ar: "دفعة واحدة · لك للأبد" },
   "pay.summary.inc_chapters": { en: "All 7 chapters, made from the answers", ar: "الفصول السبعة كاملة، من الإجابات" },
   "pay.summary.inc_careers": { en: "Job families and study fields that fit", ar: "عائلات المهن ومجالات الدراسة المناسبة" },
-  "pay.summary.inc_kai": { en: "Kai, their AI coach, for 3 months", ar: "كاي، مدرّبهم المهني الذكي، لمدة 3 أشهر" },
+  "pay.summary.inc_kai": { en: "Kai, their personal career coach, for 3 months", ar: "كاي، مدرّبتهم المهنية الشخصية، لمدة 3 أشهر" },
   "pay.summary.inc_parents": { en: "A page written for parents", ar: "صفحة مكتوبة لأولياء الأمور" },
   "pay.summary.full": { en: "Full price", ar: "السعر الكامل" },
   "pay.summary.offer": { en: "Limited time offer", ar: "عرض لفترة محدودة" },

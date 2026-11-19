@@ -51,6 +51,11 @@ export const PAGES = {
     description:
       "What each part of CORE is built on, and why we made the choices we did, in plain words.",
   },
+  kai: {
+    path: "/kai",
+    title: "Talk with Kai",
+    description: "A conversation with Kai, your personal career coach.",
+  },
 } as const satisfies Record<string, PageCopy>;
 
 export function pageMetadata(page: PageCopy): Metadata {
@@ -89,6 +94,7 @@ export const ARABIC_PAGE_TEXT: Readonly<Record<string, { title: string; descript
   },
   "/model": { title: "ماب ماي كور: نموذج كور" },
   "/research": { title: "ماب ماي كور: الأساس العلمي لتقييم كور" },
+  "/kai": { title: "ماب ماي كور: تحدّث مع كاي" },
 };
 
 /** The English title and description for a path, from PAGES. */

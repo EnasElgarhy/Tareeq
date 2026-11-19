@@ -67,9 +67,9 @@ interface Words {
 const WORDS: Record<Locale, Words> = {
   en: {
     kaiName: "Kai",
-    aria: "How Map My CORE works: meet Kai, your AI coach, answer questions about everyday situations, see your CORE, the jobs and study fields it points to, then talk it through with Kai.",
+    aria: "How Map My CORE works: meet Kai, your personal career coach, answer questions about everyday situations, see your CORE, the jobs and study fields it points to, then talk it through with Kai.",
     intro: {
-      role: "Your AI coach",
+      role: "Your personal career coach",
       greeting:
         "Hi, I’m Kai. I’ll walk you through each part of your CORE, then help you make sense of your results, whenever you need.",
       exploreLabel: "What we’ll explore",
@@ -109,9 +109,9 @@ const WORDS: Record<Locale, Words> = {
   },
   ar: {
     kaiName: "كاي",
-    aria: "كيف يعمل ماب ماي كور: تعرّف على كاي، مدرّبك المهني الذكي، وأجب عن أسئلة من مواقفك اليومية، ثم اطّلع على نتائجك والمهن ومجالات الدراسة التي تشير إليها، وناقشها مع كاي.",
+    aria: "كيف يعمل ماب ماي كور: تعرّف على كاي، مدرّبتك المهنية الشخصية، وأجب عن أسئلة من مواقفك اليومية، ثم اطّلع على نتائجك والمهن ومجالات الدراسة التي تشير إليها، وناقشها مع كاي.",
     intro: {
-      role: "مدرّبك المهني الذكي",
+      role: "مدرّبتك المهنية الشخصية",
       greeting: "مرحبًا، أنا كاي. سأرافقك في كل جزء من تقييم كور، ثم أساعدك على فهم نتائجك متى احتجت إلى ذلك.",
       exploreLabel: "ما سنستكشفه",
       dimensions: [

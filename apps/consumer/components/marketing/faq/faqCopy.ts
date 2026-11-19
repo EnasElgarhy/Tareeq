@@ -44,7 +44,7 @@ export const FAQ_COPY: Record<Locale, FaqCopy> = {
           },
           {
             q: "How much does it cost?",
-            a: "Answering the questions is free. To unlock the full report, there’s a one-time payment of 360 AED (limited time offer; regular price 450 AED). This includes the full report, a section for parents, and three months with Kai, the AI coach.",
+            a: "Answering the questions is free. To unlock the full report, there’s a one-time payment of 360 AED (limited time offer; regular price 450 AED). This includes the full report, a section for parents, and three months with Kai, your personal career coach.",
           },
           {
             q: "Do I need an account?",
@@ -169,7 +169,7 @@ export const FAQ_COPY: Record<Locale, FaqCopy> = {
           },
           {
             q: "كم التكلفة؟",
-            a: "الإجابة عن الأسئلة مجانية. ولفتح التقرير الكامل، هناك دفعة واحدة قدرها 360 درهمًا (عرض لفترة محدودة؛ السعر الأصلي 450 درهمًا). وتشمل التقرير الكامل، وقسمًا لأولياء الأمور، وثلاثة أشهر مع كاي، المدرّب المهني الذكي.",
+            a: "الإجابة عن الأسئلة مجانية. ولفتح التقرير الكامل، هناك دفعة واحدة قدرها 360 درهمًا (عرض لفترة محدودة؛ السعر الأصلي 450 درهمًا). وتشمل التقرير الكامل، وقسمًا لأولياء الأمور، وثلاثة أشهر مع كاي، مدرّبتك المهنية الشخصية.",
           },
           {
             q: "هل أحتاج إلى حساب؟",
@@ -206,7 +206,7 @@ export const FAQ_COPY: Record<Locale, FaqCopy> = {
           },
           {
             q: "إلى متى يمكنني التحدث مع كاي؟",
-            a: "لمدة ثلاثة أشهر من يوم إجراء التقييم. وقد قرأ كاي تقريرك، لذلك تبدأ كل محادثة من نتائجك، متى احتجت إليه.",
+            a: "لمدة ثلاثة أشهر من يوم إجراء التقييم. وقد قرأت كاي تقريرك، لذلك تبدأ كل محادثة من نتائجك، متى احتجت إليه.",
           },
           {
             q: "هل يمكنني إعادة التقييم؟",

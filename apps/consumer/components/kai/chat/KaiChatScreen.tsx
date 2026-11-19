@@ -5,9 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { History, MessageSquarePlus, RotateCcw } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
-import { ActionPlanIcon, DeepDiveIcon } from "@/components/brand/DomainIcons";
+import { ActionPlanIcon } from "@/components/brand/DomainIcons";
 import { KaiGroundingCard } from "@/components/kai/KaiGroundingCard";
-import { KaiLockedToolCard } from "@/components/kai/KaiLockedToolCard";
 import { KaiSignal } from "@/components/kai/KaiSignal";
 import { MemoryTransparencyCard } from "@/components/kai/memory/MemoryTransparencyCard";
 import { ProactiveMomentCard } from "@/components/kai/ProactiveMomentCard";
@@ -267,6 +266,9 @@ function KaiChatExperience() {
           <p className="mt-1 text-[12px] leading-snug text-[color:var(--day-ink-2)]">
             {t("kai.chat.subtitle")}
           </p>
+          <p className="mt-0.5 text-[11px] leading-snug text-[color:var(--day-ink-3)]">
+            {t("kai.chat.ai_notice")}
+          </p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
           {threads.length > 0 ? (
@@ -350,16 +352,8 @@ function KaiChatExperience() {
                 </p>
               </div>
             </Link>
-            <KaiLockedToolCard
-              icon={DeepDiveIcon}
-              titleKey="kai.panel.locked.deep_dive.title"
-              bodyKey="kai.panel.locked.deep_dive.body"
-              onTap={() =>
-                trackEvent("kai_locked_tool_clicked", {
-                  tool: "deep_dive_interview",
-                })
-              }
-            />
+            {/* The Deep Dive Interview card is hidden until the feature exists
+             * (20 Nov corrections: no "coming soon" features at launch). */}
           </div>
         </>
       ) : (

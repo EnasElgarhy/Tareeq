@@ -4,6 +4,7 @@ import { DashboardAccessGate } from "@/components/home/DashboardAccessGate";
 import { LanguageGate } from "@/components/i18n/LanguageGate";
 import { LocaleProvider } from "@/components/i18n/LocaleProvider";
 import { KaiChatProvider } from "@/components/kai/chat/KaiChatProvider";
+import { LocalizedPageTitle } from "@/components/marketing/LocalizedPageTitle";
 
 /**
  * Layout for the post-result app surface (Home / Explore / Kai / You) —
@@ -19,6 +20,7 @@ export default function AppGroupLayout({
 }>) {
   return (
     <LocaleProvider>
+      <LocalizedPageTitle />
       <LanguageGate>
         <DashboardAccessGate>
           <KaiChatProvider>

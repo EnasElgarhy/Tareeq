@@ -89,7 +89,7 @@ function KaiChat({ local }: { local: MotionValue<number> }) {
         <img src="/kai/avatar/kai-avatar-idle.webp" alt="" width={34} height={34} className="rounded-full" />
         <div className="grid leading-tight">
           <span className="text-[14px] font-bold text-[#14101F]">{locale === "ar" ? "كاي" : "Kai"}</span>
-          <span className="text-[11px] text-[#5C5142]">{locale === "ar" ? "مدرّبك المهني الذكي" : "Your AI coach"}</span>
+          <span className="text-[11px] text-[#5C5142]">{locale === "ar" ? "مدرّبتك المهنية الشخصية" : "Your personal career coach"}</span>
         </div>
       </div>
       <div className="flex flex-1 flex-col gap-2.5 px-3.5 py-4 text-[13px] leading-snug">

@@ -18,9 +18,24 @@ export function LocalizedPageTitle() {
     const english = englishPageText(pathname);
     if (!english) return;
     const arabic = locale === "ar" ? ARABIC_PAGE_TEXT[pathname] : undefined;
-    document.title = arabic?.title ?? english.title;
-    const description = document.querySelector('meta[name="description"]');
-    description?.setAttribute("content", arabic?.description ?? english.description);
+    const title = arabic?.title ?? english.title;
+    const descriptionText = arabic?.description ?? english.description;
+
+    const apply = () => {
+      if (document.title !== title) document.title = title;
+      const description = document.querySelector('meta[name="description"]');
+      if (description && description.getAttribute("content") !== descriptionText) {
+        description.setAttribute("content", descriptionText);
+      }
+    };
+    apply();
+    // Next.js streams the page metadata and React rewrites its <title> (which
+    // can sit in <body>) after this effect has run, putting the English title
+    // back. Watch that element and re-apply; apply() only writes on a change.
+    const titleElement = document.querySelector("title");
+    const observer = new MutationObserver(apply);
+    observer.observe(titleElement ?? document.head, { childList: true, subtree: true, characterData: true });
+    return () => observer.disconnect();
   }, [locale, pathname]);
 
   return null;

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import { BRAND } from "@/lib/brand";
+import { PAGES } from "@/lib/page-metadata";
 import { Suspense } from "react";
 import { KaiChatScreen } from "@/components/kai/chat/KaiChatScreen";
 
 export const metadata: Metadata = {
-  title: "Talk with Kai · Tareeq",
-  description: "A conversation with Kai, your personal AI career coach.",
+  title: { absolute: `${BRAND.name}: ${PAGES.kai.title}` },
+  description: PAGES.kai.description,
 };
 
 /** The Kai tab — the real chat experience, ported from /kai-chat onto
