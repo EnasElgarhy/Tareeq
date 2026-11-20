@@ -4,6 +4,7 @@ import { Check, Copy, LockKeyholeOpen, Loader2, MessageCircle, Share2, X } from 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useLocale } from "@/components/i18n/LocaleProvider";
+import { captureLaunchEvent } from "@/lib/analytics/posthog-client";
 import { trackEvent } from "@/lib/analytics/track";
 import type { StringKey } from "@/lib/i18n/strings";
 import styles from "./AskParent.module.css";
@@ -133,6 +134,7 @@ export function AskParentSheet({ assessmentId, reuse, onClose, onSent }: AskPare
       writeStoredLink(assessmentId, { url: body.url, expiresAt: body.expiresAt });
       setSheet({ name: "ready", url: body.url });
       trackEvent("parent_link_created", { assessmentId });
+      captureLaunchEvent("parent_link_sent");
       onSent({
         state: "pending",
         createdAt: body.createdAt ?? new Date().toISOString(),

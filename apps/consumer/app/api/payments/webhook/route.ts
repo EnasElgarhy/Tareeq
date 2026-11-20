@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { attributionLabels } from "@/lib/analytics/attribution";
+import { amountAed } from "@/lib/analytics/launch-events";
+import { captureAttemptEvent } from "@/lib/analytics/posthog-attempt";
 import { trackServerEvent } from "@/lib/analytics/track-server";
 import type Stripe from "stripe";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -306,6 +308,26 @@ async function consentWithPayerEmail(
   return { ...base, payer_email: email };
 }
 
+/** Outcomes that record a payment for the first time; replays are left out. */
+const NEWLY_PAID_OUTCOMES: ReadonlySet<string> = new Set(["granted", "reactivated", "upgraded_to_paid"]);
+
+/**
+ * `report_paid` for the Friday report, sent from here so every sale counts
+ * even if the buyer closes the page. It carries the student's first-visit
+ * link tags from the session metadata, who paid and how much, and nothing
+ * that identifies anyone.
+ */
+async function captureReportPaid(admin: SupabaseClient, session: Stripe.Checkout.Session): Promise<void> {
+  const meta = session.metadata ?? {};
+  const assessmentId = meta.assessment_id ?? session.client_reference_id;
+  if (!assessmentId) return;
+  const amount = amountAed(session.amount_total, session.currency);
+  await captureAttemptEvent(admin, "report_paid", assessmentId, meta, {
+    paid_by: meta.payer === "parent" ? "parent" : "student",
+    ...(amount === null ? {} : { amount_aed: amount }),
+  });
+}
+
 /**
  * A parent's payment happens in the parent's browser, which has none of the
  * student's tracking, so it is recorded here, once, with the student's
@@ -398,6 +420,9 @@ export async function POST(request: Request) {
     switch (event.type) {
       case "checkout.session.completed":
         outcome = await grantEntitlement(admin, event.data.object);
+        if (NEWLY_PAID_OUTCOMES.has(outcome)) {
+          await captureReportPaid(admin, event.data.object);
+        }
         if (await markParentLinkPaid(admin, event.data.object)) {
           await trackParentPayment(event.data.object);
         }

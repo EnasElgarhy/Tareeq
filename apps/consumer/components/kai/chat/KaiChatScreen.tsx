@@ -29,6 +29,7 @@ import {
 } from "@/lib/kai/core/core-context";
 import { hasCoreKaiResult } from "@/lib/kai/core/core-client";
 import { usePaidAccess } from "@/lib/payments/use-paid-access";
+import { captureLaunchEvent } from "@/lib/analytics/posthog-client";
 import { trackEvent } from "@/lib/analytics/track";
 import type { KaiConversationGoal } from "@/lib/kai/chat-types";
 import {
@@ -75,6 +76,10 @@ function claimLaunch(key: string): boolean {
 
 function KaiChatExperience() {
   const { t, locale } = useLocale();
+  // PostHog: this component only mounts for a paid student (see the gate below).
+  useEffect(() => {
+    captureLaunchEvent("kai_opened");
+  }, []);
   const kaiAccess = useKaiAccess();
   const router = useRouter();
   const searchParams = useSearchParams();

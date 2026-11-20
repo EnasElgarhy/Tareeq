@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   trackServerEvent: vi.fn(),
+  captureAttemptEvent: vi.fn(),
   constructEvent: vi.fn(),
   createAdminClient: vi.fn(),
   getStripeClient: vi.fn(),
@@ -10,6 +11,10 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock("@/lib/analytics/track-server", () => ({
   trackServerEvent: mocks.trackServerEvent,
+}));
+
+vi.mock("@/lib/analytics/posthog-attempt", () => ({
+  captureAttemptEvent: mocks.captureAttemptEvent,
 }));
 
 vi.mock("@/lib/supabase/admin", () => ({
@@ -299,6 +304,24 @@ describe("POST /api/payments/webhook", () => {
     expect(database.writeCount).toBe(1);
   });
 
+  it("sends report_paid to PostHog once, with who paid and the amount in AED", async () => {
+    const event = checkoutCompletedEvent("cs_posthog");
+    Object.assign(event.data.object, { amount_total: 36000, currency: "aed" });
+    Object.assign(event.data.object.metadata, { src: "tiktok", campaign: "test" });
+
+    await deliver(event);
+    await deliver(event);
+
+    expect(mocks.captureAttemptEvent).toHaveBeenCalledTimes(1);
+    expect(mocks.captureAttemptEvent).toHaveBeenCalledWith(
+      expect.anything(),
+      "report_paid",
+      ASSESSMENT_ID,
+      expect.objectContaining({ src: "tiktok", campaign: "test" }),
+      { paid_by: "student", amount_aed: 360 },
+    );
+  });
+
   it("never overwrites a different active paid transaction", async () => {
     const row = database.seed();
     const before = { ...row };
@@ -520,6 +543,8 @@ describe("POST /api/payments/webhook", () => {
     await deliver(event);
 
     expect(database.parentLinks[0].status).toBe("paid");
+    expect(mocks.captureAttemptEvent).toHaveBeenCalledTimes(1);
+    expect(mocks.captureAttemptEvent.mock.calls[0][4]).toMatchObject({ paid_by: "parent" });
     expect(mocks.trackServerEvent).toHaveBeenCalledTimes(1);
     expect(mocks.trackServerEvent).toHaveBeenCalledWith("payment_succeeded", {
       assessmentId: ASSESSMENT_ID,

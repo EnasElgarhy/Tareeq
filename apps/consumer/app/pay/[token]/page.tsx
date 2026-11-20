@@ -11,6 +11,7 @@ import {
   isParentLinkTokenShape,
   parentLinkState,
 } from "@/app/api/payments/_lib/parent-links";
+import { captureAttemptEvent } from "@/lib/analytics/posthog-attempt";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 export const runtime = "nodejs";
@@ -70,6 +71,8 @@ async function resolveOutcome(token: string): Promise<ParentPayOutcome> {
       .eq("id", link.id)
       .is("opened_at", null);
     if (opened.error) console.error("[pay] Recording opened_at failed", opened.error);
+    // PostHog: the first open only, with the student's link tags from the link.
+    else await captureAttemptEvent(admin, "parent_link_opened", link.assessment_id, link.attribution);
   }
   return "ready";
 }

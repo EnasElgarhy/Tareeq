@@ -12,6 +12,7 @@ import {
   sendEmailOtp,
   verifyEmailOtp,
 } from "@/lib/auth/otp";
+import { captureLaunchEvent } from "@/lib/analytics/posthog-client";
 import { uiSounds } from "@/lib/audio/ui-sounds";
 import { readLocalAssessment } from "@/lib/assessment/progress";
 import {
@@ -204,6 +205,7 @@ export function RegistrationScreen() {
 
     // Save the result to their account (non-blocking).
     void persistAssessment(trimmedName, locale);
+    captureLaunchEvent("registered");
 
     router.push("/analyzing");
   }

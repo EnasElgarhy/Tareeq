@@ -11,13 +11,19 @@ import {
   writeConsent,
   type AnalyticsConsent as Consent,
 } from "@/lib/analytics/consent";
-import { maskReplayText, sanitizeReplayUrl } from "@/lib/analytics/posthog-privacy";
+import { assessmentScreen } from "@/lib/analytics/launch-events";
+import {
+  captureLaunchEvent,
+  captureLaunchEventOnce,
+  commonProperties,
+  linkAttemptToVisitor,
+} from "@/lib/analytics/posthog-client";
+import { sanitizeReplayUrl } from "@/lib/analytics/posthog-privacy";
+import { readLocalAssessment } from "@/lib/assessment/progress";
 
 const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY?.trim() ?? "";
 const posthogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST?.trim() || "https://eu.i.posthog.com";
 const analyticsEnabled = process.env.NEXT_PUBLIC_POSTHOG_ENABLED === "true" && posthogKey.length > 0;
-/** Session replay is separate from analytics and stays off unless switched on. */
-const replayEnabled = process.env.NEXT_PUBLIC_POSTHOG_REPLAY === "true";
 
 const COPY = {
   en: {
@@ -42,22 +48,20 @@ function startPostHog(): void {
   if (!initialized) {
     posthog.init(posthogKey, {
       api_host: posthogHost,
+      // Weekly-numbers brief of 19 Nov 2026, section 5: no autocapture, no
+      // session recordings, no heatmaps, nothing typed into fields. These
+      // are off in the PostHog project too; the code does not rely on that.
       autocapture: false,
       capture_pageview: false,
       capture_pageleave: true,
+      capture_heatmaps: false,
+      capture_dead_clicks: false,
+      disable_session_recording: true,
+      disable_surveys: true,
+      capture_performance: { web_vitals: true, network_timing: false },
       persistence: "localStorage+cookie",
       person_profiles: "identified_only",
       respect_dnt: true,
-      disable_session_recording: !replayEnabled,
-      session_recording: {
-        maskAllInputs: true,
-        maskTextSelector: "*",
-        maskTextFn: (text) => maskReplayText(text, window.location.pathname),
-        blockSelector: ".ph-no-capture, [data-ph-no-capture]",
-        recordCrossOriginIframes: false,
-        recordHeaders: false,
-        recordBody: false,
-      },
       before_send: (event) => {
         if (!event?.properties) return event;
         const properties = { ...event.properties };
@@ -71,6 +75,7 @@ function startPostHog(): void {
   }
   posthog.opt_in_capturing();
   posthog.register(posthogSourceProperties(attributionFromCookieHeader(document.cookie)));
+  void linkAttemptToVisitor();
 }
 
 function stopPostHog(): void {
@@ -114,7 +119,17 @@ export function AnalyticsConsent() {
 
   useEffect(() => {
     if (consent !== "granted") return;
-    posthog.capture("$pageview", { $current_url: `${window.location.origin}${pathname}` });
+    posthog.capture("$pageview", {
+      ...commonProperties(),
+      $current_url: `${window.location.origin}${pathname}`,
+    });
+    const screen = assessmentScreen(pathname);
+    if (screen) captureLaunchEvent("screen_viewed", { screen });
+    // The end screen is only reached once every question is answered.
+    if (pathname === "/done") {
+      captureLaunchEventOnce("assessment_finished", readLocalAssessment()?.assessmentId);
+    }
+    void linkAttemptToVisitor();
   }, [consent, pathname]);
 
   if (!analyticsEnabled || !open) return null;

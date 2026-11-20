@@ -9,6 +9,7 @@ import {
 } from "@/components/results/report-access/CheckoutSheet";
 import { ParentUnlockedCard } from "@/components/core-report/AskParent";
 import { ReportUnlockedNotice } from "@/components/results/report-access/ReportUnlockedNotice";
+import { captureLaunchEvent } from "@/lib/analytics/posthog-client";
 import { trackEvent } from "@/lib/analytics/track";
 import type { StringKey } from "@/lib/i18n/strings";
 import {
@@ -148,8 +149,10 @@ export function ReportAccessExperience({
     if (!access || previewTrackedRef.current) return;
     previewTrackedRef.current = true;
     trackEvent("report_preview_viewed", { reportId, isPaid: access.isPaid });
-    if (!access.isPaid)
+    if (!access.isPaid) {
       trackEvent("paywall_viewed", { reportId, productId: offer.productId });
+      captureLaunchEvent("screen_viewed", { screen: "unlock" });
+    }
   }, [access, offer.productId, reportId]);
 
   function markFailed(caught: unknown, retryStep: "checkout" | "confirm") {

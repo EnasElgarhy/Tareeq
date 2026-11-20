@@ -56,6 +56,7 @@ import {
   isCoreQuestionSet,
 } from "@/lib/core-v2/assessment";
 import { scoreCore } from "@/lib/core-v2/scoring";
+import { captureLaunchEvent, captureLaunchEventOnce } from "@/lib/analytics/posthog-client";
 import { trackEvent } from "@/lib/analytics/track";
 
 type AudioState =
@@ -213,6 +214,10 @@ export function QuestionScreen({
   // About you stands apart from the assessment: no Kai, no audio, no letters.
   const isAboutYou = question.pillar === 0 && hasCoreFlow(questions);
   const asksCitizenship = isAboutYou && question.externalId === "QD2";
+  /** PostHog screen name: "question_1" to "question_46", or the background question's ID. */
+  const screenName = isAboutYou
+    ? `background_${question.externalId}`
+    : `question_${questions.slice(0, index + 1).filter((q) => q.pillar !== 0).length}`;
   const storedAttemptId = useSyncExternalStore(
     subscribeToNothing,
     readAttemptId,
@@ -284,8 +289,13 @@ export function QuestionScreen({
         }),
       });
       initialAnswerRef.current = value;
+      // PostHog: the assessment starts with the first assessment question
+      // answered, not the background questions before it.
+      if (!isAboutYou) {
+        captureLaunchEventOnce("assessment_started", readLocalAssessment()?.assessmentId);
+      }
     },
-    [questionContext, shownOptions],
+    [isAboutYou, questionContext, shownOptions],
   );
 
   /** Fires once, at the moment this question is actually left (forward or
@@ -348,10 +358,11 @@ export function QuestionScreen({
       isRevisit ? "question_revisited" : "question_viewed",
       questionContext({ isFirstVisit: !isRevisit, attemptNumber }),
     );
+    captureLaunchEvent("screen_viewed", { screen: screenName });
     // question_skipped is intentionally not fired here — this consumer app
     // has no UI concept of skipping a required question (every kind must
     // be answered to advance; see QUESTION_ANALYTICS_ARCHITECTURE.md).
-  }, [assessmentVersion, question.externalId, questionContext]);
+  }, [assessmentVersion, question.externalId, questionContext, screenName]);
 
   useEffect(() => {
     if (isAboutYou || shownOptions.length === 0) return;
