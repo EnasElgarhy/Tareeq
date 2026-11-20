@@ -51,6 +51,16 @@ export const PAGES = {
     description:
       "What each part of CORE is built on, and why we made the choices we did, in plain words.",
   },
+  privacy: {
+    path: "/privacy-policy",
+    title: "Privacy Policy",
+    description: "What Map My CORE collects, why, who helps us run the service, and the rights you have over your data.",
+  },
+  terms: {
+    path: "/terms-of-service",
+    title: "Terms of Service",
+    description: "The terms for using Map My CORE: what CORE is and is not, parents and guardians, Kai, payments and refunds.",
+  },
   kai: {
     path: "/kai",
     title: "Talk with Kai",
