@@ -73,7 +73,8 @@ function startPostHog(): void {
     });
     initialized = true;
   }
-  posthog.opt_in_capturing();
+  // No "$opt_in" event: it would be sent again on every page load.
+  posthog.opt_in_capturing({ captureEventName: false });
   posthog.register(posthogSourceProperties(attributionFromCookieHeader(document.cookie)));
   void linkAttemptToVisitor();
 }
