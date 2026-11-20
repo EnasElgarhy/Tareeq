@@ -48,7 +48,8 @@ const CORE_EVENT_SCHEMA = {
   required: ["tool"],
 };
 
-export function buildCoreResponseSchema() {
+export function buildCoreResponseSchema(options: { withSummary?: boolean } = {}) {
+  const { withSummary = true } = options;
   return {
     type: "OBJECT",
     properties: {
@@ -63,7 +64,10 @@ export function buildCoreResponseSchema() {
         items: CORE_EVENT_SCHEMA,
         description: "Tool calls the rules ask for in this turn, if any.",
       },
-      summary: { type: "STRING", description: "One sentence summing up the conversation so far." },
+      // Words Kai writes after her message; asked for only when the turn needs them.
+      ...(withSummary
+        ? { summary: { type: "STRING", description: "One sentence summing up the conversation so far." } }
+        : {}),
       uses_subject_guide: {
         type: "BOOLEAN",
         description: "True when this reply says anything about school subjects, streams, tracks, sections or admission patterns.",

@@ -1,3 +1,4 @@
+import { REPORT_INVOICE_CREATION } from "@/lib/payments/report-invoice";
 import { NextResponse } from "next/server";
 import { attributionLabels } from "@/lib/analytics/attribution";
 import {
@@ -77,6 +78,7 @@ export async function POST(request: Request, { params }: RouteContext) {
     const couponId = getStripeCouponId();
     session = await stripe.checkout.sessions.create({
       mode: "payment",
+      invoice_creation: REPORT_INVOICE_CREATION,
       ui_mode: "embedded_page",
       redirect_on_completion: "never",
       line_items: [{ price: getStripePriceId(), quantity: 1 }],

@@ -44,6 +44,13 @@ import {
   readGeminiJson,
   readGeminiSse,
 } from "@/lib/kai/gemini-stream";
+import {
+  ANTHROPIC_MESSAGES_ENDPOINT,
+  ANTHROPIC_VERSION,
+  buildAnthropicRequest,
+  DEFAULT_ANTHROPIC_KAI_MODEL,
+  readAnthropicSse,
+} from "@/lib/kai/anthropic-stream";
 import { buildMemoryCandidates } from "@/lib/kai/memory/memory-builder";
 import { detectDegenerateOutput } from "@/lib/kai/repetition";
 import { recordCoreKaiEvents } from "@/lib/kai/core/core-events";
@@ -290,6 +297,112 @@ async function callGeminiOnce(
   return { ok: true, parsed, sources: streamed.sources ?? [] };
 }
 
+/**
+ * Kai's coaching replies on Claude. Same inputs and result as callGeminiOnce,
+ * so retries, the repetition guard and the CORE turn logic are shared.
+ */
+async function callClaudeOnce(
+  apiKey: string,
+  context: KaiChatContext,
+  prompt: string,
+  intentHint: KaiMessageIntent | undefined,
+  schemaOverride: object | undefined,
+  onText: (text: string) => void,
+  timeoutMs: number,
+  systemPromptOverride: string | undefined,
+): Promise<GeminiAttempt> {
+  let response: Response;
+  try {
+    response = await fetch(ANTHROPIC_MESSAGES_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": ANTHROPIC_VERSION,
+        // Only needed for a key that is not tied to one workspace.
+        ...(process.env.ANTHROPIC_WORKSPACE_ID
+          ? { "anthropic-workspace-id": process.env.ANTHROPIC_WORKSPACE_ID }
+          : {}),
+      },
+      signal: AbortSignal.timeout(normalizeAbortTimeoutMs(timeoutMs)),
+      body: JSON.stringify(
+        buildAnthropicRequest({
+          model: process.env.ANTHROPIC_KAI_MODEL || DEFAULT_ANTHROPIC_KAI_MODEL,
+          systemPrompt: systemPromptOverride ?? buildSystemPrompt(context.user.locale),
+          prompt,
+          responseSchema: schemaOverride ?? buildResponseSchema(intentHint),
+          maxTokens: schemaOverride ? 1024 : intentHint && needsArtifact(intentHint) ? 4096 : 2560,
+        }),
+      ),
+    });
+  } catch (error) {
+    const timedOut = error instanceof DOMException && error.name === "TimeoutError";
+    return { ok: false, reason: "network_error", retryable: !timedOut };
+  }
+
+  if (!response.ok) {
+    // The provider's error body can name the account: log it, never return it.
+    console.error("[kai/chat] Anthropic request failed", response.status, await response.text());
+    return {
+      ok: false,
+      reason: "gemini_error",
+      retryable: response.status === 429 || response.status >= 500,
+    };
+  }
+
+  let streamed;
+  try {
+    streamed = await readAnthropicSse(response, onText);
+  } catch (error) {
+    const timedOut = error instanceof DOMException && error.name === "TimeoutError";
+    return { ok: false, reason: "network_error", retryable: !timedOut };
+  }
+
+  const degenerate = detectDegenerateOutput(streamed.raw, streamed.finishReason);
+  if (degenerate.degenerate) {
+    console.warn("[kai/chat] degenerate output:", degenerate.reason, "rawLen:", streamed.raw.length);
+    return { ok: false, reason: "provider_repetition_loop", retryable: false };
+  }
+
+  let parsed: ParsedGeminiResponse;
+  try {
+    parsed = streamed.raw ? JSON.parse(streamed.raw) : {};
+  } catch {
+    console.error("[kai/chat] Anthropic reply was not valid JSON", "rawLength:", streamed.raw.length);
+    return { ok: false, reason: "unparseable_response", retryable: true };
+  }
+  if (typeof parsed.text !== "string" || !parsed.text.trim()) {
+    return { ok: false, reason: "unparseable_response", retryable: true };
+  }
+  return { ok: true, parsed, sources: [] };
+}
+
+/**
+ * Which model answers this turn. KAI_AI_PROVIDER=anthropic (with
+ * ANTHROPIC_API_KEY set) sends coaching replies to Claude; anything else, and
+ * every fact lookup, stays on Gemini, whose Google Search grounding the
+ * factual path depends on. Unsetting the variable switches back.
+ */
+function callModelOnce(
+  ...args: Parameters<typeof callGeminiOnce>
+): Promise<GeminiAttempt> {
+  const [, , context, prompt, intentHint, schemaOverride, onText, timeoutMs, systemPromptOverride] = args;
+  const anthropicKey = process.env.ANTHROPIC_API_KEY;
+  const usesClaude =
+    process.env.KAI_AI_PROVIDER === "anthropic" && Boolean(anthropicKey) && !shouldGroundIntent(intentHint);
+  if (!usesClaude || !anthropicKey) return callGeminiOnce(...args);
+  return callClaudeOnce(
+    anthropicKey,
+    context,
+    prompt,
+    intentHint,
+    schemaOverride,
+    onText ?? (() => undefined),
+    timeoutMs ?? 15_000,
+    systemPromptOverride,
+  );
+}
+
 // Every chat turn spends AI credits (security review, 12 Nov 2026): a body
 // far beyond any real conversation is refused, and each student gets a
 // burst and a daily allowance well above normal use.
@@ -452,7 +565,7 @@ export async function POST(request: Request) {
             message,
             canRetry: () => performance.now() - requestStartedAt < 8_000,
             callModel: ({ systemPrompt, prompt, responseSchema }) =>
-              callGeminiOnce(
+              callModelOnce(
                 apiKey,
                 coachingModel,
                 context,
@@ -531,7 +644,7 @@ export async function POST(request: Request) {
         const modelStartedAt = performance.now();
         const remainingTimeout = () =>
           Math.max(1_000, 15_000 - (performance.now() - requestStartedAt));
-        let attempt = await callGeminiOnce(
+        let attempt = await callModelOnce(
           apiKey,
           model,
           context,
@@ -554,7 +667,7 @@ export async function POST(request: Request) {
           performance.now() - requestStartedAt < 8_000
         ) {
           attemptCount += 1;
-          attempt = await callGeminiOnce(
+          attempt = await callModelOnce(
             apiKey,
             model,
             context,
@@ -580,7 +693,7 @@ export async function POST(request: Request) {
             ? ARTIFACT_SIMPLIFY_HINT[artifact.kind]
             : GENERIC_RECOVERY_HINT;
           attemptCount += 1;
-          const recovered = await callGeminiOnce(
+          const recovered = await callModelOnce(
             apiKey,
             model,
             context,
@@ -673,7 +786,7 @@ export async function POST(request: Request) {
                 attemptCount += 1;
                 const stricterInstruction = `${instruction}\n\nYour previous reply for this turn was missing a required ${stillMissing.join(" and ")} block — it answered in plain prose instead. Write it again, and this time you MUST include ${stillMissing.length === 1 ? "that block" : "those blocks"}. Do not explain the plan/answer in "text" — put the substance in the block(s).`;
                 const stricterPrompt = `${buildContextPrompt(context, intentHint)}\n\n${stricterInstruction}`;
-                const retryAttempt = await callGeminiOnce(
+                const retryAttempt = await callModelOnce(
                   apiKey,
                   model,
                   context,

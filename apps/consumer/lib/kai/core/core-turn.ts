@@ -27,6 +27,13 @@ import type { CoreKaiRequest } from "./core-request";
 /** flags_live (spec §5): off until the founder calibrates; CompassScreen uses the same. */
 const IS_FLAGS_LIVE = false;
 const MAX_RETRIES = 2;
+/**
+ * Each request carries the last 8 messages (recentMessages in chat-storage);
+ * the summary only has to hold what falls out of that window. Until the
+ * window is nearly full nothing is lost, so Kai is not asked to write one:
+ * fewer words per reply, and a faster reply.
+ */
+const SUMMARY_FROM_MESSAGES = 6;
 
 export type CoreModelAttempt =
   | { ok: true; parsed: Record<string, unknown> }
@@ -93,16 +100,15 @@ export async function runCoreKaiTurn(input: {
     message: input.message,
   });
   const canRetry = input.canRetry ?? (() => true);
+  const responseSchema = buildCoreResponseSchema({
+    withSummary: context.conversation.recentMessages.length >= SUMMARY_FROM_MESSAGES,
+  });
 
   let attempts = 1;
-  let attempt = await input.callModel({
-    systemPrompt,
-    prompt,
-    responseSchema: buildCoreResponseSchema(),
-  });
+  let attempt = await input.callModel({ systemPrompt, prompt, responseSchema });
   while (!attempt.ok && attempt.retryable && attempts <= MAX_RETRIES && canRetry()) {
     attempts += 1;
-    attempt = await input.callModel({ systemPrompt, prompt, responseSchema: buildCoreResponseSchema() });
+    attempt = await input.callModel({ systemPrompt, prompt, responseSchema });
   }
 
   let recoveredViaSimplified = false;

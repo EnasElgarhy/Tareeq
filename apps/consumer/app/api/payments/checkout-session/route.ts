@@ -1,3 +1,4 @@
+import { REPORT_INVOICE_CREATION } from "@/lib/payments/report-invoice";
 import { NextResponse } from "next/server";
 import { attributionFromCookieHeader, attributionLabels } from "@/lib/analytics/attribution";
 import {
@@ -103,6 +104,7 @@ export async function POST(request: Request) {
     const couponId = getStripeCouponId();
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
+      invoice_creation: REPORT_INVOICE_CREATION,
       // `embedded` was renamed to `embedded_page` in the API version this
       // client pins (2026-08-26.dahlia); the old value is rejected outright.
       ui_mode: "embedded_page",

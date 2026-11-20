@@ -53,6 +53,35 @@ describe("runCoreKaiTurn", () => {
     expect(turn.summary).toBe("The student disagreed with Planning & Execution.");
   });
 
+  it("does not ask for a summary while every message still fits in the request", async () => {
+    const callModel = model({ ok: true, parsed: { text: "Hello" } });
+
+    await runCoreKaiTurn({ core, context, kind: "open", callModel });
+
+    const schema = callModel.mock.calls[0][0].responseSchema as { properties: Record<string, unknown> };
+    expect(schema.properties).not.toHaveProperty("summary");
+  });
+
+  it("asks for a summary once older messages are about to drop out of the request", async () => {
+    const callModel = model({ ok: true, parsed: { text: "Hello", summary: "They talked about data jobs." } });
+    const longChat: KaiChatContext = {
+      ...context,
+      conversation: {
+        ...context.conversation,
+        recentMessages: Array.from({ length: 6 }, (_, i) => ({
+          role: i % 2 === 0 ? ("user" as const) : ("kai" as const),
+          text: `message ${i}`,
+        })),
+      },
+    };
+
+    const turn = await runCoreKaiTurn({ core, context: longChat, kind: "reply", message: "And then?", callModel });
+
+    const schema = callModel.mock.calls[0][0].responseSchema as { properties: Record<string, unknown> };
+    expect(schema.properties).toHaveProperty("summary");
+    expect(turn.summary).toBe("They talked about data jobs.");
+  });
+
   it("retries a transient failure", async () => {
     const callModel = model(
       { ok: false, reason: "network_error", retryable: true },

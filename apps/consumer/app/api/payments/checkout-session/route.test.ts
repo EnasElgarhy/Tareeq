@@ -193,6 +193,13 @@ describe("POST /api/payments/checkout-session", () => {
     });
   });
 
+  it("asks Stripe for an invoice, so the payer is emailed one with the receipt", async () => {
+    await POST(checkoutRequest({ assessmentId: ASSESSMENT_ID }));
+
+    const sessionParams = mocks.createSession.mock.calls[0]?.[0];
+    expect(sessionParams).toMatchObject({ invoice_creation: { enabled: true } });
+  });
+
   it("sends no discounts when no coupon is configured", async () => {
     await POST(checkoutRequest({ assessmentId: ASSESSMENT_ID }));
 
