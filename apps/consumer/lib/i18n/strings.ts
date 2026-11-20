@@ -401,6 +401,89 @@ export const STRINGS = {
 
   "profile.settings.account_label": { en: "Account", ar: "الحساب" },
   "profile.settings.sign_out": { en: "Sign out", ar: "تسجيل الخروج" },
+  "profile.settings.delete_account": { en: "Delete account", ar: "حذف الحساب" },
+
+  // Delete account (You → Account → Delete account)
+  "account.delete.title": { en: "Delete your account", ar: "حذف حسابك" },
+  "account.delete.intro": {
+    en: "This removes your account and everything in it, straight away. It cannot be undone.",
+    ar: "سيُحذف حسابك وكل ما فيه فوراً. لا يمكن التراجع عن ذلك.",
+  },
+  "account.delete.list_label": { en: "What gets deleted", ar: "ما الذي سيُحذف" },
+  "account.delete.item_identity_title": { en: "Your account", ar: "حسابك" },
+  "account.delete.item_identity": {
+    en: "Your name, your email and your sign-in",
+    ar: "اسمك وبريدك الإلكتروني وبيانات تسجيل الدخول",
+  },
+  "account.delete.item_core_title": { en: "Your CORE report", ar: "تقرير كور" },
+  "account.delete.item_core": {
+    en: "Your answers and everything in your report",
+    ar: "إجاباتك وكل ما في تقريرك",
+  },
+  "account.delete.item_kai_title": { en: "Kai", ar: "كاي" },
+  "account.delete.item_kai": {
+    en: "Your conversations and what Kai remembers about you",
+    ar: "محادثاتك وما تتذكره كاي عنك",
+  },
+  "account.delete.item_paid_title": { en: "Paid access", ar: "الوصول المدفوع" },
+  "account.delete.item_paid": {
+    en: "The report you paid for, and Kai. Payments are not refunded.",
+    ar: "التقرير المدفوع وكاي. المبالغ المدفوعة لا تُسترد.",
+  },
+  "account.delete.help": {
+    en: "Something not working? Write to support@mapmycore.com before you delete.",
+    ar: "هل هناك مشكلة؟ يمكن مراسلتنا على support@mapmycore.com قبل الحذف.",
+  },
+  "account.delete.kept": {
+    en: "Receipts and invoices for past payments stay with Stripe, our payment provider.",
+    ar: "تبقى إيصالات وفواتير المدفوعات السابقة لدى Stripe، مزوّد خدمة الدفع.",
+  },
+  "account.delete.reassure": {
+    en: "Nothing is deleted until you enter the code we email you.",
+    ar: "لن يُحذف شيء قبل إدخال الرمز الذي نرسله بالبريد الإلكتروني.",
+  },
+  "account.delete.keep_cta": { en: "Keep my account", ar: "الاحتفاظ بحسابي" },
+  "account.delete.continue_cta": { en: "Continue to delete", ar: "متابعة الحذف" },
+  "account.delete.confirm_title": { en: "Confirm it's you", ar: "تأكيد الهوية" },
+  "account.delete.confirm_body": {
+    en: "We'll email a code to {email}. Enter it here to delete your account.",
+    ar: "سنرسل رمزاً إلى {email}. يُدخل الرمز هنا لحذف الحساب.",
+  },
+  "account.delete.send_cta": { en: "Email me a code", ar: "إرسال الرمز" },
+  "account.delete.code_sent": {
+    en: "We sent a code to {email}. Enter it to delete your account for good.",
+    ar: "أرسلنا رمزاً إلى {email}. يُدخل الرمز لحذف الحساب نهائياً.",
+  },
+  "account.delete.resend": { en: "Send a new code", ar: "إرسال رمز جديد" },
+  "account.delete.delete_cta": { en: "Delete my account", ar: "حذف حسابي" },
+  "account.delete.deleting": { en: "Deleting…", ar: "جارٍ الحذف…" },
+  "account.delete.back": { en: "Back", ar: "رجوع" },
+  "account.delete.error_send": {
+    en: "We couldn't send the code. Wait a minute, then try again.",
+    ar: "تعذّر إرسال الرمز. يُرجى الانتظار دقيقة ثم المحاولة مرة أخرى.",
+  },
+  "account.delete.error_code": {
+    en: "That code didn't work. Check it, or ask for a new one.",
+    ar: "الرمز غير صحيح. يُرجى التحقق منه أو طلب رمز جديد.",
+  },
+  "account.delete.error_failed": {
+    en: "We couldn't delete your account. Try again, or write to support@mapmycore.com.",
+    ar: "تعذّر حذف الحساب. يُرجى المحاولة مرة أخرى أو مراسلتنا على support@mapmycore.com.",
+  },
+  "account.delete.error_limit": {
+    en: "Too many attempts. Wait ten minutes, then try again.",
+    ar: "محاولات كثيرة. يُرجى الانتظار عشر دقائق ثم المحاولة مرة أخرى.",
+  },
+  "account.delete.error_admin": {
+    en: "This account manages Map My CORE, so it can't be deleted here. Write to support@mapmycore.com.",
+    ar: "هذا الحساب يدير ماب ماي كور، لذا لا يمكن حذفه من هنا. يُرجى مراسلتنا على support@mapmycore.com.",
+  },
+  "account.delete.done_title": { en: "Your account is deleted", ar: "تم حذف حسابك" },
+  "account.delete.done_body": {
+    en: "Your data has been removed. Thank you for using Map My CORE.",
+    ar: "أُزيلت بياناتك. شكراً لاستخدام ماب ماي كور.",
+  },
+  "account.delete.done_cta": { en: "Go to the home page", ar: "الذهاب إلى الصفحة الرئيسية" },
   "profile.settings.footer": {
     en: "More assessments unlock as Map My CORE grows. Your profile grows with you.",
     ar: "المزيد من التقييمات يُفتح مع نمو ماب ماي كور. ملفك الشخصي ينمو معك.",

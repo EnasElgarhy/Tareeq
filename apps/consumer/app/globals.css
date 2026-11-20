@@ -2528,6 +2528,8 @@ button {
   /* Deeper letter colours for filled surfaces that carry white text (4.5:1). */
   --daybreak-green-deep: #2f7a64;
   --daybreak-clay-deep: #a9554a;
+  /* Clay dark enough for text and icons on day surfaces (6:1): warnings, destructive actions. */
+  --daybreak-clay-ink: #8c4034;
   --daybreak-violet-deep: #5c4a96;
   --daybreak-cocoa: #4a2c17;
   background:
@@ -2630,6 +2632,93 @@ button {
 .daybreak-primary-action:active {
   transform: translateY(1px);
 }
+/* A step that replaces the one before it (delete account): a short rise
+   with a strong ease-out, its list rows following a beat apart. */
+.step-enter,
+.step-enter-rows > * {
+  animation: step-enter 240ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+.step-enter-rows > :nth-child(1) {
+  animation-delay: 60ms;
+}
+.step-enter-rows > :nth-child(2) {
+  animation-delay: 100ms;
+}
+.step-enter-rows > :nth-child(3) {
+  animation-delay: 130ms;
+}
+.step-enter-rows > :nth-child(n + 4) {
+  animation-delay: 155ms;
+}
+@keyframes step-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+/* The tick on the "account deleted" screen draws itself once. */
+.tick-draw {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  animation: tick-draw 380ms cubic-bezier(0.23, 1, 0.32, 1) 180ms forwards;
+}
+@keyframes tick-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .step-enter,
+  .step-enter-rows > * {
+    animation: step-fade 200ms ease both;
+    animation-delay: 0ms;
+  }
+  .tick-draw {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes step-fade {
+  from {
+    opacity: 0;
+  }
+}
+/* The one destructive action on a screen (delete account). Same shape as
+   the primary action so the choice reads by colour and wording alone. */
+.daybreak-danger-action {
+  display: inline-flex;
+  min-height: 2.875rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  background: var(--daybreak-clay-deep);
+  padding: 0.7rem 1.15rem;
+  color: #fffcf6;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.2;
+  box-shadow: 0 12px 24px rgba(140, 64, 52, 0.2);
+  transition:
+    background-color 180ms ease,
+    transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.daybreak-danger-action:hover {
+  background: var(--daybreak-clay-ink);
+}
+.daybreak-danger-action:active {
+  transform: scale(0.97);
+}
+.daybreak-danger-action:disabled,
+.daybreak-primary-action:disabled,
+.daybreak-secondary-action:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+.daybreak-danger-action:focus-visible {
+  outline: 2px solid var(--daybreak-clay-ink);
+  outline-offset: 2px;
+}
 .daybreak-primary-action:focus-visible,
 .daybreak-secondary-action:focus-visible {
   outline: 2px solid #6d5ba8;
@@ -2695,7 +2784,8 @@ button {
     transition: none;
   }
   .daybreak-primary-action,
-  .daybreak-secondary-action {
+  .daybreak-secondary-action,
+  .daybreak-danger-action {
     transition: none;
   }
 }

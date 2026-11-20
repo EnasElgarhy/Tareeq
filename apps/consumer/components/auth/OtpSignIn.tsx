@@ -11,7 +11,7 @@ import {
 } from "@/lib/auth/otp";
 
 /** Sign-in page (daybreak) styles: flat on the page, no card around the form. */
-const DAYBREAK_FIELD =
+export const DAYBREAK_FIELD =
   "w-full rounded-xl border border-[color:var(--day-line)] bg-[color:var(--day-card)] text-[color:var(--day-ink)] outline-none focus-visible:!outline-none transition-[border-color,box-shadow] duration-150 placeholder:text-[color:var(--day-ink-3)] focus:border-[#6D5BA8] focus:shadow-[0_0_0_3px_rgba(109,91,168,0.18)]";
 const DAYBREAK_PRIMARY =
   "inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#221248] px-5 text-[14px] font-bold text-[#FFFCF6] transition-[background-color,transform] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] hover:bg-[#34205F] active:scale-[0.97] disabled:pointer-events-none disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6D5BA8] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--day-bg)]";

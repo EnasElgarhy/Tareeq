@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronRight, LogOut, Mail } from "lucide-react";
+import Link from "next/link";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { KaiIcon } from "@/components/brand/DomainIcons";
 import type { Locale } from "@/lib/i18n/locale";
@@ -83,6 +84,13 @@ export function SettingsPanel({
         <LogOut size={13} />
         {t("profile.settings.sign_out")}
       </button>
+
+      <Link
+        href="/you/delete"
+        className="mx-auto -my-1.5 py-1.5 text-[12px] font-semibold text-[color:var(--day-ink-3,#675d4e)] underline decoration-transparent underline-offset-[3px] transition-colors hover:text-[color:var(--daybreak-clay-ink)] hover:decoration-current focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6D5BA8]"
+      >
+        {t("profile.settings.delete_account")}
+      </Link>
 
       <p className="text-center text-[11px] leading-snug text-[color:var(--day-ink-3,#675d4e)]">{t("profile.settings.footer")}</p>
     </section>
