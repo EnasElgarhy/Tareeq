@@ -10,7 +10,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 export const PARENT_LINKS_TABLE = "parent_pay_links";
 
 /** How long a link stays payable. Shown to the student and on the page. */
-export const PARENT_LINK_TTL_DAYS = 7;
+export const PARENT_LINK_TTL_DAYS = 5;
 
 /** A student can mint at most this many links a day; each new one revokes the last. */
 export const PARENT_LINK_DAILY_LIMIT = 20;

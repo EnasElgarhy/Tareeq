@@ -1,7 +1,7 @@
 "use client";
 
-import { Check, UserRound, Users } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { Clock, Eye, LockOpen, Send, UserRound, Users, type LucideIcon } from "lucide-react";
+import { useState, type ReactNode, type CSSProperties } from "react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import {
   fill,
@@ -148,32 +148,67 @@ function WaitingBody({
   const { t, locale } = useLocale();
   const expired = waiting.state === "expired";
   const day = new Intl.DateTimeFormat(locale, { day: "numeric", month: "long" });
-  const steps = [
-    { label: t("unlock.panel.step_sent"), isDone: true },
-    { label: t("unlock.panel.step_opened"), isDone: Boolean(waiting.openedAt) },
-    { label: t("unlock.panel.step_paid"), isDone: false },
+  const shortDay = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short" });
+  const when = (iso: string | null) => (iso ? shortDay.format(new Date(iso)) : null);
+  const steps: { label: string; icon: LucideIcon; doneOn: string | null; isDone: boolean }[] = [
+    { label: t("unlock.panel.step_sent"), icon: Send, doneOn: when(waiting.createdAt), isDone: true },
+    {
+      label: t("unlock.panel.step_opened"),
+      icon: Eye,
+      doneOn: when(waiting.openedAt),
+      isDone: Boolean(waiting.openedAt),
+    },
+    { label: t("unlock.panel.step_paid"), icon: LockOpen, doneOn: null, isDone: false },
   ];
+  // The step being waited on: the first one not done yet.
+  const currentIndex = steps.findIndex((step) => !step.isDone);
 
   return (
     <>
-      <PanelHead title={t("unlock.panel.waiting_title")} />
-      <ol className={styles.steps} aria-live="polite">
-        {steps.map((step) => (
-          <li key={step.label} data-done={step.isDone}>
-            <span className={styles.stepDot} aria-hidden="true">
-              {step.isDone ? <Check size={11} strokeWidth={3} /> : null}
-            </span>
-            {step.label}
-          </li>
-        ))}
-      </ol>
-      <p className={styles.expiry} data-expired={expired}>
-        {expired
-          ? t("unlock.wait.expired")
-          : fill(t("unlock.wait.expires"), { date: day.format(new Date(waiting.expiresAt)) })}
-      </p>
+      <div className={styles.waitHead}>
+        <PanelHead title={t("unlock.panel.waiting_title")} />
+        <p className={styles.expiry} data-expired={expired}>
+          <Clock size={14} aria-hidden="true" />
+          {expired
+            ? t("unlock.wait.expired")
+            : fill(t("unlock.wait.expires"), { date: day.format(new Date(waiting.expiresAt)) })}
+        </p>
+      </div>
+      {/* Three stations on one rail. The rail fills up to the last step done;
+       * the step being waited on says so under its name. */}
+      <div
+        className={styles.tracker}
+        style={{ "--progress": Math.max(0, currentIndex - 1) / (steps.length - 1) } as CSSProperties}
+      >
+        <span className={styles.rail} aria-hidden="true">
+          <i />
+        </span>
+        <ol className={styles.steps} aria-live="polite">
+          {steps.map((step, index) => {
+            const isCurrent = !expired && index === currentIndex;
+            const state = step.isDone ? "done" : isCurrent ? "current" : "todo";
+            return (
+              <li key={step.label} data-state={state}>
+                <span className={styles.node} aria-hidden="true">
+                  <step.icon size={16} strokeWidth={2.2} />
+                </span>
+                <span className={styles.stepLabel}>{step.label}</span>
+                <span className={styles.stepMeta}>
+                  {step.isDone ? step.doneOn : isCurrent ? t("unlock.wait.waiting") : "\u00a0"}
+                </span>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
       <div className={styles.waitActions}>
-        <button type="button" className={styles.cta} onClick={() => onParent(!expired)}>
+        {/* While the link is live nothing needs doing, so resending stays quiet;
+         * once it has expired, sending a new one is the main action. */}
+        <button
+          type="button"
+          className={expired ? styles.cta : styles.secondary}
+          onClick={() => onParent(!expired)}
+        >
           {t("unlock.wait.again")}
         </button>
         <button type="button" className={styles.textButton} onClick={onPayMyself}>

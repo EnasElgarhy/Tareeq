@@ -66,8 +66,8 @@
 }
 .veilLetters {
   display: flex;
-  gap: 6px;
-  margin-bottom: 2px;
+  gap: 9px;
+  margin-bottom: 6px;
 }
 .veilLetters > span {
   display: grid;
@@ -80,6 +80,32 @@
   font-weight: 800;
   font-size: 15px;
   box-shadow: 0 6px 14px -6px rgba(0, 0, 0, 0.35);
+}
+.veilLetters > span {
+  position: relative;
+}
+.veilLetters > [data-letter="C"] {
+  background: var(--unlock-violet);
+}
+/* A tick on the part that is open, a lock on the three that wait. */
+.veilBadge {
+  position: absolute;
+  inset-block-end: -5px;
+  inset-inline-end: -5px;
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 2px solid var(--unlock-card);
+  background: #2a2118;
+  color: #fff;
+}
+.veilLetters > [data-open] .veilBadge {
+  background: var(--daybreak-green-deep, #3e7a5e);
+}
+.veilLetters > [data-blank] .veilBadge {
+  display: none;
 }
 .veilLetters > [data-blank] {
   width: 14px;
@@ -267,49 +293,129 @@
 }
 
 /* ---- Waiting for the parent ---- */
+.waitHead {
+  display: grid;
+  gap: 8px;
+}
+/* The tracker: three stations on one rail, which fills up to the last step done. */
+.tracker {
+  position: relative;
+  padding-block: 6px 2px;
+}
+.rail {
+  position: absolute;
+  top: 23px;
+  inset-inline: calc(100% / 6);
+  height: 3px;
+  border-radius: 2px;
+  background: var(--unlock-line);
+  overflow: hidden;
+}
+.rail > i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--daybreak-green-deep, #3e7a5e);
+  transform: scaleX(var(--progress, 0));
+  transform-origin: left;
+  transition: transform 700ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+:global([dir="rtl"]) .rail > i {
+  transform-origin: right;
+}
+/* The rail draws itself once when the panel appears. */
+@starting-style {
+  .rail > i {
+    transform: scaleX(0);
+  }
+}
 .steps {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  font-weight: 650;
-  color: var(--day-ink-3, #8a7f6e);
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
 }
 .steps li {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  text-align: center;
+}
+.node {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin-bottom: 4px;
+  border-radius: 18px;
+  border: 2px solid rgba(43, 36, 28, 0.16);
+  /* Solid, so the rail passes behind the station. */
+  background: var(--panel-surface, var(--unlock-paper));
+  color: var(--day-ink-3, #8a7f6e);
+  transition:
+    background 300ms,
+    border-color 300ms,
+    color 300ms;
+}
+.stepLabel {
+  font-size: 13px;
+  font-weight: 750;
+  color: var(--day-ink-3, #8a7f6e);
+}
+.stepMeta {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--day-ink-3, #8a7f6e);
+}
+.steps li[data-state="done"] .node {
+  border-color: var(--daybreak-green-deep, #3e7a5e);
+  background: var(--daybreak-green-deep, #3e7a5e);
+  color: #fff;
+  box-shadow: 0 6px 14px -8px rgba(62, 122, 94, 0.8);
+}
+.steps li[data-state="done"] .stepLabel {
+  color: var(--day-ink, #2a2118);
+}
+.steps li[data-state="current"] .node {
+  border-color: var(--unlock-violet);
+  color: var(--unlock-violet-deep);
+}
+.steps li[data-state="current"] :is(.stepLabel, .stepMeta) {
+  color: var(--unlock-violet-deep);
+}
+/* The station being waited on breathes, so the panel reads as live, not stuck. */
+.steps li[data-state="current"] .node::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  border: 2px solid var(--unlock-violet);
+  animation: unlock-waiting 1.8s cubic-bezier(0.23, 1, 0.32, 1) infinite;
+}
+@keyframes unlock-waiting {
+  from {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.55);
+  }
+}
+.expiry {
   display: flex;
   align-items: center;
   gap: 6px;
-}
-.steps li:not(:last-child)::after {
-  content: "";
-  width: 18px;
-  height: 2px;
-  margin-inline-start: 2px;
-  border-radius: 1px;
-  background: var(--unlock-line);
-}
-.steps li[data-done="true"] {
-  color: var(--day-ink, #2a2118);
-}
-.stepDot {
-  display: grid;
-  place-items: center;
-  width: 18px;
-  height: 18px;
-  border-radius: 9px;
-  border: 2px solid rgba(43, 36, 28, 0.25);
-  color: #fff;
-}
-.steps li[data-done="true"] .stepDot {
-  border-color: var(--daybreak-green-deep, #3e7a5e);
-  background: var(--daybreak-green-deep, #3e7a5e);
-}
-.expiry {
-  padding: 8px 12px;
-  border-radius: 12px;
+  width: fit-content;
+  padding: 5px 10px;
+  border-radius: 999px;
   background: var(--unlock-violet-tint);
   font-size: 12.5px;
-  color: var(--day-ink-2, #5c5142);
+  font-weight: 600;
+  color: var(--unlock-violet-deep);
+}
+.expiry svg {
+  flex-shrink: 0;
 }
 .expiry[data-expired="true"] {
   background: #f5eacb;
@@ -318,6 +424,35 @@
 .waitActions {
   display: grid;
   gap: 4px;
+  margin-top: 2px;
+}
+.secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding-inline: 22px;
+  border-radius: 24px;
+  border: 1.5px solid color-mix(in srgb, var(--unlock-violet) 55%, transparent);
+  background: var(--unlock-card);
+  color: var(--unlock-violet-deep);
+  font-size: 15px;
+  font-weight: 800;
+  transition:
+    background 200ms,
+    transform 150ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.secondary:active {
+  transform: scale(0.98);
+}
+@media (hover: hover) and (pointer: fine) {
+  .secondary:hover {
+    background: var(--unlock-violet-tint);
+  }
+}
+.secondary:focus-visible {
+  outline: 2px solid var(--unlock-violet);
+  outline-offset: 3px;
 }
 .textButton {
   justify-self: center;
@@ -327,14 +462,19 @@
   font-weight: 700;
   color: var(--unlock-violet-deep);
 }
-
-/* Desktop: the locked page is one centred column, one card per row, and the
-   panel keeps the phone's calm stacked layout as a floating card. */
-@media (min-width: 1024px) {
-  .page {
-    width: min(100%, 760px);
-    margin-inline: auto;
+@media (prefers-reduced-motion: reduce) {
+  .steps li[data-state="current"] .node::after {
+    animation: none;
+    opacity: 0;
   }
+  .rail > i {
+    transition: none;
+  }
+}
+
+/* Tablet and up: the panel is a floating card, not a full-width band, and the
+   waiting state lays out in rows so nothing stretches across the screen. */
+@media (min-width: 640px) {
   .fade {
     inset-inline: 0;
     height: 72px;
@@ -350,6 +490,25 @@
     border: 1px solid var(--unlock-line);
     background: var(--unlock-card);
     box-shadow: 0 24px 50px -28px rgba(43, 36, 28, 0.5);
+    --panel-surface: var(--unlock-card);
+  }
+  .waitHead {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+  }
+  .waitActions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+/* Desktop: the locked page is one centred column, one card per row, and the
+   panel keeps the phone's calm stacked layout as a floating card. */
+@media (min-width: 1024px) {
+  .page {
+    width: min(100%, 760px);
+    margin-inline: auto;
   }
   .panel[data-mode="choice"] .options {
     grid-template-columns: 1fr 1fr;

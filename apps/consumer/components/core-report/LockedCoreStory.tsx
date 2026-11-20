@@ -1,5 +1,6 @@
 "use client";
 
+import { Check, Lock } from "lucide-react";
 import { useState } from "react";
 import { useLocale } from "@/components/i18n/LocaleProvider";
 import { StudentPayScreen } from "@/components/parent-pay/ParentPayScreen";
@@ -50,11 +51,21 @@ export function LockedCoreStory({
         generatedAt={generatedAt}
         veil={
           <div className={styles.veil}>
+            {/* All four parts: C is the one already open above, O, R and E wait
+             * behind the lock. */}
             <span className={styles.veilLetters} aria-hidden="true">
-              {CORE_LETTERS.filter((letter) => letter !== "C").map((letter) => (
-                <span key={letter} data-letter={letter} data-blank={locale === "ar" || undefined}>
+              {CORE_LETTERS.map((letter) => (
+                <span
+                  key={letter}
+                  data-letter={letter}
+                  data-open={letter === "C" || undefined}
+                  data-blank={locale === "ar" || undefined}
+                >
                   {/* Arabic shows the colours only, no Latin letters (v4, row 15). */}
                   {locale === "ar" ? null : letter}
+                  <i className={styles.veilBadge}>
+                    {letter === "C" ? <Check size={9} strokeWidth={3.5} /> : <Lock size={8} strokeWidth={3} />}
+                  </i>
                 </span>
               ))}
             </span>

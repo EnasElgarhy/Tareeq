@@ -3182,8 +3182,8 @@ export const STRINGS = {
   "unlock.ask.copied": { en: "Copied", ar: "تم النسخ" },
   "unlock.ask.more": { en: "More apps", ar: "تطبيقات أخرى" },
   "unlock.ask.privacy": {
-    en: "The link shows no name, answers or results. It works for 7 days, and you can send a new one any time.",
-    ar: "لا يظهر في الرابط اسمك أو إجاباتك أو نتائجك. يعمل لمدة 7 أيام، ويمكنك إرسال رابط جديد في أي وقت.",
+    en: "The link shows no name, answers or results. It works for 5 days, and you can send a new one any time.",
+    ar: "لا يظهر في الرابط اسمك أو إجاباتك أو نتائجك. يعمل لمدة 5 أيام، ويمكنك إرسال رابط جديد في أي وقت.",
   },
   "unlock.ask.close": { en: "Close", ar: "إغلاق" },
   "unlock.ask.error": {
@@ -3428,8 +3428,8 @@ export const STRINGS = {
   },
   "pay.state.expired.title": { en: "This link has expired", ar: "انتهت صلاحية هذا الرابط" },
   "pay.state.expired.body": {
-    en: "Links work for 7 days. Ask your child to send you a new one from their report.",
-    ar: "تعمل الروابط لمدة 7 أيام. اطلب من طفلك إرسال رابط جديد من تقريره.",
+    en: "Links work for 5 days. Ask your child to send you a new one from their report.",
+    ar: "تعمل الروابط لمدة 5 أيام. اطلب من طفلك إرسال رابط جديد من تقريره.",
   },
   "pay.state.revoked.title": { en: "There's a newer link", ar: "يوجد رابط أحدث" },
   "pay.state.revoked.body": {
